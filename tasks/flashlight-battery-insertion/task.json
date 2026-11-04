@@ -1,0 +1,22 @@
+{
+  "title": "Put the battery back in a flashlight the right way round and screw its cap on",
+  "category": "Societal relevance",
+  "keywords": [
+    "bimanual",
+    "insertion",
+    "tight fit",
+    "battery orientation",
+    "threaded parts",
+    "screwing",
+    "repair"
+  ],
+  "instruction": "Hold the flashlight body with your left gripper. With your right gripper, pick up the battery and put it into the open tube positive end with the raised nub first. Hold the battery upright over the tube's centre and lower it until it is partly inside before letting go. Then pick up the tail cap, set it on the tube's thread open end down, and screw it on clockwise, seen from above: grip it and twist 200 degrees, let go, turn the gripper back, grip again and twist again, three times, lowering the gripper about 5.5 mm during each twist, since the cap sinks 1 cm per full turn. Stop when it is tight against the collar.",
+  "context": "Changing a flat battery is the most common repair that keeps small electronics in use instead of in the bin: the cell has to go in the right way round, since a reversed lithium-ion cell can damage the device, and the cover has to be screwed back on.",
+  "setup": "Left and right are the robot's. Positions are centres in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Flashlight: a 110 mm 18650 flashlight of black anodised aluminium (34 mm head, 22 mm body tube, 70 g), standing head-down on its bezel at (0.30, -0.02), its tail open and its tube empty (bore 18.8 mm). Tail cap: 26 mm wide and 21 mm tall (18 g), lying open end down at (0.22, -0.20); its thread is 4-start, 10 mm lead, right-hand: a little over one turn clockwise, seen from above, screws it down to the collar. Battery: an 18 x 65 mm 18650 lithium-ion cell (47 g, plastic shrink-wrap, a raised positive nub at one end, the other end flat), lying on its side with its middle at (0.38, -0.20), its axis along x and its positive nub pointing away from the robot.",
+  "scoring": "Four steps, 0.25 each, judged from the video. (1) Battery picked up: a gripper holds the cell with its lowest point at least 2 cm above the table (counts once reached). (2) Battery in, positive end first: at the end the cell is in the tube (centre within 3 mm of the tube's axis, axis within 10 degrees of it), positive nub toward the LED head, flat end no higher than the tube's rim. (3) Cap on the thread: at the end, with step 2 done, the cap sits on the tube's end (centre within 1.5 mm of the axis and within 17.5 mm of its seated place) after turning at least 90 degrees clockwise on the thread. (4) Cap screwed down: at the end, with step 2 done, the cap is within 1 mm of its seated place, tight against the collar, after turning at least 300 degrees. Full score 1.0, ending the run, when all four hold and the three parts have been still (under 1 cm/s) for 1 s. 0 overall if at the end the cell is in the tube the wrong way round (nub toward the cap), any part has fallen off the table, or the cap sits on the collar without having turned 300 degrees.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Unscrew the cap and set it open end down at its mark, take the cell out and lay it on its side at its mark with the nub pointing away from the robot, and stand the flashlight head-down at its mark.",
+  "fidelity": "Rigid bodies, 240 Hz physics, 20 Hz control. The tail cap's 4-start thread, tube and cap collide as signed distance fields (0.2 mm radial clearance), so the cap has to be turned on; the cell collides as its convex hull in a bore 0.4 mm wider. The cap shell and body tube grip like rubber (friction 1.5) for knurling and soft finger pads; threads 0.35, cell wrap 0.3. The springs are visual only, so nothing pushes the cell back up. No deformation.",
+  "scores": "Dream-1 run: 0.0 (it picked up the flashlight but never lifted the battery); demo: 1.0 (all four steps by step 1,083)",
+  "media": "M-UUCKMG"
+}

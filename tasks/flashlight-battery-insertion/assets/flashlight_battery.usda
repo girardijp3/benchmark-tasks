@@ -1,0 +1,36 @@
+#usda 1.0
+(
+    doc = "Only the Battery_18650 rigid body of flashlight_18650.usda (the other parts deactivated), in the shared flashlight frame. Its shrink-wrap is PVC (0.3 static, 0.25 dynamic) and combines friction with 'min', so it slides down the body's rubbery bore under its own weight."
+    defaultPrim = "Flashlight"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Flashlight" (
+    prepend references = @flashlight_18650.usda@
+)
+{
+    over "Looks"
+    {
+        over "Phys_BatteryWrap" (
+            prepend apiSchemas = ["PhysxMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.25
+            float physics:staticFriction = 0.3
+            uniform token physxMaterial:frictionCombineMode = "min"
+        }
+    }
+
+    over "Body" (
+        active = false
+    )
+    {
+    }
+    over "TailCap" (
+        active = false
+    )
+    {
+    }
+}

@@ -1,0 +1,46 @@
+#usda 1.0
+(
+    doc = "Only the Body rigid body of flashlight_18650.usda (the other parts deactivated), in the shared flashlight frame. Its tube grips like rubber (average combine, so the battery's 'min' still lets it slide in the bore); the thread keeps aluminium friction."
+    defaultPrim = "Flashlight"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Flashlight" (
+    prepend references = @flashlight_18650.usda@
+)
+{
+    over "Looks"
+    {
+        def Material "Rubber_Body" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 1.3
+            float physics:restitution = 0
+            float physics:staticFriction = 1.5
+        }
+    }
+
+    over "Body"
+    {
+        over "Body_Tube"
+        {
+            rel material:binding:physics = </Flashlight/Looks/Rubber_Body> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+        }
+    }
+
+    over "TailCap" (
+        active = false
+    )
+    {
+    }
+    over "Battery_18650" (
+        active = false
+    )
+    {
+    }
+}
