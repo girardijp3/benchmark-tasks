@@ -1,0 +1,22 @@
+{
+  "title": "Open a handheld spot welder's battery lid and tip its 18650 cell into a box",
+  "category": "Societal relevance",
+  "keywords": [
+    "bimanual",
+    "battery removal",
+    "latch",
+    "lid",
+    "pouring",
+    "e-waste",
+    "SimReady"
+  ],
+  "instruction": "With your left gripper, hold the spot welder down on the table by its front end. With your right gripper, push the small latch knob at the front of the battery lid until the lid springs open, then move the right arm back to where it started. Then lift the welder with your left gripper, tip the battery out of it into the cardboard box, put the welder back on the table where it was and move the left arm back too.",
+  "context": "Loose lithium-ion cells start fires in waste trucks and recycling plants, so cells are taken out of tools before repair, storage or recycling. Where a cell sits flush in its bay, it is not pried out: one hand holds the tool while the other releases its battery cover, and the cell is tipped out into a collection box.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Spot welder: a handheld 18650 spot welder, black ABS housing 124 x 24 x 22 mm (138.7 mm long with its copper probes, 127 g with its cell), on its feet with its long axis along y, its rear face at (0.27, -0.02) facing -y, probes toward +y. Its battery lid covers the top from the rear face to 80 mm along, hinged at the rear end and sprung to open 105 degrees; a latch knob (4.4 x 10 mm, standing 1.4 mm above the lid) just in front of it holds it shut, and releases it when pushed 1.3-1.8 mm toward the probes (about 0.5 N). Under the lid: an 18 x 65 mm 18650 lithium-ion cell (47 g, plastic shrink-wrap) lying in a bay 1 mm wider than it, its top 1.8 mm below the rim. Box: an open corrugated-cardboard box (NVIDIA's SimReady open box A06 at one third of its 61.1 x 50.5 x 30.2 cm size) 20.4 cm long (x) and 16.8 cm wide (y), its wall on the robot's left 10.1 cm tall and its wall on the right 4.9 cm, the end walls sloping between them, taped to the table with its centre at (0.50, -0.02), in front of the welder.",
+  "scoring": "Three steps, a third each, judged from the video. (1) Lid opened: a gripper pushed the latch knob, and the lid is open more than 60 degrees. (2) Cell in the box: the cell lies in the box (its centre at least 1 cm inside the box's outer walls and less than 3 cm above the table). (3) Welder put back: after it has been lifted (held with its lowest point at least 2 cm above the table), the welder stands on its feet on the table, upright within 10 degrees, not in the box, and no gripper holds it. Steps are judged as things stand at the end. Full score 1.0, ending the run, when all three hold, both arms are back where they started (within 3 cm) holding nothing, and the welder and the cell have been still (under 1 cm/s) for 1 s. 0 overall if at the end the welder or the cell has fallen off the table.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Put the cell back in the welder's bay, close the lid until the latch clicks, and stand the welder on its feet at its mark, rear face toward the robot's right. The box stays taped in place.",
+  "fidelity": "Articulated and rigid bodies, 240 Hz physics, 20 Hz control. The welder is one articulation: its lid on a torsion-spring hinge, held shut by contact between its hook and a latch slider on a 200 N/m return spring, which lets it go after 1.3-1.8 mm. The housing collides as a signed distance field, its small parts as convex hulls; the cell is a free rigid body in its bay. The box is fixed, at a third of its size. No deformation.",
+  "scores": "Dream-1 run: 0.0 (both grippers went to the welder again and again, but neither pushed the latch knob nor lifted the welder, so the lid stayed shut); demo: 1.0 (all three steps by step 573, success at step 669)",
+  "media": "M-2X39YN"
+}
