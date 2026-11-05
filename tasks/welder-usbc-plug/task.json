@@ -1,0 +1,21 @@
+{
+  "title": "Plug a power bank's USB-C cable into a handheld spot welder charging port",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "connector insertion",
+    "USB-C",
+    "tight fit",
+    "cable",
+    "electronics assembly"
+  ],
+  "instruction": "With your left gripper, pick up the spot welder and hold it with its rear USB-C port facing the plug. With your right gripper, pick up the plug by its plastic body and push it straight into the port until it is fully in. Let go of the plug and move the right arm back to where it started; then set the welder back down on the table, let go and move the left arm back too.",
+  "context": "Plugging a cable into a device held in the other hand is everyday work at electronics assembly, repair and lab benches: a USB-C plug has a tenth of a millimetre of play, so it has to be lined up and pushed in straight, not forced.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Power bank: 92 x 46 x 14 mm grey plastic (125 g), fixed flat to the table, its cable end at (0.27, -0.37) facing +y. Cable: 300 mm long, 3.5 mm thick, captive in the power bank, lying straight along +y on the table. Plug: a USB-C plug at the cable's end, a 12 x 6.2 x 22 mm plastic body with an 8.25 x 2.40 mm metal shell 6.6 mm long (4 g), lying flat with its front face at (0.27, -0.032), pointing +y. Spot welder: a handheld 18650 spot welder, black ABS housing 124 x 24 x 22 mm (138.7 mm long with its copper probes, 127 g with its lithium-ion cell inside under a closed, latched lid), lying on its four rubber feet with its long axis along y, its rear face at y = 0.07 facing -y toward the plug, probes toward +y, centred on x = 0.27. Its USB-C port is in the middle of the rear face, 11 mm above the housing's bottom.",
+  "scoring": "Four steps, 0.25 each, judged from the video. (1) Welder lifted: a gripper holds the welder with its lowest point at least 2 cm above the table (counts once reached). (2) Plug lifted: a gripper holds the plug with its lowest point at least 2 cm above the table (counts once reached). (3) Plugged in: at the end the plug is in the welder's port, its plastic body within 1.5 mm of the welder's rear face, within 0.5 mm of the port's centre line, and tilted no more than 8 degrees from the port's direction (a released plug sags a few degrees under its cable). (4) Set down with the plug still in: at the end, with step 3 done, the welder rests on its feet on the table (upright within 10 degrees) and neither gripper holds the welder or the plug. Full score 1.0, ending the run, when all four hold, both arms are back where they started (within 3 cm) holding nothing, and the welder has been still (under 1 cm/s) for 1 s. 0 overall if at the end the welder, its cell or the plug has fallen off the table, or the welder's cell has come out of its bay (the lid was opened).",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Unplug the cable and lay it straight along the table from the power bank with the plug flat at its mark, pointing at the welder; close the welder's lid over its cell if it was opened, and set the welder on its feet at its mark, rear face toward the plug.",
+  "fidelity": "Articulated and rigid bodies, 240 Hz physics, 20 Hz control. The cable is 24 capsule links on bending joints with a real cable's stiffness. The USB-C port has real clearances (0.10 to 0.23 mm a side, a 0.4 mm lead-in lip) and is modelled with exact box and capsule colliders, since PhysX cooks millimetre-sized convex shapes up to 0.3 mm off; the receptacle's tongue does not collide. Its two spring fingers press on the plug through a compliant contact (5000 N/m, friction 0.6) rather than their own springs, so the plug goes in with a few newtons and pulls out at about 0.5 N, against 8 to 20 N for a real USB-C plug. The housing collides as a signed distance field, kept off the plug's metal shell. The welder's lid is held by a sprung latch that works by contact. No deformation beyond the cable's joints.",
+  "scores": "Dream-1 run: 0.0 (both arms moved near their bases but neither reached the welder or the plug); demo: 1.0 (all four steps by step 541, success at step 648)",
+  "media": "M-CKVGYK"
+}
