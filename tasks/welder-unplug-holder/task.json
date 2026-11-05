@@ -1,0 +1,22 @@
+{
+  "title": "Unplug a spot welder's USB-C charging cable and put the welder in its holder",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "unplugging",
+    "USB-C",
+    "cable",
+    "put away",
+    "placement",
+    "electronics bench"
+  ],
+  "instruction": "With your left gripper, hold the spot welder down on the table. With your right gripper, take the USB-C plug by its plastic body, pull it straight out of the welder's port, lay it on the table and move the right arm back to where it started. Then pick up the welder with your left gripper, put it into the orange holder on the left, probes toward you, let go and move the left arm back too.",
+  "context": "Unplugging a charged tool and putting it back in its place is everyday work at electronics assembly and repair benches: the device has to be held while the plug is pulled out straight, or the cable drags it along or the port gets levered.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Spot welder: a handheld 18650 spot welder, black ABS housing 124 x 24 x 22 mm (138.7 mm long with its copper probes, 127 g with its lithium-ion cell inside under a closed, latched lid), on its feet with its long axis along y, its rear face at (0.27, -0.07) facing -y, probes toward +y. Power bank: 92 x 46 x 14 mm grey plastic (125 g), fixed flat to the table, its cable end at (0.27, -0.406) facing +y. Cable: 300 mm long, 3.5 mm thick, lying on the table along y from the power bank and plugged fully into the welder's rear USB-C port (a 12 x 6.2 x 22 mm plastic plug body, 11 mm up). Holder: an empty orange PLA tray, 142 x 39 x 14 mm, screwed to the table with its centre at (0.30, 0.26) and its long axis along x; its pocket takes the welder with the probes toward the robot.",
+  "scoring": "Four steps, 0.25 each, judged from the video. (1) Unplugged by hand: at the end the plug is out of the welder's port (its plastic body more than 5 mm from the welder's rear face, or more than 2 mm off the port's centre line, or turned more than 30 degrees from it), and a gripper held the plug as it came out; a plug yanked out by its cable (the welder dragged or lifted away from it) never earns steps 1 and 2. (2) Plug put down: at the end, with step 1 done, the plug lies on the table (its lowest point within 3 mm of it) and no gripper holds it. (3) Welder lifted: a gripper holds the welder with its lowest point at least 2 cm above the table (counts once reached). (4) Welder in its holder: at the end the welder sits in the holder's pocket (within 5 mm of its seat, on the pocket floor within 2 mm, upright within 10 degrees) and no gripper holds it. Full score 1.0, ending the run, when all four hold, both arms are back where they started (within 3 cm) holding nothing, and the welder has been still (under 1 cm/s) for 1 s. 0 overall if at the end the welder, its cell or the plug has fallen off the table, or the welder's cell has come out of its bay (the lid was opened).",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Close the welder's lid over its cell if it was opened, plug the cable fully into the welder's rear port, set the welder on its feet at its mark with its rear face toward the power bank, lay the cable on the table back to the power bank, and leave the holder empty.",
+  "fidelity": "Articulated and rigid bodies, 240 Hz physics, 20 Hz control. The 300 mm cable is 24 capsule links on bending joints. The USB-C port has real clearances (0.10-0.23 mm a side) and exact box and capsule colliders. Its spring fingers press through a compliant contact (5000 N/m, friction 0.6), so the plug pulls out at about 0.5 N against 8-20 N for a real one. The holder is 33 convex pieces. No deformation beyond the cable's joints.",
+  "scores": "Dream-1 run: 0.0 (its left arm hovered over the welder and its right arm moved near the power bank, but neither took the plug or lifted the welder); demo: 1.0 (all four steps by step 463, success at step 554)",
+  "media": "M-VZED5V"
+}

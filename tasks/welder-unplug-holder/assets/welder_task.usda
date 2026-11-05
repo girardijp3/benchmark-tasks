@@ -1,0 +1,86 @@
+#usda 1.0
+(
+    doc = "The spot welder of spot_welder_18650.usda as one articulation (root: the housing Body; the lid, latch slider, + contact and the two USB-C spring fingers are its jointed links), with the loose 18650 cell taken out of the asset: the task spawns it as its own body at the same place in the bay (a body without a joint cannot be part of the articulation). Self-collisions stay on: the latch holds the lid by contact between the lid hook and the slider tongue (parts joined by a joint never collide). The housing's signed-distance-field collider is refined from 512 to 2048 cells (0.24 -> 0.06 mm) so the USB-C opening in its rear face keeps its shape. The USB-C spring fingers spring by their contact instead of their slides: PhysX lifts these 0.5 g sliding links against no more than ~0.4 N, so the authored 3000 N/m springs and 4 N preload never let the plug in. The slides are held still and the fingers' bars meet the plug with a compliant contact (5000 N/m, friction 0.6), which lets the plug in and holds it against about 0.5 N of pull."
+    defaultPrim = "SpotWelder"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "SpotWelder" (
+    prepend apiSchemas = ["PhysicsArticulationRootAPI", "PhysxArticulationAPI"]
+    prepend references = @spot_welder_18650.usda@
+)
+{
+    bool physxArticulation:enabledSelfCollisions = 1
+
+    over "Body"
+    {
+        over "Body_Shell"
+        {
+            int physxSDFMeshCollision:sdfResolution = 2048
+        }
+
+    }
+
+    over "Looks"
+    {
+        def Material "Phys_Steel_Springy" (
+            prepend apiSchemas = ["PhysicsMaterialAPI", "PhysxMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.5
+            float physics:restitution = 0
+            float physics:staticFriction = 0.6
+            float physxMaterial:compliantContactDamping = 5
+            float physxMaterial:compliantContactStiffness = 5000
+        }
+    }
+
+    over "Joints"
+    {
+        over "USB_FingerTopSlide"
+        {
+            float drive:linear:physics:damping = 100
+            float drive:linear:physics:stiffness = 1000000
+            float drive:linear:physics:targetPosition = 0
+        }
+
+        over "USB_FingerBotSlide"
+        {
+            float drive:linear:physics:damping = 100
+            float drive:linear:physics:stiffness = 1000000
+            float drive:linear:physics:targetPosition = 0
+        }
+    }
+
+    over "USB_FingerTop"
+    {
+        over "USB_FingerTop_Pad_Bar" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </SpotWelder/Looks/Phys_Steel_Springy> (
+                bindMaterialAs = "strongerThanDescendants"
+            )
+        }
+    }
+
+    over "USB_FingerBot"
+    {
+        over "USB_FingerBot_Pad_Bar" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </SpotWelder/Looks/Phys_Steel_Springy> (
+                bindMaterialAs = "strongerThanDescendants"
+            )
+        }
+    }
+
+    over "Battery_18650" (
+        active = false
+    )
+    {
+    }
+}

@@ -1,0 +1,175 @@
+#usda 1.0
+(
+    doc = "The power bank, cable and plug of powerbank_usbc.usda with the articulation root moved from the parent Xform onto the Bank body, so the bank can be pinned to the table where it spawns (Isaac Lab's fix_root_link needs the root on a rigid body), and a little joint armature (2e-7 kg m^2, ~50x a 0.275 g link's own inertia) on the cable joints so PhysX keeps the light links stable when a gripper squeezes the plug."
+    defaultPrim = "PowerBankUSBC"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "PowerBankUSBC" (
+    delete apiSchemas = ["PhysicsArticulationRootAPI", "PhysxArticulationAPI"]
+    prepend references = @powerbank_usbc.usda@
+)
+{
+    over "Joints"
+    {
+        over "J_00" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_01" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_02" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_03" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_04" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_05" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_06" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_07" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_08" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_09" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_10" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_11" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_12" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_13" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_14" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_15" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_16" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_17" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_18" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_19" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_20" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_21" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_22" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_23" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+        over "J_24" (
+            prepend apiSchemas = ["PhysxJointAPI"]
+        )
+        {
+            float physxJoint:armature = 2e-7
+        }
+    }
+
+    over "Bank" (
+        prepend apiSchemas = ["PhysicsArticulationRootAPI", "PhysxArticulationAPI"]
+    )
+    {
+        bool physxArticulation:enabledSelfCollisions = 1
+    }
+}
