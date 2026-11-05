@@ -1,0 +1,22 @@
+{
+  "title": "Put an 18650 cell from a battery holder into a handheld spot welder the right way round and latch its lid closed",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "battery insertion",
+    "polarity",
+    "reorientation",
+    "lid",
+    "latch",
+    "electronics bench"
+  ],
+  "instruction": "With your left gripper, pick up the spot welder, turn it so its probes point toward your left and back, and set it down. With your right gripper, take one yellow battery out of the holder, lay it in the welder's open battery bay with its positive end toward the probes, then push the lid closed until the latch catches and move the arms back to where they started.",
+  "context": "Fitting cells into battery-powered tools is everyday work at electronics assembly and repair benches: the cell is taken from a holder, turned to lie in the tool's bay the right way round (a reversed cell can damage the tool), and the cover is closed until its latch catches, while the other hand steadies the tool.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Spot welder: a handheld 18650 spot welder, black ABS housing 124 x 24 x 22 mm (138.7 mm long with its copper probes, 80 g empty), on its feet with its long axis along y, its rear face at (0.206, -0.088) facing -y, probes toward +y. Its battery bay is empty and its lid stands fully open (105 degrees, held by its spring), hinged at the rear end; a latch knob just in front of the bay catches the lid's hook when the lid is pressed shut. The bay is 19 mm wide, 0.5 mm a side around a cell, with a sprung + contact at its probe end. Holder: the black ABS bottom half of a 2x2 18650 holder (41.2 x 41.2 x 9.5 mm, 20 mm pitch, 0.3 mm radial clearance), loose on the table with its centre at (0.35, -0.20), sides along x and y, holding four 18 x 65 mm 18650 lithium-ion cells (47 g each, yellow plastic wrap) upright, positive ends up, 2 mm apart.",
+  "scoring": "Four steps, 0.25 each, judged from the video. (1) Battery taken out: a gripper holds a cell lifted clear of the holder (its lowest point above the holder's top); counts once reached. (2) Battery in the bay: a cell lies in the welder's bay within 3 mm of its seat, positive end toward the probes within 10 degrees. (3) Lid latched: with step 2 done, the lid is shut (within 2 degrees) and the latch has caught it. (4) Welder turned and put down: the welder stands on its feet on the table, upright within 10 degrees, turned at least 30 degrees from its start, and no gripper holds it. Steps 2 to 4 are judged at the end. Full score 1.0, ending the run, when all four hold, both arms are back where they started (within 3 cm) holding nothing, and the welder and the cell in it have been still (under 1 cm/s) for 1 s. 0 overall if at the end the welder or any cell has fallen off the table.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Take the cell out of the welder and stand it back in its cup in the holder, positive end up; open the lid fully; set the welder on its feet at its mark, probes toward the robot's left; put the holder back on its mark.",
+  "fidelity": "Articulated and rigid bodies, 240 Hz physics, 20 Hz control. The welder is one articulation: its lid on a torsion-spring hinge, caught shut by a latch slider on a 200 N/m return spring (the hook rides over the slider's 45-degree ramp). The housing collides as a signed distance field, the holder too (0.3 mm cup clearance); each cell as a 30-sided prism. No deformation.",
+  "scores": "Dream-1 run: 0.0 (its right arm went to the battery holder again and again and its left arm reached toward the welder, but neither took a cell out or picked the welder up); demo: 1.0 (all four steps by step 663, success at step 749)",
+  "media": "M-2N776M"
+}
