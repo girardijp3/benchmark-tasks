@@ -1,4 +1,4 @@
-# Hold an SO-101 robot arm's 3D-printed shoulder bracket up with one hand and push a servo motor into its pocket with the other
+# Hold an SO-101 arm's 3D-printed shoulder bracket up with one hand and push a servo motor into its pocket with the other
 
 A bimanual assembly task from building a robot arm. The shoulder bracket of an SO-101 arm (its 3D-printed "rotation
 pitch" part with the motor holder screwed on) stands on the table with its servo pocket empty; an STS3215 servo stands
