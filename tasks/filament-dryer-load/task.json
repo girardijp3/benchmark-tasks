@@ -1,0 +1,22 @@
+{
+  "title": "Load a filament spool into a dryer and latch the lid",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "3D printing",
+    "heavy part",
+    "placement",
+    "lid",
+    "catch",
+    "print farm"
+  ],
+  "instruction": "With your right gripper, lift the filament spool off its stand and set it on the rollers inside the open filament dryer, then let go. Then with your left gripper swing the dryer's lid over and press it shut until it clicks, and move both arms back to where they started.",
+  "context": "Drying filament before printing is routine work in 3D-printing shops and print farms: a spool of filament that has taken up moisture is lifted off its holder, set on the rollers of a filament dryer so it can turn as it feeds, and the dryer's lid is closed and latched to keep the warm, dry air in.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Filament dryer: a single-spool dryer, 262 x 130 x 240 mm, 1.2 kg, its long side along x, centred at (0.30, 0.00), control panel facing the robot. Its smoked clear hood (80 mm deep) is hinged along the back edge on the robot's left and stands fully open (100 degrees) on its stop; a sprung catch in the front wall, near the end facing the robot, holds it shut once pressed down. Inside, two free-spinning rollers along y, 130 mm apart. Spool: a 1 kg spool of orange 1.75 mm PLA on a cardboard spool (200 mm across, 67 mm wide, 1.18 kg), standing on its rims in a teal printed stand centred at (0.30, -0.20), its axis along y.",
+  "scoring": "Four steps, 0.25 each, judged from the video. (1) Spool taken off the stand: a gripper holds the spool lifted clear of the stand; counts once reached. (2) Spool on the rollers: the spool rests on both rollers, centred (within 6 mm along the dryer, 12 mm across) with its axis along the dryer's within 8 degrees, and no gripper holds it. (3) Lid swung over: with step 2 done, a gripper has pushed the lid at least 40 degrees toward shut; counts once reached. (4) Lid shut and caught: with step 2 done, the lid is shut (within 2 degrees) and held by the catch. Steps 2 and 4 are judged at the end. Full score 1.0, ending the run, when all four hold, both arms are back where they started (within 3 cm) holding nothing, the dryer is within 3 cm and 10 degrees of where it started, and the dryer and spool have been still for 1 s. 0 overall if at the end the dryer or the spool has fallen off the table.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Open the lid, take the spool out of the dryer and stand it back in its stand, axis across the table; put the dryer and the stand back on their marks.",
+  "fidelity": "Articulated and rigid bodies, 240 Hz physics, 20 Hz control. The dryer is one articulation: its hood on a damped (friction) hinge, held shut by a catch slider on a 200 N/m return spring (the hood's hook rides over the slider's 45-degree ramp), and two free-spinning rollers. The spool (1.18 kg) collides as 32-sided prisms. No deformation.",
+  "scores": "Dream-1 run: 0.0 (its right arm went to the spool on its stand again and again and its left arm reached toward the dryer's open lid, but it never lifted the spool off the stand); demo: 1.0 (all four steps by step 512, success at step 639)",
+  "media": "M-UXJ63H"
+}
