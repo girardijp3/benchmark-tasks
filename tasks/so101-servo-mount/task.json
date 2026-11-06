@@ -1,0 +1,22 @@
+{
+  "title": "Hold an SO-101 robot arm's 3D-printed shoulder bracket up with one hand and push a servo motor into its pocket with the other",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "robot assembly",
+    "servo motor",
+    "tight fit",
+    "insertion",
+    "reorientation",
+    "3D-printed parts"
+  ],
+  "instruction": "Hold the yellow robot-arm bracket up with your left gripper. With your right gripper, put the black servo into its pocket, end first with the horn facing your left, and push it fully in. Then put the bracket back down standing and move both arms back to where they started.",
+  "context": "Building and repairing small robot arms is bench work: each servo goes into its 3D-printed pocket the right way round, so its horn lines up with the next link, and is pressed fully home in a fit that leaves a fraction of a millimetre while the other hand holds the part.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Shoulder bracket of an SO-101 robot arm (its 3D-printed rotation-pitch part with the motor holder screwed on, yellow PLA, 45 g, 84 mm tall): it stands on its lower fork arm with its underside centre below the pocket at (0.30, 0.03), its fork arms pointing away from the robot and the motor holder's flat back toward it. The pocket on top is empty: 25.3 x 35.2 mm inside, 19 mm deep, 0.25 mm a side around the servo; the holder's ring around it is 52.4 mm across its long sides (along y). Servo: an STS3215 serial bus servo, black case 45.4 x 24.8 x 34.7 mm, 55 g, a 20 mm disc horn on its output shaft near one end; it stands on its other end on the table at (0.27, -0.17), horn facing away from the robot (+x). It goes into the pocket only that end first; seated with its horn toward the robot's left it is the right way round for the arm's upper link.",
+  "scoring": "Four steps, 0.25 each, judged from the video. (1) Bracket picked up: a gripper holds the bracket with its lowest point at least 1 cm above the table; counts once reached. (2) Servo in the pocket the right way round: its rear end at least 5 mm down in the pocket, within 1.5 mm of its centre line, in line with it within 5 degrees, and its horn toward the side the upper arm goes on (the robot's left while the bracket is not turned) within 30 degrees. (3) Pressed fully home: step 2 and its rear end within 1 mm of the pocket's floor, in line within 2 degrees. (4) Set down: step 2, the bracket standing upright on the table (within 10 degrees) and no gripper holding the bracket or the servo. Steps 2 to 4 are judged at the end and count only after a gripper picked the servo up. Full score 1.0, ending the run, when all four hold, both arms are back where they started (within 3 cm) holding nothing, and both parts have been still for 1 s. 0 overall if at the end either part has fallen off the table.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Pull the servo out of the bracket's pocket and stand it on its rear end at its mark, horn away from the robot; stand the bracket at its mark, holder's flat back toward the robot.",
+  "fidelity": "Rigid bodies, 240 Hz physics, 20 Hz control. Bracket and servo meshes from the SO-ARM100 CAD. The servo's pocket is exact boxes, 0.25 mm a side with a 1.5 mm lead-in; the rest of the bracket is three flat-bottomed convex pieces; the servo is exact boxes. Real printed pockets are a 0-0.2 mm press fit with layer lines and a ring that flexes when squeezed; here it is a clean sliding fit in a rigid part. No screws or cables.",
+  "scores": "Dream-1 run: 0.0 (its left arm went to the bracket again and again and tipped it over, and its right arm hovered near the servo, but it neither lifted the bracket nor picked up the servo); demo: 1.0 (all four steps by step 405, success at step 489)",
+  "media": "M-M8LBTK"
+}
