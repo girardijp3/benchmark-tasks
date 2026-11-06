@@ -1,0 +1,22 @@
+{
+  "title": "Put a screwdriver in its foam-lined case and close the lid until the clasp catches",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "tool kitting",
+    "reorientation",
+    "foam cutout",
+    "lid",
+    "snap latch",
+    "workshop"
+  ],
+  "instruction": "Put the screwdriver into its case with your right gripper, then close the lid with your left gripper and press it until the clasp catches; move both arms back to where they started.",
+  "context": "Putting hand tools back in their fitted cases is everyday work in workshops, maintenance and field service: a tool kit is checked by eye from the foam cutouts, and a case only travels safely once its clasp has caught.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Case: a blue polypropylene hard case, 216 x 80 x 47 mm, 158 g, on four rubber feet, its centre at (0.34, 0.05), lying across the table (long side along y), clasp toward the robot, hinge at the back. Its lid stands open at 100 degrees on its hinge stop. Inside, a charcoal EVA foam insert has a light grey cutout shaped like the screwdriver (1.5 mm larger all round), handle pocket at the right-hand end (toward -y), with a finger notch across the handle pocket. A slider clasp on the front face catches a hook on the lid when the lid is pressed shut. Screwdriver: a Phillips PH2 screwdriver, 188 mm long, orange and black handle 34 mm across, 80 g, lying on the table on its handle and shaft tip, its handle's middle at (0.30, -0.22), tip pointing away from the robot (+x).",
+  "scoring": "Four steps, 0.25 each, judged from the video. (1) Screwdriver picked up: a gripper holds it with its lowest point at least 2 cm above the table; counts once reached. (2) Screwdriver in its cutout: it lies in the cutout, handle in the handle pocket, within 3 mm of its seated place at the handle's middle and on the shaft, and no gripper holds it. (3) Lid closed: with step 2 done, the lid is within 5 degrees of shut. (4) Lid latched: with step 2 done, the lid is shut (within 1 degree) and the clasp has caught it (the slider back home). Steps 2 to 4 are judged at the end. Full score 1.0, ending the run, when all four hold, both arms are back where they started (within 3 cm) holding nothing, the case is within 3 cm and 10 degrees of where it started, and the case and the screwdriver have been still (under 1 cm/s) for 1 s. 0 overall if at the end the case or the screwdriver has fallen off the table or the case has tipped over (more than 20 degrees).",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Open the clasp (pull the slider out about 2 mm), open the lid onto its stop, take the screwdriver out and lay it on its mark on the table, tip pointing away from the robot; put the case back on its mark.",
+  "fidelity": "Articulated and rigid bodies, 240 Hz physics, 20 Hz control. The case is one articulation: its lid on a damped hinge with a 100-degree stop, held shut only by a clasp slider on a 200 N/m return spring whose 45-degree ramp the lid's hook rides over. The foam insert collides as a signed distance field; the screwdriver (NVIDIA SimReady model) as five 12-sided convex sections. Foam is rigid (no compression).",
+  "scores": "Dream-1 run: 0.0 (its right arm went to the screwdriver again and again, nudging it 2 mm, and its left arm reached toward the case, but it never picked the screwdriver up and the lid stayed open); demo: 1.0 (all four steps by step 573, success at step 667)",
+  "media": "M-8C5CLA"
+}
