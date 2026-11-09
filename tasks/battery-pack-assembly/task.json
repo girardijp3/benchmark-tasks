@@ -1,0 +1,22 @@
+{
+  "title": "Assemble a 2x2 18650 battery pack in a jig",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "battery pack",
+    "assembly",
+    "peg in hole",
+    "fixture",
+    "polarity",
+    "electronics bench"
+  ],
+  "instruction": "With your left gripper, put the black battery holder half that lies cups up into the orange jig. With your right gripper, take the four yellow batteries from the grey tray one at a time and push each into a cup of that holder, positive end up. Then, with your left gripper, pick up the other holder half, which lies cups down, lower it onto the tops of the four batteries, and move both arms back to where they started.",
+  "context": "Building small lithium-ion packs is everyday work at battery, e-bike and electronics repair benches: the bottom half of a cell holder goes into an assembly jig, the cells are pushed into its cups all the same way round (a reversed cell shorts the pack once it is welded), and the top half of the holder is pressed on to hold them before the nickel strips are welded.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Assembly jig: an orange 3D-printed plate, 76 x 76 x 6 mm, screwed to the table with its centre at (0.30, -0.05), sides along x and y, with a 42 x 42 x 3 mm square pocket (1 mm lead-in) and a 20 mm finger slot through each side wall. Holder halves: two identical black ABS halves of a 2x2 18650 cell holder (41.2 x 41.2 x 9.5 mm, 6.5 g, 20 mm pitch, cups with 0.3 mm radial clearance and a 0.8 mm lead-in), loose on the table: one cups up at (0.24, 0.15), one cups down at (0.34, 0.18). Cell tray: a grey 3D-printed tray, 80 x 80 x 14 mm, loose on the table at (0.30, -0.26), with four 18 x 65 mm 18650 lithium-ion cells (47 g each, yellow plastic wrap) standing positive end up in its four pockets, 36 mm apart.",
+  "scoring": "Four steps, 0.25 each, judged at the end from the video. (1) Bottom holder in the jig: a holder half lies cups up in the jig's pocket. (2) Two cells seated: at least two cells stand in its cups, bottom on the cup's floor, positive end up. (3) Four cells seated: all four do. (4) Top holder on: the other half lies cups down on the four cells, centred over the bottom half within 2 mm and resting on all four. Full score 1.0, ending the run, when all four steps hold, both arms are back where they started (within 3 cm) holding nothing, and the holders and cells have been still (nothing sliding, tipping or falling) for 1 s. 0 overall if at the end a holder half, a cell or the tray has fallen off the table.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Take the top holder half off and lay it cups down at its mark; take the four cells out and stand them positive end up in the tray's pockets; take the bottom half out of the jig and lay it cups up at its mark; put the tray back on its mark.",
+  "fidelity": "Rigid bodies, 240 Hz physics, 20 Hz control. The holder halves collide as signed distance fields (0.3 mm cup clearance, 0.8 mm lead-in); each cell as a 30-sided prism with flat ends; the jig and the tray as small convex prisms (the tray's pockets 24-sided). Real masses: cells 47 g, holder halves 6.5 g, tray 47 g. No deformation; nothing holds the top half on but its weight.",
+  "scores": "Dream-1 run: 0.0 (both arms reached over the jig, the holder halves and the cell tray again and again, but it never picked up a holder half or a cell); demo: 1.0 (all four steps by step 1892, success at step 1971)",
+  "media": "M-5TZ7WL"
+}
