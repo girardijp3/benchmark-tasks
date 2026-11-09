@@ -1,0 +1,21 @@
+{
+  "title": "Switch on a bench power supply and set it to 9 V",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "push button",
+    "rotary knob",
+    "wrist roll",
+    "lab instrument",
+    "electronics bench"
+  ],
+  "instruction": "With your left gripper, press the power button on the bench power supply to switch it on. Then, with your right gripper, grip the voltage knob, turn it from 12 V down to 9 V, let go, and move both arms back to where they started.",
+  "context": "Setting a bench power supply is routine at electronics assembly, repair and test benches: the supply is switched on and its voltage knob is turned to the value the circuit needs, reading the scale or the meter, without disturbing the current limit or moving the unit.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Bench DC power supply (0-30 V / 0-5 A, single output): 110 mm wide, 158 mm tall on its rubber feet, 262 mm deep, 2.5 kg, its middle at (0.50, -0.03) on the table, front panel toward the robot (the panel's face at x = 0.372). It is off. On the panel, seen from the robot: a red voltmeter and a green ammeter at the top; under them the voltage knob (26 mm, on the left, its axis at y = -0.004, 101 mm above the table, set to 12 V on its printed 0-30 V scale, 270 degrees from end to end, clockwise up) and the current knob (right); two smaller fine knobs below them; at the bottom left a latching power button (14 mm square, 8 mm proud, at y = 0.006, 28 mm above the table) and to its right three binding posts. While the supply is on, the voltmeter shows the knob's voltage.",
+  "scoring": "Four steps, 0.25 each. (1) Power on: the supply is on, its power button held in by the latch, switched on by a gripper pressing it; judged at the end. (2) Voltage knob gripped: a gripper held the voltage knob; counts once reached. (3) Set to 9 V: the voltage knob reads 9.0 V within 0.2 V and no gripper holds it; judged at the end. (4) Nothing else changed: with steps 1 and 3, the current knob and both fine knobs within 3 degrees of where they started and the supply within 1 cm and 5 degrees of its start. Full score 1.0, ending the run, when all four hold, both arms are back where they started (within 3 cm) holding nothing, and the supply has been still for 1 s. 0 overall if at the end the supply has fallen off the table or been knocked over.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Switch the supply off (press the power button so it comes back out), turn the voltage knob back to 12 V, leave the current and fine knobs where they were, and put the supply back on its mark, front panel toward the robot.",
+  "fidelity": "Articulated and rigid bodies, 240 Hz physics, 20 Hz control. The supply is one articulation: a push button on a sprung slide (400 N/m) and four knobs on damped hinges (no spring, so they stay where turned). The push-on/push-off latch is emulated: a step event moves the button spring's target to held-in when it passes its 3.5 mm click. The meters are segment prims switched at run time. Box colliders for the case and feet, 32-sided prisms for the knobs. No electrical model.",
+  "scores": "Dream-1 run: 0.0 (both arms reached toward the power supply early on, then drew back near their bases for the rest of the run; it never pressed the power button or touched the knob); demo: 1.0 (all four steps by step 291, success at step 370)",
+  "media": "M-K7FLTK"
+}
