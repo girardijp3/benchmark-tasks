@@ -1,0 +1,707 @@
+#usda 1.0
+(
+    defaultPrim = "BitBlock"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "BitBlock" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Anodised aluminium bit block, 84 x 24 x 16 mm on a 1 mm rubber pad, with four 1/4-inch hex holes 10 mm deep (6.70 mm across flats, flats facing +-X) in a row along Y at y = +27, +9, -9, -27 mm for PH1, PH2, SL5 and T20 (labelled on the -X strip). Origin at the pad's bottom centre."
+)
+{
+    point3f physics:centerOfMass = (1.3158085e-13, 3.350214e-11, 0.008249767)
+    float3 physics:diagonalInertia = (0.0000052305327, 0.000046448138, 0.00004888542)
+    float physics:mass = 0.07745737
+    quatf physics:principalAxes = (0.70710677, 6.9644054e-11, -8.611591e-11, 0.70710677)
+    custom float physxRigidBody:maxDepenetrationVelocity = 0.5
+    custom float physxRigidBody:sleepThreshold = 0.00005
+    custom int physxRigidBody:solverPositionIterationCount = 32
+    custom int physxRigidBody:solverVelocityIterationCount = 4
+
+    def Scope "Looks"
+    {
+        def Material "block"
+        {
+            token outputs:surface.connect = </BitBlock/Looks/block/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.06847817, 0.08437621, 0.116970666)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.42
+                token outputs:surface
+            }
+        }
+
+        def Material "pad"
+        {
+            token outputs:surface.connect = </BitBlock/Looks/pad/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.02, 0.02, 0.02)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.9
+                token outputs:surface
+            }
+        }
+
+        def Material "label_block"
+        {
+            token outputs:surface.connect = </BitBlock/Looks/label_block/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor.connect = </BitBlock/Looks/label_block/Texture.outputs:rgb>
+                float inputs:metallic = 0
+                float inputs:roughness = 0.45
+                token outputs:surface
+            }
+
+            def Shader "stReader"
+            {
+                uniform token info:id = "UsdPrimvarReader_float2"
+                token inputs:varname = "st"
+                float2 outputs:result
+            }
+
+            def Shader "Texture"
+            {
+                uniform token info:id = "UsdUVTexture"
+                asset inputs:file = @./textures/bit_block_labels.png@
+                token inputs:sourceColorSpace = "sRGB"
+                float2 inputs:st.connect = </BitBlock/Looks/label_block/stReader.outputs:result>
+                token inputs:wrapS = "clamp"
+                token inputs:wrapT = "clamp"
+                float3 outputs:rgb
+            }
+        }
+
+        def Material "Phys_AnodisedAl" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.35
+            float physics:restitution = 0
+            float physics:staticFriction = 0.4
+        }
+
+        def Material "Phys_RubberPad" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.8
+            float physics:restitution = 0
+            float physics:staticFriction = 0.9
+        }
+    }
+
+    def Scope "Colliders"
+    {
+        def Cube "Pad" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_RubberPad> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0005
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.0228, 0.0828, 0.001)
+            double3 xformOp:translate = (0, 0, 0.0005)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Base" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.024, 0.084, 0.005)
+            double3 xformOp:translate = (0, 0, 0.0035)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "StripFront" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.007, 0.084, 0.01)
+            double3 xformOp:translate = (0.0085, 0, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "StripBack" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.007, 0.084, 0.01)
+            double3 xformOp:translate = (-0.0085, 0, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Between_0" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.01, 0.011, 0.01)
+            double3 xformOp:translate = (0, -0.0365, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Between_1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.01, 0.01, 0.01)
+            double3 xformOp:translate = (0, -0.018000000000000002, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Between_2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.01, 0.01, 0.01)
+            double3 xformOp:translate = (0, 0, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Between_3" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.01, 0.01, 0.01)
+            double3 xformOp:translate = (0, 0.018000000000000002, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Between_4" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.01, 0.011, 0.01)
+            double3 xformOp:translate = (0, 0.0365, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Hole_PH1_0" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (0.004375, 0.027, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_PH1_1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (0.8660254, 0, 0, 0.5)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (0.0021875000000000006, 0.03078886114155692, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_PH1_2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (0.5, 0, 0, 0.8660254)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (-0.0021874999999999993, 0.03078886114155692, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_PH1_3" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (6.123234e-17, 0, 0, 1)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (-0.004375, 0.027, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_PH1_4" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (-0.5, 0, 0, 0.8660254)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (-0.002187500000000002, 0.023211138858443083, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_PH1_5" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (0.8660254, 0, 0, -0.5)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (0.0021875000000000006, 0.023211138858443083, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_PH2_0" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (0.004375, 0.009000000000000001, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_PH2_1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (0.8660254, 0, 0, 0.5)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (0.0021875000000000006, 0.012788861141556918, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_PH2_2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (0.5, 0, 0, 0.8660254)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (-0.0021874999999999993, 0.01278886114155692, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_PH2_3" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (6.123234e-17, 0, 0, 1)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (-0.004375, 0.009000000000000001, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_PH2_4" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (-0.5, 0, 0, 0.8660254)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (-0.002187500000000002, 0.005211138858443082, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_PH2_5" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (0.8660254, 0, 0, -0.5)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (0.0021875000000000006, 0.005211138858443081, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_SL5_0" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (0.004375, -0.009000000000000001, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_SL5_1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (0.8660254, 0, 0, 0.5)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (0.0021875000000000006, -0.005211138858443081, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_SL5_2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (0.5, 0, 0, 0.8660254)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (-0.0021874999999999993, -0.00521113885844308, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_SL5_3" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (6.123234e-17, 0, 0, 1)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (-0.004375, -0.009000000000000001, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_SL5_4" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (-0.5, 0, 0, 0.8660254)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (-0.002187500000000002, -0.012788861141556918, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_SL5_5" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (0.8660254, 0, 0, -0.5)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (0.0021875000000000006, -0.012788861141556918, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_T20_0" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (0.004375, -0.027, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_T20_1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (0.8660254, 0, 0, 0.5)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (0.0021875000000000006, -0.023211138858443083, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_T20_2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (0.5, 0, 0, 0.8660254)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (-0.0021874999999999993, -0.023211138858443083, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_T20_3" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (6.123234e-17, 0, 0, 1)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (-0.004375, -0.027, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_T20_4" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (-0.5, 0, 0, 0.8660254)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (-0.002187500000000002, -0.03078886114155692, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def Cube "Hole_T20_5" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </BitBlock/Looks/Phys_AnodisedAl> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            quatf xformOp:orient = (0.8660254, 0, 0, -0.5)
+            float3 xformOp:scale = (0.00205, 0.006285383, 0.01)
+            double3 xformOp:translate = (0.0021875000000000006, -0.03078886114155692, 0.011)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+    }
+
+    def Mesh "Block" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.012, -0.042, 0.0010000006), (0.012, 0.042, 0.016)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [24, 27, 0, 31, 28, 24, 30, 31, 19, 34, 32, 30, 33, 34, 23, 27, 35, 33, 28, 32, 35, 39, 40, 36, 43, 41, 39, 42, 43, 37, 42, 47, 44, 45, 46, 38, 40, 47, 45, 41, 44, 47, 51, 52, 48, 55, 53, 51, 54, 55, 49, 58, 56, 54, 57, 58, 50, 57, 53, 59, 53, 56, 59, 63, 64, 60, 63, 68, 65, 66, 67, 61, 70, 68, 66, 69, 70, 62, 64, 71, 69, 65, 68, 71, 75, 76, 72, 79, 77, 75, 78, 79, 73, 82, 80, 78, 81, 82, 74, 81, 77, 83, 77, 80, 83, 87, 88, 84, 87, 92, 89, 90, 91, 85, 94, 92, 90, 93, 94, 86, 88, 95, 93, 89, 92, 95, 99, 100, 96, 103, 101, 99, 102, 103, 97, 106, 104, 102, 105, 106, 98, 100, 107, 105, 101, 104, 107, 111, 112, 108, 111, 116, 113, 114, 115, 109, 118, 116, 114, 117, 118, 110, 112, 119, 117, 113, 116, 119, 0, 51, 48, 27, 55, 51, 33, 49, 55, 36, 30, 19, 40, 34, 30, 34, 38, 23, 60, 42, 37, 64, 46, 42, 69, 38, 46, 61, 58, 66, 58, 70, 66, 54, 62, 70, 96, 52, 99, 52, 103, 99, 57, 97, 103, 60, 112, 63, 112, 67, 63, 117, 61, 67, 109, 106, 114, 106, 118, 114, 102, 110, 118, 96, 75, 72, 100, 79, 75, 105, 73, 79, 84, 111, 108, 88, 115, 111, 93, 109, 115, 85, 82, 90, 82, 94, 90, 78, 86, 94, 0, 76, 24, 76, 31, 24, 81, 19, 31, 84, 43, 87, 43, 91, 87, 39, 85, 91, 96, 0, 48, 38, 49, 23, 85, 19, 74, 128, 144, 137, 143, 152, 142, 150, 170, 169, 37, 84, 168, 130, 129, 108, 61, 97, 50, 109, 73, 98, 12, 127, 129, 17, 129, 130, 122, 17, 130, 21, 122, 124, 25, 123, 120, 21, 124, 123, 125, 29, 126, 12, 125, 127, 29, 25, 26, 29, 21, 25, 29, 17, 21, 29, 12, 17, 26, 121, 131, 25, 120, 121, 128, 26, 131, 29, 128, 126, 5, 138, 8, 8, 137, 144, 14, 135, 134, 135, 8, 144, 18, 133, 132, 14, 134, 133, 140, 22, 141, 5, 140, 139, 5, 20, 22, 5, 18, 20, 5, 14, 18, 5, 8, 14, 136, 18, 132, 20, 136, 143, 142, 20, 143, 22, 142, 141, 6, 152, 153, 148, 6, 153, 10, 148, 147, 13, 146, 145, 10, 147, 146, 2, 154, 6, 156, 16, 157, 2, 156, 155, 2, 15, 16, 2, 13, 15, 2, 10, 13, 2, 6, 10, 15, 149, 151, 13, 145, 149, 150, 15, 151, 157, 16, 150, 1, 161, 3, 3, 169, 170, 4, 159, 158, 159, 3, 170, 7, 163, 162, 163, 4, 158, 165, 11, 166, 160, 1, 165, 1, 9, 11, 1, 7, 9, 1, 4, 7, 1, 3, 4, 7, 162, 164, 11, 167, 166, 9, 164, 168, 167, 9, 168, 24, 28, 27, 31, 32, 28, 30, 32, 31, 34, 35, 32, 33, 35, 34, 27, 28, 35, 39, 41, 40, 43, 44, 41, 42, 44, 43, 42, 46, 47, 45, 47, 46, 40, 41, 47, 51, 53, 52, 55, 56, 53, 54, 56, 55, 58, 59, 56, 57, 59, 58, 57, 52, 53, 63, 65, 64, 63, 67, 68, 66, 68, 67, 70, 71, 68, 69, 71, 70, 64, 65, 71, 75, 77, 76, 79, 80, 77, 78, 80, 79, 82, 83, 80, 81, 83, 82, 81, 76, 77, 87, 89, 88, 87, 91, 92, 90, 92, 91, 94, 95, 92, 93, 95, 94, 88, 89, 95, 99, 101, 100, 103, 104, 101, 102, 104, 103, 106, 107, 104, 105, 107, 106, 100, 101, 107, 111, 113, 112, 111, 115, 116, 114, 116, 115, 118, 119, 116, 117, 119, 118, 112, 113, 119, 0, 27, 51, 27, 33, 55, 33, 23, 49, 36, 40, 30, 40, 45, 34, 34, 45, 38, 60, 64, 42, 64, 69, 46, 69, 62, 38, 61, 50, 58, 58, 54, 70, 54, 49, 62, 96, 48, 52, 52, 57, 103, 57, 50, 97, 60, 108, 112, 112, 117, 67, 117, 110, 61, 109, 98, 106, 106, 102, 118, 102, 97, 110, 96, 100, 75, 100, 105, 79, 105, 98, 73, 84, 88, 111, 88, 93, 115, 93, 86, 109, 85, 74, 82, 82, 78, 94, 78, 73, 86, 0, 72, 76, 76, 81, 31, 81, 74, 19, 84, 37, 43, 43, 39, 91, 39, 36, 85, 96, 72, 0, 38, 62, 49, 85, 36, 19, 128, 131, 144, 143, 153, 152, 150, 151, 170, 144, 131, 121, 144, 121, 135, 121, 120, 135, 134, 135, 120, 123, 124, 60, 120, 123, 60, 84, 108, 141, 108, 127, 125, 108, 125, 126, 120, 60, 134, 60, 37, 132, 134, 60, 133, 133, 60, 132, 108, 126, 139, 126, 128, 137, 137, 138, 126, 138, 139, 126, 143, 136, 153, 136, 132, 148, 153, 136, 148, 108, 139, 140, 108, 140, 141, 147, 148, 132, 141, 142, 154, 142, 152, 154, 154, 155, 141, 147, 132, 37, 146, 147, 37, 84, 141, 155, 84, 155, 156, 145, 146, 37, 151, 149, 170, 149, 145, 159, 159, 145, 158, 159, 170, 149, 84, 156, 157, 157, 150, 169, 157, 169, 161, 158, 145, 37, 157, 161, 160, 84, 157, 160, 163, 158, 37, 168, 164, 37, 164, 162, 37, 162, 163, 37, 84, 160, 165, 166, 167, 84, 167, 168, 84, 84, 165, 166, 129, 127, 108, 108, 60, 130, 60, 124, 122, 130, 60, 122, 61, 110, 97, 109, 86, 73, 17, 12, 129, 122, 21, 17, 25, 21, 123, 125, 12, 29, 26, 25, 121, 128, 29, 26, 5, 139, 138, 8, 138, 137, 14, 8, 135, 18, 14, 133, 140, 5, 22, 136, 20, 18, 22, 20, 142, 6, 154, 152, 10, 6, 148, 13, 10, 146, 2, 155, 154, 156, 2, 16, 15, 13, 149, 150, 16, 15, 1, 160, 161, 3, 161, 169, 4, 3, 159, 7, 4, 163, 165, 1, 11, 9, 7, 164, 167, 11, 9]
+        rel material:binding = </BitBlock/Looks/block>
+        normal3f[] normals = [(-0.009977679, -0.49748325, -0.8674162), (-0.5746199, -0.002183984, -0.8184175), (-0.0071958574, -0.0019241419, -0.9999723), (-0.008059231, -0.81980413, -0.5725873), (-0.29429847, -0.56092733, -0.7737887), (-0.009977679, -0.49748325, -0.8674162), (-0.4213547, -0.9068255, -0.011304148), (-0.008059231, -0.81980413, -0.5725873), (-0.0036599115, -0.99991953, -0.012144758), (-0.8661507, -0.4996766, -0.010313622), (-0.5609292, -0.77378684, -0.29429978), (-0.4213547, -0.9068255, -0.011304148), (-0.9069549, -0.0018124857, -0.42122394), (-0.8661507, -0.4996766, -0.010313622), (-0.99992436, -0.0019501649, -0.012144816), (-0.5746199, -0.002183984, -0.8184175), (-0.7737884, -0.29429796, -0.560928), (-0.9069549, -0.0018124857, -0.42122394), (-0.3773884, -0.5070976, -0.7748742), (-0.5070998, -0.7748725, -0.37738898), (-0.774874, -0.37738815, -0.50709814), (-0.006716518, -0.906898, 0.42129663), (-0.57067835, -0.82106256, 0.013510832), (-0.013758538, -0.99983525, 0.011838683), (-0.0061198836, -0.4999471, 0.8660343), (-0.2942999, -0.77378654, 0.56092954), (-0.006716518, -0.906898, 0.42129663), (-0.42175022, -0.0021871794, 0.90670943), (-0.0061198836, -0.4999471, 0.8660343), (-0.0128269605, -0.0034641263, 0.9999117), (-0.42175022, -0.0021871794, 0.90670943), (-0.77378815, -0.29429814, 0.5609282), (-0.4915763, -0.32862535, 0.8064478), (-0.8684192, -0.4955512, 0.016646376), (-0.81858605, -0.0018099732, 0.57438105), (-0.99992496, -0.001906215, 0.012102558), (-0.57067835, -0.82106256, 0.013510832), (-0.77378863, -0.56092733, 0.29429856), (-0.8684192, -0.4955512, 0.016646376), (-0.37738907, -0.77487224, 0.50710005), (-0.43044132, -0.43044177, 0.79337263), (-0.76898026, -0.45203352, 0.4520343), (-0.42122465, 0.0018124894, -0.9069545), (-0.005086686, 0.49888405, -0.8666538), (-0.007221469, 0.0019502734, -0.99997205), (-0.8184176, 0.00218398, -0.5746197), (-0.5609278, 0.294298, -0.7737885), (-0.42122465, 0.0018124894, -0.9069545), (-0.9068262, 0.42135316, -0.011304026), (-0.8184176, 0.00218398, -0.5746197), (-0.9999258, 0.0009786509, -0.012144833), (-0.49967897, 0.86614925, -0.010313677), (-0.77378863, 0.5609274, -0.2942985), (-0.9068262, 0.42135316, -0.011304026), (-0.008070189, 0.90598345, -0.42323622), (-0.49967897, 0.86614925, -0.010313677), (-0.0072208922, 0.99990016, -0.012144522), (-0.008070189, 0.90598345, -0.42323622), (-0.29429847, 0.56092733, -0.7737887), (-0.32862723, 0.8064463, -0.49157754), (-0.4520341, 0.4520333, -0.76898056), (-0.77487415, 0.5070976, -0.37738854), (-0.4304427, 0.7933713, -0.43044287), (-0.01195161, 0.4995685, 0.8661919), (-0.5746194, 0.002183985, 0.81841785), (-0.025921596, 0.0069313254, 0.9996399), (-0.01195161, 0.4995685, 0.8661919), (-0.2942999, 0.77378654, 0.56092954), (-0.32862478, 0.4915769, 0.8064477), (-0.49555367, 0.8684178, 0.01664656), (-0.0067092385, 0.82044, 0.57169324), (-0.0070613343, 0.9999032, 0.011987997), (-0.8210648, 0.57067513, 0.013510758), (-0.5609292, 0.77378684, 0.29429987), (-0.49555367, 0.8684178, 0.01664656), (-0.90695506, 0.0018124845, 0.4212235), (-0.8210648, 0.57067513, 0.013510758), (-0.9999201, 0.0037854386, 0.012060834), (-0.5746194, 0.002183985, 0.81841785), (-0.77378815, 0.29429814, 0.5609282), (-0.90695506, 0.0018124845, 0.4212235), (-0.43044132, 0.43044177, 0.79337263), (-0.45203528, 0.76897866, 0.4520353), (-0.77487373, 0.37738836, 0.5070983), (0.42122465, -0.0018124894, -0.9069545), (0.005086686, -0.49888405, -0.8666538), (0.007221469, -0.0019502734, -0.99997205), (0.8184176, -0.00218398, -0.5746197), (0.5609278, -0.294298, -0.7737885), (0.42122465, -0.0018124894, -0.9069545), (0.9068262, -0.42135316, -0.011304026), (0.8184176, -0.00218398, -0.5746197), (0.9999258, -0.0009786509, -0.012144833), (0.49967897, -0.86614925, -0.010313677), (0.77378863, -0.5609274, -0.2942985), (0.9068262, -0.42135316, -0.011304026), (0.008070189, -0.90598345, -0.42323622), (0.49967897, -0.86614925, -0.010313677), (0.0072208922, -0.99990016, -0.012144522), (0.008070189, -0.90598345, -0.42323622), (0.29429847, -0.56092733, -0.7737887), (0.32862723, -0.8064463, -0.49157754), (0.4520341, -0.4520333, -0.76898056), (0.77487415, -0.5070976, -0.37738854), (0.4304427, -0.7933713, -0.43044287), (0.01195161, -0.4995685, 0.8661919), (0.5746194, -0.002183985, 0.81841785), (0.024103712, -0.006445231, 0.9996887), (0.01195161, -0.4995685, 0.8661919), (0.2942999, -0.77378654, 0.56092954), (0.32862478, -0.4915769, 0.8064477), (0.49555367, -0.8684178, 0.01664656), (0.0067092385, -0.82044, 0.57169324), (0.0070613343, -0.9999032, 0.011987997), (0.8210648, -0.57067513, 0.013510758), (0.5609292, -0.77378684, 0.29429987), (0.49555367, -0.8684178, 0.01664656), (0.90695506, -0.0018124845, 0.4212235), (0.8210648, -0.57067513, 0.013510758), (0.9999201, -0.0037854386, 0.012060834), (0.5746194, -0.002183985, 0.81841785), (0.77378815, -0.29429814, 0.5609282), (0.90695506, -0.0018124845, 0.4212235), (0.43044132, -0.43044177, 0.79337263), (0.45203528, -0.76897866, 0.4520353), (0.77487373, -0.37738836, 0.5070983), (0.009977679, 0.49748325, -0.8674162), (0.5746199, 0.002183984, -0.8184175), (0.0071958574, 0.0019241419, -0.9999723), (0.008059231, 0.81980413, -0.5725873), (0.29429847, 0.56092733, -0.7737887), (0.009977679, 0.49748325, -0.8674162), (0.4213547, 0.9068255, -0.011304148), (0.008059231, 0.81980413, -0.5725873), (0.0036599115, 0.99991953, -0.012144758), (0.8661507, 0.4996766, -0.010313622), (0.5609292, 0.77378684, -0.29429978), (0.4213547, 0.9068255, -0.011304148), (0.9069549, 0.0018124857, -0.42122394), (0.8661507, 0.4996766, -0.010313622), (0.99992436, 0.0019501649, -0.012144816), (0.5746199, 0.002183984, -0.8184175), (0.7737884, 0.29429796, -0.560928), (0.9069549, 0.0018124857, -0.42122394), (0.3773884, 0.5070976, -0.7748742), (0.5070998, 0.7748725, -0.37738898), (0.774874, 0.37738815, -0.50709814), (0.42175022, 0.0021871794, 0.90670943), (0.0061198836, 0.4999471, 0.8660343), (0.013857789, 0.003742518, 0.99989694), (0.42175022, 0.0021871794, 0.90670943), (0.77378815, 0.29429814, 0.5609282), (0.4915763, 0.32862535, 0.8064478), (0.8684192, 0.4955512, 0.016646376), (0.81858605, 0.0018099732, 0.57438105), (0.99992496, 0.001906215, 0.012102558), (0.57067835, 0.82106256, 0.013510832), (0.77378863, 0.56092733, 0.29429856), (0.8684192, 0.4955512, 0.016646376), (0.006716518, 0.906898, 0.42129663), (0.57067835, 0.82106256, 0.013510832), (0.013758538, 0.99983525, 0.011838683), (0.0061198836, 0.4999471, 0.8660343), (0.2942999, 0.77378654, 0.56092954), (0.006716518, 0.906898, 0.42129663), (0.43044132, 0.43044177, 0.79337263), (0.76898026, 0.45203352, 0.4520343), (0.37738907, 0.77487224, 0.50710005), (-0.0071958574, -0.0019241419, -0.9999723), (-0.42122465, 0.0018124894, -0.9069545), (-0.007221469, 0.0019502734, -0.99997205), (-0.5746199, -0.002183984, -0.8184175), (-0.8184176, 0.00218398, -0.5746197), (-0.42122465, 0.0018124894, -0.9069545), (-0.9069549, -0.0018124857, -0.42122394), (-0.9999258, 0.0009786509, -0.012144833), (-0.8184176, 0.00218398, -0.5746197), (-0.013758538, -0.99983525, 0.011838683), (-0.4213547, -0.9068255, -0.011304148), (-0.0036599115, -0.99991953, -0.012144758), (-0.57067835, -0.82106256, 0.013510832), (-0.8661507, -0.4996766, -0.010313622), (-0.4213547, -0.9068255, -0.011304148), (-0.8661507, -0.4996766, -0.010313622), (-0.99992496, -0.001906215, 0.012102558), (-0.99992436, -0.0019501649, -0.012144816), (-0.025921596, 0.0069313254, 0.9996399), (-0.42175022, -0.0021871794, 0.90670943), (-0.0128269605, -0.0034641263, 0.9999117), (-0.5746194, 0.002183985, 0.81841785), (-0.81858605, -0.0018099732, 0.57438105), (-0.42175022, -0.0021871794, 0.90670943), (-0.90695506, 0.0018124845, 0.4212235), (-0.99992496, -0.001906215, 0.012102558), (-0.81858605, -0.0018099732, 0.57438105), (-0.0070613343, 0.9999032, 0.011987997), (-0.49967897, 0.86614925, -0.010313677), (-0.49555367, 0.8684178, 0.01664656), (-0.49967897, 0.86614925, -0.010313677), (-0.8210648, 0.57067513, 0.013510758), (-0.49555367, 0.8684178, 0.01664656), (-0.9068262, 0.42135316, -0.011304026), (-0.9999201, 0.0037854386, 0.012060834), (-0.8210648, 0.57067513, 0.013510758), (0.0071958574, 0.0019241419, -0.9999723), (-0.005086686, 0.49888405, -0.8666538), (0.009977679, 0.49748325, -0.8674162), (-0.005086686, 0.49888405, -0.8666538), (0.008059231, 0.81980413, -0.5725873), (0.009977679, 0.49748325, -0.8674162), (-0.008070189, 0.90598345, -0.42323622), (0.0036599115, 0.99991953, -0.012144758), (0.008059231, 0.81980413, -0.5725873), (-0.025921596, 0.0069313254, 0.9996399), (0.0061198836, 0.4999471, 0.8660343), (-0.01195161, 0.4995685, 0.8661919), (0.0061198836, 0.4999471, 0.8660343), (-0.0067092385, 0.82044, 0.57169324), (-0.01195161, 0.4995685, 0.8661919), (0.006716518, 0.906898, 0.42129663), (-0.0070613343, 0.9999032, 0.011987997), (-0.0067092385, 0.82044, 0.57169324), (0.99992496, 0.001906215, 0.012102558), (0.8661507, 0.4996766, -0.010313622), (0.8684192, 0.4955512, 0.016646376), (0.8661507, 0.4996766, -0.010313622), (0.57067835, 0.82106256, 0.013510832), (0.8684192, 0.4955512, 0.016646376), (0.4213547, 0.9068255, -0.011304148), (0.013758538, 0.99983525, 0.011838683), (0.57067835, 0.82106256, 0.013510832), (0.0071958574, 0.0019241419, -0.9999723), (0.42122465, -0.0018124894, -0.9069545), (0.007221469, -0.0019502734, -0.99997205), (0.5746199, 0.002183984, -0.8184175), (0.8184176, -0.00218398, -0.5746197), (0.42122465, -0.0018124894, -0.9069545), (0.9069549, 0.0018124857, -0.42122394), (0.9999258, -0.0009786509, -0.012144833), (0.8184176, -0.00218398, -0.5746197), (0.024103712, -0.006445231, 0.9996887), (0.42175022, 0.0021871794, 0.90670943), (0.013857789, 0.003742518, 0.99989694), (0.5746194, -0.002183985, 0.81841785), (0.81858605, 0.0018099732, 0.57438105), (0.42175022, 0.0021871794, 0.90670943), (0.90695506, -0.0018124845, 0.4212235), (0.99992496, 0.001906215, 0.012102558), (0.81858605, 0.0018099732, 0.57438105), (0.0070613343, -0.9999032, 0.011987997), (0.49967897, -0.86614925, -0.010313677), (0.49555367, -0.8684178, 0.01664656), (0.49967897, -0.86614925, -0.010313677), (0.8210648, -0.57067513, 0.013510758), (0.49555367, -0.8684178, 0.01664656), (0.9068262, -0.42135316, -0.011304026), (0.9999201, -0.0037854386, 0.012060834), (0.8210648, -0.57067513, 0.013510758), (-0.0071958574, -0.0019241419, -0.9999723), (0.005086686, -0.49888405, -0.8666538), (-0.009977679, -0.49748325, -0.8674162), (0.005086686, -0.49888405, -0.8666538), (-0.008059231, -0.81980413, -0.5725873), (-0.009977679, -0.49748325, -0.8674162), (0.008070189, -0.90598345, -0.42323622), (-0.0036599115, -0.99991953, -0.012144758), (-0.008059231, -0.81980413, -0.5725873), (0.024103712, -0.006445231, 0.9996887), (-0.0061198836, -0.4999471, 0.8660343), (0.01195161, -0.4995685, 0.8661919), (-0.0061198836, -0.4999471, 0.8660343), (0.0067092385, -0.82044, 0.57169324), (0.01195161, -0.4995685, 0.8661919), (-0.006716518, -0.906898, 0.42129663), (0.0070613343, -0.9999032, 0.011987997), (0.0067092385, -0.82044, 0.57169324), (0.0071958574, 0.0019241419, -0.9999723), (-0.0071958574, -0.0019241419, -0.9999723), (-0.007221469, 0.0019502734, -0.99997205), (-0.99992496, -0.001906215, 0.012102558), (-0.9999258, 0.0009786509, -0.012144833), (-0.99992436, -0.0019501649, -0.012144816), (0.0070613343, -0.9999032, 0.011987997), (-0.0036599115, -0.99991953, -0.012144758), (0.0072208922, -0.99990016, -0.012144522), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (-0.0128269605, -0.0034641263, 0.9999117), (0.024103712, -0.006445231, 0.9996887), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0.013857789, 0.003742518, 0.99989694), (-0.0070613343, 0.9999032, 0.011987997), (0.0036599115, 0.99991953, -0.012144758), (-0.0072208922, 0.99990016, -0.012144522), (0.99992496, 0.001906215, 0.012102558), (0.9999258, -0.0009786509, -0.012144833), (0.99992436, 0.0019501649, -0.012144816), (-0.49541515, -0.8580841, 0.13511312), (-0.49541506, -0.85808414, 0.13511316), (-0.49541518, -0.8580841, 0.13511312), (-0.49541533, -0.85808396, 0.13511306), (-0.49541518, -0.8580841, 0.13511312), (-0.49541628, -0.8580834, 0.13511302), (0.49541518, -0.8580841, 0.13511312), (0.49541533, -0.85808396, 0.13511306), (0.49541628, -0.8580834, 0.13511302), (0.49541515, -0.8580841, 0.13511312), (0.49541518, -0.8580841, 0.13511312), (0.49541506, -0.85808414, 0.13511316), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0.49541533, 0.85808396, 0.13511306), (0.49541518, 0.8580841, 0.13511312), (0.49541628, 0.8580834, 0.13511302), (0.49541515, 0.8580841, 0.13511312), (0.49541506, 0.85808414, 0.13511316), (0.49541518, 0.8580841, 0.13511312), (-0.49541518, 0.8580841, 0.13511312), (-0.49541533, 0.85808396, 0.13511306), (-0.49541628, 0.8580834, 0.13511302), (-0.49541515, 0.8580841, 0.13511312), (-0.49541518, 0.8580841, 0.13511312), (-0.49541506, 0.85808414, 0.13511316), (-0.49541503, -0.85808414, 0.13511313), (-0.49541506, -0.85808414, 0.13511315), (-0.49541512, -0.8580841, 0.13511316), (-0.49541512, -0.8580841, 0.13511316), (-0.49541518, -0.858084, 0.13511316), (-0.4954153, -0.85808396, 0.13511318), (0.49541503, -0.85808414, 0.13511313), (0.4954151, -0.8580841, 0.13511316), (0.49541456, -0.85808444, 0.13511312), (0.4954151, -0.8580841, 0.13511316), (0.49541512, -0.8580841, 0.13511318), (0.49541518, -0.858084, 0.1351132), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0.49541506, 0.85808414, 0.13511318), (0.49541503, 0.85808414, 0.13511318), (0.49541456, 0.8580844, 0.13511315), (0.49541506, 0.8580841, 0.13511318), (0.49541506, 0.85808414, 0.13511318), (0.49541506, 0.8580841, 0.13511318), (-0.49541506, 0.85808414, 0.13511318), (-0.49541506, 0.8580841, 0.13511318), (-0.49541506, 0.8580841, 0.13511318), (-0.49541503, 0.85808414, 0.13511318), (-0.49541506, 0.85808414, 0.13511318), (-0.49541456, 0.8580844, 0.13511315), (-0.49541506, -0.8580841, 0.13511318), (-0.49541506, -0.8580841, 0.13511318), (-0.4954151, -0.8580841, 0.13511318), (0.49541506, -0.85808414, 0.13511318), (0.49541506, -0.8580841, 0.13511318), (0.49541506, -0.8580841, 0.13511318), (0.49541503, -0.85808414, 0.13511318), (0.49541506, -0.85808414, 0.13511318), (0.49541456, -0.8580844, 0.13511315), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (-0.49541503, -0.85808414, 0.13511318), (-0.49541503, -0.85808414, 0.13511318), (-0.49541506, -0.8580841, 0.13511318), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0.49541518, 0.8580841, 0.13511315), (0.4954151, 0.8580841, 0.13511315), (0.49541628, 0.8580834, 0.13511309), (0.49541506, 0.85808414, 0.13511316), (0.49541506, 0.85808414, 0.13511316), (0.4954151, 0.8580841, 0.13511315), (-0.4954151, 0.8580841, 0.13511315), (-0.49541518, 0.8580841, 0.13511315), (-0.49541628, 0.8580834, 0.13511309), (-0.49541506, 0.85808414, 0.13511316), (-0.49541506, 0.85808414, 0.13511316), (-0.4954151, 0.8580841, 0.13511315), (-0.49541536, -0.85808396, 0.13511324), (-0.4954153, -0.85808396, 0.13511322), (-0.49541512, -0.8580841, 0.13511318), (-0.49541512, -0.8580841, 0.13511318), (-0.49541503, -0.85808414, 0.13511313), (-0.49541503, -0.85808414, 0.13511313), (0.49541536, -0.85808396, 0.13511324), (0.49541518, -0.858084, 0.13511318), (0.49541652, -0.85808325, 0.1351133), (0.49541518, -0.858084, 0.13511318), (0.49541512, -0.8580841, 0.13511318), (0.49541503, -0.85808414, 0.13511313), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0.49541515, 0.8580841, 0.13511312), (0.49541506, 0.85808414, 0.13511316), (0.49541518, 0.8580841, 0.13511312), (-0.49541515, 0.8580841, 0.13511312), (-0.49541518, 0.8580841, 0.13511312), (-0.49541506, 0.85808414, 0.13511316), (0.49541533, 0.85808396, 0.13511306), (0.49541518, 0.8580841, 0.13511312), (0.49541628, 0.8580834, 0.13511302), (-0.49541518, 0.8580841, 0.13511312), (-0.49541533, 0.85808396, 0.13511306), (-0.49541628, 0.8580834, 0.13511302), (-0.009977679, -0.49748325, -0.8674162), (-0.3773884, -0.5070976, -0.7748742), (-0.5746199, -0.002183984, -0.8184175), (-0.008059231, -0.81980413, -0.5725873), (-0.32862723, -0.8064463, -0.49157754), (-0.29429847, -0.56092733, -0.7737887), (-0.4213547, -0.9068255, -0.011304148), (-0.5070998, -0.7748725, -0.37738898), (-0.008059231, -0.81980413, -0.5725873), (-0.8661507, -0.4996766, -0.010313622), (-0.80644774, -0.49157724, -0.32862413), (-0.5609292, -0.77378684, -0.29429978), (-0.9069549, -0.0018124857, -0.42122394), (-0.774874, -0.37738815, -0.50709814), (-0.8661507, -0.4996766, -0.010313622), (-0.5746199, -0.002183984, -0.8184175), (-0.49157658, -0.32862473, -0.8064479), (-0.7737884, -0.29429796, -0.560928), (-0.006716518, -0.906898, 0.42129663), (-0.37738907, -0.77487224, 0.50710005), (-0.57067835, -0.82106256, 0.013510832), (-0.0061198836, -0.4999471, 0.8660343), (-0.32862478, -0.4915769, 0.8064477), (-0.2942999, -0.77378654, 0.56092954), (-0.42175022, -0.0021871794, 0.90670943), (-0.43044132, -0.43044177, 0.79337263), (-0.0061198836, -0.4999471, 0.8660343), (-0.42175022, -0.0021871794, 0.90670943), (-0.81858605, -0.0018099732, 0.57438105), (-0.77378815, -0.29429814, 0.5609282), (-0.8684192, -0.4955512, 0.016646376), (-0.76898026, -0.45203352, 0.4520343), (-0.81858605, -0.0018099732, 0.57438105), (-0.57067835, -0.82106256, 0.013510832), (-0.49157724, -0.8064464, 0.3286275), (-0.77378863, -0.56092733, 0.29429856), (-0.42122465, 0.0018124894, -0.9069545), (-0.4520341, 0.4520333, -0.76898056), (-0.005086686, 0.49888405, -0.8666538), (-0.8184176, 0.00218398, -0.5746197), (-0.8064478, 0.32862455, -0.49157685), (-0.5609278, 0.294298, -0.7737885), (-0.9068262, 0.42135316, -0.011304026), (-0.77487415, 0.5070976, -0.37738854), (-0.8184176, 0.00218398, -0.5746197), (-0.49967897, 0.86614925, -0.010313677), (-0.49157733, 0.8064464, -0.32862738), (-0.77378863, 0.5609274, -0.2942985), (-0.008070189, 0.90598345, -0.42323622), (-0.4304427, 0.7933713, -0.43044287), (-0.49967897, 0.86614925, -0.010313677), (-0.008070189, 0.90598345, -0.42323622), (-0.005086686, 0.49888405, -0.8666538), (-0.29429847, 0.56092733, -0.7737887), (-0.01195161, 0.4995685, 0.8661919), (-0.43044132, 0.43044177, 0.79337263), (-0.5746194, 0.002183985, 0.81841785), (-0.01195161, 0.4995685, 0.8661919), (-0.0067092385, 0.82044, 0.57169324), (-0.2942999, 0.77378654, 0.56092954), (-0.49555367, 0.8684178, 0.01664656), (-0.45203528, 0.76897866, 0.4520353), (-0.0067092385, 0.82044, 0.57169324), (-0.8210648, 0.57067513, 0.013510758), (-0.80644774, 0.49157718, 0.32862425), (-0.5609292, 0.77378684, 0.29429987), (-0.90695506, 0.0018124845, 0.4212235), (-0.77487373, 0.37738836, 0.5070983), (-0.8210648, 0.57067513, 0.013510758), (-0.5746194, 0.002183985, 0.81841785), (-0.4915763, 0.32862535, 0.8064478), (-0.77378815, 0.29429814, 0.5609282), (0.42122465, -0.0018124894, -0.9069545), (0.4520341, -0.4520333, -0.76898056), (0.005086686, -0.49888405, -0.8666538), (0.8184176, -0.00218398, -0.5746197), (0.8064478, -0.32862455, -0.49157685), (0.5609278, -0.294298, -0.7737885), (0.9068262, -0.42135316, -0.011304026), (0.77487415, -0.5070976, -0.37738854), (0.8184176, -0.00218398, -0.5746197), (0.49967897, -0.86614925, -0.010313677), (0.49157733, -0.8064464, -0.32862738), (0.77378863, -0.5609274, -0.2942985), (0.008070189, -0.90598345, -0.42323622), (0.4304427, -0.7933713, -0.43044287), (0.49967897, -0.86614925, -0.010313677), (0.008070189, -0.90598345, -0.42323622), (0.005086686, -0.49888405, -0.8666538), (0.29429847, -0.56092733, -0.7737887), (0.01195161, -0.4995685, 0.8661919), (0.43044132, -0.43044177, 0.79337263), (0.5746194, -0.002183985, 0.81841785), (0.01195161, -0.4995685, 0.8661919), (0.0067092385, -0.82044, 0.57169324), (0.2942999, -0.77378654, 0.56092954), (0.49555367, -0.8684178, 0.01664656), (0.45203528, -0.76897866, 0.4520353), (0.0067092385, -0.82044, 0.57169324), (0.8210648, -0.57067513, 0.013510758), (0.80644774, -0.49157718, 0.32862425), (0.5609292, -0.77378684, 0.29429987), (0.90695506, -0.0018124845, 0.4212235), (0.77487373, -0.37738836, 0.5070983), (0.8210648, -0.57067513, 0.013510758), (0.5746194, -0.002183985, 0.81841785), (0.4915763, -0.32862535, 0.8064478), (0.77378815, -0.29429814, 0.5609282), (0.009977679, 0.49748325, -0.8674162), (0.3773884, 0.5070976, -0.7748742), (0.5746199, 0.002183984, -0.8184175), (0.008059231, 0.81980413, -0.5725873), (0.32862723, 0.8064463, -0.49157754), (0.29429847, 0.56092733, -0.7737887), (0.4213547, 0.9068255, -0.011304148), (0.5070998, 0.7748725, -0.37738898), (0.008059231, 0.81980413, -0.5725873), (0.8661507, 0.4996766, -0.010313622), (0.80644774, 0.49157724, -0.32862413), (0.5609292, 0.77378684, -0.29429978), (0.9069549, 0.0018124857, -0.42122394), (0.774874, 0.37738815, -0.50709814), (0.8661507, 0.4996766, -0.010313622), (0.5746199, 0.002183984, -0.8184175), (0.49157658, 0.32862473, -0.8064479), (0.7737884, 0.29429796, -0.560928), (0.42175022, 0.0021871794, 0.90670943), (0.43044132, 0.43044177, 0.79337263), (0.0061198836, 0.4999471, 0.8660343), (0.42175022, 0.0021871794, 0.90670943), (0.81858605, 0.0018099732, 0.57438105), (0.77378815, 0.29429814, 0.5609282), (0.8684192, 0.4955512, 0.016646376), (0.76898026, 0.45203352, 0.4520343), (0.81858605, 0.0018099732, 0.57438105), (0.57067835, 0.82106256, 0.013510832), (0.49157724, 0.8064464, 0.3286275), (0.77378863, 0.56092733, 0.29429856), (0.006716518, 0.906898, 0.42129663), (0.37738907, 0.77487224, 0.50710005), (0.57067835, 0.82106256, 0.013510832), (0.0061198836, 0.4999471, 0.8660343), (0.32862478, 0.4915769, 0.8064477), (0.2942999, 0.77378654, 0.56092954), (-0.0071958574, -0.0019241419, -0.9999723), (-0.5746199, -0.002183984, -0.8184175), (-0.42122465, 0.0018124894, -0.9069545), (-0.5746199, -0.002183984, -0.8184175), (-0.9069549, -0.0018124857, -0.42122394), (-0.8184176, 0.00218398, -0.5746197), (-0.9069549, -0.0018124857, -0.42122394), (-0.99992436, -0.0019501649, -0.012144816), (-0.9999258, 0.0009786509, -0.012144833), (-0.013758538, -0.99983525, 0.011838683), (-0.57067835, -0.82106256, 0.013510832), (-0.4213547, -0.9068255, -0.011304148), (-0.57067835, -0.82106256, 0.013510832), (-0.8684192, -0.4955512, 0.016646376), (-0.8661507, -0.4996766, -0.010313622), (-0.8661507, -0.4996766, -0.010313622), (-0.8684192, -0.4955512, 0.016646376), (-0.99992496, -0.001906215, 0.012102558), (-0.025921596, 0.0069313254, 0.9996399), (-0.5746194, 0.002183985, 0.81841785), (-0.42175022, -0.0021871794, 0.90670943), (-0.5746194, 0.002183985, 0.81841785), (-0.90695506, 0.0018124845, 0.4212235), (-0.81858605, -0.0018099732, 0.57438105), (-0.90695506, 0.0018124845, 0.4212235), (-0.9999201, 0.0037854386, 0.012060834), (-0.99992496, -0.001906215, 0.012102558), (-0.0070613343, 0.9999032, 0.011987997), (-0.0072208922, 0.99990016, -0.012144522), (-0.49967897, 0.86614925, -0.010313677), (-0.49967897, 0.86614925, -0.010313677), (-0.9068262, 0.42135316, -0.011304026), (-0.8210648, 0.57067513, 0.013510758), (-0.9068262, 0.42135316, -0.011304026), (-0.9999258, 0.0009786509, -0.012144833), (-0.9999201, 0.0037854386, 0.012060834), (0.0071958574, 0.0019241419, -0.9999723), (-0.007221469, 0.0019502734, -0.99997205), (-0.005086686, 0.49888405, -0.8666538), (-0.005086686, 0.49888405, -0.8666538), (-0.008070189, 0.90598345, -0.42323622), (0.008059231, 0.81980413, -0.5725873), (-0.008070189, 0.90598345, -0.42323622), (-0.0072208922, 0.99990016, -0.012144522), (0.0036599115, 0.99991953, -0.012144758), (-0.025921596, 0.0069313254, 0.9996399), (0.013857789, 0.003742518, 0.99989694), (0.0061198836, 0.4999471, 0.8660343), (0.0061198836, 0.4999471, 0.8660343), (0.006716518, 0.906898, 0.42129663), (-0.0067092385, 0.82044, 0.57169324), (0.006716518, 0.906898, 0.42129663), (0.013758538, 0.99983525, 0.011838683), (-0.0070613343, 0.9999032, 0.011987997), (0.99992496, 0.001906215, 0.012102558), (0.99992436, 0.0019501649, -0.012144816), (0.8661507, 0.4996766, -0.010313622), (0.8661507, 0.4996766, -0.010313622), (0.4213547, 0.9068255, -0.011304148), (0.57067835, 0.82106256, 0.013510832), (0.4213547, 0.9068255, -0.011304148), (0.0036599115, 0.99991953, -0.012144758), (0.013758538, 0.99983525, 0.011838683), (0.0071958574, 0.0019241419, -0.9999723), (0.5746199, 0.002183984, -0.8184175), (0.42122465, -0.0018124894, -0.9069545), (0.5746199, 0.002183984, -0.8184175), (0.9069549, 0.0018124857, -0.42122394), (0.8184176, -0.00218398, -0.5746197), (0.9069549, 0.0018124857, -0.42122394), (0.99992436, 0.0019501649, -0.012144816), (0.9999258, -0.0009786509, -0.012144833), (0.024103712, -0.006445231, 0.9996887), (0.5746194, -0.002183985, 0.81841785), (0.42175022, 0.0021871794, 0.90670943), (0.5746194, -0.002183985, 0.81841785), (0.90695506, -0.0018124845, 0.4212235), (0.81858605, 0.0018099732, 0.57438105), (0.90695506, -0.0018124845, 0.4212235), (0.9999201, -0.0037854386, 0.012060834), (0.99992496, 0.001906215, 0.012102558), (0.0070613343, -0.9999032, 0.011987997), (0.0072208922, -0.99990016, -0.012144522), (0.49967897, -0.86614925, -0.010313677), (0.49967897, -0.86614925, -0.010313677), (0.9068262, -0.42135316, -0.011304026), (0.8210648, -0.57067513, 0.013510758), (0.9068262, -0.42135316, -0.011304026), (0.9999258, -0.0009786509, -0.012144833), (0.9999201, -0.0037854386, 0.012060834), (-0.0071958574, -0.0019241419, -0.9999723), (0.007221469, -0.0019502734, -0.99997205), (0.005086686, -0.49888405, -0.8666538), (0.005086686, -0.49888405, -0.8666538), (0.008070189, -0.90598345, -0.42323622), (-0.008059231, -0.81980413, -0.5725873), (0.008070189, -0.90598345, -0.42323622), (0.0072208922, -0.99990016, -0.012144522), (-0.0036599115, -0.99991953, -0.012144758), (0.024103712, -0.006445231, 0.9996887), (-0.0128269605, -0.0034641263, 0.9999117), (-0.0061198836, -0.4999471, 0.8660343), (-0.0061198836, -0.4999471, 0.8660343), (-0.006716518, -0.906898, 0.42129663), (0.0067092385, -0.82044, 0.57169324), (-0.006716518, -0.906898, 0.42129663), (-0.013758538, -0.99983525, 0.011838683), (0.0070613343, -0.9999032, 0.011987997), (0.0071958574, 0.0019241419, -0.9999723), (0.007221469, -0.0019502734, -0.99997205), (-0.0071958574, -0.0019241419, -0.9999723), (-0.99992496, -0.001906215, 0.012102558), (-0.9999201, 0.0037854386, 0.012060834), (-0.9999258, 0.0009786509, -0.012144833), (0.0070613343, -0.9999032, 0.011987997), (-0.013758538, -0.99983525, 0.011838683), (-0.0036599115, -0.99991953, -0.012144758), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (-0.025921596, 0.0069313254, 0.9996399), (0, 0, 1), (0, 0, 1), (-0.025921596, 0.0069313254, 0.9996399), (0.024103712, -0.006445231, 0.9996887), (0.013857789, 0.003742518, 0.99989694), (0, 0, 1), (0.013857789, 0.003742518, 0.99989694), (0, 0, 1), (0, 0, 1), (0.013857789, 0.003742518, 0.99989694), (0, 0, 1), (0, 0, 1), (0, 0, 1), (-0.025921596, 0.0069313254, 0.9996399), (0, 0, 1), (-0.025921596, 0.0069313254, 0.9996399), (-0.0128269605, -0.0034641263, 0.9999117), (0, 0, 1), (0, 0, 1), (-0.025921596, 0.0069313254, 0.9996399), (0, 0, 1), (0, 0, 1), (-0.025921596, 0.0069313254, 0.9996399), (0, 0, 1), (0.013857789, 0.003742518, 0.99989694), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0.013857789, 0.003742518, 0.99989694), (0, 0, 1), (0, 0, 1), (0.013857789, 0.003742518, 0.99989694), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (-0.0128269605, -0.0034641263, 0.9999117), (0, 0, 1), (0, 0, 1), (-0.0128269605, -0.0034641263, 0.9999117), (0.024103712, -0.006445231, 0.9996887), (0, 0, 1), (0, 0, 1), (0.024103712, -0.006445231, 0.9996887), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (-0.0128269605, -0.0034641263, 0.9999117), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0.024103712, -0.006445231, 0.9996887), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (-0.0128269605, -0.0034641263, 0.9999117), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0.024103712, -0.006445231, 0.9996887), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (-0.0128269605, -0.0034641263, 0.9999117), (0, 0, 1), (0, 0, 1), (-0.0128269605, -0.0034641263, 0.9999117), (0, 0, 1), (0, 0, 1), (-0.0128269605, -0.0034641263, 0.9999117), (0, 0, 1), (0, 0, 1), (-0.0128269605, -0.0034641263, 0.9999117), (0.024103712, -0.006445231, 0.9996887), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0.024103712, -0.006445231, 0.9996887), (0, 0, 1), (0, 0, 1), (0.024103712, -0.006445231, 0.9996887), (0.024103712, -0.006445231, 0.9996887), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0.013857789, 0.003742518, 0.99989694), (0.013857789, 0.003742518, 0.99989694), (-0.025921596, 0.0069313254, 0.9996399), (0, 0, 1), (-0.025921596, 0.0069313254, 0.9996399), (0, 0, 1), (0, 0, 1), (0, 0, 1), (-0.025921596, 0.0069313254, 0.9996399), (0, 0, 1), (-0.0070613343, 0.9999032, 0.011987997), (0.013758538, 0.99983525, 0.011838683), (0.0036599115, 0.99991953, -0.012144758), (0.99992496, 0.001906215, 0.012102558), (0.9999201, -0.0037854386, 0.012060834), (0.9999258, -0.0009786509, -0.012144833), (-0.49541533, -0.85808396, 0.13511306), (-0.49541515, -0.8580841, 0.13511312), (-0.49541518, -0.8580841, 0.13511312), (0.49541518, -0.8580841, 0.13511312), (0.49541515, -0.8580841, 0.13511312), (0.49541533, -0.85808396, 0.13511306), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (0.49541533, 0.85808396, 0.13511306), (0.49541515, 0.8580841, 0.13511312), (0.49541518, 0.8580841, 0.13511312), (-0.49541518, 0.8580841, 0.13511312), (-0.49541515, 0.8580841, 0.13511312), (-0.49541533, 0.85808396, 0.13511306), (-0.49541503, -0.85808414, 0.13511313), (-0.49541456, -0.85808444, 0.13511312), (-0.49541506, -0.85808414, 0.13511315), (-0.49541512, -0.8580841, 0.13511316), (-0.49541506, -0.85808414, 0.13511315), (-0.49541518, -0.858084, 0.13511316), (0.49541503, -0.85808414, 0.13511313), (0.49541512, -0.8580841, 0.13511318), (0.4954151, -0.8580841, 0.13511316), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (0.49541506, 0.85808414, 0.13511318), (0.49541506, 0.8580841, 0.13511318), (0.49541503, 0.85808414, 0.13511318), (-0.49541503, 0.85808414, 0.13511318), (-0.49541506, 0.8580841, 0.13511318), (-0.49541506, 0.85808414, 0.13511318), (-0.49541506, -0.8580841, 0.13511318), (-0.49541503, -0.85808414, 0.13511318), (-0.49541506, -0.8580841, 0.13511318), (0.49541503, -0.85808414, 0.13511318), (0.49541506, -0.8580841, 0.13511318), (0.49541506, -0.85808414, 0.13511318), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (-0.49541503, -0.85808414, 0.13511318), (-0.49541456, -0.8580844, 0.13511315), (-0.49541503, -0.85808414, 0.13511318), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (0.49541518, 0.8580841, 0.13511315), (0.49541506, 0.85808414, 0.13511316), (0.4954151, 0.8580841, 0.13511315), (-0.4954151, 0.8580841, 0.13511315), (-0.49541506, 0.85808414, 0.13511316), (-0.49541518, 0.8580841, 0.13511315), (-0.49541536, -0.85808396, 0.13511324), (-0.49541652, -0.85808325, 0.1351133), (-0.4954153, -0.85808396, 0.13511322), (-0.49541512, -0.8580841, 0.13511318), (-0.4954153, -0.85808396, 0.13511322), (-0.49541503, -0.85808414, 0.13511313), (0.49541536, -0.85808396, 0.13511324), (0.49541512, -0.8580841, 0.13511318), (0.49541518, -0.858084, 0.13511318), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (-0.9908302, 0, 0.13511321), (0.49541533, 0.85808396, 0.13511306), (0.49541515, 0.8580841, 0.13511312), (0.49541518, 0.8580841, 0.13511312), (-0.49541518, 0.8580841, 0.13511312), (-0.49541515, 0.8580841, 0.13511312), (-0.49541533, 0.85808396, 0.13511306)] (
+            interpolation = "faceVarying"
+        )
+        point3f[] points = [(-0.0108, -0.040799998, 0.0010000006), (0.00335, -0.025065877, 0.006), (0.00335, -0.0070658764, 0.006), (2.368618e-19, -0.023131752, 0.006), (-0.00335, -0.025065877, 0.006), (0.00335, 0.010934124, 0.006), (2.368618e-19, -0.005131753, 0.006), (-0.00335, -0.028934123, 0.006), (2.368618e-19, 0.012868247, 0.006), (-7.105854e-19, -0.030868247, 0.006), (-0.00335, -0.0070658764, 0.006), (0.00335, -0.028934123, 0.006), (0.00335, 0.028934123, 0.006), (-0.00335, -0.010934124, 0.006), (-0.00335, 0.010934124, 0.006), (-7.105854e-19, -0.012868247, 0.006), (0.00335, -0.010934124, 0.006), (2.368618e-19, 0.030868247, 0.006), (-0.00335, 0.0070658764, 0.006), (-0.0108, -0.042, 0.0022000007), (-7.105854e-19, 0.005131753, 0.006), (-0.00335, 0.028934123, 0.006), (0.00335, 0.0070658764, 0.006), (-0.012, -0.040799998, 0.0022000007), (-0.010800001, -0.04139921, 0.001160316), (-0.00335, 0.025065877, 0.006), (-7.105854e-19, 0.023131752, 0.006), (-0.011399214, -0.040799998, 0.001160316), (-0.011373855, -0.041373853, 0.0013160417), (0.00335, 0.025065877, 0.006), (-0.011399214, -0.041839685, 0.0022000007), (-0.010800001, -0.041839685, 0.0016007879), (-0.011373855, -0.041683957, 0.0016261467), (-0.011839686, -0.040799998, 0.0016007879), (-0.011839686, -0.04139921, 0.0022000007), (-0.01168396, -0.041373853, 0.0016261467), (-0.0108, -0.042, 0.014800001), (-0.0108, -0.040799998, 0.016), (-0.012, -0.040799998, 0.014800001), (-0.010800001, -0.041839685, 0.015399215), (-0.011399214, -0.041839685, 0.014800002), (-0.011373855, -0.041683957, 0.015373856), (-0.011399214, -0.040799998, 0.015839687), (-0.010800001, -0.04139921, 0.015839687), (-0.011373855, -0.041373853, 0.01568396), (-0.011839686, -0.04139921, 0.014800002), (-0.011839686, -0.040799998, 0.015399215), (-0.01168396, -0.041373853, 0.015373856), (-0.0108, 0.040799998, 0.0010000006), (-0.012, 0.040799998, 0.0022000007), (-0.0108, 0.042, 0.0022000007), (-0.011399214, 0.040799998, 0.001160316), (-0.010800001, 0.04139921, 0.001160316), (-0.011373855, 0.041373853, 0.0013160417), (-0.011839686, 0.04139921, 0.0022000007), (-0.011839686, 0.040799998, 0.0016007879), (-0.01168396, 0.041373853, 0.0016261467), (-0.010800001, 0.041839685, 0.0016007879), (-0.011399214, 0.041839685, 0.0022000007), (-0.011373855, 0.041683957, 0.0016261467), (-0.0108, 0.040799998, 0.016), (-0.0108, 0.042, 0.014800001), (-0.012, 0.040799998, 0.014800001), (-0.010800001, 0.04139921, 0.015839687), (-0.011399214, 0.040799998, 0.015839687), (-0.011373855, 0.041373853, 0.01568396), (-0.011399214, 0.041839685, 0.014800002), (-0.010800001, 0.041839685, 0.015399215), (-0.011373855, 0.041683957, 0.015373856), (-0.011839686, 0.040799998, 0.015399215), (-0.011839686, 0.04139921, 0.014800002), (-0.01168396, 0.041373853, 0.015373856), (0.0108, -0.040799998, 0.0010000006), (0.012, -0.040799998, 0.0022000007), (0.0108, -0.042, 0.0022000007), (0.011399214, -0.040799998, 0.001160316), (0.010800001, -0.04139921, 0.001160316), (0.011373855, -0.041373853, 0.0013160417), (0.011839686, -0.04139921, 0.0022000007), (0.011839686, -0.040799998, 0.0016007879), (0.01168396, -0.041373853, 0.0016261467), (0.010800001, -0.041839685, 0.0016007879), (0.011399214, -0.041839685, 0.0022000007), (0.011373855, -0.041683957, 0.0016261467), (0.0108, -0.040799998, 0.016), (0.0108, -0.042, 0.014800001), (0.012, -0.040799998, 0.014800001), (0.010800001, -0.04139921, 0.015839687), (0.011399214, -0.040799998, 0.015839687), (0.011373855, -0.041373853, 0.01568396), (0.011399214, -0.041839685, 0.014800002), (0.010800001, -0.041839685, 0.015399215), (0.011373855, -0.041683957, 0.015373856), (0.011839686, -0.040799998, 0.015399215), (0.011839686, -0.04139921, 0.014800002), (0.01168396, -0.041373853, 0.015373856), (0.0108, 0.040799998, 0.0010000006), (0.0108, 0.042, 0.0022000007), (0.012, 0.040799998, 0.0022000007), (0.010800001, 0.04139921, 0.001160316), (0.011399214, 0.040799998, 0.001160316), (0.011373855, 0.041373853, 0.0013160417), (0.011399214, 0.041839685, 0.0022000007), (0.010800001, 0.041839685, 0.0016007879), (0.011373855, 0.041683957, 0.0016261467), (0.011839686, 0.040799998, 0.0016007879), (0.011839686, 0.04139921, 0.0022000007), (0.01168396, 0.041373853, 0.0016261467), (0.0108, 0.040799998, 0.016), (0.012, 0.040799998, 0.014800001), (0.0108, 0.042, 0.014800001), (0.011399214, 0.040799998, 0.015839687), (0.010800001, 0.04139921, 0.015839687), (0.011373855, 0.041373853, 0.01568396), (0.011839686, 0.04139921, 0.014800002), (0.011839686, 0.040799998, 0.015399215), (0.01168396, 0.041373853, 0.015373856), (0.010800001, 0.041839685, 0.015399215), (0.011399214, 0.041839685, 0.014800002), (0.011373855, 0.041683957, 0.015373856), (-0.0047136364, 0.024278581, 0.016), (-0.00030454548, 0.021732992, 0.016), (-0.00030454548, 0.032267008, 0.016), (-0.0047136364, 0.02463024, 0.016), (-0.0047136364, 0.029721418, 0.016), (0.0047136364, 0.02463024, 0.016), (0.0047136364, 0.024278581, 0.016), (0.0047136364, 0.029721418, 0.016), (0.00030454548, 0.021732992, 0.016), (0.00030454548, 0.032267008, 0.016), (3.3327774e-19, 0.032442838, 0.016), (-9.998333e-19, 0.021557162, 0.016), (-0.0047136364, 0.0062785805, 0.016), (-0.0047136364, 0.0066302395, 0.016), (-0.0047136364, 0.011721419, 0.016), (-0.004409091, 0.011897248, 0.016), (-0.004409091, 0.0061027515, 0.016), (0.001369071, 0.013652405, 0.016), (0.004409091, 0.011897248, 0.016), (0.0047136364, 0.011721419, 0.016), (0.0047136364, 0.0066302395, 0.016), (0.0047136364, 0.0062785805, 0.016), (0.004409091, 0.0061027515, 0.016), (-9.998333e-19, 0.0035571617, 0.016), (3.3327774e-19, 0.014442839, 0.016), (-0.0047136364, -0.011721419, 0.016), (-0.0047136364, -0.01136976, 0.016), (-0.0047136364, -0.0062785805, 0.016), (-0.004409091, -0.0061027515, 0.016), (-0.00030454548, -0.014267009, 0.016), (0.00030454548, -0.014267009, 0.016), (-9.998333e-19, -0.014442839, 0.016), (0.0020155066, -0.004720815, 0.016), (3.3327774e-19, -0.0035571617, 0.016), (0.004409091, -0.0061027515, 0.016), (0.0047136364, -0.0062785805, 0.016), (0.0047136364, -0.01136976, 0.016), (0.0047136364, -0.011721419, 0.016), (-0.0047136364, -0.024278581, 0.016), (-0.004409091, -0.024102751, 0.016), (0.0047136364, -0.024278581, 0.016), (0.004409091, -0.024102751, 0.016), (-0.0047136364, -0.029721418, 0.016), (-0.0047136364, -0.02936976, 0.016), (-0.00030454548, -0.032267008, 0.016), (0.0047136364, -0.02936976, 0.016), (0.0047136364, -0.029721418, 0.016), (0.00030454548, -0.032267008, 0.016), (-9.998333e-19, -0.032442838, 0.016), (0.0038184843, -0.023761764, 0.016), (3.3327774e-19, -0.021557162, 0.016)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Pad" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.0114, -0.0414, 0), (0.0114, 0.0414, 0.001)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 4, 6, 1, 4, 3, 2, 4, 5, 7, 11, 13, 8, 11, 10, 9, 11, 12, 14, 18, 20, 15, 18, 17, 16, 18, 19, 21, 25, 27, 22, 25, 24, 23, 25, 26, 28, 32, 34, 29, 32, 31, 30, 32, 33, 35, 39, 41, 36, 39, 38, 37, 39, 40, 42, 46, 48, 43, 46, 45, 44, 46, 47, 49, 53, 55, 50, 53, 52, 51, 53, 54, 14, 6, 17, 6, 15, 17, 1, 13, 5, 13, 2, 5, 8, 27, 12, 12, 23, 9, 16, 26, 22, 26, 15, 23, 14, 45, 42, 20, 43, 45, 49, 24, 21, 55, 22, 24, 50, 47, 54, 54, 43, 51, 28, 48, 31, 48, 29, 31, 49, 41, 52, 41, 50, 52, 30, 40, 36, 40, 29, 37, 28, 3, 0, 34, 1, 3, 8, 38, 35, 10, 36, 38, 42, 0, 14, 9, 15, 2, 36, 1, 30, 21, 35, 49, 22, 43, 16, 50, 29, 44, 0, 3, 4, 1, 5, 4, 2, 6, 4, 7, 10, 11, 8, 12, 11, 9, 13, 11, 14, 17, 18, 15, 19, 18, 16, 20, 18, 21, 24, 25, 22, 26, 25, 23, 27, 25, 28, 31, 32, 29, 33, 32, 30, 34, 32, 35, 38, 39, 36, 40, 39, 37, 41, 39, 42, 45, 46, 43, 47, 46, 44, 48, 46, 49, 52, 53, 50, 54, 53, 51, 55, 53, 14, 0, 6, 6, 2, 15, 1, 7, 13, 13, 9, 2, 8, 21, 27, 12, 27, 23, 16, 19, 26, 26, 19, 15, 14, 20, 45, 20, 16, 43, 49, 55, 24, 55, 51, 22, 50, 44, 47, 54, 47, 43, 28, 42, 48, 48, 44, 29, 49, 35, 41, 41, 37, 50, 30, 33, 40, 40, 33, 29, 28, 34, 3, 34, 30, 1, 8, 10, 38, 10, 7, 36, 42, 28, 0, 9, 23, 15, 36, 7, 1, 21, 8, 35, 22, 51, 43, 50, 37, 29]
+        rel material:binding = </BitBlock/Looks/pad>
+        normal3f[] normals = [(-0.001974353, -0.00053856644, -0.9999979), (-0.32505897, -0.32505766, -0.8880733), (-0.382682, -0.00030904694, -0.9238801), (-0.0035086442, -0.9898881, -0.14180717), (-0.32506293, -0.8880699, -0.32506284), (-0.0022733842, -0.9238707, -0.38269797), (-0.98987424, -0.0019028287, -0.14193453), (-0.8880731, -0.32505798, -0.3250593), (-0.9202616, -0.3811919, -0.08838139), (-0.004467223, -0.989801, 0.14238699), (-0.32506296, -0.8880699, 0.32506287), (-0.38217753, -0.92261404, 0.05218848), (-0.0077422843, -0.002101485, 0.9999678), (-0.32505915, -0.32505748, 0.8880733), (-0.0022732504, -0.38268676, 0.92387533), (-0.9962389, -0.00074153725, 0.086645834), (-0.8880731, -0.3250579, 0.32505932), (-0.9238788, -0.00030904272, 0.38268518), (-0.0077422806, 0.002101484, -0.9999678), (-0.32505494, 0.3250534, -0.8880763), (-0.0022731824, 0.38268095, -0.9238778), (-0.98986477, 0.0009536838, -0.14200988), (-0.88807786, 0.3250514, -0.32505277), (-0.92388153, 0.0006174125, -0.38267812), (-0.00695554, 0.9899105, -0.14152315), (-0.32505405, 0.8880765, -0.32505393), (-0.38118505, 0.92026526, -0.08837307), (-0.0019743533, 0.00053856673, 0.9999979), (-0.3250589, 0.32505772, 0.8880733), (-0.38268355, 0.00030904353, 0.92387944), (-0.002246643, 0.9898298, 0.14223896), (-0.32506287, 0.8880699, 0.32506287), (-0.002273384, 0.9238707, 0.38269803), (-0.9780383, 0.000893528, 0.20842339), (-0.888073, 0.32505798, 0.32505932), (-0.92262, 0.38216272, 0.052191734), (0.0077422806, -0.002101484, -0.9999678), (0.32505494, -0.3250534, -0.8880763), (0.0022731824, -0.38268095, -0.9238778), (0.98986477, -0.0009536838, -0.14200988), (0.88807786, -0.3250514, -0.32505277), (0.92388153, -0.0006174125, -0.38267812), (0.00695554, -0.9899105, -0.14152315), (0.32505405, -0.8880765, -0.32505393), (0.38118505, -0.92026526, -0.08837307), (0.0019743533, -0.00053856673, 0.9999979), (0.3250589, -0.32505772, 0.8880733), (0.3826821, -0.0003090467, 0.92388004), (0.0022466134, -0.98982936, 0.1422419), (0.32506287, -0.8880699, 0.32506287), (0.0022732306, -0.9238707, 0.38269803), (0.9898417, -0.0012167142, 0.14216846), (0.888073, -0.32505798, 0.32505932), (0.92262, -0.38216272, 0.052191734), (0.001974353, 0.00053856644, -0.9999979), (0.32505897, 0.32505766, -0.8880733), (0.382682, 0.00030904694, -0.9238801), (0.0035085904, 0.9898881, -0.1418072), (0.32506293, 0.8880699, -0.32506284), (0.0022733842, 0.9238707, -0.38269797), (0.9898417, 0.0012167143, -0.14216846), (0.8880731, 0.32505798, -0.3250593), (0.92262, 0.38216272, -0.052191738), (0.0077422834, 0.0021014847, 0.9999678), (0.325055, 0.32505333, 0.8880763), (0.0022731805, 0.382681, 0.9238777), (0.98986477, 0.0009536838, 0.1420099), (0.88807786, 0.32505137, 0.3250528), (0.9238815, 0.00061741244, 0.38267818), (0.004467062, 0.9898018, 0.14238109), (0.32505405, 0.8880764, 0.32505396), (0.3821678, 0.9226183, 0.052183863), (-0.0077422806, 0.002101484, -0.9999678), (-0.382682, -0.00030904694, -0.9238801), (-0.38268057, 0.00061742857, -0.9238805), (-0.9238802, -0.0003090534, -0.38268164), (-0.98986477, 0.0009536838, -0.14200988), (-0.92388153, 0.0006174125, -0.38267812), (-0.0035086442, -0.9898881, -0.14180717), (-0.38217753, -0.92261404, 0.05218848), (-0.38120145, -0.92025775, -0.08838089), (-0.922618, -0.38216797, 0.052188773), (-0.98987424, -0.0019028287, -0.14193453), (-0.9202616, -0.3811919, -0.08838139), (-0.0077422843, -0.002101485, 0.9999678), (-0.38268355, 0.00030904353, 0.92387944), (-0.3826836, -0.00061743794, 0.92387927), (-0.9238788, -0.00030904272, 0.38268518), (-0.9780383, 0.000893528, 0.20842339), (-0.9962389, -0.00074153725, 0.086645834), (-0.00695554, 0.9899105, -0.14152315), (-0.38217056, 0.9226167, 0.052192703), (-0.002246643, 0.9898298, 0.14223896), (-0.92262, 0.38216272, 0.052191734), (-0.98986477, 0.0009536838, -0.14200988), (-0.9780383, 0.000893528, 0.20842339), (-0.0077422806, 0.002101484, -0.9999678), (0.0011410691, 0.38268465, -0.9238783), (0.001974353, 0.00053856644, -0.9999979), (-0.0011409459, 0.9238754, -0.38269177), (0.0035085904, 0.9898881, -0.1418072), (0.0022733842, 0.9238707, -0.38269797), (0.0077422834, 0.0021014847, 0.9999678), (-0.001141069, 0.38268477, 0.92387825), (-0.0019743533, 0.00053856673, 0.9999979), (0.0011409454, 0.92387533, 0.38269183), (-0.002246643, 0.9898298, 0.14223896), (-0.002273384, 0.9238707, 0.38269803), (0.98986477, 0.0009536838, 0.1420099), (0.92262, 0.38216272, -0.052191738), (0.92026734, 0.3811795, 0.088375464), (0.3821678, 0.9226183, 0.052183863), (0.0035085904, 0.9898881, -0.1418072), (0.004467062, 0.9898018, 0.14238109), (0.0077422806, -0.002101484, -0.9999678), (0.382682, 0.00030904694, -0.9238801), (0.38268057, -0.00061742857, -0.9238805), (0.9238802, 0.0003090534, -0.38268164), (0.98986477, -0.0009536838, -0.14200988), (0.92388153, -0.0006174125, -0.38267812), (0.0077422834, 0.0021014847, 0.9999678), (0.3826821, -0.0003090467, 0.92388004), (0.3826807, 0.00061742845, 0.92388046), (0.9238802, -0.00030905323, 0.3826817), (0.98986477, 0.0009536838, 0.1420099), (0.9238815, 0.00061741244, 0.38267818), (0.00695554, -0.9899105, -0.14152315), (0.38217056, -0.9226167, 0.052192703), (0.0022466134, -0.98982936, 0.1422419), (0.92262, -0.38216272, 0.052191734), (0.98986477, -0.0009536838, -0.14200988), (0.9898417, -0.0012167142, 0.14216846), (0.0077422806, -0.002101484, -0.9999678), (-0.0011410691, -0.38268465, -0.9238783), (-0.001974353, -0.00053856644, -0.9999979), (0.0011409459, -0.9238754, -0.38269177), (-0.0035086442, -0.9898881, -0.14180717), (-0.0022733842, -0.9238707, -0.38269797), (-0.0077422843, -0.002101485, 0.9999678), (0.0011410456, -0.38268763, 0.9238771), (0.0019743533, -0.00053856673, 0.9999979), (-0.0011410331, -0.9238725, 0.38269877), (0.0022466134, -0.98982936, 0.1422419), (0.0022732306, -0.9238707, 0.38269803), (0.001974353, 0.00053856644, -0.9999979), (-0.001974353, -0.00053856644, -0.9999979), (-0.0077422806, 0.002101484, -0.9999678), (-0.9962389, -0.00074153725, 0.086645834), (-0.98986477, 0.0009536838, -0.14200988), (-0.98987424, -0.0019028287, -0.14193453), (0.0022466134, -0.98982936, 0.1422419), (-0.0035086442, -0.9898881, -0.14180717), (0.00695554, -0.9899105, -0.14152315), (-0.0019743533, 0.00053856673, 0.9999979), (0.0019743533, -0.00053856673, 0.9999979), (0.0077422834, 0.0021014847, 0.9999678), (-0.002246643, 0.9898298, 0.14223896), (0.0035085904, 0.9898881, -0.1418072), (-0.00695554, 0.9899105, -0.14152315), (0.98986477, 0.0009536838, 0.1420099), (0.98986477, -0.0009536838, -0.14200988), (0.9898417, 0.0012167143, -0.14216846), (-0.001974353, -0.00053856644, -0.9999979), (-0.0011410691, -0.38268465, -0.9238783), (-0.32505897, -0.32505766, -0.8880733), (-0.0035086442, -0.9898881, -0.14180717), (-0.38120145, -0.92025775, -0.08838089), (-0.32506293, -0.8880699, -0.32506284), (-0.98987424, -0.0019028287, -0.14193453), (-0.9238802, -0.0003090534, -0.38268164), (-0.8880731, -0.32505798, -0.3250593), (-0.004467223, -0.989801, 0.14238699), (-0.0011410331, -0.9238725, 0.38269877), (-0.32506296, -0.8880699, 0.32506287), (-0.0077422843, -0.002101485, 0.9999678), (-0.3826836, -0.00061743794, 0.92387927), (-0.32505915, -0.32505748, 0.8880733), (-0.9962389, -0.00074153725, 0.086645834), (-0.922618, -0.38216797, 0.052188773), (-0.8880731, -0.3250579, 0.32505932), (-0.0077422806, 0.002101484, -0.9999678), (-0.38268057, 0.00061742857, -0.9238805), (-0.32505494, 0.3250534, -0.8880763), (-0.98986477, 0.0009536838, -0.14200988), (-0.92026734, 0.3811795, -0.088375464), (-0.88807786, 0.3250514, -0.32505277), (-0.00695554, 0.9899105, -0.14152315), (-0.0011409459, 0.9238754, -0.38269177), (-0.32505405, 0.8880765, -0.32505393), (-0.0019743533, 0.00053856673, 0.9999979), (-0.001141069, 0.38268477, 0.92387825), (-0.3250589, 0.32505772, 0.8880733), (-0.002246643, 0.9898298, 0.14223896), (-0.38217056, 0.9226167, 0.052192703), (-0.32506287, 0.8880699, 0.32506287), (-0.9780383, 0.000893528, 0.20842339), (-0.9238786, 0.000617435, 0.38268512), (-0.888073, 0.32505798, 0.32505932), (0.0077422806, -0.002101484, -0.9999678), (0.38268057, -0.00061742857, -0.9238805), (0.32505494, -0.3250534, -0.8880763), (0.98986477, -0.0009536838, -0.14200988), (0.92026734, -0.3811795, -0.088375464), (0.88807786, -0.3250514, -0.32505277), (0.00695554, -0.9899105, -0.14152315), (0.0011409459, -0.9238754, -0.38269177), (0.32505405, -0.8880765, -0.32505393), (0.0019743533, -0.00053856673, 0.9999979), (0.0011410456, -0.38268763, 0.9238771), (0.3250589, -0.32505772, 0.8880733), (0.0022466134, -0.98982936, 0.1422419), (0.38217056, -0.9226167, 0.052192703), (0.32506287, -0.8880699, 0.32506287), (0.9898417, -0.0012167142, 0.14216846), (0.9238802, -0.00030905323, 0.3826817), (0.888073, -0.32505798, 0.32505932), (0.001974353, 0.00053856644, -0.9999979), (0.0011410691, 0.38268465, -0.9238783), (0.32505897, 0.32505766, -0.8880733), (0.0035085904, 0.9898881, -0.1418072), (0.38120118, 0.92025715, -0.088388056), (0.32506293, 0.8880699, -0.32506284), (0.9898417, 0.0012167143, -0.14216846), (0.9238802, 0.0003090534, -0.38268164), (0.8880731, 0.32505798, -0.3250593), (0.0077422834, 0.0021014847, 0.9999678), (0.3826807, 0.00061742845, 0.92388046), (0.325055, 0.32505333, 0.8880763), (0.98986477, 0.0009536838, 0.1420099), (0.92026734, 0.3811795, 0.088375464), (0.88807786, 0.32505137, 0.3250528), (0.004467062, 0.9898018, 0.14238109), (0.0011409454, 0.92387533, 0.38269183), (0.32505405, 0.8880764, 0.32505396), (-0.0077422806, 0.002101484, -0.9999678), (-0.001974353, -0.00053856644, -0.9999979), (-0.382682, -0.00030904694, -0.9238801), (-0.9238802, -0.0003090534, -0.38268164), (-0.98987424, -0.0019028287, -0.14193453), (-0.98986477, 0.0009536838, -0.14200988), (-0.0035086442, -0.9898881, -0.14180717), (-0.004467223, -0.989801, 0.14238699), (-0.38217753, -0.92261404, 0.05218848), (-0.922618, -0.38216797, 0.052188773), (-0.9962389, -0.00074153725, 0.086645834), (-0.98987424, -0.0019028287, -0.14193453), (-0.0077422843, -0.002101485, 0.9999678), (-0.0019743533, 0.00053856673, 0.9999979), (-0.38268355, 0.00030904353, 0.92387944), (-0.9238788, -0.00030904272, 0.38268518), (-0.9238786, 0.000617435, 0.38268512), (-0.9780383, 0.000893528, 0.20842339), (-0.00695554, 0.9899105, -0.14152315), (-0.38118505, 0.92026526, -0.08837307), (-0.38217056, 0.9226167, 0.052192703), (-0.92262, 0.38216272, 0.052191734), (-0.92026734, 0.3811795, -0.088375464), (-0.98986477, 0.0009536838, -0.14200988), (-0.0077422806, 0.002101484, -0.9999678), (-0.0022731824, 0.38268095, -0.9238778), (0.0011410691, 0.38268465, -0.9238783), (-0.0011409459, 0.9238754, -0.38269177), (-0.00695554, 0.9899105, -0.14152315), (0.0035085904, 0.9898881, -0.1418072), (0.0077422834, 0.0021014847, 0.9999678), (0.0022731805, 0.382681, 0.9238777), (-0.001141069, 0.38268477, 0.92387825), (0.0011409454, 0.92387533, 0.38269183), (0.004467062, 0.9898018, 0.14238109), (-0.002246643, 0.9898298, 0.14223896), (0.98986477, 0.0009536838, 0.1420099), (0.9898417, 0.0012167143, -0.14216846), (0.92262, 0.38216272, -0.052191738), (0.3821678, 0.9226183, 0.052183863), (0.38120118, 0.92025715, -0.088388056), (0.0035085904, 0.9898881, -0.1418072), (0.0077422806, -0.002101484, -0.9999678), (0.001974353, 0.00053856644, -0.9999979), (0.382682, 0.00030904694, -0.9238801), (0.9238802, 0.0003090534, -0.38268164), (0.9898417, 0.0012167143, -0.14216846), (0.98986477, -0.0009536838, -0.14200988), (0.0077422834, 0.0021014847, 0.9999678), (0.0019743533, -0.00053856673, 0.9999979), (0.3826821, -0.0003090467, 0.92388004), (0.9238802, -0.00030905323, 0.3826817), (0.9898417, -0.0012167142, 0.14216846), (0.98986477, 0.0009536838, 0.1420099), (0.00695554, -0.9899105, -0.14152315), (0.38118505, -0.92026526, -0.08837307), (0.38217056, -0.9226167, 0.052192703), (0.92262, -0.38216272, 0.052191734), (0.92026734, -0.3811795, -0.088375464), (0.98986477, -0.0009536838, -0.14200988), (0.0077422806, -0.002101484, -0.9999678), (0.0022731824, -0.38268095, -0.9238778), (-0.0011410691, -0.38268465, -0.9238783), (0.0011409459, -0.9238754, -0.38269177), (0.00695554, -0.9899105, -0.14152315), (-0.0035086442, -0.9898881, -0.14180717), (-0.0077422843, -0.002101485, 0.9999678), (-0.0022732504, -0.38268676, 0.92387533), (0.0011410456, -0.38268763, 0.9238771), (-0.0011410331, -0.9238725, 0.38269877), (-0.004467223, -0.989801, 0.14238699), (0.0022466134, -0.98982936, 0.1422419), (0.001974353, 0.00053856644, -0.9999979), (0.0077422806, -0.002101484, -0.9999678), (-0.001974353, -0.00053856644, -0.9999979), (-0.9962389, -0.00074153725, 0.086645834), (-0.9780383, 0.000893528, 0.20842339), (-0.98986477, 0.0009536838, -0.14200988), (0.0022466134, -0.98982936, 0.1422419), (-0.004467223, -0.989801, 0.14238699), (-0.0035086442, -0.9898881, -0.14180717), (-0.0019743533, 0.00053856673, 0.9999979), (-0.0077422843, -0.002101485, 0.9999678), (0.0019743533, -0.00053856673, 0.9999979), (-0.002246643, 0.9898298, 0.14223896), (0.004467062, 0.9898018, 0.14238109), (0.0035085904, 0.9898881, -0.1418072), (0.98986477, 0.0009536838, 0.1420099), (0.9898417, -0.0012167142, 0.14216846), (0.98986477, -0.0009536838, -0.14200988)] (
+            interpolation = "faceVarying"
+        )
+        point3f[] points = [(-0.0111, -0.0411, 0), (-0.0111, -0.0414, 0.0003), (-0.0114, -0.0411, 0.00029999999), (-0.0111, -0.04131213, 0.00008786797), (-0.011273205, -0.041273203, 0.00012679491), (-0.011312132, -0.04131213, 0.0003), (-0.011312132, -0.041099995, 0.00008786794), (-0.0111, -0.0414, 0.0007000001), (-0.0111, -0.0411, 0.001), (-0.0114, -0.0411, 0.00070000003), (-0.0111, -0.04131213, 0.0009121321), (-0.011273205, -0.041273203, 0.00087320514), (-0.011312132, -0.041099995, 0.00091213203), (-0.011312132, -0.04131213, 0.00070000003), (-0.0111, 0.0411, 0), (-0.0114, 0.0411, 0.0003), (-0.0111, 0.0414, 0.00029999999), (-0.011312134, 0.0411, 0.00008786797), (-0.011273207, 0.041273206, 0.00012679491), (-0.011312134, 0.041312132, 0.0003), (-0.011100002, 0.041312132, 0.00008786794), (-0.0111, 0.0411, 0.001), (-0.0111, 0.0414, 0.00070000003), (-0.0114, 0.0411, 0.0007000001), (-0.0111, 0.04131213, 0.00091213203), (-0.011273205, 0.041273203, 0.00087320514), (-0.011312132, 0.04131213, 0.00070000003), (-0.011312132, 0.041099995, 0.0009121321), (0.0111, -0.0411, 0), (0.0114, -0.0411, 0.0003), (0.0111, -0.0414, 0.00029999999), (0.011312134, -0.0411, 0.00008786797), (0.011273207, -0.041273206, 0.00012679491), (0.011312134, -0.041312132, 0.0003), (0.011100002, -0.041312132, 0.00008786794), (0.0111, -0.0411, 0.001), (0.0111, -0.0414, 0.00070000003), (0.0114, -0.0411, 0.0007000001), (0.0111, -0.04131213, 0.00091213203), (0.011273205, -0.041273203, 0.00087320514), (0.011312132, -0.04131213, 0.00070000003), (0.011312132, -0.041099995, 0.0009121321), (0.0111, 0.0411, 0), (0.0111, 0.0414, 0.0003), (0.0114, 0.0411, 0.00029999999), (0.0111, 0.04131213, 0.00008786797), (0.011273205, 0.041273203, 0.00012679491), (0.011312132, 0.04131213, 0.0003), (0.011312132, 0.041099995, 0.00008786794), (0.0111, 0.0411, 0.001), (0.0114, 0.0411, 0.00070000003), (0.0111, 0.0414, 0.0007000001), (0.011312134, 0.0411, 0.00091213203), (0.011273207, 0.041273206, 0.00087320514), (0.011312134, 0.041312132, 0.00070000003), (0.011100002, 0.041312132, 0.0009121321)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Labels" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.0106, -0.04, 0.01602), (-0.0044, 0.04, 0.01602)]
+        int[] faceVertexCounts = [3, 3]
+        int[] faceVertexIndices = [1, 3, 0, 1, 2, 3]
+        rel material:binding = </BitBlock/Looks/label_block>
+        normal3f[] normals = [(0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (0, 0, 1)] (
+            interpolation = "faceVarying"
+        )
+        point3f[] points = [(-0.0106, 0.04, 0.01602), (-0.0106, -0.04, 0.01602), (-0.0044, -0.04, 0.01602), (-0.0044, 0.04, 0.01602)]
+        texCoord2f[] primvars:st = [(0.99999994, 9.229106e-8), (4.7683717e-8, 1.0000001), (4.7683717e-8, 9.229106e-8), (0.99999994, 9.229106e-8), (0.99999994, 1.0000001), (4.7683717e-8, 1.0000001)] (
+            interpolation = "faceVarying"
+        )
+        uniform token subdivisionScheme = "none"
+    }
+}
+

@@ -1,0 +1,22 @@
+{
+  "title": "Fit the PH2 bit into an electric screwdriver's hex bit holder",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "peg in hole",
+    "hex fit",
+    "tool change",
+    "object identification",
+    "precision insertion",
+    "electronics bench"
+  ],
+  "instruction": "With your left gripper, hold the electric screwdriver steady in its charging dock. With your right gripper, take the PH2 bit out of the bit block, line its hexagon up with the screwdriver's bit holder and push it in until it seats, then let go with both grippers and move both arms back to where they started.",
+  "context": "Changing the bit of a cordless screwdriver is one of the most frequent small tasks at assembly, repair and electronics benches: the right bit is picked from a holder by its size marking, its 1/4-inch hex shank is lined up with the tool's magnetic bit holder and pushed home, while the other hand steadies the tool.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Screwdriver: a compact 4 V pen-style cordless screwdriver (27 mm across, 145 mm long, 230 g, teal-grey with a black rubber grip) standing nose up in its round black charging dock (76 mm across, fixed to the table) at (0.22, -0.10), a rib on its battery end in the dock's keyway. Its nose holds a 1/4-inch hex bit holder: a hex socket 6.45 mm across flats, 10.6 mm deep, with a 0.6 mm lead-in, empty; its hexagon is turned 25 degrees from the bits'. Bit block: an aluminium block (84 x 24 x 16 mm, 78 g) loose on the table at (0.30, -0.22), long side along y, with four 25 mm 1/4-inch hex bits standing in hex holes 10 mm deep: from the robot's left, PH1 (green ring), PH2 (red ring), SL5 (yellow ring) and T20 (blue ring), 18 mm apart, each size printed on the block in front of its bit.",
+  "scoring": "Four steps, 0.25 each. (1) PH2 bit taken out: a gripper holds the PH2 bit lifted clear of the block (its lowest point above the block's top); counts once reached. (2) PH2 bit started in the holder: its end at least 2 mm into the socket, within 1 mm and 5 degrees of the socket's axis. (3) PH2 bit seated: at least 9 mm in, within 0.5 mm and 2 degrees of the axis, its hexagon within 3 degrees of the socket's. (4) Let go and everything in place: with step 3 done, no gripper holds the bit or the screwdriver, the screwdriver stands in its dock (within 1.5 mm and 3 degrees) and the other three bits stand in their own holes. Steps 2 to 4 count only for the PH2 bit and are judged at the end; another bit in the holder earns nothing. Full score 1.0, ending the run, when all four hold, both arms are back where they started (within 3 cm) holding nothing, and the screwdriver and the bit have been still for 1 s. 0 overall if the screwdriver, the block or any bit has fallen off the table.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Pull the bit out of the screwdriver's holder and stand it back in its hole in the block (PH2, second from the robot's left), hex end down; stand the screwdriver back in its dock, rib in the keyway; put the block back on its mark.",
+  "fidelity": "Rigid bodies, 240 Hz physics, 20 Hz control. The socket is exact boxes on its hexagon with a 45-degree lead-in (0.05 mm a side on the bit's 6.35 mm hexagon) and a compliant retaining ball for the magnet; each bit's hex shank is three crossed boxes (an exact hexagon). The screwdriver (capsules) stands in an 18-box cup with 0.15 mm clearance, keyed by a rib. No deformation.",
+  "scores": "Dream-1 run: 0.0 (both arms reached toward the screwdriver and the bit block in the first half, then drew back near their bases; it never took a bit out); demo: 1.0 (all four steps by step 397, success at step 486)",
+  "media": "M-UT3XEZ"
+}
