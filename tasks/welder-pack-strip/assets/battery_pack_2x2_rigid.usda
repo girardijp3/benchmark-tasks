@@ -1,0 +1,74 @@
+#usda 1.0
+(
+    defaultPrim = "BatteryPack"
+    doc = "The assembled 2x2 18650 pack as one rigid body: the bottom holder half, four yellow cells (+ up) and the top holder half (the same holder flipped over, resting on the cells' shoulders, so the + nubs end 0.2 mm proud of its outer face at 68.0 mm). Real holders are a snug press fit, so the assembled pack moves as one part; as six separate bodies, the cells' contacts in the holders' signed-distance-field cups kept a ~1 cm/s jitter that walked a 1 g nickel strip off the nubs. Each part keeps its own colliders (the holders' signed distance fields, the cells' prisms) and looks. Origin: the bottom face's centre; cells at (+-10, +-10) mm. Mass 200.9 g with the centre of mass and inertia of the parts."
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "BatteryPack" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysxRigidBodyAPI"]
+)
+{
+    float physics:mass = 0.2009242
+    point3f physics:centerOfMass = (0, 0, 0.034696)
+    float3 physics:diagonalInertia = (0.00010249, 0.00010249, 0.00004962)
+    quatf physics:principalAxes = (1, 0, 0, 0)
+    custom float physxRigidBody:maxDepenetrationVelocity = 0.2
+    custom int physxRigidBody:solverPositionIterationCount = 32
+    custom int physxRigidBody:solverVelocityIterationCount = 4
+
+    def "Holder_Bottom" (
+        prepend references = @holder_18650_2x2.usda@
+        delete apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysxRigidBodyAPI"]
+    )
+    {
+    }
+
+    def "Cell_1" (
+        prepend references = @battery_18650_yellow.usda@
+        delete apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysxRigidBodyAPI"]
+    )
+    {
+        double3 xformOp:translate = (-0.01, -0.01, 0.03475)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def "Cell_2" (
+        prepend references = @battery_18650_yellow.usda@
+        delete apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysxRigidBodyAPI"]
+    )
+    {
+        double3 xformOp:translate = (-0.01, 0.01, 0.03475)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def "Cell_3" (
+        prepend references = @battery_18650_yellow.usda@
+        delete apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysxRigidBodyAPI"]
+    )
+    {
+        double3 xformOp:translate = (0.01, -0.01, 0.03475)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def "Cell_4" (
+        prepend references = @battery_18650_yellow.usda@
+        delete apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysxRigidBodyAPI"]
+    )
+    {
+        double3 xformOp:translate = (0.01, 0.01, 0.03475)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def "Holder_Top" (
+        prepend references = @holder_18650_2x2.usda@
+        delete apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysxRigidBodyAPI"]
+    )
+    {
+        double3 xformOp:translate = (0, 0, 0.0678)
+        quatd xformOp:orient = (0, 1, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+    }
+}

@@ -1,0 +1,22 @@
+{
+  "title": "Lay a nickel strip on a 2x2 18650 battery pack and spot-weld it to all four cells",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "battery pack",
+    "spot welding",
+    "nickel strip",
+    "tool use",
+    "placement",
+    "electronics bench"
+  ],
+  "instruction": "With your right gripper, pick up the nickel strip by its folded tab, lay it flat on top of the battery pack with its bars over the cells, let go and move the right arm back to where it started. Then, with your left gripper, take the spot welder out of its orange holder, tilt it probes-down and touch both copper tips to the strip over each of the four cells in turn, put the welder back in its holder and move the left arm back too.",
+  "context": "Joining cells with nickel strip is the core step of building lithium-ion battery packs at repair and assembly benches: the strip is laid over the cells' terminals and spot-welded to each one, the welder's two copper tips pressed onto the strip right over the terminal for a moment, without knocking the pack apart.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Battery pack: an assembled 2x2 18650 pack, 41.2 x 41.2 x 68 mm, 201 g, loose on the table with its centre at (0.31, 0.03), sides along x and y: the bottom and top halves of a black ABS cell holder (the top one is the bottom one flipped over, pressed onto the cells) and four yellow 18 x 65 mm lithium-ion cells 20 mm apart, positive ends up, their + nubs 0.2 mm proud of the top face. Nickel strip: an H of 0.15 mm nickel, 28 x 28 mm, 1 g, two 8 mm bars joined by a bridge with a folded grip tab (8 mm wide, 10 mm tall, 3 mm across) in its middle, lying with its bars along x in a 40 x 40 x 8 mm grey tray fixed to the table at (0.27, -0.19). Spot welder: a handheld 18650 spot welder, black ABS housing 124 x 24 x 22 mm (138.7 mm long with its two copper probes, 127 g with its cell inside), seated in an orange PLA holder (142 x 39 x 14 mm, open at the middle of its long sides) screwed to the table with its centre at (0.30, 0.26), long axis along x, probes toward the robot.",
+  "scoring": "Six steps, judged from the video. (1) Strip on the pack, 0.25: at the end the strip lies flat (within 10 degrees) on the cells' + nubs, its centre within 3 mm of the pack's, its bars over the cell pairs (within 10 degrees of a quarter turn), no gripper holds it, and a gripper took it out of its tray. (2-5) Cell 1, 2, 3, 4 welded, 0.125 each, once done: with the strip on the pack and the welder in a gripper, both probe tips touch the strip's metal (within 0.5 mm of its top face, not past its edges) over that cell's + terminal (within 3.5 mm of its axis) for 0.2 s; each weld leaves two dark spots on the strip. (6) Welder back in its holder, 0.25: at the end, after a gripper took it out, the welder sits in its holder's pocket (within 5 mm of its seat, on the floor within 2 mm, upright within 10 degrees) and no gripper holds it. Full score 1.0, ending the run, when all six hold, both arms are back where they started (within 3 cm) holding nothing, and the welder, the strip and the pack have been still (under 1 cm/s) for 1 s. 0 overall if at the end the pack has been knocked over (tilted more than 20 degrees) or any part has fallen off the table.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Put the strip back in its tray, bars along x, tab up (a new strip if it shows weld spots); stand the pack back on its mark, top holder on, all cells positive end up; seat the welder in its holder, probes toward the robot, lid shut.",
+  "fidelity": "Articulated and rigid bodies, 240 Hz physics, 20 Hz control. The welder is one articulation (latched lid, latch slider, + contact) holding its cell. The pack is one rigid body (a press fit): holders as signed distance fields, cells as prisms. The 0.15 mm strip collides as 0.3 mm boxes, the probe tips as convex hulls ending in 0.22 mm balls. A weld is a 0.2 s touch that shows two dark spots where the tips touched: no current, heat or bond. No deformation.",
+  "scores": "Dream-1 run: 0.0 (its right arm hovered over the battery pack and its left over the welder in its holder for most of the run, but it never picked up the nickel strip or took the welder out); demo: 1.0 (all six steps by step 950, success at step 1043)",
+  "media": "M-6VZJHF"
+}

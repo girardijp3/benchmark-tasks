@@ -1,0 +1,290 @@
+#usda 1.0
+(
+    defaultPrim = "NickelStrip"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "NickelStrip" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Nickel strip for a 2x2 18650 pack, cells in parallel: an H of 0.15 mm pure nickel (two 8 x 28 mm bars over the two cell pairs, 20 mm apart, joined by an 8 mm bridge), 28 x 28 mm, with a grip tab bent up from the bridge's middle and folded into a loop (8 mm wide, 10 mm tall, 3 mm across). Origin at the plate's underside centre, the bars along y. Cells sit under (+-10, +-10) mm. Marks/: the eight weld spots (two per cell), hidden until a weld. Collides as boxes 0.3 mm thick (the plate) and the tab's walls and top."
+)
+{
+    float physics:mass = 0.0009549243
+    custom float physxRigidBody:maxDepenetrationVelocity = 0.2
+    custom float physxRigidBody:sleepThreshold = 0.00005
+    custom int physxRigidBody:solverPositionIterationCount = 32
+    custom int physxRigidBody:solverVelocityIterationCount = 4
+
+    def "Looks"
+    {
+        def Material "Nickel"
+        {
+            token outputs:surface.connect = </NickelStrip/Looks/Nickel/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.72, 0.71, 0.68)
+                float inputs:metallic = 1
+                float inputs:roughness = 0.32
+                token outputs:surface
+            }
+        }
+
+        def Material "WeldSpot"
+        {
+            token outputs:surface.connect = </NickelStrip/Looks/WeldSpot/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.09, 0.11)
+                float inputs:metallic = 0.6
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_Nickel" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.4
+            float physics:restitution = 0
+            float physics:staticFriction = 0.5
+        }
+    }
+
+    def Mesh "Plate" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.014, -0.014, 0), (0.014, 0.014, 0.00015)]
+        int[] faceVertexCounts = [3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [3, 8, 5, 15, 22, 21, 6, 18, 19, 5, 3, 21, 22, 2, 10, 14, 15, 9, 0, 12, 13, 11, 7, 17, 18, 6, 4, 20, 21, 3, 11, 13, 14, 10, 1, 23, 12, 0, 8, 16, 17, 7, 5, 19, 20, 4, 2, 22, 23, 1, 9, 15, 16, 8, 11, 1, 0, 11, 2, 1, 9, 11, 10, 6, 8, 7, 9, 2, 11, 5, 8, 6, 8, 2, 9, 3, 5, 4, 8, 3, 2, 23, 13, 12, 13, 15, 14, 16, 18, 17, 16, 19, 18, 19, 21, 20, 22, 13, 23, 16, 21, 19, 22, 15, 13, 15, 21, 16]
+        rel material:binding = </NickelStrip/Looks/Nickel>
+        point3f[] points = [(-0.014, -0.014, 0), (-0.006, -0.014, 0), (-0.006, -0.004, 0), (0.006, -0.004, 0), (0.006, -0.014, 0), (0.014, -0.014, 0), (0.014, 0.014, 0), (0.006, 0.014, 0), (0.006, 0.004, 0), (-0.006, 0.004, 0), (-0.006, 0.014, 0), (-0.014, 0.014, 0), (-0.014, -0.014, 0.00015), (-0.014, 0.014, 0.00015), (-0.006, 0.014, 0.00015), (-0.006, 0.004, 0.00015), (0.006, 0.004, 0.00015), (0.006, 0.014, 0.00015), (0.014, 0.014, 0.00015), (0.014, -0.014, 0.00015), (0.006, -0.014, 0.00015), (0.006, -0.004, 0.00015), (-0.006, -0.004, 0.00015), (-0.006, -0.014, 0.00015)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tab" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.004, -0.0015, 0.00015), (0.004, 0.0015, 0.01)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 1, 18, 17, 1, 2, 19, 18, 2, 3, 20, 19, 3, 4, 21, 20, 4, 5, 22, 21, 5, 6, 23, 22, 6, 7, 24, 23, 7, 8, 25, 24, 8, 9, 26, 25, 9, 10, 27, 26, 10, 11, 28, 27, 11, 12, 29, 28, 12, 13, 30, 29, 13, 14, 31, 30, 14, 15, 32, 31, 15, 16, 33, 32, 34, 51, 52, 35, 35, 52, 53, 36, 36, 53, 54, 37, 37, 54, 55, 38, 38, 55, 56, 39, 39, 56, 57, 40, 40, 57, 58, 41, 41, 58, 59, 42, 42, 59, 60, 43, 43, 60, 61, 44, 44, 61, 62, 45, 45, 62, 63, 46, 46, 63, 64, 47, 47, 64, 65, 48, 48, 65, 66, 49, 49, 66, 67, 50, 0, 17, 51, 34, 1, 0, 34, 35, 17, 18, 52, 51, 2, 1, 35, 36, 18, 19, 53, 52, 3, 2, 36, 37, 19, 20, 54, 53, 4, 3, 37, 38, 20, 21, 55, 54, 5, 4, 38, 39, 21, 22, 56, 55, 6, 5, 39, 40, 22, 23, 57, 56, 7, 6, 40, 41, 23, 24, 58, 57, 8, 7, 41, 42, 24, 25, 59, 58, 9, 8, 42, 43, 25, 26, 60, 59, 10, 9, 43, 44, 26, 27, 61, 60, 11, 10, 44, 45, 27, 28, 62, 61, 12, 11, 45, 46, 28, 29, 63, 62, 13, 12, 46, 47, 29, 30, 64, 63, 14, 13, 47, 48, 30, 31, 65, 64, 15, 14, 48, 49, 31, 32, 66, 65, 16, 15, 49, 50, 33, 16, 50, 67, 32, 33, 67, 66]
+        rel material:binding = </NickelStrip/Looks/Nickel>
+        point3f[] points = [(-0.004, -0.00135, 0.00015), (-0.004, -0.00135, 0.004), (-0.004, -0.0013503211, 0.00849019), (-0.004, -0.0013039999, 0.008849406), (-0.004, -0.0011691343, 0.009175), (-0.004, -0.0009545941, 0.009454594), (-0.004, -0.000675, 0.009669134), (-0.004, -0.00034940575, 0.009804), (-0.004, 9.1848507e-20, 0.00985), (-0.004, 0.00034940575, 0.009804), (-0.004, 0.000675, 0.009669134), (-0.004, 0.0009545941, 0.009454594), (-0.004, 0.0011691343, 0.009175), (-0.004, 0.0013039999, 0.008849406), (-0.004, 0.0013503211, 0.00849019), (-0.004, 0.00135, 0.004), (-0.004, 0.00135, 0.00015), (0.004, -0.00135, 0.00015), (0.004, -0.00135, 0.004), (0.004, -0.0013503211, 0.00849019), (0.004, -0.0013039999, 0.008849406), (0.004, -0.0011691343, 0.009175), (0.004, -0.0009545941, 0.009454594), (0.004, -0.000675, 0.009669134), (0.004, -0.00034940575, 0.009804), (0.004, 9.1848507e-20, 0.00985), (0.004, 0.00034940575, 0.009804), (0.004, 0.000675, 0.009669134), (0.004, 0.0009545941, 0.009454594), (0.004, 0.0011691343, 0.009175), (0.004, 0.0013039999, 0.008849406), (0.004, 0.0013503211, 0.00849019), (0.004, 0.00135, 0.004), (0.004, 0.00135, 0.00015), (-0.004, -0.0015, 0.00015), (-0.004, -0.0015, 0.004), (-0.004, -0.0015, 0.0085), (-0.004, -0.0014488888, 0.008888229), (-0.004, -0.0012990381, 0.00925), (-0.004, -0.0010606601, 0.00956066), (-0.004, -0.00075, 0.009799038), (-0.004, -0.00038822857, 0.009948889), (-0.004, 9.1848507e-20, 0.01), (-0.004, 0.00038822857, 0.009948889), (-0.004, 0.00075, 0.009799038), (-0.004, 0.0010606601, 0.00956066), (-0.004, 0.0012990381, 0.00925), (-0.004, 0.0014488888, 0.008888229), (-0.004, 0.0015, 0.0085), (-0.004, 0.0015, 0.004), (-0.004, 0.0015, 0.00015), (0.004, -0.0015, 0.00015), (0.004, -0.0015, 0.004), (0.004, -0.0015, 0.0085), (0.004, -0.0014488888, 0.008888229), (0.004, -0.0012990381, 0.00925), (0.004, -0.0010606601, 0.00956066), (0.004, -0.00075, 0.009799038), (0.004, -0.00038822857, 0.009948889), (0.004, 9.1848507e-20, 0.01), (0.004, 0.00038822857, 0.009948889), (0.004, 0.00075, 0.009799038), (0.004, 0.0010606601, 0.00956066), (0.004, 0.0012990381, 0.00925), (0.004, 0.0014488888, 0.008888229), (0.004, 0.0015, 0.0085), (0.004, 0.0015, 0.004), (0.004, 0.0015, 0.00015)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Scope "Marks"
+    {
+        def Cylinder "Spot_1a" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Z"
+            double height = 0.00003
+            rel material:binding = </NickelStrip/Looks/WeldSpot>
+            double radius = 0.0006
+            token visibility = "invisible"
+            double3 xformOp:translate = (-0.0116, -0.01, 0.000165)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Spot_1b" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Z"
+            double height = 0.00003
+            rel material:binding = </NickelStrip/Looks/WeldSpot>
+            double radius = 0.0006
+            token visibility = "invisible"
+            double3 xformOp:translate = (-0.008400000000000001, -0.01, 0.000165)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Spot_2a" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Z"
+            double height = 0.00003
+            rel material:binding = </NickelStrip/Looks/WeldSpot>
+            double radius = 0.0006
+            token visibility = "invisible"
+            double3 xformOp:translate = (-0.0116, 0.01, 0.000165)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Spot_2b" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Z"
+            double height = 0.00003
+            rel material:binding = </NickelStrip/Looks/WeldSpot>
+            double radius = 0.0006
+            token visibility = "invisible"
+            double3 xformOp:translate = (-0.008400000000000001, 0.01, 0.000165)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Spot_3a" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Z"
+            double height = 0.00003
+            rel material:binding = </NickelStrip/Looks/WeldSpot>
+            double radius = 0.0006
+            token visibility = "invisible"
+            double3 xformOp:translate = (0.008400000000000001, -0.01, 0.000165)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Spot_3b" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Z"
+            double height = 0.00003
+            rel material:binding = </NickelStrip/Looks/WeldSpot>
+            double radius = 0.0006
+            token visibility = "invisible"
+            double3 xformOp:translate = (0.0116, -0.01, 0.000165)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Spot_4a" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Z"
+            double height = 0.00003
+            rel material:binding = </NickelStrip/Looks/WeldSpot>
+            double radius = 0.0006
+            token visibility = "invisible"
+            double3 xformOp:translate = (0.008400000000000001, 0.01, 0.000165)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Spot_4b" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Z"
+            double height = 0.00003
+            rel material:binding = </NickelStrip/Looks/WeldSpot>
+            double radius = 0.0006
+            token visibility = "invisible"
+            double3 xformOp:translate = (0.0116, 0.01, 0.000165)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+    }
+
+    def Scope "Colliders"
+    {
+        def Cube "Bar_Left" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </NickelStrip/Looks/Phys_Nickel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.008, 0.028, 0.0003)
+            double3 xformOp:translate = (-0.01, 0, 0.00015)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Bar_Right" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </NickelStrip/Looks/Phys_Nickel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.008, 0.028, 0.0003)
+            double3 xformOp:translate = (0.01, 0, 0.00015)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Bridge" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </NickelStrip/Looks/Phys_Nickel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.008, 0.0003)
+            double3 xformOp:translate = (0, 0, 0.00015)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Tab_Wall_Front" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </NickelStrip/Looks/Phys_Nickel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.008, 0.0003, 0.00835)
+            double3 xformOp:translate = (0, -0.00135, 0.004325)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Tab_Wall_Back" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </NickelStrip/Looks/Phys_Nickel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.008, 0.0003, 0.00835)
+            double3 xformOp:translate = (0, 0.00135, 0.004325)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Tab_Top" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </NickelStrip/Looks/Phys_Nickel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.008, 0.003, 0.0015)
+            double3 xformOp:translate = (0, 0, 0.00925)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+}
+
