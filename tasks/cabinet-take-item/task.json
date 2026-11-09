@@ -1,0 +1,23 @@
+{
+  "title": "Open the cabinet, take the multimeter out and then close it",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "articulated object",
+    "door",
+    "handle",
+    "catch",
+    "fetching",
+    "placement",
+    "electronics bench"
+  ],
+  "instruction": "Open the cabinet door by its handle with your left gripper. With your right gripper, take out the multimeter, set it on the bench to the right of the cabinet and move that arm back. Close the door with your left gripper until the catch holds it, then move the left arm back to where it started.",
+  "context": "Fetching a tool from a bench-top cabinet is everyday work at electronics assembly and repair benches: the door is pulled open by its handle and held, the meter is taken out and set down on the bench where it will be used, and the door is pushed shut until its catch holds it, so it doesn't swing into the work area.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Cabinet: a bench-top storage cabinet of birch plywood, 220 x 250 x 350 mm on 6 mm rubber feet (4.1 kg with its door), loose on the table, its front facing the robot with the middle of its front edge at (0.40, -0.03). Its overlay door (219 x 346 mm, 15 mm thick) is shut and held by a catch under the top panel; it is hinged on its left edge (the hinge axis at (0.385, 0.08)), opens toward the robot up to 120 degrees and has a 168 mm steel bar handle, vertical, near its right edge at (0.356, -0.107), 18 cm above the table. Inside, under a shelf 24 cm up: a handheld digital multimeter in a yellow rubber boot (186 x 89 x 49 mm, 400 g) standing on its end with its middle at (0.474, -0.03), 30 mm in from the cabinet's front, its display toward the hinge side.",
+  "scoring": "Four steps, 0.25 each, judged from the video. (1) Door opened by its handle: the door is open at least 45 degrees while a gripper holds its handle; counts once reached. (2) Multimeter taken out: a gripper holds the multimeter wholly outside the cabinet; counts once reached. (3) Multimeter on the bench: at the end it rests on the table outside the cabinet (its lowest point within 4 mm of the table) and no gripper holds it. (4) Door shut and caught: at the end, with step 2 done, the door is shut past its catch (under 0.8 degrees), no gripper holds the handle, and the cabinet stands within 2 cm and 5 degrees of where it stood. Full score 1.0, ending the run, when all four hold, both arms are back where they started (within 3 cm) holding nothing, and the cabinet and the multimeter have been still (under 1 cm/s) for 1 s. 0 overall if at the end the cabinet or the multimeter has fallen off the table or the cabinet is tipped more than 20 degrees.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Stand the multimeter back on its end inside the cabinet at its mark (display toward the hinge side), shut the door until the catch holds it, and put the cabinet back on its mark.",
+  "fidelity": "Articulated and rigid bodies, 240 Hz physics, 20 Hz control. The cabinet is one articulation: the door on a damped hinge with a 0-120 degree range, and a catch link whose lip rod holds the door's strike rod by compliant contact (3500 N/m; about 6 N at the handle pulls it open; no magnetism). Exact box and capsule colliders; the multimeter is its own 24-point convex box with torsional friction for the grip. No deformation.",
+  "scores": "Dream-1 run: 0.0 (its left arm worked at the cabinet's door and handle and its right arm reached toward the cabinet, but it never pulled the door open by its handle or took the multimeter out); demo: 1.0 (all four steps by step 550, success at step 631)",
+  "media": "M-RJ887T"
+}
