@@ -1,0 +1,22 @@
+{
+  "title": "Plug an LED dimmer's connector plug into a wall adapter's connector",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "connector mating",
+    "barrel jack",
+    "DC power",
+    "cable",
+    "peg-in-hole",
+    "electronics bench"
+  ],
+  "instruction": "With your left gripper, pick up the barrel jack at the end of the wall adapter's cord and hold it up. With your right gripper, pick up the plug on the LED dimmer's cord by its plastic body, push it fully into the jack, let go and move the right arm back to where it started. Then lay the joined connectors on the bench with your left gripper, let go and move the left arm back too.",
+  "context": "Connecting a device to its power supply through a 5.5 x 2.1 mm barrel connector is everyday work on electronics benches and for LED and CCTV installers: both ends are on loose cords, so one hand has to hold the jack while the other lines the plug up with the bore and pushes it fully home.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Back panel: a white-painted 18 mm board, 800 x 400 mm, standing on the bench with its face at x = 0.56, centred on y = 0. Wall socket: a 60 x 60 mm black Schuko socket with a flip lid, set in the panel, centre at y = 0.14 and 10.7 cm above the bench, its lid flipped up. Wall adapter: a black 12 V DC 1 A Europlug adapter, 36 x 46 x 70 mm (110 g), plugged into the socket. Its 3.5 mm black PVC cord (350 mm) hangs from the adapter's bottom onto the bench, runs toward the robot along y = 0.14 and turns to the robot's right. It ends in a female 5.5 x 2.1 mm in-line barrel jack: black, 10.5 mm across, 42 mm long, 7 g. The jack lies on the bench with its mouth at (0.306, -0.005), facing the robot's right (-y). LED strip dimmer: a black 60 x 34 x 18 mm box with a silver knob (35 g), stuck to the bench with its centre at (0.42, -0.24) and its input end toward the robot. Its 3.5 mm black cord (290 mm) runs toward the robot and turns to the robot's left. It ends in a male 5.5 x 2.1 mm barrel plug: 9 mm black overmold, 9.5 mm metal barrel, 4 g. The plug lies on the bench with the front of its overmold at (0.192, -0.091), pointing to the robot's left (+y).",
+  "scoring": "Four steps, 0.25 each, judged from the video. (1) Jack lifted: a gripper holds the jack with its lowest point at least 2 cm above the bench (counts once reached). (2) Plug lifted: the same for the plug (counts once reached). (3) Plugged in by hand: at the end the plug is fully in the jack (its overmold within 1 mm of the jack's mouth, within 0.5 mm of the bore's centre line, its axis within 5 degrees of the bore's), and a gripper held the plug when it went in. A plug that ever went in with no gripper on it never earns steps 3 and 4. (4) Joined connectors laid down: at the end, with step 3 done, both connectors lie on the bench (lowest points within 3 mm of it) and no gripper holds either. Full score 1.0, ending the run, when all four hold, both arms are back where they started (within 3 cm) holding nothing, and both connectors have been still (under 1 cm/s) for 1 s. 0 overall if at the end a connector has fallen off the bench.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Unplug the plug from the jack. Lay the adapter's cord and the dimmer's cord back in their starting curves on the bench, the jack and the plug where they started. The adapter stays in the wall socket and the dimmer stays stuck to the bench.",
+  "fidelity": "Articulated and rigid bodies, 240 Hz physics, 20 Hz control. Each cord is 12.5 mm capsule links on spring joints (350 and 290 mm, shorter than real). The jack's 5.9 mm bore and the plug's 5.5 mm barrel are exact boxes and capsules (0.2 mm a side); three springy contacts (5000 N/m) hold the plug at 0.6-1 N, against 3-30 N for a real jack. The adapter and dimmer are fixed; the wall socket is a SimReady model.",
+  "scores": "Dream-1 run: 0.0 (both arms reached toward the jack and the plug early on, then folded down near the front of the bench for the rest of the run; it never picked up the jack or the plug); demo: 1.0 (all four steps by step 510, success at step 607)",
+  "media": "M-A8RTXT"
+}
