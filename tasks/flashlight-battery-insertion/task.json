@@ -17,6 +17,6 @@
   "run_limit": "2,400 steps (2 minutes at 20 Hz)",
   "reset_notes": "Unscrew the cap and set it open end down at its mark, take the cell out and lay it on its side at its mark with the nub pointing away from the robot, and stand the flashlight head-down at its mark.",
   "fidelity": "Rigid bodies, 240 Hz physics, 20 Hz control. The tail cap's 4-start thread, tube and cap collide as signed distance fields (0.2 mm radial clearance), so the cap has to be turned on; the cell collides as its convex hull in a bore 0.4 mm wider. The cap shell and body tube grip like rubber (friction 1.5) for knurling and soft finger pads; threads 0.35, cell wrap 0.3. The springs are visual only, so nothing pushes the cell back up. No deformation.",
-  "scores": "Dream-1 run: 0.0 (it picked up the flashlight but never lifted the battery); demo: 1.0 (all four steps by step 1,083)",
+  "scores": "Dream-1 run: 0.0 (it picked up the flashlight but never lifted the battery); demo: 1.0 (all four steps by step 1,083, success at step 1,126)",
   "media": "M-UUCKMG"
 }
