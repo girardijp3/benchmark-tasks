@@ -103,7 +103,7 @@ inspect-robots run --embodiment yam_arena --policy yam_scripted \
     (`WELD_TRIM`), so the tips meet the strip gently and the strip stays put (within 0.4 mm).
   - It carries the welder back level over its holder, lets it drop into the pocket from 1.5 mm above the walls and
     goes home.
-- **Dream-1:** 0.0 (it never picked up the strip or took the welder out; media ID M-6VZJHF).
+- **Dream-1:** 0.0 with this instruction (it never picked up the strip or took the welder out; media ID M-WDMK67).
 - **Videos:** `inspect-robots video ~/yam-eval/strip-demo/<log>.json` writes one MP4 per camera next to the frames.
 - **Offline checks:** `python -m pytest -q test_welder_strip.py`.
 - **Prompt:** add `--no-prompt` to skip the operator's success question at the end of a run that doesn't succeed.

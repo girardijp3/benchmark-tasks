@@ -17,6 +17,6 @@
   "run_limit": "2,400 steps (2 minutes at 20 Hz)",
   "reset_notes": "Put the strip back in its tray, bars along x, tab up (a new strip if it shows weld spots); stand the pack back on its mark, top holder on, all cells positive end up; seat the welder in its holder, probes toward the robot, lid shut. A real trial uses a new strip and fresh, undamaged cells at storage charge.",
   "fidelity": "Articulated and rigid bodies, 240 Hz physics, 20 Hz control. The welder is one articulation (latched lid, latch slider, + contact) holding its cell. The pack is one rigid body (a press fit): holders as signed distance fields, cells as prisms. The 0.15 mm strip collides as 0.3 mm boxes, the probe tips as convex hulls ending in 0.22 mm balls. A weld is a 0.2 s touch that shows two dark spots where the tips touched: no current, heat or bond. No deformation.",
-  "scores": "Dream-1 run: 0.0 (its right arm hovered over the battery pack and its left over the welder in its holder for most of the run, but it never picked up the nickel strip or took the welder out); demo: 1.0 (all six steps by step 950, success at step 1043)",
-  "media": "M-6VZJHF"
+  "scores": "Dream-1 run: 0.0 (its arms reached toward the battery pack and the strip's tray again and again, but it never picked up the strip or took the welder out); demo: 1.0 (all six steps by step 950, success at step 1043)",
+  "media": "M-WDMK67"
 }
