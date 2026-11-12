@@ -15,6 +15,7 @@ stays shut only once its hook has ridden over the clasp's ramp.
 |---|---|
 | `screwdriver_case.py` | The `yam_arena` task file: scene, the open-lid start, step scoring (`success`, `score`, `steps_done`) and the scripted `demo()` |
 | `assets/screwdriver_case.usdc` | The case (OpenUSD), one articulation: base with its foam insert, lid on a damped hinge, clasp slider |
+| `assets/screwdriver_case_foam.usdc` | The foam insert's mesh, a sublayer of `screwdriver_case.usdc` (loaded with it) |
 | `assets/screwdriver_task.usda` | The SimReady screwdriver referenced unchanged, with this task's colliders (copied next to the download at spawn) |
 | `assets/textures/` | Plastic grain maps and the lid's label (no brand) |
 | `test_screwdriver_case.py` | Offline checks: the file loads, every scoring outcome, both arms' reach (no GPU, no network) |
