@@ -8,7 +8,7 @@ thread is modelled as real collision geometry, so it has to be turned (about one
 | File | What it is |
 |---|---|
 | `flashlight_battery.py` | The `yam_arena` task file: scene, step scoring (`success`, `score`, `steps_done`) and the scripted `demo()` |
-| `assets/flashlight_18650.usda` | The flashlight (OpenUSD): body, tail cap and battery as three rigid bodies, threads included |
+| `assets/flashlight_18650.usdc` | The flashlight (OpenUSD): body, tail cap and battery as three rigid bodies, threads included |
 | `assets/flashlight_{body,cap,battery}.usda` | One rigid body each, referencing the flashlight file, with the task's friction settings |
 | `assets/textures/battery_18650_wrap.png` | The battery's wrap label (no brand) |
 | `test_flashlight_battery.py` | Offline checks: the file loads, every scoring outcome, both arms' reach (no GPU, no network) |
@@ -16,7 +16,7 @@ thread is modelled as real collision geometry, so it has to be turned (about one
 
 ## Assets
 
-**Flashlight** (`assets/`): created for the Robocurve benchmark by the Mobi Lab, licensed
+**Flashlight** (`assets/`): created for this task by its authors, licensed
 [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/). 110 mm long, 34 mm head, 22 mm body tube, 26 x 21 mm tail cap, black
 anodised aluminium; units metres and kilograms, Z up.
 
@@ -58,7 +58,7 @@ inspect-robots run --embodiment yam_arena --policy yam_scripted \
   --instruction "$INSTRUCTION" --scorer task_score --max-steps 1400 --store-frames --log-dir ~/yam-eval/flashlight-demo
 ```
 
-- The run prints `task_score` at the end (0.2 per step done, 1.0 on success). With `-E object_jitter=0` the
+- The run prints `task_score` at the end (0.18 per step done (at most 0.9), 1.0 only on success). With `-E object_jitter=0` the
   layout is fixed and no seed is needed.
 - The demo reaches 1.0 and ends on success at step 953 (47.7 s at 20 Hz): the left arm grips the body from the
   side; the right arm unscrews the cap in two 200° grips, rising 5.5 mm per twist with the thread, and sets it on the
@@ -79,7 +79,7 @@ works out from the cameras.
 
 ## Scoring
 
-Five steps, **0.2 each** (`STEPS` in the task file). Positions are centres in metres; heights are above the table
+Five steps, **0.18 each** (`STEPS` in the task file); only full success scores 1.0. Positions are centres in metres; heights are above the table
 top. Assembled, the cap's centre is 4.7 cm from the body's and the battery's 1.1 cm.
 
 | Step | Done when | Judged |
@@ -94,6 +94,8 @@ top. Assembled, the cap's centre is 4.7 cm from the body's and the battery's 1.1
   onto the table, or was let go over the box, earns nothing for steps 3 and 5. Picking it up again and setting it
   down properly counts.
 - **1.0 (success, ends the run):** all five steps, and the three parts still (under 1 cm/s and 0.5 rad/s) for 1 s.
+- **All five steps without full success score 0.9:** the step points stop at 0.9, so a run that finishes
+  the steps but doesn't meet the rest of the success conditions above never scores 1.0.
 - **0** at the end, whatever the steps, if any part has fallen off the table (centre more than 2 cm below the top),
   the flashlight body lies in the box (centre over the box's footprint and below its 10.1 cm walls), or the state is
   not finite.

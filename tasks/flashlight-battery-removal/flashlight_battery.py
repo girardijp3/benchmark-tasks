@@ -257,7 +257,7 @@ HOLD_S = 1.0  # step 1: the body held this long
 # apart), and the trial scores 0.
 UNSCREW_TURN = math.radians(300)
 STEPS = ("body held", "cap off", "cap set on the table", "battery in the box", "flashlight set back on the table")
-POINTS = 0.2  # per step
+POINTS = 0.18  # per step; only success scores 1.0
 
 
 def _over_box(pos, margin: float = 0.0) -> bool:
@@ -432,10 +432,13 @@ def success(objects) -> bool:
 
 
 def score(objects) -> float:
-    """0.2 per step done (``STEPS``); 0 for any violation or a cap forced off its thread. Success scores 1.0."""
+    """1.0 on success; otherwise 0.18 per step done (``STEPS``, at most 0.9); 0 for any violation or a cap forced
+    off its thread."""
     done = steps_done(objects)
     if _violation(objects) or _PROGRESS.forced_off:
         return 0.0
+    if success(objects):
+        return 1.0
     return round(POINTS * sum(done), 6)
 
 

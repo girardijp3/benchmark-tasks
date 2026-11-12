@@ -110,10 +110,10 @@ def test_start_scores_zero():
 
 
 @pytest.mark.parametrize("stage", [1, 2, 3, 4, 5])
-def test_each_step_adds_a_fifth(stage):
+def test_each_step_adds_its_points(stage):
     e = _demo_until(stage)
     assert e.done() == [True] * stage + [False] * (5 - stage)
-    assert e.step() == (pytest.approx(0.2 * stage), stage == 5)
+    assert e.step() == (pytest.approx(1.0 if stage == 5 else 0.18 * stage), stage == 5)
 
 
 def test_full_course_ends_in_success():
@@ -215,7 +215,7 @@ def test_a_new_episode_starts_over():
 def test_parts_still_moving_is_not_success():
     e = _demo_until(5)
     e.vel["flashlight_battery"] = (0.05, 0.0, 0.0)
-    assert e.step(1.0) == (1.0, False)
+    assert e.step(1.0) == (0.9, False)  # 5 x 0.18, not success
 
 
 def test_cap_loosened_but_on_the_flashlight_is_not_off():
