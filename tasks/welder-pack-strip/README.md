@@ -19,7 +19,7 @@ more than about 35°.
 | `assets/battery_pack_2x2_rigid.usda` | The assembled pack as one rigid body: both holder halves and four cells, referenced from the next two files |
 | `assets/holder_18650_2x2.usda` | One half of a 2x2 18650 cell holder, used twice (the top half is the bottom one flipped over) |
 | `assets/battery_18650_yellow.usda` | The pack's 18650 cell, yellow wrap, with flat-ended prism colliders |
-| `assets/spot_welder_18650.usda` | The spot welder: housing with its copper probes, battery lid and latch, sprung + contact |
+| `assets/spot_welder_18650.usdc` | The spot welder: housing with its copper probes, battery lid and latch, sprung + contact |
 | `assets/welder_task.usda` | The task's wrapper: the welder as one articulation, its cell a separate body |
 | `assets/battery_18650.usda` | The welder's own cell (blue wrap), in its bay under the latched lid |
 | `assets/spot_welder_holder.usda` | The welder's holder, an orange PLA tray open at the middle of its long sides |
@@ -120,22 +120,41 @@ Six steps (`STEPS` and `POINTS` in the task file).
 
 | Step | Points | Done when | Judged |
 |---|---|---|---|
-| 1. Strip on the pack | 0.25 | the strip lies flat (within 10°) on the cells' + nubs (within 1 mm), its centre within 3 mm of the pack's, its bars over the cell pairs (within 10° of a quarter turn), no gripper holds it, and a gripper took it out of its tray | at the end |
-| 2-5. Cell 1, 2, 3, 4 welded | 0.125 each | with the strip on the pack and the welder in a gripper, both probe tips touch the strip's metal (within 0.5 mm of its top face, not more than 1 mm into it, not past its edges) over that cell's + terminal (within 3.5 mm of its axis) for 0.2 s; two dark spots appear on the strip where the tips touched | once done |
-| 6. Welder back in its holder | 0.25 | after a gripper took it out, the welder sits in its holder's pocket (within 5 mm of its seat, on the floor within 2 mm, upright within 10°) and no gripper holds it | at the end |
+| 1. Strip on the pack | 0.2 | the strip lies flat (within 10°) on the cells' + nubs (within 1 mm), its centre within 3 mm of the pack's, its bars over the cell pairs (within 10° of a quarter turn), no gripper holds it, and a gripper took it out of its tray | at the end |
+| 2-5. Cell 1, 2, 3, 4 welded | 0.1 each | with the strip on the pack and the welder in a gripper, both probe tips touch the strip's metal (within 0.5 mm of its top face, not more than 1 mm into it, not past its edges) over that cell's + terminal (within 3.5 mm of its axis) for 0.2 s; two dark spots appear on the strip where the tips touched | once done |
+| 6. Welder back in its holder | 0.2 | after a gripper took it out, the welder sits in its holder's pocket (within 5 mm of its seat, on the floor within 2 mm, upright within 10°) and no gripper holds it | at the end |
 
 - **1.0 (success, ends the run):** all six steps, both arms back where they started (within 3 cm) holding nothing,
   and the welder, the strip and the pack's parts still (under 1 cm/s and 0.5 rad/s) for 1 s.
+- **All six steps without full success score 0.8:** the step points stop at 0.8, so a run that finishes
+  the steps but doesn't meet the rest of the success conditions above never scores 1.0.
 - **0** at the end, whatever the steps, if the pack has been knocked over (tilted more than 20°), any part has fallen
   off the table (centre more than 2 cm below its top), or the state is not finite.
 - **Only a gripper's work counts:** a strip knocked onto the pack, a welder dropped onto the strip, or a welder that
   never left its holder earns nothing.
 - **"A gripper holds" in simulation** is read from the simulator: the finger pads reach the part's bounding box (5 mm
   slack), both fingers press with at least 0.5 N, and the pads are at least 2 mm apart (`GripperState`, `_held`).
-- **The welds** are touches, not current: no heat, no bond, so the strip stays loose on the pack afterwards. The
-  spots are the strip's own hidden discs, moved to where the tips touched and shown.
-- **On a real station** the same steps are judged from the video (the welder's weld LED or the marks for each weld),
-  with a ruler for the strip's place.
+- **The welds in simulation** are touches, not current: no heat, no bond, so the strip stays loose on the pack
+  afterwards (on a real station they must bond, below). The spots are the strip's own hidden discs, moved to where
+  the tips touched and shown.
+- **On a real station** steps 1 and 6 are judged from the video, with a ruler for the strip's place. Steps 2-5 need a
+  bond, not just a touch: after the run, each weld gets a pull test. A spring scale hooked under the strip beside that
+  cell's weld pulls straight up at 10 N for 2 s (a good nickel-strip spot weld holds several times that), and the weld
+  counts only if the strip stays on that cell's terminal. A touch that left marks but no bond earns nothing there.
+
+## Real-world trials: safety
+
+Spot-welding lithium-ion cells is safe with the usual battery-bench precautions:
+- **Cells:** new or tested cells at storage charge (about 3.6 V), their wraps and top insulators undamaged; the pack
+  holder insulates them from each other and from the table.
+- **Bench:** a non-flammable surface (steel or ceramic tile), nothing flammable within 1 m, a fire-safe bin or a
+  bucket of sand for a hot or venting cell, and a CO2 or ABC extinguisher at hand.
+- **People:** a supervisor watches every trial with the welder's power switch and an emergency stop within reach;
+  safety glasses for anyone near the bench; good ventilation.
+- **Welder:** set to the strip's thickness (0.15 mm) before the trial; switched off and never left powered and
+  unattended between trials.
+- **After a trial:** check each cell's temperature by hand before touching the pack; set aside any cell that is hot,
+  swollen or marked.
 
 ## Reset
 

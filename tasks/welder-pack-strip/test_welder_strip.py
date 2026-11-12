@@ -151,7 +151,7 @@ def test_start_scores_zero():
 def test_strip_laid_on_the_pack_is_a_quarter():
     e = Episode()
     e.lay_strip()
-    assert e.done() == [True, False, False, False, False, False] and e.step()[0] == 0.25
+    assert e.done() == [True, False, False, False, False, False] and e.step()[0] == 0.2
 
 
 def test_strip_laid_a_quarter_turn_round_counts():
@@ -211,7 +211,7 @@ def test_one_weld_is_an_eighth():
     e.lay_strip()
     e.take_welder()
     e.weld(2)
-    assert e.done() == [True, False, True, False, False, False] and e.step()[0] == 0.375
+    assert e.done() == [True, False, True, False, False, False] and e.step()[0] == pytest.approx(0.3)
 
 
 def test_too_short_a_touch_is_not_a_weld():
@@ -315,13 +315,13 @@ def test_welder_left_beside_its_holder_is_not_back():
 def test_arms_not_home_is_not_success():
     e = Episode()
     e.full_course()
-    assert e.step(right=_gripper(T._START_TCP["right"] + (0.0, 0.0, -0.1))) == (1.0, False)
+    assert e.step(right=_gripper(T._START_TCP["right"] + (0.0, 0.0, -0.1))) == (0.8, False)  # 6 steps, not success
 
 
 def test_moving_parts_are_not_success():
     e = Episode()
     e.full_course()
-    assert e.step(speed=0.05) == (1.0, False)
+    assert e.step(speed=0.05) == (0.8, False)  # 6 steps, not success
 
 
 def test_pack_knocked_over_scores_zero():

@@ -602,7 +602,7 @@ _PROGRESS = _Progress()
 # -- scoring ----------------------------------------------------------------------------------------------------------
 STEPS = ("strip on the pack", "cell 1 welded", "cell 2 welded", "cell 3 welded", "cell 4 welded",
          "welder back in its holder")
-POINTS = (0.25, 0.125, 0.125, 0.125, 0.125, 0.25)
+POINTS = (0.2, 0.1, 0.1, 0.1, 0.1, 0.2)  # at most 0.8; only success scores 1.0
 
 
 def steps_done(objects) -> list[bool]:
@@ -660,10 +660,12 @@ def success(objects) -> bool:
 
 
 def score(objects) -> float:
-    """``POINTS`` per step done (``STEPS``); 0 for any violation. Success scores 1.0."""
+    """1.0 on success; otherwise ``POINTS`` per step done (``STEPS``, at most 0.8); 0 for any violation."""
     done = steps_done(objects)
     if _violation(objects):
         return 0.0
+    if success(objects):
+        return 1.0
     return round(sum(p for p, ok in zip(POINTS, done, strict=True) if ok), 6)
 
 
