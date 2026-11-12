@@ -1,6 +1,6 @@
 #usda 1.0
 (
-    doc = "Only the Body rigid body of flashlight_18650.usda (the other parts deactivated), in the shared flashlight frame. Its tube grips like rubber (average combine, so the battery's 'min' still lets it slide in the bore); the thread keeps aluminium friction."
+    doc = "Only the Body rigid body of flashlight_18650.usdc (the other parts deactivated), in the shared flashlight frame. Its tube grips like rubber (average combine, so the battery's 'min' still lets it slide in the bore); the thread keeps aluminium friction."
     defaultPrim = "Flashlight"
     kilogramsPerUnit = 1
     metersPerUnit = 1
@@ -8,7 +8,7 @@
 )
 
 def Xform "Flashlight" (
-    prepend references = @flashlight_18650.usda@
+    prepend references = @flashlight_18650.usdc@
 )
 {
     over "Looks"

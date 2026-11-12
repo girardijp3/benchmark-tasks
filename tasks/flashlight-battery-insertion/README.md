@@ -8,7 +8,7 @@ so the cap has to be turned (a little over one turn) to go on.
 | File | What it is |
 |---|---|
 | `flashlight_insertion.py` | The `yam_arena` task file: scene, step scoring (`success`, `score`, `steps_done`) and the scripted `demo()` |
-| `assets/flashlight_18650.usda` | The flashlight (OpenUSD): body, tail cap and battery as three rigid bodies, threads included |
+| `assets/flashlight_18650.usdc` | The flashlight (OpenUSD): body, tail cap and battery as three rigid bodies, threads included |
 | `assets/flashlight_{body,cap,battery}.usda` | One rigid body each, referencing the flashlight file, with the task's friction settings |
 | `assets/textures/battery_18650_wrap.png` | The battery's wrap label (no brand) |
 | `test_flashlight_insertion.py` | Offline checks: the file loads, every scoring outcome, both arms' reach (no GPU, no network) |
@@ -16,7 +16,7 @@ so the cap has to be turned (a little over one turn) to go on.
 
 ## Assets
 
-**Flashlight** (`assets/`): created for the Robocurve benchmark by the Mobi Lab, licensed
+**Flashlight** (`assets/`): created for this task by its authors, licensed
 [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/). 110 mm long, 34 mm head, 22 mm body tube, 26 x 21 mm tail
 cap, black anodised aluminium; units metres and kilograms, Z up.
 
@@ -52,7 +52,7 @@ inspect-robots run --embodiment yam_arena --policy yam_scripted \
   --instruction "$INSTRUCTION" --scorer task_score --max-steps 1800 --store-frames --log-dir ~/yam-eval/insert-demo
 ```
 
-- The run prints `task_score` at the end (0.25 per step done, 1.0 on success). With `-E object_jitter=0` the layout
+- The run prints `task_score` at the end (0.2 per step done (at most 0.8), 1.0 only on success). With `-E object_jitter=0` the layout
   is fixed and no seed is needed. The job log prints a `[flashlight_insertion] t=...  steps done: ...` line whenever a
   step is done or undone, with how far the cap has turned.
 - The demo reaches 1.0 at step 1,083 (54 s) and holds it to the end of its script: battery picked up at 8.4 s, in
@@ -74,7 +74,7 @@ which the model finds from the cameras.
 
 ## Scoring
 
-Four steps, **0.25 each** (`STEPS` in the task file). Positions are centres in metres; positions along the
+Four steps, **0.2 each** (`STEPS` in the task file); only full success scores 1.0. Positions are centres in metres; positions along the
 flashlight's axis are relative to the body's centre. Assembled, the cell's centre is 11 mm and the cap's 47 mm from
 the body's, toward the tail; the cell's flat end is then 2 mm inside the tube's rim.
 
@@ -86,6 +86,8 @@ the body's, toward the tail; the cell's flat end is then 2 mm inside the tube's 
 | 4. Cap screwed down | with step 2 done, the cap is within 1 mm of its seated place (tight against the collar) after turning at least 300° | at the end |
 
 - **1.0 (success, ends the run):** all four steps, and the three parts still (under 1 cm/s and 0.5 rad/s) for 1 s.
+- **All four steps without full success score 0.8:** the step points stop at 0.8, so a run that finishes
+  the steps but doesn't meet the rest of the success conditions above never scores 1.0.
 - **0** at the end, whatever the steps, if the cell is in the tube the wrong way round (nub toward the cap), any part
   has fallen off the table (centre more than 2 cm below its top) or the state is not finite, or the cap sits on the
   collar without having turned 300° (forced down rather than screwed: real threads don't allow it).

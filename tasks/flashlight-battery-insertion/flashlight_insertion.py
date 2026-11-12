@@ -203,7 +203,7 @@ GRIP_SLACK = 0.005
 GRIP_FORCE = 0.5
 GRIP_OPENING = 0.003
 STEPS = ("battery picked up", "battery in, positive end first", "cap on the thread", "cap screwed down")
-POINTS = 0.25  # per step
+POINTS = 0.2  # per step; only success scores 1.0
 
 
 def _axis(state) -> np.ndarray:
@@ -326,10 +326,12 @@ def success(objects) -> bool:
 
 
 def score(objects) -> float:
-    """0.25 per step done (``STEPS``); 0 for any violation. Success scores 1.0."""
+    """1.0 on success; otherwise 0.2 per step done (``STEPS``, at most 0.8); 0 for any violation."""
     done = steps_done(objects)
     if _violation(objects):
         return 0.0
+    if success(objects):
+        return 1.0
     return round(POINTS * sum(done), 6)
 
 

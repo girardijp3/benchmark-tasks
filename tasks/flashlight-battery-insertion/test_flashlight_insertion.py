@@ -106,13 +106,13 @@ def test_start_scores_zero():
 def test_battery_picked_up_is_a_quarter():
     e = Episode()
     e.step(right="flashlight_battery", flashlight_battery=CELL_LYING + (0, 0, 0.05))
-    assert e.step()[0] == 0.25
+    assert e.step()[0] == 0.2
 
 
 def test_battery_in_the_right_way_is_a_half():
     e = Episode()
     e.put_cell_in()
-    assert e.done() == [True, True, False, False] and e.step()[0] == 0.5
+    assert e.done() == [True, True, False, False] and e.step()[0] == 0.4
 
 
 def test_battery_in_the_wrong_way_round_scores_zero():
@@ -132,7 +132,7 @@ def test_cap_threaded_but_not_down_is_three_quarters():
     e = Episode()
     e.put_cell_in()
     e.screw_cap(degrees=120, seat=False)
-    assert e.done() == [True, True, True, False] and e.step()[0] == 0.75
+    assert e.done() == [True, True, True, False] and e.step()[0] == 0.6
 
 
 def test_full_course_succeeds():
@@ -140,6 +140,18 @@ def test_full_course_succeeds():
     e.put_cell_in()
     e.screw_cap()
     assert e.step(1.0) == (1.0, True)
+
+
+def test_all_steps_with_a_part_still_moving_is_not_full_score():
+    e = Episode()
+    e.put_cell_in()
+    e.screw_cap()
+    e.step(1.0)
+    objects = e.objects()
+    cell = objects["flashlight_battery"]
+    objects["flashlight_battery"] = ObjectState(pos=cell.pos, quat_xyzw=cell.quat_xyzw, lin_vel=np.array([0.05, 0.0, 0.0]),
+                                                ang_vel=np.zeros(3), low=cell.low, high=cell.high)
+    assert (T.score(objects), T.success(objects)) == (0.8, False)  # 4 x 0.2, not success
 
 
 def test_cap_screwed_on_an_empty_flashlight_earns_no_cap_steps():
