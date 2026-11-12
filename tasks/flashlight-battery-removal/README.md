@@ -73,9 +73,9 @@ inspect-robots run --embodiment yam_arena --policy yam_scripted \
 
 ## Instruction
 
-It gives the model what the cameras cannot show: which way the cap turns, how far to turn it in two grips,
-and how much to rise with the thread. It leaves out where things are and how to grip them, which the model
-works out from the cameras.
+It gives the model what to do with each hand and in which order, and where the battery and the flashlight go. It
+leaves out how to unscrew the cap and how to tip the battery out, and where things are: the model works those out
+from the cameras.
 
 ## Scoring
 
