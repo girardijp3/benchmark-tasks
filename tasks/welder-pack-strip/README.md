@@ -111,8 +111,8 @@ inspect-robots run --embodiment yam_arena --policy yam_scripted \
 ## Instruction
 
 It says which hand does what and the order: the right lays the strip on the pack and goes back, then the left takes
-the welder, touches its tips to the strip over each of the four cells, puts it back and goes back. It leaves out
-where things are, which the model finds from the cameras.
+the welder, welds the strip to each of the four cells, puts the welder back and goes back. It leaves out how to weld
+and where things are, which the model works out from the cameras.
 
 ## Scoring
 
