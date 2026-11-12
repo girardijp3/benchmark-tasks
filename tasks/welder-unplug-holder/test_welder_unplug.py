@@ -133,14 +133,14 @@ def test_holding_the_welder_down_earns_nothing():
 def test_unplugged_is_a_quarter():
     e = Episode()
     e.unplug()
-    assert e.done() == [True, False, False, False] and e.step()[0] == 0.25
+    assert e.done() == [True, False, False, False] and e.step()[0] == 0.2
 
 
 def test_plug_yanked_out_by_lifting_the_welder_earns_no_plug_steps():
     e = Episode()
     e.lift_welder()  # the welder pulled up and away while nothing holds the plug: the cable yanks it out
     e.step(plug=_plug(PLUG_LAID))
-    assert e.done()[:3] == [False, False, True] and e.step()[0] == 0.25
+    assert e.done()[:3] == [False, False, True] and e.step()[0] == 0.2
 
 
 def test_plug_yanked_out_then_picked_up_still_earns_no_plug_steps():
@@ -156,7 +156,7 @@ def test_plug_put_down_is_a_half():
     e = Episode()
     e.unplug()
     e.put_plug_down()
-    assert e.done() == [True, True, False, False] and e.step()[0] == 0.5
+    assert e.done() == [True, True, False, False] and e.step()[0] == 0.4
 
 
 def test_plug_on_the_table_but_still_held_is_not_put_down():
@@ -177,7 +177,7 @@ def test_welder_lifted_is_three_quarters():
     e.unplug()
     e.put_plug_down()
     e.lift_welder()
-    assert e.done() == [True, True, True, False] and e.step()[0] == 0.75
+    assert e.done() == [True, True, True, False] and e.step()[0] == 0.6
 
 
 def test_full_course_succeeds():
@@ -202,7 +202,7 @@ def test_welder_off_its_seat_or_resting_on_a_wall_misses_the_last_step(offset):
     e.put_plug_down()
     e.lift_welder()
     e.store_welder(offset=offset)
-    assert e.done()[3] is False and e.step()[0] == 0.75
+    assert e.done()[3] is False and e.step()[0] == 0.6
 
 
 def test_welder_still_held_in_its_holder_misses_the_last_step():
@@ -225,13 +225,13 @@ def test_welder_in_the_holder_still_plugged_in_misses_the_plug_steps():
 def test_arms_not_home_is_not_success():
     e = Episode()
     e.full_course()
-    assert e.step(right=_gripper(T._START_TCP["right"] + (0.0, 0.0, -0.1))) == (1.0, False)
+    assert e.step(right=_gripper(T._START_TCP["right"] + (0.0, 0.0, -0.1))) == (0.8, False)  # 4 x 0.2, not success
 
 
 def test_moving_welder_is_not_success():
     e = Episode()
     e.full_course()
-    assert e.step(speed=0.05) == (1.0, False)
+    assert e.step(speed=0.05) == (0.8, False)  # 4 x 0.2, not success
 
 
 def test_welder_off_the_table_scores_zero():

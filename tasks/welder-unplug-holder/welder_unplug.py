@@ -380,7 +380,7 @@ WELDER_BOX = (np.array([-0.004, -WELDER_WIDTH / 2, 0.0]), np.array([0.120, WELDE
 PLUG_BOX = (np.array([-0.030, -OVERMOLD[1] / 2, -OVERMOLD[2] / 2]), np.array([0.0066, OVERMOLD[1] / 2, OVERMOLD[2] / 2]))
 CELL_IN_BODY = CELL_IN_WELDER - BODY_SHIFT
 STEPS = ("unplugged by hand", "plug put down", "welder lifted", "welder in its holder")
-POINTS = 0.25  # per step
+POINTS = 0.2  # per step; only success scores 1.0
 
 
 def plug_in_port(objects):
@@ -526,10 +526,12 @@ def success(objects) -> bool:
 
 
 def score(objects) -> float:
-    """0.25 per step done (``STEPS``); 0 for any violation. Success scores 1.0."""
+    """1.0 on success; otherwise 0.2 per step done (``STEPS``, at most 0.8); 0 for any violation."""
     done = steps_done(objects)
     if _violation(objects):
         return 0.0
+    if success(objects):
+        return 1.0
     return round(POINTS * sum(done), 6)
 
 

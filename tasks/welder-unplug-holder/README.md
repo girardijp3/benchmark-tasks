@@ -12,9 +12,9 @@ leaves 2.5 mm of play at each side and 4 mm at each end.
 | File | What it is |
 |---|---|
 | `welder_unplug.py` | The `yam_arena` task file: scene, the plugged-in start, step scoring (`success`, `score`, `steps_done`) and the scripted `demo()` |
-| `assets/spot_welder_18650.usda` | The spot welder (OpenUSD): housing, battery lid and latch, sprung + contact, USB-C receptacle with its two spring fingers |
+| `assets/spot_welder_18650.usdc` | The spot welder (OpenUSD): housing, battery lid and latch, sprung + contact, USB-C receptacle with its two spring fingers |
 | `assets/battery_18650.usda` | The 18650 cell inside the welder (the task spawns it in the bay, under the closed lid) |
-| `assets/powerbank_usbc.usda` | The power bank with its captive 300 mm USB-C cable and plug, one articulation |
+| `assets/powerbank_usbc.usdc` | The power bank with its captive 300 mm USB-C cable and plug, one articulation |
 | `assets/spot_welder_holder.usda` | The welder's holder: a PLA tray, one rigid body |
 | `assets/welder_task.usda`, `assets/powerbank_task.usda` | The task's wrappers: articulation roots, the cable's joint armature, the fingers' springy contact |
 | `assets/textures/` | Plastic grain and PLA layer-line maps, and the cell's wrap label (no brand) |
@@ -88,7 +88,7 @@ inspect-robots run --embodiment yam_arena --policy yam_scripted \
   --instruction "$INSTRUCTION" --scorer task_score --max-steps 1200 --store-frames --log-dir ~/yam-eval/unplug-demo
 ```
 
-- **Score.** The run prints `task_score` at the end: 0.25 per step done, 1.0 on success. With
+- **Score.** The run prints `task_score` at the end: 0.2 per step done (at most 0.8), 1.0 only on success. With
   `-E object_jitter=0` the layout is fixed and no seed is needed. The job log prints a
   `[welder_unplug] t=...  steps done: ...` line whenever a step is done or undone, with how far the plug is from fully
   in and how far the welder is from its seat.
@@ -113,7 +113,7 @@ from the cameras.
 
 ## Scoring
 
-Four steps, **0.25 each** (`STEPS` in the task file).
+Four steps, **0.2 each** (`STEPS` in the task file); only full success scores 1.0.
 
 | Step | Done when | Judged |
 |---|---|---|
@@ -124,6 +124,8 @@ Four steps, **0.25 each** (`STEPS` in the task file).
 
 - **1.0 (success, ends the run):** all four steps, both arms back where they started (within 3 cm) holding nothing,
   and the welder and its cell still (under 1 cm/s and 0.5 rad/s) for 1 s.
+- **All four steps without full success score 0.8:** the step points stop at 0.8, so a run that finishes
+  the steps but doesn't meet the rest of the success conditions above never scores 1.0.
 - **0** at the end, whatever the steps, if:
   - the welder, its cell or the plug has fallen off the table (centre more than 2 cm below its top);
   - the cell has come out of its bay (more than 1 cm from its place, so the lid was opened);
