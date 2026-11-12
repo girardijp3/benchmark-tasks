@@ -142,16 +142,14 @@ def test_full_course_succeeds():
     assert e.step(1.0) == (1.0, True)
 
 
-def test_all_steps_with_a_part_still_moving_is_not_full_score():
+def test_all_steps_with_the_flashlight_still_moving_is_not_full_score():
     e = Episode()
     e.put_cell_in()
     e.screw_cap()
     e.step(1.0)
-    objects = e.objects()
-    cell = objects["flashlight_battery"]
-    objects["flashlight_battery"] = ObjectState(pos=cell.pos, quat_xyzw=cell.quat_xyzw, lin_vel=np.array([0.05, 0.0, 0.0]),
-                                                ang_vel=np.zeros(3), low=cell.low, high=cell.high)
-    assert (T.score(objects), T.success(objects)) == (0.8, False)  # 4 x 0.2, not success
+    moved = {n: e.pos[n] + np.array([0.003, 0.0, 0.0]) for n in e.pos}  # the whole flashlight slides 3 mm
+    assert e.step(**moved) == (0.8, False)  # 4 x 0.2, not success
+    assert e.step(1.0) == (1.0, True)  # settled again a second later
 
 
 def test_cap_screwed_on_an_empty_flashlight_earns_no_cap_steps():

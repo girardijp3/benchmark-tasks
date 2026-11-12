@@ -204,6 +204,7 @@ GRIP_FORCE = 0.5
 GRIP_OPENING = 0.003
 STEPS = ("battery picked up", "battery in, positive end first", "cap on the thread", "cap screwed down")
 POINTS = 0.2  # per step; only success scores 1.0
+STILL_S, STILL_MOVE, STILL_TURN = 1.0, 0.002, math.radians(2.0)  # settled: within 2 mm and 2 degrees over 1 s
 
 
 def _axis(state) -> np.ndarray:
@@ -266,6 +267,7 @@ class _Progress:
         self.time, self.twist, self.last = -1.0, 0.0, None
         self.picked = False
         self.reported = [False] * len(STEPS)
+        self.poses = []  # (time, {part: (pos, quat_xyzw)}) over the last STILL_S seconds
 
     def update(self, objects) -> None:
         t = objects.get("episode_time")
@@ -275,6 +277,10 @@ class _Progress:
             if t < self.time:
                 self.__init__()
             self.time = t
+            self.poses.append((t, {o.name: (objects[o.name].pos.copy(), objects[o.name].quat_xyzw.copy())
+                                   for o in OBJECTS}))
+            while self.poses[0][0] < t - STILL_S - 1e-6:
+                self.poses.pop(0)
         cell = objects["flashlight_battery"]
         grippers = [g for g in (objects.get("left_gripper"), objects.get("right_gripper")) if g is not None]
         self.picked |= cell.low[2] > TOP + PICKED_UP and any(_held(cell, g) for g in grippers)
@@ -319,10 +325,28 @@ def _violation(objects) -> bool:
     return battery_reversed(objects) or (_cap_seated(objects) and _PROGRESS.twist < SCREWED_TURN)
 
 
+def settled(objects) -> bool:
+    """The three parts have stayed in place for the last ``STILL_S``: each within ``STILL_MOVE`` m and ``STILL_TURN``
+    rad of where it was. Judged from the poses, not the simulator's instantaneous speeds: a cap screwed tight keeps a
+    contact jitter (tens of mm/s, a few rad/s) while it stays within 0.2 mm and 0.5 degrees."""
+    p = _PROGRESS
+    p.update(objects)
+    if not p.poses or p.poses[-1][0] - p.poses[0][0] < STILL_S - 1e-6:
+        return False
+    for o in OBJECTS:
+        pos = np.array([poses[o.name][0] for _, poses in p.poses])
+        if np.linalg.norm(pos.max(axis=0) - pos.min(axis=0)) > STILL_MOVE:
+            return False
+        q0 = p.poses[0][1][o.name][1]
+        turns = [2 * math.acos(min(1.0, abs(float(np.dot(q0, poses[o.name][1]))))) for _, poses in p.poses]
+        if max(turns) > STILL_TURN:
+            return False
+    return True
+
+
 def success(objects) -> bool:
-    """All four steps done, the three parts still, and no violation."""
-    return bool(all(steps_done(objects)) and not _violation(objects)
-                and all(objects[o.name].resting() for o in OBJECTS))
+    """All four steps done, the three parts settled (``settled``), and no violation."""
+    return bool(all(steps_done(objects)) and not _violation(objects) and settled(objects))
 
 
 def score(objects) -> float:

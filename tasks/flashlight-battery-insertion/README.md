@@ -85,7 +85,10 @@ the body's, toward the tail; the cell's flat end is then 2 mm inside the tube's 
 | 3. Cap on the thread | with step 2 done, the cap sits on the tube's end (centre within 1.5 mm of the axis, within 17.5 mm of its seated place) after turning at least 90° clockwise on the thread | at the end |
 | 4. Cap screwed down | with step 2 done, the cap is within 1 mm of its seated place (tight against the collar) after turning at least 300° | at the end |
 
-- **1.0 (success, ends the run):** all four steps, and the three parts still (under 1 cm/s and 0.5 rad/s) for 1 s.
+- **1.0 (success, ends the run):** all four steps, and the three parts in place for 1 s: each within 2 mm and 2° of
+  where it was 1 s before (`settled`), as a person would judge "nothing is moving" from the video. It is judged from
+  the poses, not the simulator's instantaneous speeds: a cap screwed tight keeps a contact jitter of tens of mm/s while
+  it stays within 0.2 mm and 0.5°.
 - **All four steps without full success score 0.8:** the step points stop at 0.8, so a run that finishes
   the steps but doesn't meet the rest of the success conditions above never scores 1.0.
 - **0** at the end, whatever the steps, if the cell is in the tube the wrong way round (nub toward the cap), any part
