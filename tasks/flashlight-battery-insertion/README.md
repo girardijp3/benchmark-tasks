@@ -55,7 +55,8 @@ inspect-robots run --embodiment yam_arena --policy yam_scripted \
 - The run prints `task_score` at the end (0.2 per step done (at most 0.8), 1.0 only on success). With `-E object_jitter=0` the layout
   is fixed and no seed is needed. The job log prints a `[flashlight_insertion] t=...  steps done: ...` line whenever a
   step is done or undone, with how far the cap has turned.
-- The demo reaches 1.0 at step 1,083 (54 s) and holds it to the end of its script: battery picked up at 8.4 s, in
+- The demo has all four steps done at step 1,083 (54 s) and reaches 1.0, ending the run, at step 1,126 (56.3 s),
+  once the three parts have stayed in place for the hold: battery picked up at 8.4 s, in
   positive end first at 21.8 s, cap on the thread at 39.9 s, screwed down at 54.2 s after 464 deg of turning. The
   left arm grips the body from the side, lifts it 3 cm, carries it 5 cm toward the right arm and stands it back on
   the table, holding it there. The right arm picks the cell up from above, tilted toward the nub, tips it 90 deg
