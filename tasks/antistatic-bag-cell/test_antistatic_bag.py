@@ -136,7 +136,7 @@ def test_panels_follow_the_slider():
 def test_unzipping_is_a_quarter():
     e = Episode()
     e.unzip()
-    assert e.done() == [True, False, False, False] and e.step()[0] == 0.25
+    assert e.done() == [True, False, False, False] and e.step()[0] == 0.2
 
 
 def test_half_unzipped_is_not_unzipped():
@@ -156,7 +156,7 @@ def test_cell_taken_out_is_a_step():
     e = Episode()
     e.unzip()
     e.take_cell()
-    assert e.done() == [True, True, False, True] and e.step()[0] == 0.75
+    assert e.done() == [True, True, False, True] and e.step()[0] == 0.6
 
 
 def test_cell_gripped_in_the_bag_is_not_taken_out():
@@ -177,7 +177,7 @@ def test_cell_out_and_the_other_left_in_is_three_quarters():
     e.unzip()
     e.take_cell()
     e.step(cell=SEATED + (0.05, 0.0, 0.05))
-    assert e.done() == [True, True, False, True] and e.step()[0] == 0.75
+    assert e.done() == [True, True, False, True] and e.step()[0] == 0.6
 
 
 def test_cell_upside_down_in_the_holder_is_not_in():
@@ -251,13 +251,13 @@ def test_full_course_succeeds():
 def test_arms_not_home_is_not_success():
     e = Episode()
     e.full_course()
-    assert e.step(right=_gripper(T._START_TCP["right"] + (0.0, 0.0, -0.1))) == (1.0, False)
+    assert e.step(right=_gripper(T._START_TCP["right"] + (0.0, 0.0, -0.1))) == (0.8, False)  # 4 x 0.2, not success
 
 
 def test_moving_cell_is_not_success():
     e = Episode()
     e.full_course()
-    assert e.step(speed=0.05) == (1.0, False)
+    assert e.step(speed=0.05) == (0.8, False)  # 4 x 0.2, not success
 
 
 def test_cell_off_the_table_scores_zero():

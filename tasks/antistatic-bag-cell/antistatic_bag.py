@@ -353,7 +353,7 @@ GRIP_OPENING = 0.003
 CELL_BOX = (np.array([-CELL_RADIUS, -CELL_RADIUS, -CELL_HALF]), np.array([CELL_RADIUS, CELL_RADIUS, CELL_HALF]))
 CELL_NAMES = tuple(c.name for c in CELLS)
 STEPS = ("bag unzipped", "battery taken out of the bag", "battery in the holder", "other battery left in the bag")
-POINTS = 0.25  # per step
+POINTS = 0.2  # per step; only success scores 1.0
 TRACE_S = 1.0  # s between trace lines in a run (0: none)
 
 
@@ -521,10 +521,12 @@ def success(objects) -> bool:
 
 
 def score(objects) -> float:
-    """0.25 per step done (``STEPS``); 0 for any violation. Success scores 1.0."""
+    """1.0 on success; otherwise 0.2 per step done (``STEPS``, at most 0.8); 0 for any violation."""
     done = steps_done(objects)
     if _violation(objects):
         return 0.0
+    if success(objects):
+        return 1.0
     return round(POINTS * sum(done), 6)
 
 

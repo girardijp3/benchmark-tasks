@@ -67,7 +67,7 @@ inspect-robots run --embodiment yam_arena --policy yam_scripted \
   --instruction "$INSTRUCTION" --scorer task_score --max-steps 820 --store-frames --log-dir ~/yam-eval/bag-demo
 ```
 
-- **Score.** 0.25 per step and 1.0 on success. The log prints `[antistatic_bag] t=...  steps done: ...` on each change
+- **Score.** 0.2 per step (at most 0.8) and 1.0 only on success. The log prints `[antistatic_bag] t=...  steps done: ...` on each change
   and a trace line every second: slider travel, panel angles, cells, holder, grippers.
 - **The demo.** It reaches 1.0 at step 698 (34.9 s), in 3 of 3 runs plus the windowed one: unzipped at 8.7 s, cell
   out at 21.0 s, in the holder at 30.6 s, both arms home by 34.9 s. Dream-1 scored 0.0 (media ID M-J5MEEM).
@@ -86,7 +86,7 @@ the right way up and leaves the other in the bag. It leaves out positions.
 
 ## Scoring
 
-Four steps, **0.25 each** (`STEPS` in the task file).
+Four steps, **0.2 each** (`STEPS` in the task file); only full success scores 1.0.
 
 | Step | Done when | Judged |
 |---|---|---|
@@ -97,6 +97,8 @@ Four steps, **0.25 each** (`STEPS` in the task file).
 
 - **1.0 (success, ends the run):** all four steps, and both arms back where they started (within 3 cm) holding
   nothing. The seated cell must have been still for 1 s.
+- **All four steps without full success score 0.8:** the step points stop at 0.8, so a run that finishes
+  the steps but doesn't meet the rest of the success conditions above never scores 1.0.
 - **0:** a cell off the table at the end, or a state that is not finite.
 - **"A gripper holds":** the finger pads reach the part's bounding box (5 mm slack), both fingers press with at least
   0.5 N, and the pads are at least 3 mm apart.
