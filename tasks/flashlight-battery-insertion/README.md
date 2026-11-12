@@ -68,9 +68,9 @@ inspect-robots run --embodiment yam_arena --policy yam_scripted \
 
 ## Instruction
 
-It gives the model what the cameras cannot show: which end of the cell goes first, which way the cap screws on, how
-far to turn it in grips the wrist can make, and how much to sink with the thread. It leaves out where things are,
-which the model finds from the cameras.
+It gives the model what to do with each hand and in which order, and the one thing the cameras can't settle: which
+end of the cell goes first. It leaves out how to screw the cap on and where things are, which the model works out
+from the cameras.
 
 ## Scoring
 
