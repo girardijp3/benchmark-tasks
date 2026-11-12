@@ -14,7 +14,7 @@ stays shut only once its hook has ridden over the clasp's ramp.
 | File | What it is |
 |---|---|
 | `screwdriver_case.py` | The `yam_arena` task file: scene, the open-lid start, step scoring (`success`, `score`, `steps_done`) and the scripted `demo()` |
-| `assets/screwdriver_case.usda` | The case (OpenUSD), one articulation: base with its foam insert, lid on a damped hinge, clasp slider |
+| `assets/screwdriver_case.usdc` | The case (OpenUSD), one articulation: base with its foam insert, lid on a damped hinge, clasp slider |
 | `assets/screwdriver_task.usda` | The SimReady screwdriver referenced unchanged, with this task's colliders (copied next to the download at spawn) |
 | `assets/textures/` | Plastic grain maps and the lid's label (no brand) |
 | `test_screwdriver_case.py` | Offline checks: the file loads, every scoring outcome, both arms' reach (no GPU, no network) |
@@ -22,7 +22,7 @@ stays shut only once its hook has ridden over the clasp's ramp.
 
 ## Assets
 
-**Case** (`assets/screwdriver_case.usda`): created for this task by its authors, licensed
+**Case** (`assets/screwdriver_case.usdc`): created for this task by its authors, licensed
 [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/). Units are metres and kilograms, Z up.
 
 - **Shell:** 216 x 80 x 47 mm, 2.5 mm polypropylene walls (blue, matte grain), four rubber feet; base 31 mm tall to
@@ -78,7 +78,7 @@ inspect-robots run --embodiment yam_arena --policy yam_scripted \
   --instruction "$INSTRUCTION" --scorer task_score --max-steps 760 --store-frames --log-dir ~/yam-eval/case-demo
 ```
 
-- **Score.** The run prints `task_score` at the end: 0.25 per step done, 1.0 on success. With `-E object_jitter=0`
+- **Score.** The run prints `task_score` at the end: 0.2 per step done (at most 0.8), 1.0 only on success. With `-E object_jitter=0`
   the layout is fixed and no seed is needed. The job log prints a `[screwdriver_case] t=...  steps done: ...` line
   whenever a step is done or undone, and a trace line every second (how far the screwdriver is from its seat, the
   lid's angle, the clasp slider, how far the case has moved).
@@ -110,7 +110,7 @@ It leaves out where things are, which the model finds from the cameras.
 
 ## Scoring
 
-Four steps, **0.25 each** (`STEPS` in the task file).
+Four steps, **0.2 each** (`STEPS` in the task file); only full success scores 1.0.
 
 | Step | Done when | Judged |
 |---|---|---|
@@ -122,6 +122,8 @@ Four steps, **0.25 each** (`STEPS` in the task file).
 - **1.0 (success, ends the run):** all four steps, both arms back where they started (within 3 cm) holding nothing,
   the case within 3 cm and 10° of where it started, and the case and the screwdriver still (under 1 cm/s and
   0.5 rad/s) for 1 s.
+- **All four steps without full success score 0.8:** the step points stop at 0.8, so a run that finishes
+  the steps but doesn't meet the rest of the success conditions above never scores 1.0.
 - **0** at the end, whatever the steps, if the case or the screwdriver has fallen off the table (centre more than
   2 cm below its top), the case has tipped over (more than 20°), or the state is not finite.
 - **The right way round:** a screwdriver lying in the case backwards can't sit in the cutout (its handle doesn't fit

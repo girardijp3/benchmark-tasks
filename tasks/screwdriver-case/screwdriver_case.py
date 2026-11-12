@@ -132,7 +132,7 @@ class UsdPart(Asset):
 
 # Arena places an articulation by its root link: the case's is its base, whose origin is the case's.
 CASE = UsdPart("case", asset="case", xy=CASE_XY, extent=CASE_L, mass=0.158,
-               usd_path=str(ASSETS / "screwdriver_case.usda"), pos=(*CASE_XY, TOP + 0.0003),
+               usd_path=str(ASSETS / "screwdriver_case.usdc"), pos=(*CASE_XY, TOP + 0.0003),
                rot_xyzw=_yaw_xyzw(CASE_YAW), articulation=True)
 SCREWDRIVER = UsdPart("screwdriver", asset="screwdriver", xy=SD_GRIP_XY, extent=SD_TIP_X - SD_BUTT_X, mass=0.080,
                       pos=tuple(float(v) for v in SD_REST_POS), rot_xyzw=_matrix_xyzw(SD_REST_R))
@@ -368,7 +368,7 @@ SD_BOX = (np.array([SD_BUTT_X, -SD_HALF_WIDTH, SD_AXIS_Z - SD_HALF_WIDTH]),
           np.array([SD_TIP_X, SD_HALF_WIDTH, SD_AXIS_Z + SD_HALF_WIDTH]))
 TRACE_S = 1.0  # s between trace lines in a run
 STEPS = ("screwdriver picked up", "screwdriver in its cutout", "lid closed", "lid latched")
-POINTS = 0.25  # per step
+POINTS = 0.2  # per step; only success scores 1.0
 
 
 @dataclass(frozen=True)
@@ -538,10 +538,12 @@ def success(objects) -> bool:
 
 
 def score(objects) -> float:
-    """0.25 per step done (``STEPS``); 0 for any violation. Success scores 1.0."""
+    """1.0 on success; otherwise 0.2 per step done (``STEPS``, at most 0.8); 0 for any violation."""
     done = steps_done(objects)
     if _violation(objects):
         return 0.0
+    if success(objects):
+        return 1.0
     return round(POINTS * sum(done), 6)
 
 

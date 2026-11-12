@@ -118,7 +118,7 @@ def test_start_scores_zero():
 def test_picked_up_is_a_quarter():
     e = Episode()
     e.pick()
-    assert e.done() == [True, False, False, False] and e.step()[0] == 0.25
+    assert e.done() == [True, False, False, False] and e.step()[0] == 0.2
 
 
 def test_gripped_on_the_bench_is_not_picked_up():
@@ -137,7 +137,7 @@ def test_in_its_cutout_is_a_step():
     e = Episode()
     e.pick()
     e.lay_in()
-    assert e.done() == [True, True, False, False] and e.step()[0] == 0.5
+    assert e.done() == [True, True, False, False] and e.step()[0] == 0.4
 
 
 def test_seated_within_play_counts():
@@ -182,7 +182,7 @@ def test_lid_closed_over_it_is_a_step():
     e.pick()
     e.lay_in()
     e.close_lid(angle=math.radians(-3), latch=-0.0017)  # resting on the clasp's ramp, not caught
-    assert e.done() == [True, True, True, False] and e.step()[0] == 0.75
+    assert e.done() == [True, True, True, False] and e.step()[0] == 0.6
 
 
 def test_lid_latched_is_the_last_step():
@@ -214,20 +214,20 @@ def test_full_course_succeeds():
 def test_arms_not_home_is_not_success():
     e = Episode()
     e.full_course()
-    assert e.step(left=_gripper(T._START_TCP["left"] + (0.0, 0.0, -0.1))) == (1.0, False)
+    assert e.step(left=_gripper(T._START_TCP["left"] + (0.0, 0.0, -0.1))) == (0.8, False)  # 4 x 0.2, not success
 
 
 def test_moving_case_is_not_success():
     e = Episode()
     e.full_course()
-    assert e.step(speed=0.05) == (1.0, False)
+    assert e.step(speed=0.05) == (0.8, False)  # 4 x 0.2, not success
 
 
 def test_case_pushed_away_is_not_success():
     e = Episode()
     e.full_course()
     d = np.array([0.05, 0.0, 0.0])
-    assert e.step(case=e.case + d, sd=e.sd + d) == (1.0, False)
+    assert e.step(case=e.case + d, sd=e.sd + d) == (0.8, False)  # 4 x 0.2, not success
 
 
 def test_screwdriver_off_the_table_scores_zero():
