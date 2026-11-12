@@ -17,6 +17,6 @@
   "run_limit": "2,400 steps (2 minutes at 20 Hz)",
   "reset_notes": "Put the battery back in the tube, positive end toward the head, screw the cap on until it seats against the collar, and stand the flashlight on its bezel at its mark, cap up. The box stays taped in place.",
   "fidelity": "Rigid bodies, 240 Hz physics, 20 Hz control. The cap's 4-start thread, tube and cap collide as signed distance fields (0.2 mm clearance), so the cap must turn about one turn to come off; the battery is a convex hull in a 0.4 mm wider bore. Cap shell and tube grip like rubber (friction 1.5), standing in for knurling and soft finger pads; threads 0.35, battery wrap 0.1. The springs are visual only. The box is fixed. No deformation.",
-  "scores": "Dream-1 run: 0.18 (it held the flashlight body, one of the five steps; the cap stayed on. The run was recorded before this revision and reported 0.2 under the earlier 0.2-per-step points); demo: 1.0 (success at step 953)",
-  "media": "M-RFMDDW"
+  "scores": "Dream-1 run: 0.0 (both arms reached the flashlight together early on, then drew back near their bases for the rest of the run; it never held the body or turned the cap); demo: 1.0 (success at step 953)",
+  "media": "M-FE5BVX"
 }
