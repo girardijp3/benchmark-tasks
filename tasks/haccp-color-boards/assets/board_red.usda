@@ -1,0 +1,121 @@
+#usda 1.0
+(
+    defaultPrim = "board_red"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "board_red" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Red HDPE cutting board, 229 x 305 x 12.7 mm (9 x 12 x 1/2 in). Origin at the underside's centre, x across the 229 mm side, y along the 305 mm side. Spawned kinematic (the board is held down by its own weight on the bench; it is fixed so that only the food moves)."
+)
+{
+    bool physics:kinematicEnabled = 1
+    float physics:mass = 0.9
+
+    def "Looks"
+    {
+        def Material "Phys_HDPE" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.35
+        }
+
+        def Material "BoardTop"
+        {
+            token outputs:surface.connect = </board_red/Looks/BoardTop/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.8, 0.1, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "BoardEdge"
+        {
+            token outputs:surface.connect = </board_red/Looks/BoardEdge/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.64, 0.08, 0.08)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "HangHole"
+        {
+            token outputs:surface.connect = </board_red/Looks/HangHole/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.05, 0.05, 0.05)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.9
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Slab" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </board_red/Looks/Phys_HDPE> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.229, 0.305, 0.0127)
+        double3 xformOp:translate = (0, 0, 0.00635)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Mesh "SlabVisual" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.1145, -0.1525, 0), (0.1145, 0.1525, 0.0127)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 3, 0, 3, 2, 4, 6, 7, 4, 7, 5, 0, 4, 5, 0, 5, 1, 2, 3, 7, 2, 7, 6, 0, 2, 6, 0, 6, 4, 1, 5, 7, 1, 7, 3]
+        rel material:binding = </board_red/Looks/BoardTop>
+        point3f[] points = [(-0.1145, -0.1525, 0), (-0.1145, -0.1525, 0.0127), (-0.1145, 0.1525, 0), (-0.1145, 0.1525, 0.0127), (0.1145, -0.1525, 0), (0.1145, -0.1525, 0.0127), (0.1145, 0.1525, 0), (0.1145, 0.1525, 0.0127)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "EdgeBand" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.1147, -0.1527, 0), (0.1147, 0.1527, 0.003)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 3, 0, 3, 2, 4, 6, 7, 4, 7, 5, 0, 4, 5, 0, 5, 1, 2, 3, 7, 2, 7, 6, 0, 2, 6, 0, 6, 4, 1, 5, 7, 1, 7, 3]
+        rel material:binding = </board_red/Looks/BoardEdge>
+        point3f[] points = [(-0.1147, -0.1527, 0), (-0.1147, -0.1527, 0.003), (-0.1147, 0.1527, 0), (-0.1147, 0.1527, 0.003), (0.1147, -0.1527, 0), (0.1147, -0.1527, 0.003), (0.1147, 0.1527, 0), (0.1147, 0.1527, 0.003)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "JuiceGroove" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.0995, -0.1375, 0.0127), (0.0995, 0.1375, 0.0128)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 3, 0, 3, 2, 4, 6, 7, 4, 7, 5, 0, 4, 5, 0, 5, 1, 2, 3, 7, 2, 7, 6, 0, 2, 6, 0, 6, 4, 1, 5, 7, 1, 7, 3]
+        rel material:binding = </board_red/Looks/BoardEdge>
+        point3f[] points = [(-0.0995, -0.1375, 0.0127), (-0.0995, -0.1375, 0.0128), (-0.0995, 0.1375, 0.0127), (-0.0995, 0.1375, 0.0128), (0.0995, -0.1375, 0.0127), (0.0995, -0.1375, 0.0128), (0.0995, 0.1375, 0.0127), (0.0995, 0.1375, 0.0128)]
+        uniform token subdivisionScheme = "none"
+    }
+}
+

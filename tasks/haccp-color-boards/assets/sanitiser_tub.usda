@@ -1,0 +1,200 @@
+#usda 1.0
+(
+    defaultPrim = "SanitiserTub"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "SanitiserTub" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Food-safe polypropylene dip tub for sanitiser, 150 x 200 x 70 mm outside, 3 mm walls, filled to 40 mm with sanitiser solution (the liquid is a visual slab only, no collider). Origin at the underside's centre. Spawned kinematic."
+)
+{
+    bool physics:kinematicEnabled = 1
+    float physics:mass = 0.25
+
+    def "Looks"
+    {
+        def Material "Phys_PP" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.35
+        }
+
+        def Material "Shell"
+        {
+            token outputs:surface.connect = </SanitiserTub/Looks/Shell/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.93, 0.94, 0.95)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.5
+                token outputs:surface
+            }
+        }
+
+        def Material "Liquid"
+        {
+            token outputs:surface.connect = </SanitiserTub/Looks/Liquid/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.35, 0.78, 0.92)
+                float inputs:metallic = 0
+                float inputs:opacity = 0.6
+                float inputs:roughness = 0.1
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Floor" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </SanitiserTub/Looks/Phys_PP> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.15, 0.2, 0.003)
+        double3 xformOp:translate = (0, 0, 0.0015)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Mesh "FloorV" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.075, -0.1, 0), (0.075, 0.1, 0.003)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 3, 0, 3, 2, 4, 6, 7, 4, 7, 5, 0, 4, 5, 0, 5, 1, 2, 3, 7, 2, 7, 6, 0, 2, 6, 0, 6, 4, 1, 5, 7, 1, 7, 3]
+        rel material:binding = </SanitiserTub/Looks/Shell>
+        point3f[] points = [(-0.075, -0.1, 0), (-0.075, -0.1, 0.003), (-0.075, 0.1, 0), (-0.075, 0.1, 0.003), (0.075, -0.1, 0), (0.075, -0.1, 0.003), (0.075, 0.1, 0), (0.075, 0.1, 0.003)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Cube "Wall0" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </SanitiserTub/Looks/Phys_PP> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.003, 0.2, 0.07)
+        double3 xformOp:translate = (0.0735, 0, 0.035)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Mesh "WallV0" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.072, -0.1, 0), (0.075, 0.1, 0.07)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 3, 0, 3, 2, 4, 6, 7, 4, 7, 5, 0, 4, 5, 0, 5, 1, 2, 3, 7, 2, 7, 6, 0, 2, 6, 0, 6, 4, 1, 5, 7, 1, 7, 3]
+        rel material:binding = </SanitiserTub/Looks/Shell>
+        point3f[] points = [(0.072, -0.1, 0), (0.072, -0.1, 0.07), (0.072, 0.1, 0), (0.072, 0.1, 0.07), (0.075, -0.1, 0), (0.075, -0.1, 0.07), (0.075, 0.1, 0), (0.075, 0.1, 0.07)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Cube "Wall1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </SanitiserTub/Looks/Phys_PP> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.003, 0.2, 0.07)
+        double3 xformOp:translate = (-0.0735, 0, 0.035)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Mesh "WallV1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.075, -0.1, 0), (-0.072, 0.1, 0.07)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 3, 0, 3, 2, 4, 6, 7, 4, 7, 5, 0, 4, 5, 0, 5, 1, 2, 3, 7, 2, 7, 6, 0, 2, 6, 0, 6, 4, 1, 5, 7, 1, 7, 3]
+        rel material:binding = </SanitiserTub/Looks/Shell>
+        point3f[] points = [(-0.075, -0.1, 0), (-0.075, -0.1, 0.07), (-0.075, 0.1, 0), (-0.075, 0.1, 0.07), (-0.072, -0.1, 0), (-0.072, -0.1, 0.07), (-0.072, 0.1, 0), (-0.072, 0.1, 0.07)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Cube "Wall2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </SanitiserTub/Looks/Phys_PP> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.144, 0.003, 0.07)
+        double3 xformOp:translate = (0, 0.0985, 0.035)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Mesh "WallV2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.072, 0.097, 0), (0.072, 0.1, 0.07)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 3, 0, 3, 2, 4, 6, 7, 4, 7, 5, 0, 4, 5, 0, 5, 1, 2, 3, 7, 2, 7, 6, 0, 2, 6, 0, 6, 4, 1, 5, 7, 1, 7, 3]
+        rel material:binding = </SanitiserTub/Looks/Shell>
+        point3f[] points = [(-0.072, 0.097, 0), (-0.072, 0.097, 0.07), (-0.072, 0.1, 0), (-0.072, 0.1, 0.07), (0.072, 0.097, 0), (0.072, 0.097, 0.07), (0.072, 0.1, 0), (0.072, 0.1, 0.07)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Cube "Wall3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </SanitiserTub/Looks/Phys_PP> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.144, 0.003, 0.07)
+        double3 xformOp:translate = (0, -0.0985, 0.035)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Mesh "WallV3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.072, -0.1, 0), (0.072, -0.097, 0.07)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 3, 0, 3, 2, 4, 6, 7, 4, 7, 5, 0, 4, 5, 0, 5, 1, 2, 3, 7, 2, 7, 6, 0, 2, 6, 0, 6, 4, 1, 5, 7, 1, 7, 3]
+        rel material:binding = </SanitiserTub/Looks/Shell>
+        point3f[] points = [(-0.072, -0.1, 0), (-0.072, -0.1, 0.07), (-0.072, -0.097, 0), (-0.072, -0.097, 0.07), (0.072, -0.1, 0), (0.072, -0.1, 0.07), (0.072, -0.097, 0), (0.072, -0.097, 0.07)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Solution" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.0719, -0.0969, 0.00225), (0.0719, 0.0969, 0.04075)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 3, 0, 3, 2, 4, 6, 7, 4, 7, 5, 0, 4, 5, 0, 5, 1, 2, 3, 7, 2, 7, 6, 0, 2, 6, 0, 6, 4, 1, 5, 7, 1, 7, 3]
+        rel material:binding = </SanitiserTub/Looks/Liquid>
+        point3f[] points = [(-0.0719, -0.0969, 0.00225), (-0.0719, -0.0969, 0.04075), (-0.0719, 0.0969, 0.00225), (-0.0719, 0.0969, 0.04075), (0.0719, -0.0969, 0.00225), (0.0719, -0.0969, 0.04075), (0.0719, 0.0969, 0.00225), (0.0719, 0.0969, 0.04075)]
+        uniform token subdivisionScheme = "none"
+    }
+}
+

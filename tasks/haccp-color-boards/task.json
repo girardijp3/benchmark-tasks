@@ -1,0 +1,23 @@
+{
+  "title": "Colour-coded prep: raw pork, chicken and cod each on their own board, sanitising between foods",
+  "category": "Impact on jobs",
+  "keywords": [
+    "food safety",
+    "HACCP",
+    "colour-coded cutting boards",
+    "cross-contamination",
+    "raw meat",
+    "sanitising",
+    "kitchen prep",
+    "bimanual"
+  ],
+  "instruction": "Lay out the raw pork chop, chicken thigh and cod fillet on the cutting boards matching their HACCP colours, and keep any raw food from contaminating another.",
+  "context": "Line cooks and prep staff (O*NET 35-2014.00 Cooks, Restaurant, about 1.3 million employed in the US; 35-2021.00 Food Preparation Workers, about 0.9 million) lay out raw proteins at the start of every prep shift, and HACCP plans make colour-coded boards a core duty: red for raw meat, yellow for raw poultry, blue for raw fish and seafood (US food-service convention). A raw cut that touches another food's board, or hands and tools that move from one raw food to the next unsanitised, is cross-contamination: the board and food are discarded and cleaned, and it cannot be undone by moving things back.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Three 9 x 12 x 1/2 in (229 x 305 x 12.7 mm) HDPE cutting boards lie in a row 0.40 m out: yellow at y 0.32, red at y 0, blue at y -0.32. A stainless gastronorm 1/2 pan (265 x 325 x 20 mm) at x 0.145 holds three rigid raw cuts of true size and mass: a boneless chicken thigh (100 x 67 x 24 mm, 114 g) at y 0.105, a cod loin fillet (170 x 58 x 28 mm, 193 g) at y 0, a pork loin chop (112 x 69 x 22 mm, 131 g) at y -0.105. A 150 x 200 x 70 mm tub of sanitiser solution (40 mm deep) stands at the right, x 0.16, y -0.38. The robot's grippers are clean at the start.",
+  "scoring": "Four steps, 0.2 each, judged from the video, as things stand at the end. (1) Pork on the red board, (2) chicken thigh on the yellow board, (3) cod on the blue board: each cut lies flat (within 10 degrees), resting on its own board's top face with its whole underside over the board. (4) Every gripper clear: with steps 1 to 3, no gripper's pads within 3 cm of any cut. Full score 1.0 (ends the run) only once all four steps have held together, without a break, for 1 s, with the three cuts each within 2 mm and 2 degrees of where they were when that second began; any lapse restarts the second, and the step points stop at 0.8, also while it is being timed. Cross-contamination scores 0 for the whole run, however briefly and however it is put right afterwards. It is checked at every control step and is any of: a cut touching a board that is not its own (any point of it on that board's top face or against its side); pads that have held one kind of raw food gripping a different kind before they were sanitised; unsanitised pads that have held a raw food touching a board that is not that food's. Pads are sanitised by holding them open (apart by 20 mm or more), with the tips at least 10 mm under the sanitiser's surface and holding nothing, for 2 s without a break. A cut off the table also scores 0.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Put the three cuts back in the pan in a row (thigh at y 0.105, cod at y 0, pork at y -0.105, each lying flat with its length along x); put the boards in their places and dry them; the sanitiser tub stays filled. Both grippers start clean.",
+  "fidelity": "Rigid convex cuts (61-vertex hulls, true size, mass from 1.06 g/cm3, friction 0.6/0.5) stand in for soft meat. No contamination physics: cross-contact is read from poses every control step (cut on a wrong board, unsanitised pads gripping another food or touching a wrong board) and kept for the run. The sanitiser is a visual slab; pads count as sanitised after 2 s open and 10 mm under its surface (real contact times are 10 to 60 s). Pads count as one surface.",
+  "scores": "Dream-1 run: 0.0 (the left gripper picked up the thigh but no cut was set on any board, so no step was done; no cross-contamination event); demo: 1.0 (first two steps at 11.45 s, all four at 34.60 s, success at step 702)",
+  "media": "M-TGZ4PC"
+}
