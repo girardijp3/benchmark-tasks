@@ -41,10 +41,10 @@ def _home(side):
     return _gripper(T._START_TCP[side])
 
 
-def _state(pos, quat=(0.0, 0.0, 0.0, 1.0), speed=0.0):
+def _state(pos, quat=(0.0, 0.0, 0.0, 1.0), speed=0.0, spin=0.0):
     pos = np.asarray(pos, float)
     return ObjectState(pos=pos, quat_xyzw=np.asarray(quat, float), lin_vel=np.array([speed, 0.0, 0.0]),
-                       ang_vel=np.zeros(3), low=pos.copy(), high=pos.copy())
+                       ang_vel=np.array([0.0, 0.0, spin]), low=pos.copy(), high=pos.copy())
 
 
 class Episode:
@@ -55,6 +55,7 @@ class Episode:
         self.left, self.right = _home("left"), _home("right")
         self.holder = np.array(T.HOLDER_POS)
         self.speed = 0.0
+        self.spin = 0.0
         self.cell_2_away = False
         self.cell_2_quat = UP.copy()
 
@@ -62,7 +63,7 @@ class Episode:
         return {
             "bag": _state(T.BAG_POS, T._yaw_xyzw(T.BAG_YAW)),
             "holder": _state(self.holder, speed=self.speed),
-            "cell_1": _state(self.cell, self.cell_quat, self.speed),
+            "cell_1": _state(self.cell, self.cell_quat, self.speed, self.spin),
             "cell_2": _state(np.array(T.CELL_POS[1]) + ((0.0, -0.2, 0.0) if self.cell_2_away else 0.0),
                              self.cell_2_quat),
             "left_gripper": self.left,
@@ -246,6 +247,97 @@ def test_full_course_succeeds():
     e = Episode()
     e.full_course()
     assert e.step(1.0) == (1.0, True)
+
+
+def test_no_full_score_before_one_second_of_stillness():
+    """The success conditions first hold on the step the cell is let go in its cup (the last of ``full_course``):
+    0.8 until they have held for 1 s, then 1.0."""
+    e = Episode()
+    e.full_course()
+    assert e.step(T.STILL_S - 0.05) == (0.8, False)  # held 0.95 s
+    assert e.step(0.05) == (1.0, True)  # held 1.0 s
+
+
+def test_cell_moving_restarts_the_second():
+    e = Episode()
+    e.full_course()
+    assert e.step(0.6) == (0.8, False)
+    assert e.step(speed=0.02) == (0.8, False)  # 2 cm/s: not still, the count stops
+    assert e.step(speed=0.0) == (0.8, False)  # still again: the second starts over on this step
+    assert e.step(T.STILL_S - 0.05) == (0.8, False)  # 1.65 s since the conditions first held, but 0.95 s unbroken
+    assert e.step(0.05) == (1.0, True)
+
+
+def test_cell_spinning_restarts_the_second():
+    e = Episode()
+    e.full_course()
+    assert e.step(0.6) == (0.8, False)
+    assert e.step(spin=1.0) == (0.8, False)  # 1 rad/s: not still
+    assert e.step(spin=0.0) == (0.8, False)
+    assert e.step(T.STILL_S - 0.05) == (0.8, False)
+    assert e.step(0.05) == (1.0, True)
+
+
+def test_arm_leaving_home_restarts_the_second():
+    e = Episode()
+    e.full_course()
+    assert e.step(0.6) == (0.8, False)
+    assert e.step(right=_gripper(T._START_TCP["right"] + (0.0, 0.0, -0.1))) == (0.8, False)
+    assert e.step(right=_home("right")) == (0.8, False)
+    assert e.step(T.STILL_S - 0.05) == (0.8, False)
+    assert e.step(0.05) == (1.0, True)
+
+
+def test_full_score_drops_when_the_cell_moves_after_success():
+    e = Episode()
+    e.full_course()
+    assert e.step(T.STILL_S) == (1.0, True)
+    assert e.step(speed=0.05) == (0.8, False)
+
+
+def _course_missing(missing):
+    """The full course with one full-success condition left out, from the start or after the course."""
+    e = Episode()
+    if missing != "bag never unzipped":
+        e.unzip()
+    if missing == "cell never taken out by a gripper":
+        e.insert_cell()
+        return e
+    e.take_cell()
+    if missing == "cell not in a cup":
+        e.insert_cell(at=SEATED + (0.05, 0.0, 0.05))
+    elif missing == "cell upside down in the cup":
+        e.insert_cell(quat=UPSIDE_DOWN)
+    else:
+        e.insert_cell()
+    changes = {
+        "other cell taken out too": {"cell_2_away": True},
+        "left arm not home": {"left": _gripper(T._START_TCP["left"] + (0.0, 0.0, -0.1))},
+        "right arm not home": {"right": _gripper(T._START_TCP["right"] + (0.0, 0.0, -0.1))},
+        "right gripper still holding the seated cell": {"right": _holding_cell(SEATED)},
+        "cell and holder moving": {"speed": 0.02},
+        "cell turning": {"spin": 1.0},
+    }.get(missing, {})
+    for k, v in changes.items():
+        setattr(e, k, v)
+    return e
+
+
+@pytest.mark.parametrize("missing", ["bag never unzipped", "cell never taken out by a gripper", "cell not in a cup",
+                                     "cell upside down in the cup", "other cell taken out too", "left arm not home",
+                                     "right arm not home", "right gripper still holding the seated cell",
+                                     "cell and holder moving", "cell turning"])
+def test_no_full_score_while_any_success_condition_is_missing(missing):
+    """With each full-success condition missing in turn, 3 s go by and score() never reaches 1.0."""
+    e = _course_missing(missing)
+    for _ in range(60):
+        got, ok = e.step()
+        assert got < 1.0 and not ok, (missing, e.t, got)
+
+
+def test_run_ends_when_success_first_holds():
+    """success() already needs the conditions held for 1 s, so the run is not held a second more."""
+    assert TASK.success_hold_s == 0.0
 
 
 def test_arms_not_home_is_not_success():

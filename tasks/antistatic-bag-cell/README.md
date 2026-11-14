@@ -17,7 +17,7 @@ so it has to go straight down the middle. The cups leave 0.3 mm a side around a 
 | `assets/holder_18650_2x2.usda` | The bottom half of a 2x2 18650 cell holder, one rigid body |
 | `assets/battery_18650_yellow.usda` | The 18650 cell, yellow wrap, with flat-ended prism colliders |
 | `assets/textures/` | The bag's print (a generic ESD caution label, no brand) and the cell's wrap |
-| `test_antistatic_bag.py` | Offline checks: the file loads, every scoring outcome, both arms' reach (no GPU, no network) |
+| `test_antistatic_bag.py` | Offline checks: the file loads, every scoring outcome (1.0 only after 1 s of the success conditions, restarted by motion), both arms' reach (no GPU, no network) |
 | `task.json` | The task's details for the board |
 
 ## Assets
@@ -67,10 +67,13 @@ inspect-robots run --embodiment yam_arena --policy yam_scripted \
   --instruction "$INSTRUCTION" --scorer task_score --max-steps 820 --store-frames --log-dir ~/yam-eval/bag-demo
 ```
 
-- **Score.** 0.2 per step (at most 0.8) and 1.0 only on success. The log prints `[antistatic_bag] t=...  steps done: ...` on each change
-  and a trace line every second: slider travel, panel angles, cells, holder, grippers.
-- **The demo.** It reaches 1.0 at step 698 (34.9 s), in 3 of 3 runs plus the windowed one: unzipped at 8.7 s, cell
-  out at 21.0 s, in the holder at 30.6 s, both arms home by 34.9 s. Dream-1 scored 0.0 (media ID M-J5MEEM).
+- **Score.** 0.2 per step (at most 0.8) and 1.0 only on success, once the success conditions have held for 1 s. The
+  log prints `[antistatic_bag] t=...  steps done: ...` on each change, `success conditions met` (and `lapsed`) when
+  the 1 s starts (or restarts), and a trace line every second: slider travel, panel angles, cells, holder, grippers.
+- **The demo.** It reaches 1.0 at step 698, as it did before the 1 s was timed in the task file (3 of 3 runs plus
+  the windowed one then; checked again after). Log times, which count the 0.5 s settle before step 1: unzipped at
+  8.65 s, cell out at 21.0 s, in the holder at 30.55 s (step 601), every success condition holding from 34.4 s (step
+  678), 1.0 one second later. Dream-1 scored 0.0 (media ID M-J5MEEM).
   - The left arm leans 20° toward itself and pinches the slider across the zipper. It pulls the slider 77 mm in 4 s:
     the bag is unzipped at 8.7 s. Then it goes home.
   - The right arm comes straight down into the mouth, fingers 29 mm apart and closing along it. It grips the cell's
@@ -95,13 +98,36 @@ Four steps, **0.2 each** (`STEPS` in the task file); only full success scores 1.
 | 3. Battery in the holder | with step 2 done, a cell within 3 mm of a cup's seat, positive end up within 10°, not held | at the end |
 | 4. Other battery left in the bag | with step 2 done, a cell still stands in the bag (upright within 30°), not held | at the end |
 
-- **1.0 (success, ends the run):** all four steps, and both arms back where they started (within 3 cm) holding
-  nothing. The seated cell must have been still for 1 s.
-- **All four steps without full success score 0.8:** the step points stop at 0.8, so a run that finishes
-  the steps but doesn't meet the rest of the success conditions above never scores 1.0.
-- **0:** a cell off the table at the end, or a state that is not finite.
+- **1.0 (success, ends the run):** only once all of these have held together, without a break, for 1 s
+  (`STILL_S`):
+  - all four steps;
+  - both arms back where they started (within 3 cm), holding nothing;
+  - the seated cell and the holder still: under 1 cm/s and 0.5 rad/s (`STILL_SPEED`, `STILL_SPIN`).
+- **The 1 s is timed in the task file:** `_Progress` notes, once per control step, the time the conditions first held
+  (`conditions_met`). Any lapse, such as the cell moving faster or an arm leaving home, clears it, and the second
+  starts over the next time they all hold. `success()` and `score()` give 1.0 only once that second is complete.
+  `SUCCESS_HOLD_S` is 0, so the run ends on that same step instead of waiting another second.
+- **Until then, all four steps score 0.8:** the step points stop at 0.8, also while the second is being timed.
+- **0:** a cell or the holder off the table at the end, or a state that is not finite.
 - **"A gripper holds":** the finger pads reach the part's bounding box (5 mm slack), both fingers press with at least
   0.5 N, and the pads are at least 3 mm apart.
+
+## Revision notes
+
+Earlier reviews asked for these changes; each is done as follows.
+- **"Change the domain to impact on jobs and explain how seating cells in a holder is core assembly work for team
+  assemblers."** `task.json`: category Impact on jobs, and its context names the assemblers' work.
+- **"Align the simulation score with the stated full-score conditions so it cannot report 1.0 before both arms
+  return and the seated cell has settled."** The step points stop at 0.8, and 1.0 needs every full-success
+  condition (Scoring).
+- **"Update the simulation scorer to track the seated cell's continuous stillness for one second and return 1.0
+  only after that period and the other full-success conditions are met."** `success()` now times it in the task
+  file: `_Progress.met_since` notes, every control step, when every full-success condition (`conditions_met`: the
+  four steps, both arms home and empty, the seated cell and the holder under 1 cm/s and 0.5 rad/s) first held, and
+  any lapse clears it. `success()` and `score()` give 1.0 only once that has lasted `STILL_S` = 1 s;
+  `SUCCESS_HOLD_S` is 0, so the run ends on that step. Tests in `test_antistatic_bag.py`: no 1.0 at 0.95 s, 1.0 at
+  1 s; the cell moving or turning, or an arm leaving home, restarts the second; no 1.0 while any one condition is
+  missing. The demo still reaches 1.0 at step 698, so the videos are unchanged.
 
 ## Reset
 
