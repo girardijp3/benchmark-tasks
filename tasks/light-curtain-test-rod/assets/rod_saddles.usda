@@ -1,0 +1,140 @@
+#usda 1.0
+(
+    defaultPrim = "RodSaddles"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "RodSaddles" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Two saddles for a test rod, 200 mm apart along x (centres at x = -0.10 and +0.10): a 30 x 60 x 12 mm block with two 6 mm cheeks 34 mm apart that stop a 30 mm rod rolling. The rod's axis sits 27 mm above the table. Origin on the table midway."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.001, 0.001, 0.001)
+    float physics:mass = 0.4
+
+    def Scope "Looks"
+    {
+        def Material "Phys_plastic" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.35
+            float physics:restitution = 0
+            float physics:staticFriction = 0.45
+        }
+
+        def Material "m111113"
+        {
+            token outputs:surface.connect = </RodSaddles/Looks/m111113/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.12, 0.12, 0.14)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Box1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </RodSaddles/Looks/m111113>
+        rel material:binding:physics = </RodSaddles/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.03, 0.06, 0.012)
+        double3 xformOp:translate = (-0.1, 0, 0.006)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </RodSaddles/Looks/m111113>
+        rel material:binding:physics = </RodSaddles/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.03, 0.006, 0.008)
+        double3 xformOp:translate = (-0.1, -0.02, 0.016)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </RodSaddles/Looks/m111113>
+        rel material:binding:physics = </RodSaddles/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.03, 0.006, 0.008)
+        double3 xformOp:translate = (-0.1, 0.02, 0.016)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box4" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </RodSaddles/Looks/m111113>
+        rel material:binding:physics = </RodSaddles/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.03, 0.06, 0.012)
+        double3 xformOp:translate = (0.1, 0, 0.006)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box5" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </RodSaddles/Looks/m111113>
+        rel material:binding:physics = </RodSaddles/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.03, 0.006, 0.008)
+        double3 xformOp:translate = (0.1, -0.02, 0.016)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box6" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </RodSaddles/Looks/m111113>
+        rel material:binding:physics = </RodSaddles/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.03, 0.006, 0.008)
+        double3 xformOp:translate = (0.1, 0.02, 0.016)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

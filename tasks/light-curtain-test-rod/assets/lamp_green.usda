@@ -1,0 +1,48 @@
+#usda 1.0
+(
+    defaultPrim = "LampGreen"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "LampGreen" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "The receiver's green lamp (field clear): a 28 mm disc 0.6 mm thick, visual only (no collider, no gravity). It waits inside the housing; the task puts it on the post's top cap."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (1e-7, 1e-7, 1e-7)
+    float physics:mass = 0.001
+    custom bool physxRigidBody:disableGravity = 1
+
+    def Scope "Looks"
+    {
+        def Material "m098919"
+        {
+            token outputs:surface.connect = </LampGreen/Looks/m098919/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.9, 0.2)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cylinder "Cyl1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0006
+        rel material:binding = </LampGreen/Looks/m098919>
+        double radius = 0.014
+        double3 xformOp:translate = (0, 0, 0.0003)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+

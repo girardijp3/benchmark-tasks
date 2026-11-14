@@ -1,0 +1,48 @@
+#usda 1.0
+(
+    defaultPrim = "LampRed"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "LampRed" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "The receiver's red lamp (field interrupted): see the green lamp."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (1e-7, 1e-7, 1e-7)
+    float physics:mass = 0.001
+    custom bool physxRigidBody:disableGravity = 1
+
+    def Scope "Looks"
+    {
+        def Material "m940704"
+        {
+            token outputs:surface.connect = </LampRed/Looks/m940704/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.08, 0.05)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cylinder "Cyl1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0006
+        rel material:binding = </LampRed/Looks/m940704>
+        double radius = 0.014
+        double3 xformOp:translate = (0, 0, 0.0003)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+

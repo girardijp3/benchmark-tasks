@@ -1,0 +1,420 @@
+#usda 1.0
+(
+    defaultPrim = "Curtain"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Curtain" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A 30 mm-resolution safety light curtain, protected height 150 mm: two 40 x 40 mm housings 440 mm apart (centres), 230 mm tall, on 90 x 90 x 12 mm foot plates. 8 beams, 20 mm pitch, 10 mm lenses (resolution = pitch + lens). Origin on the table at the field's footprint; x normal to the field."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.2, 0.2, 0.2)
+    float physics:mass = 6
+
+    def Scope "Looks"
+    {
+        def Material "Phys_steel" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.35
+            float physics:restitution = 0
+            float physics:staticFriction = 0.5
+        }
+
+        def Material "m191921"
+        {
+            token outputs:surface.connect = </Curtain/Looks/m191921/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.2, 0.2, 0.22)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m947707"
+        {
+            token outputs:surface.connect = </Curtain/Looks/m947707/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.78, 0.08)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m070708"
+        {
+            token outputs:surface.connect = </Curtain/Looks/m070708/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.08, 0.08, 0.09)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m440101"
+        {
+            token outputs:surface.connect = </Curtain/Looks/m440101/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.45, 0.02, 0.02)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m040411"
+        {
+            token outputs:surface.connect = </Curtain/Looks/m040411/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.05, 0.05, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Box1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Curtain/Looks/m191921>
+        rel material:binding:physics = </Curtain/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.09, 0.09, 0.012)
+        double3 xformOp:translate = (0, -0.22, 0.006)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Curtain/Looks/m947707>
+        rel material:binding:physics = </Curtain/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.04, 0.19)
+        double3 xformOp:translate = (0, -0.22, 0.127)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Curtain/Looks/m070708>
+        rel material:binding:physics = </Curtain/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.04, 0.02)
+        double3 xformOp:translate = (0, -0.22, 0.022)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box4" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Curtain/Looks/m070708>
+        rel material:binding:physics = </Curtain/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.04, 0.02)
+        double3 xformOp:translate = (0, -0.22, 0.23199999999999998)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Cyl5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0006
+        rel material:binding = </Curtain/Looks/m440101>
+        double radius = 0.005
+        double3 xformOp:translate = (0, -0.2, 0.057)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Cyl6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0006
+        rel material:binding = </Curtain/Looks/m440101>
+        double radius = 0.005
+        double3 xformOp:translate = (0, -0.2, 0.077)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Cyl7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0006
+        rel material:binding = </Curtain/Looks/m440101>
+        double radius = 0.005
+        double3 xformOp:translate = (0, -0.2, 0.097)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Cyl8" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0006
+        rel material:binding = </Curtain/Looks/m440101>
+        double radius = 0.005
+        double3 xformOp:translate = (0, -0.2, 0.11699999999999999)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Cyl9" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0006
+        rel material:binding = </Curtain/Looks/m440101>
+        double radius = 0.005
+        double3 xformOp:translate = (0, -0.2, 0.137)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Cyl10" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0006
+        rel material:binding = </Curtain/Looks/m440101>
+        double radius = 0.005
+        double3 xformOp:translate = (0, -0.2, 0.157)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Cyl11" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0006
+        rel material:binding = </Curtain/Looks/m440101>
+        double radius = 0.005
+        double3 xformOp:translate = (0, -0.2, 0.177)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Cyl12" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0006
+        rel material:binding = </Curtain/Looks/m440101>
+        double radius = 0.005
+        double3 xformOp:translate = (0, -0.2, 0.197)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "Box13" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Curtain/Looks/m191921>
+        rel material:binding:physics = </Curtain/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.09, 0.09, 0.012)
+        double3 xformOp:translate = (0, 0.22, 0.006)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box14" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Curtain/Looks/m947707>
+        rel material:binding:physics = </Curtain/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.04, 0.19)
+        double3 xformOp:translate = (0, 0.22, 0.127)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box15" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Curtain/Looks/m070708>
+        rel material:binding:physics = </Curtain/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.04, 0.02)
+        double3 xformOp:translate = (0, 0.22, 0.022)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box16" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Curtain/Looks/m070708>
+        rel material:binding:physics = </Curtain/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.04, 0.02)
+        double3 xformOp:translate = (0, 0.22, 0.23199999999999998)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Cyl17" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0006
+        rel material:binding = </Curtain/Looks/m040411>
+        double radius = 0.005
+        double3 xformOp:translate = (0, 0.2, 0.057)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Cyl18" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0006
+        rel material:binding = </Curtain/Looks/m040411>
+        double radius = 0.005
+        double3 xformOp:translate = (0, 0.2, 0.077)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Cyl19" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0006
+        rel material:binding = </Curtain/Looks/m040411>
+        double radius = 0.005
+        double3 xformOp:translate = (0, 0.2, 0.097)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Cyl20" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0006
+        rel material:binding = </Curtain/Looks/m040411>
+        double radius = 0.005
+        double3 xformOp:translate = (0, 0.2, 0.11699999999999999)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Cyl21" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0006
+        rel material:binding = </Curtain/Looks/m040411>
+        double radius = 0.005
+        double3 xformOp:translate = (0, 0.2, 0.137)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Cyl22" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0006
+        rel material:binding = </Curtain/Looks/m040411>
+        double radius = 0.005
+        double3 xformOp:translate = (0, 0.2, 0.157)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Cyl23" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0006
+        rel material:binding = </Curtain/Looks/m040411>
+        double radius = 0.005
+        double3 xformOp:translate = (0, 0.2, 0.177)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Cyl24" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0006
+        rel material:binding = </Curtain/Looks/m040411>
+        double radius = 0.005
+        double3 xformOp:translate = (0, 0.2, 0.197)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+

@@ -1,0 +1,23 @@
+{
+  "title": "Test two machine light curtains with their test rods and tag out the one that fails",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "light curtain",
+    "test rod",
+    "safety check",
+    "tag out",
+    "maintenance",
+    "packaging machine",
+    "decision and manipulation"
+  ],
+  "instruction": "Test each machine's light curtain with its test rod at the bottom, middle and top of its field, and put the DO NOT USE tag in the holder of any machine whose curtain fails.",
+  "context": "Operators and maintenance workers prove a machine's safety light curtain before the shift by pushing the supplied test rod (30 mm for a hand-protection curtain) through its field at the bottom, middle and top while watching the receiver's lamp: it must go red every time. A curtain that does not trip is taken out of service with a tag on the machine. Done by general maintenance and repair workers (O*NET 49-9071, about 1.5 million US workers), industrial machinery mechanics (49-9041, about 400,000) and packaging and filling machine operators (51-9111, about 370,000); a daily or per-shift check under IEC 61496-2 and the machine's own safety instructions. Here two benchtop machines stand side by side, one curtain has a dead beam and the other is sound.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Two identical safety light curtains, each a pair of 40 x 40 mm yellow housings 230 mm tall on 90 x 90 mm foot plates, protected height 150 mm (52 to 202 mm above the table), 400 mm between the lenses; field centres at (0.44, 0.38) and (0.44, -0.38), the field plane facing the robot (x = 0.44). Each has 8 beams 20 mm apart with 10 mm lenses (30 mm resolution) and a lamp on the receiver's top cap: green while clear, red while a beam is interrupted. Each machine has a 30 mm test rod (300 mm, 110 g, aluminium tube with yellow and black bands) resting on two saddles in front of its field, tip 5 cm short of the plane, and an empty tag holder (a slot 8 mm wide, 90 mm long) 15 cm in front of the plane beside the field. A red 76 x 127 x 5 mm DO NOT USE tag stands in a rack at (0.26, 0). One receiver has a dead beam channel (the one 117 mm above the table); which machine it is changes between trials. The dead beam is seen only through the lamp: the rod trips the faulty lamp at the bottom and top but not where it covers only the dead beam.",
+  "scoring": "Four steps, 0.2 each, judged from the video. (1) Left field tested: a rod has been pushed through it, axis within 15 degrees of the field's normal, tip at least 4 cm past the plane, between the posts, once in each third of the field (bottom 52-102 mm, middle 102-152, top 152-202 mm axis height). (2) The same for the right field. (3) The tag stands in the holder of the machine whose curtain missed the rod (lower edge in the slot within 12 mm along it and 4 mm across, upright within 6 degrees), after that curtain's test was complete, and none in the other holder. (4) With steps 1 to 3: both rods out of both fields and every gripper at least 3 cm from the tag and the rods. Full score 1.0 (ends the run) only once all four steps have held together, without a break, for 1 s with the rods and the tag within 2 mm and 2 degrees of where they were when that second began; step points stop at 0.8. 0 overall if a rod or the tag is off the table.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Put each rod on its saddles and the tag in the rack; stand the tag holders empty. Move the dead beam to the other machine by covering the lens of the beam 117 mm up on one receiver with 15 mm of black tape (a coin flip chooses the machine); the lamps then show whether a rod tripped them.",
+  "fidelity": "Rigid bodies, 240 Hz physics, 20 Hz control; curtains, holders, saddles and rack are fixtures. The trip lamp is a declared code effect: a red and a green disc swapped on the receiver's cap, red while a rod covers the whole 10 mm lens of a working beam (beams are lines, rods are cylinders). The faulty machine has one beam that never trips; the real trial tapes that lens. The tag is a 5 mm rigid sign in a slot, not a hang tag. Rod 110 g aluminium tube (typical value).",
+  "scores": "Dream-1 run: 0.0 (both arms moved about over the table toward the curtains' posts but never lifted a rod or took the tag: no pass was made, both lamps stayed green, the tag stayed in the rack); demo: 1.0 (both curtains tested by 18.5 s, the tag in the right holder at 36.45 s, success at step 798)",
+  "media": "M-7J5F3K"
+}

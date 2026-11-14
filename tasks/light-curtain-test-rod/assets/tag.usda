@@ -1,0 +1,96 @@
+#usda 1.0
+(
+    defaultPrim = "Tag"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Tag" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A 'DO NOT USE' tag, 76 x 127 mm (3 x 5 in), 5 mm HDPE, 46 g, red with a white band; its thickness is along y. Origin at the middle of its lower edge."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0.0635)
+    float3 physics:diagonalInertia = (0.00006192367, 0.000083969164, 0.000022237167)
+    float physics:mass = 0.046
+
+    def Scope "Looks"
+    {
+        def Material "Phys_hdpe" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.4
+        }
+
+        def Material "m840404"
+        {
+            token outputs:surface.connect = </Tag/Looks/m840404/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.85, 0.05, 0.05)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m969696"
+        {
+            token outputs:surface.connect = </Tag/Looks/m969696/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.97, 0.97, 0.97)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Box1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Tag/Looks/m840404>
+        rel material:binding:physics = </Tag/Looks/Phys_hdpe> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.076, 0.005, 0.127)
+        double3 xformOp:translate = (0, 0, 0.0635)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Tag/Looks/m969696>
+        double size = 1
+        float3 xformOp:scale = (0.064, 0.0003, 0.034)
+        double3 xformOp:translate = (0, -0.0026, 0.07874)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Tag/Looks/m969696>
+        double size = 1
+        float3 xformOp:scale = (0.064, 0.0003, 0.034)
+        double3 xformOp:translate = (0, 0.0026, 0.07874)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+
