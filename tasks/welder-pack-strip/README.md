@@ -24,7 +24,7 @@ more than about 35°.
 | `assets/battery_18650.usda` | The welder's own cell (blue wrap), in its bay under the latched lid |
 | `assets/spot_welder_holder.usda` | The welder's holder, an orange PLA tray open at the middle of its long sides |
 | `assets/textures/` | Plastic grain and PLA layer maps and the cells' wrap labels (no brand) |
-| `test_welder_strip.py` | Offline checks: the file loads, every scoring outcome, the demo's welds land on the terminals, both arms' reach (no GPU, no network) |
+| `test_welder_strip.py` | Offline checks: the file loads, every scoring outcome (1.0 only after 1 s of the success conditions, restarted by motion), the demo's welds land on the terminals, both arms' reach (no GPU, no network) |
 | `task.json` | The task's details for the board |
 
 ## Assets
@@ -80,11 +80,14 @@ inspect-robots run --embodiment yam_arena --policy yam_scripted \
   --instruction "$INSTRUCTION" --scorer task_score --max-steps 1200 --store-frames --log-dir ~/yam-eval/strip-demo
 ```
 
-- **Score.** The run prints `task_score` at the end: the step points done, 1.0 on success. With `-E object_jitter=0`
-  the layout is fixed and no seed is needed. The job log prints a `[welder_strip] t=...  steps done: ...` line
-  whenever a step is done or undone, and a `weld on cell k` line with where the tips touched the strip.
-- **The demo.** It reaches 1.0 at step 1043 (52.2 s): strip on the pack at 11.6 s, welds on cells 2, 4, 3 and 1 at
-  20.1, 26.7, 33.3 and 39.6 s, welder back in its holder at 47.5 s, both arms home by 51 s. A trial takes about
+- **Score.** The run prints `task_score` at the end: the step points done, 1.0 on success (the success conditions
+  held for 1 s). With `-E object_jitter=0` the layout is fixed and no seed is needed. The job log prints a
+  `[welder_strip] t=...  steps done: ...` line whenever a step is done or undone, a `weld on cell k` line with where
+  the tips touched the strip, and `success conditions met` (and `lapsed`) when the 1 s starts (or restarts).
+- **The demo.** It reaches 1.0 at step 1044. Log times, which count the 0.5 s settle before step 1: strip on the
+  pack at 11.6 s, welds on cells 2, 4, 3 and 1 at 20.05, 26.7, 33.25 and 39.55 s, welder back in its holder at
+  47.45 s (step 939), every success condition holding from 51.7 s (step 1024), 1.0 one second later. (Before the 1 s
+  was timed in the task file, the run ended at step 1043.) A trial takes about
   6 minutes on an L40S, including startup.
   - The right arm points down onto the strip's tab, leaned 15° about its closing axis (straight down, its wrist's
     joint 4 runs into its limit over the pack), and closes across the tab's 3 mm loop at about 5 N a finger. It lifts
@@ -114,6 +117,24 @@ It says which hand does what and the order: the right lays the strip on the pack
 the welder, welds the strip to each of the four cells, puts the welder back and goes back. It leaves out how to weld
 and where things are, which the model works out from the cameras.
 
+## Category: Impact on jobs
+
+Joining cells into packs is regular work in two assembly occupations:
+- **Team assemblers** (O*NET 51-2092.00; the BLS counts them with other miscellaneous assemblers and fabricators,
+  about 1.4 million US jobs). They rotate through every task of their line's production process, and assembling
+  electrical or electronic equipment is one of their listed work activities. On a battery-pack line, one of those
+  tasks is welding the cells' connections.
+- **Electrical and electronic equipment assemblers** (O*NET 51-2022.00, SOC 51-2028). Their core task is installing
+  components "using rivets, bolts, soldering or micro-welding equipment", and batteries are among the equipment they
+  assemble.
+
+On lithium-ion pack lines and repair benches that work is laying nickel strip over the cells' terminals and
+resistance spot-welding it to each cell. That is a standard way to join cylindrical cells into a pack: a pack maker's
+process note (Lithion Battery, "Resistance Welding for Cell Interconnect") and a 2022 study of tab welding to 18650
+cells (Int. J. Adv. Manuf. Technol. 121:6581-6597) describe it. The task tests the same steps at bench scale: placing
+a 1 g strip squarely on the pack, then pressing the welder's two copper tips onto it right over each terminal without
+knocking the pack apart. A missed or misplaced weld leaves that cell out of the circuit.
+
 ## Scoring
 
 Six steps (`STEPS` and `POINTS` in the task file).
@@ -124,10 +145,16 @@ Six steps (`STEPS` and `POINTS` in the task file).
 | 2-5. Cell 1, 2, 3, 4 welded | 0.1 each | with the strip on the pack and the welder in a gripper, both probe tips touch the strip's metal (within 0.5 mm of its top face, not more than 1 mm into it, not past its edges) over that cell's + terminal (within 3.5 mm of its axis) for 0.2 s; two dark spots appear on the strip where the tips touched | once done |
 | 6. Welder back in its holder | 0.2 | after a gripper took it out, the welder sits in its holder's pocket (within 5 mm of its seat, on the floor within 2 mm, upright within 10°) and no gripper holds it | at the end |
 
-- **1.0 (success, ends the run):** all six steps, both arms back where they started (within 3 cm) holding nothing,
-  and the welder, the strip and the pack's parts still (under 1 cm/s and 0.5 rad/s) for 1 s.
-- **All six steps without full success score 0.8:** the step points stop at 0.8, so a run that finishes
-  the steps but doesn't meet the rest of the success conditions above never scores 1.0.
+- **1.0 (success, ends the run):** only once all of these have held together, without a break, for 1 s
+  (`STILL_S`):
+  - all six steps;
+  - both arms back where they started (within 3 cm), holding nothing;
+  - the welder, the strip and the pack still: under 1 cm/s and 0.5 rad/s (`STILL_SPEED`, `STILL_SPIN`).
+- **The 1 s is timed in the task file:** `_Progress` notes, once per control step, the time the conditions first held
+  (`conditions_met`). Any lapse, such as a part moving faster or an arm leaving home, clears it, and the second starts
+  over the next time they all hold. `success()` and `score()` give 1.0 only once that second is complete.
+  `SUCCESS_HOLD_S` is 0, so the run ends on that same step instead of waiting another second.
+- **Until then, all six steps score 0.8:** the step points stop at 0.8, also while the second is being timed.
 - **0** at the end, whatever the steps, if the pack has been knocked over (tilted more than 20°), any part has fallen
   off the table (centre more than 2 cm below its top), or the state is not finite.
 - **Only a gripper's work counts:** a strip knocked onto the pack, a welder dropped onto the strip, or a welder that
@@ -155,6 +182,26 @@ Spot-welding lithium-ion cells is safe with the usual battery-bench precautions:
   unattended between trials.
 - **After a trial:** check each cell's temperature by hand before touching the pack; set aside any cell that is hot,
   swollen or marked.
+
+## Revision notes
+
+Earlier reviews asked for these changes; each is done as follows.
+- **"Include assets/spot_welder_18650.usda in the archive and verify the scene and full-score demo run from the
+  packaged files."** The welder is packaged as binary USD under 2 MB (`assets/spot_welder_18650.usdc`, referenced by
+  `assets/welder_task.usda`); every file is under 1.87 MB. The demo runs from files unpacked from the committed branch.
+- **"Specify a practical bond check for each real-world weld, such as a controlled peel or pull test, and require
+  successful bonds for full welding credit."** Scoring, "On a real station": a 10 N pull for 2 s with a spring scale
+  beside each weld; a weld counts only if the strip stays on.
+- **"Document safe cell preparation and fire precautions for real trials."** The section "Real-world trials:
+  safety".
+- **"Change the domain to Impact on jobs and explain how welding battery-pack connections relates to the regular
+  work of team assemblers."** `task.json`: category Impact on jobs; its context and the section "Category: Impact on
+  jobs" above give the occupations' duties and sources. (The round before suggested Other; the latest review asked
+  for Impact on jobs.)
+- **Also fixed (raised on another task's review, and true here too): a score of 1.0 before the stated 1 s of
+  stillness.** `success()` now times the full-success conditions itself (`_Progress.met_since`, `conditions_met`,
+  `STILL_S`), and `score()` gives 1.0 only once they have held for 1 s; see Scoring. Tests: no 1.0 at 0.95 s, 1.0 at
+  1 s, motion restarts the second, and no 1.0 while any one condition is missing.
 
 ## Reset
 

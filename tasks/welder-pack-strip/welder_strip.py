@@ -36,7 +36,7 @@ from yam_arena.urdf import axis_angle_matrix, quat_xyzw_to_matrix
 
 SCENE = "station"
 TOP = TABLE_TOP[SCENE]
-SUCCESS_HOLD_S = 1.0
+SUCCESS_HOLD_S = 0.0  # success() itself needs every success condition held for STILL_S: the run ends when it first holds
 ASSETS = Path(__file__).resolve().parent / "assets"
 TAG = "welder_strip"
 
@@ -563,15 +563,18 @@ def _hide_spots() -> None:
 
 
 class _Progress:
-    """What has happened so far this episode: whether a gripper has taken the strip out of its tray and the welder out
-    of its holder, and the welds made (cell -> where each tip touched, in the strip's frame). Starts over (and hides the
-    weld spots) when the episode time goes back."""
+    """What has happened so far this episode, updated once per control step: whether a gripper has taken the strip out
+    of its tray and the welder out of its holder, the welds made (cell -> where each tip touched, in the strip's
+    frame), and since when every full-success condition (``conditions_met``) has held without a break (``None`` while
+    one fails: any lapse, such as a part moving, restarts the count). Starts over (and hides the weld spots) when the
+    episode time goes back."""
 
     def __init__(self):
         self.time = -1.0
         self.strip_taken = self.welder_taken = False
         self.welds: dict[int, tuple] = {}
         self.touching, self.since = None, 0.0
+        self.met_since = None
         self.reported = None
 
     def update(self, objects) -> None:
@@ -595,6 +598,19 @@ class _Progress:
             if t is not None:
                 print(f"[{TAG}] t={t:.2f}s  weld on cell {cell} (spots at {np.round(spots[0][:2] * 1000, 1)} and "
                       f"{np.round(spots[1][:2] * 1000, 1)} mm on the strip)", flush=True)
+        if t is None:  # no clock: nothing can be timed
+            return
+        met = conditions_met(objects, self)
+        if met and self.met_since is None:
+            self.met_since = t
+            print(f"[{TAG}] t={t:.2f}s  success conditions met: timing {STILL_S:g} s", flush=True)
+        elif not met and self.met_since is not None:
+            self.met_since = None
+            print(f"[{TAG}] t={t:.2f}s  success conditions lapsed: timing restarts", flush=True)
+
+    def held_s(self) -> float:
+        """How long every full-success condition has held without a break (s), 0 while one fails."""
+        return 0.0 if self.met_since is None else self.time - self.met_since
 
 
 _PROGRESS = _Progress()
@@ -603,6 +619,14 @@ _PROGRESS = _Progress()
 STEPS = ("strip on the pack", "cell 1 welded", "cell 2 welded", "cell 3 welded", "cell 4 welded",
          "welder back in its holder")
 POINTS = (0.2, 0.1, 0.1, 0.1, 0.1, 0.2)  # at most 0.8; only success scores 1.0
+STILL_S = 1.0  # s: success needs every full-success condition held without a break this long, among them
+STILL_SPEED, STILL_SPIN = 0.01, 0.5  # ... the welder, the strip and the pack still: under 1 cm/s and 0.5 rad/s
+
+
+def _steps(objects, p) -> list[bool]:
+    """Each of ``STEPS`` from the progress ``p`` and the parts as they stand (see ``steps_done``)."""
+    strip = bool(p.strip_taken and strip_on_pack(objects) and not strip_held(objects))
+    return [strip] + [k in p.welds for k in range(1, 5)] + [bool(p.welder_taken and welder_put_back(objects))]
 
 
 def steps_done(objects) -> list[bool]:
@@ -611,8 +635,7 @@ def steps_done(objects) -> list[bool]:
     stand, once a gripper has taken it out)."""
     p = _PROGRESS
     p.update(objects)
-    strip = bool(p.strip_taken and strip_on_pack(objects) and not strip_held(objects))
-    done = [strip] + [k in p.welds for k in range(1, 5)] + [bool(p.welder_taken and welder_put_back(objects))]
+    done = _steps(objects, p)
     if "episode_time" in objects and done != p.reported:  # in a run, log each change: the run's step timeline
         p.reported = done
         got = ", ".join(name for name, ok in zip(STEPS, done, strict=True) if ok) or "none"
@@ -650,17 +673,28 @@ def _trace(objects) -> None:
           f" mm/s | welds {sorted(_PROGRESS.welds)}", flush=True)
 
 
+def conditions_met(objects, p) -> bool:
+    """Every full-success condition, as things stand (``p``: the episode's progress): all six steps done, both arms
+    back where they started with nothing in hand, the welder, the strip and the pack still (under ``STILL_SPEED`` and
+    ``STILL_SPIN``), and no violation."""
+    return bool(all(_steps(objects, p)) and not _violation(objects) and _home(objects, "left")
+                and _home(objects, "right")
+                and all(objects[n].resting(STILL_SPEED, STILL_SPIN) for n in ("welder", "strip", "pack")))
+
+
 def success(objects) -> bool:
-    """All steps done, both arms back where they started with nothing in hand, the strip, the pack and the welder
-    still, and no violation."""
+    """Every full-success condition (``conditions_met``) has held without a break for ``STILL_S``, counted from the
+    first control step it held: the welder, the strip and the pack still for that whole second, both arms home, all
+    six steps."""
     _trace(objects)
-    return bool(all(steps_done(objects)) and not _violation(objects) and _home(objects, "left")
-                and _home(objects, "right") and objects["welder"].resting() and objects["strip"].resting()
-                and objects["pack"].resting())
+    p = _PROGRESS
+    p.update(objects)
+    return bool(p.met_since is not None and p.held_s() >= STILL_S - 1e-6)
 
 
 def score(objects) -> float:
-    """1.0 on success; otherwise ``POINTS`` per step done (``STEPS``, at most 0.8); 0 for any violation."""
+    """1.0 on success (every full-success condition held for ``STILL_S``); otherwise ``POINTS`` per step done
+    (``STEPS``, at most 0.8, also while the second is being timed); 0 for any violation."""
     done = steps_done(objects)
     if _violation(objects):
         return 0.0

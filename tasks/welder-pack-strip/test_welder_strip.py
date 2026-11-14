@@ -53,10 +53,10 @@ def _welder_grip(origin, quat):
     return np.asarray(origin, float) + T.quat_xyzw_to_matrix(quat) @ np.array([T.WELDER_GRIP_AT, 0.0, T.WELDER_HEIGHT / 2])
 
 
-def _state(pos, quat=(0.0, 0.0, 0.0, 1.0), speed=0.0):
+def _state(pos, quat=(0.0, 0.0, 0.0, 1.0), speed=0.0, spin=0.0):
     pos = np.asarray(pos, float)
     return ObjectState(pos=pos, quat_xyzw=np.asarray(quat, float), lin_vel=np.array([speed, 0.0, 0.0]),
-                       ang_vel=np.zeros(3), low=pos.copy(), high=pos.copy())
+                       ang_vel=np.array([0.0, 0.0, spin]), low=pos.copy(), high=pos.copy())
 
 
 class Episode:
@@ -67,6 +67,7 @@ class Episode:
         self.pack, self.pack_quat = np.array(T.PACK_POS), np.array([0.0, 0.0, 0.0, 1.0])
         self.left, self.right = _home("left"), _home("right")
         self.speed = 0.0
+        self.pack_speed = self.pack_spin = 0.0
 
     def objects(self):
         housing = self.origin + T.quat_xyzw_to_matrix(self.quat) @ T.BODY_SHIFT
@@ -75,7 +76,7 @@ class Episode:
             "housing": T.PartPose(pos=housing, quat_xyzw=self.quat),
             "welder_cell": _state(self.origin + T.quat_xyzw_to_matrix(self.quat) @ T.CELL_IN_WELDER),
             "welder_holder": _state(T.HOLDER_POS, T._yaw_xyzw(T.HOLDER_YAW)),
-            "pack": _state(self.pack, self.pack_quat),
+            "pack": _state(self.pack, self.pack_quat, self.pack_speed, self.pack_spin),
             "strip": _state(self.strip, self.strip_quat, self.speed),
             "strip_tray": _state(T.TRAY_POS),
             "left_gripper": self.left,
@@ -288,6 +289,90 @@ def test_full_course_succeeds():
     e.full_course()
     assert e.done() == [True] * 6
     assert e.step(1.0) == (1.0, True)
+
+
+def test_no_full_score_before_one_second_of_stillness():
+    """The success conditions first hold on the step the left arm is back home (the last of ``full_course``): 0.8
+    until they have held for 1 s, then 1.0."""
+    e = Episode()
+    e.full_course()
+    assert e.step(T.STILL_S - 0.05) == (0.8, False)  # held 0.95 s
+    assert e.step(0.05) == (1.0, True)  # held 1.0 s
+
+
+@pytest.mark.parametrize("motion", [{"speed": 0.02}, {"pack_speed": 0.02}, {"pack_spin": 1.0}])
+def test_motion_restarts_the_second(motion):
+    """The welder and the strip (``speed``) or the pack moving at 2 cm/s, or the pack turning at 1 rad/s."""
+    e = Episode()
+    e.full_course()
+    assert e.step(0.6) == (0.8, False)
+    assert e.step(**motion) == (0.8, False)  # not still: the count stops
+    assert e.step(**{k: 0.0 for k in motion}) == (0.8, False)  # still again: the second starts over on this step
+    assert e.step(T.STILL_S - 0.05) == (0.8, False)  # 1.65 s since the conditions first held, but 0.95 s unbroken
+    assert e.step(0.05) == (1.0, True)
+
+
+def test_arm_leaving_home_restarts_the_second():
+    e = Episode()
+    e.full_course()
+    assert e.step(0.6) == (0.8, False)
+    assert e.step(right=_gripper(T._START_TCP["right"] + (0.0, 0.0, -0.1))) == (0.8, False)
+    assert e.step(right=_home("right")) == (0.8, False)
+    assert e.step(T.STILL_S - 0.05) == (0.8, False)
+    assert e.step(0.05) == (1.0, True)
+
+
+def test_full_score_drops_when_a_part_moves_after_success():
+    e = Episode()
+    e.full_course()
+    assert e.step(T.STILL_S) == (1.0, True)
+    assert e.step(pack_speed=0.05) == (0.8, False)
+
+
+def _course_missing(missing):
+    """The full course with one full-success condition left out, during the course or after it."""
+    e = Episode()
+    if missing == "strip off centre on the pack":
+        e.lay_strip(at=ON_PACK + (0.004, 0.0, 0.0))
+    else:
+        e.lay_strip()
+    e.take_welder()
+    for cell in T.WELD_ORDER:
+        if missing != f"cell {cell} not welded":
+            e.weld(cell)
+    if missing == "welder never put back":
+        e.step(left=_home("left"))
+        return e
+    e.put_welder_back()
+    changes = {
+        "welder left beside its holder": {"origin": np.array(T.WELDER_POS) + (0.0, -0.06, -0.0035)},
+        "left gripper still holding the welder": {"left": _holding(_welder_grip(T.WELDER_POS, LEVEL_QUAT))},
+        "left arm not home": {"left": _gripper(T._START_TCP["left"] + (0.0, 0.0, -0.1))},
+        "right arm not home": {"right": _gripper(T._START_TCP["right"] + (0.0, 0.0, -0.1))},
+        "welder and strip moving": {"speed": 0.02},
+        "pack moving": {"pack_speed": 0.02},
+        "pack turning": {"pack_spin": 1.0},
+    }.get(missing, {})
+    for k, v in changes.items():
+        setattr(e, k, v)
+    return e
+
+
+@pytest.mark.parametrize("missing", ["strip off centre on the pack", *(f"cell {c} not welded" for c in range(1, 5)),
+                                     "welder never put back", "welder left beside its holder",
+                                     "left gripper still holding the welder", "left arm not home",
+                                     "right arm not home", "welder and strip moving", "pack moving", "pack turning"])
+def test_no_full_score_while_any_success_condition_is_missing(missing):
+    """With each full-success condition missing in turn, 3 s go by and score() never reaches 1.0."""
+    e = _course_missing(missing)
+    for _ in range(60):
+        got, ok = e.step()
+        assert got < 1.0 and not ok, (missing, e.t, got)
+
+
+def test_run_ends_when_success_first_holds():
+    """success() already needs the conditions held for 1 s, so the run is not held a second more."""
+    assert TASK.success_hold_s == 0.0
 
 
 def test_welder_never_taken_out_is_not_back():
