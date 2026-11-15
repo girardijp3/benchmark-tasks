@@ -93,4 +93,4 @@ Slide the module off the rail's rear end and lay it on the rack on its mark, slo
 
 ## Status
 
-Dream-1 score: 0.0 (600 steps, hit the step limit). Demo: 1.0 at step 316 (15.8 s). Media: TBD.
+Dream-1 score: 0.0 (600 steps, hit the step limit). Demo: 1.0 at step 316 (15.8 s). Media: M-6AR424.
