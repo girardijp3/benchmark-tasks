@@ -123,4 +123,4 @@ spoon in the GN 1/3 pan with its bowl on the floor and its handle resting on the
 
 ## Status
 
-Dream-1 score: 0.0 (both arms moved up toward the nearest lids and hovered; no lid was lifted). Demo: 1.0 at step 620 (second pan seated by step 270, all four steps by step 562). Media: TBD (assigned at upload).
+Dream-1 score: 0.0 (both arms moved up toward the nearest lids and hovered; no lid was lifted). Demo: 1.0 at step 620 (second pan seated by step 270, all four steps by step 562). Media: M-6RX6L4.
