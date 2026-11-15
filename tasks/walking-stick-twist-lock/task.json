@@ -1,0 +1,25 @@
+{
+  "title": "Lengthen an adjustable walking stick to its red mark and lock it, a job for an owner who cannot twist it",
+  "category": "Societal relatability",
+  "keywords": [
+    "walking stick",
+    "adjustable cane",
+    "twist lock",
+    "telescoping tube",
+    "assistive robot",
+    "arthritis",
+    "mobility aid",
+    "bayonet slot",
+    "elder care",
+    "home robot"
+  ],
+  "instruction": "Lengthen the walking stick until its red band shows above the sleeve, lock it at that length, and let go of it.",
+  "context": "Adjustable walking sticks are fitted to their owner's height with a twist-lock: the upper tube is turned a little to free it, drawn out to the marked length and turned back to lock. People with arthritis or weak hands often cannot turn the tube against the lock, and a home-care robot that sets the length is a plain, useful job. Here the lock is a bayonet slot: a lug has to be turned out of its notch into the slot, the tube drawn up the slot to the red mark, and the lug turned into the upper notch, where the notch holds it up and down. The slots give a few millimetres of clearance and a few degrees of turn.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the arm bases: x forward, y to the robot's left. The sleeve (fixed, axis at x 0.30, y -0.12) is a 32 mm aluminium ring with a 24 mm bore, 100 mm tall on a 6 mm base plate, with two slots 180 degrees apart (56 degrees wide) and, 14 mm tall, two circumferential notches that run 38 degrees to the side of each slot: one at the bottom (stowed) and one with its floor 56 mm up (the red mark). The stick's upper tube (a free body, 0.20 kg) is a 20 mm tube 120 mm long with two 6 x 8 mm lugs at its bottom, a red band 44 mm up and a 40 x 12 x 10 mm T handle bar on top. It starts stowed: the lugs rest in the bottom notches (turned 48 degrees), the handle bar top 136 mm above the table.",
+  "scoring": "Four steps, 0.2 each, judged as things stand at the end. (1) The stick was lifted at least 15 mm at some time (it has been turned out of its stowed notch). (2) Drawn: its bottom from 4 mm below to 20 mm above its locked rest height (the red band at the rim), axis within 4 mm of the sleeve's, within 6 degrees of upright. (3) Locked: that, with its bottom no more than 6.5 mm above the notch floor and turned counter-clockwise (seen from above) between 44 and 62 degrees, so the lugs are in the upper notches. (4) With step 3, no gripper pad within 3 cm of the stick and none holds it. Full score 1.0 (ends the run) only once all four steps have held together, without a break, for 1 s, with the stick within 2 mm and 2 degrees of where it was when that second began; any lapse restarts the second, and the step points stop at 0.8. A stick that leaves the table or is drawn right out of the sleeve scores 0 for the whole run.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Stand the stick in the sleeve at x 0.30, y -0.12, lugs resting in the bottom notches (turned 48 degrees); nothing else is moved.",
+  "fidelity": "Rigid aluminium cylinders and sector prisms at typical walking-stick sizes, friction 0.35 / 0.30; the lock is geometric (slots, notches, 6 mm of vertical play), with no spring, cam or detent, so it does not resist a turn back. Real sticks hold with a friction cam; a bayonet slot is used here so the lock is judged by geometry. The sleeve is held fixed in a base, as in a stand.",
+  "scores": "Dream-1 run: 0.0 (2400 steps, hit the step limit); demo: 1.0 at step 369 (scripted demo, Isaac Lab-Arena)",
+  "media": "M-NVWZKK"
+}

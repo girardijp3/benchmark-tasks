@@ -1,0 +1,173 @@
+#usda 1.0
+(
+    defaultPrim = "Stick"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Stick" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "The sliding upper tube of an adjustable walking stick: a 20 mm aluminium tube 120 mm long with two lugs at its bottom, a red band and a 40 x 12 x 10 mm T handle bar on top; 0.2 kg. Origin: the tube's bottom on its axis."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0.065)
+    float3 physics:diagonalInertia = (0.00028666668, 0.00028666668, 0.00001)
+    float physics:mass = 0.2
+
+    def Scope "Looks"
+    {
+        def Material "Phys_al" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.35
+        }
+
+        def Material "m294977"
+        {
+            token outputs:surface.connect = </Stick/Looks/m294977/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.3, 0.5, 0.78)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_red" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.35
+        }
+
+        def Material "m840909"
+        {
+            token outputs:surface.connect = </Stick/Looks/m840909/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.85, 0.1, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_bar" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.35
+        }
+
+        def Material "m141417"
+        {
+            token outputs:surface.connect = </Stick/Looks/m141417/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.15, 0.15, 0.18)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cylinder "Tube1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.12
+        rel material:binding = </Stick/Looks/m294977>
+        rel material:binding:physics = </Stick/Looks/Phys_al> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.01
+        double3 xformOp:translate = (0, 0, 0.06)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "Lug2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Stick/Looks/m294977>
+        rel material:binding:physics = </Stick/Looks/Phys_al> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.0065, 0.006, 0.008)
+        double3 xformOp:translate = (0.01125, 0, 0.004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Lug3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Stick/Looks/m294977>
+        rel material:binding:physics = </Stick/Looks/Phys_al> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 180
+        float3 xformOp:scale = (0.0065, 0.006, 0.008)
+        double3 xformOp:translate = (-0.01125, 1.3777276490407724e-18, 0.004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cylinder "RedBand4" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.008
+        rel material:binding = </Stick/Looks/m840909>
+        rel material:binding:physics = </Stick/Looks/Phys_red> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.0102
+        double3 xformOp:translate = (0, 0, 0.048)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "Bar5" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Stick/Looks/m141417>
+        rel material:binding:physics = </Stick/Looks/Phys_bar> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.012, 0.01)
+        double3 xformOp:translate = (0, 0, 0.125)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+
