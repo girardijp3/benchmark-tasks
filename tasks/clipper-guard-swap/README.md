@@ -89,4 +89,4 @@ toward -y; the guides may be shuffled between slots between trials.
 
 ## Status
 
-Dream-1 score: 0.0 (both arms moved up from their bases and hovered; the number 2 guide stayed on the clipper and nothing was picked from the tray, in the 1,200-step run limit). Demo: 1.0 (number 2 off at 9.65 s, number 4 lifted by 23.15 s, on the blade at 32.15 s, clipped on and success at step 789). Media: TBD.
+Dream-1 score: 0.0 (both arms moved up from their bases and hovered; the number 2 guide stayed on the clipper and nothing was picked from the tray, in the 1,200-step run limit). Demo: 1.0 (number 2 off at 9.65 s, number 4 lifted by 23.15 s, on the blade at 32.15 s, clipped on and success at step 789). Media: M-BTZ59Z.
