@@ -1,0 +1,977 @@
+#usda 1.0
+(
+    defaultPrim = "ClipAsm"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "ClipAsm" (
+    doc = "Nylon cable clip for a 25 mm tube: a 24 mm wide ring with two spring jaws and a cable-tie loop on top."
+)
+{
+    def Scope "Looks"
+    {
+        def Material "Plastic"
+        {
+            token outputs:surface.connect = </ClipAsm/Looks/Plastic/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.45, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.5
+                token outputs:surface
+            }
+        }
+        def Material "JawPlastic"
+        {
+            token outputs:surface.connect = </ClipAsm/Looks/JawPlastic/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.62, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.5
+                token outputs:surface
+            }
+        }
+        def Material "Slot"
+        {
+            token outputs:surface.connect = </ClipAsm/Looks/Slot/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.05, 0.05, 0.05)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.8
+                token outputs:surface
+            }
+        }
+        def Material "Phys_Plastic" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.25
+            float physics:restitution = 0
+            float physics:staticFriction = 0.3
+        }
+    }
+
+    def Xform "Clip" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysxRigidBodyAPI", "PhysicsArticulationRootAPI", "PhysxArticulationAPI"]
+        doc = "The clip's ring and cable-tie loop: orange nylon, 24 mm wide, 38 mm across. Root link."
+    )
+    {
+        float physics:mass = 0.024
+        point3f physics:centerOfMass = (0, 0, 0.004)
+        custom float physxRigidBody:maxDepenetrationVelocity = 0.2
+        custom int physxRigidBody:solverPositionIterationCount = 32
+        custom int physxRigidBody:solverVelocityIterationCount = 4
+        custom bool physxArticulation:enabledSelfCollisions = 0
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+    def Cube "Ring0" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/Plastic>
+        double size = 1
+        double3 xformOp:translate = (0.01407291, 0, 0.008125)
+        float3 xformOp:rotateXYZ = (0, -120, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "Ring1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/Plastic>
+        double size = 1
+        double3 xformOp:translate = (0.01244822, 0, 0.0104453)
+        float3 xformOp:rotateXYZ = (0, -130, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "Ring2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/Plastic>
+        double size = 1
+        double3 xformOp:translate = (0.0104453, 0, 0.01244822)
+        float3 xformOp:rotateXYZ = (0, -140, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "Ring3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/Plastic>
+        double size = 1
+        double3 xformOp:translate = (0.008125, 0, 0.01407291)
+        float3 xformOp:rotateXYZ = (0, -150, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "Ring4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/Plastic>
+        double size = 1
+        double3 xformOp:translate = (0.005557827, 0, 0.01527001)
+        float3 xformOp:rotateXYZ = (0, -160, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "Ring5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/Plastic>
+        double size = 1
+        double3 xformOp:translate = (0.002821783, 0, 0.01600313)
+        float3 xformOp:rotateXYZ = (0, -170, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "Ring6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/Plastic>
+        double size = 1
+        double3 xformOp:translate = (9.950255e-19, 0, 0.01625)
+        float3 xformOp:rotateXYZ = (0, -180, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "Ring7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/Plastic>
+        double size = 1
+        double3 xformOp:translate = (-0.002821783, 0, 0.01600313)
+        float3 xformOp:rotateXYZ = (0, -190, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "Ring8" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/Plastic>
+        double size = 1
+        double3 xformOp:translate = (-0.005557827, 0, 0.01527001)
+        float3 xformOp:rotateXYZ = (0, -200, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "Ring9" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/Plastic>
+        double size = 1
+        double3 xformOp:translate = (-0.008125, 0, 0.01407291)
+        float3 xformOp:rotateXYZ = (0, -210, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "Ring10" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/Plastic>
+        double size = 1
+        double3 xformOp:translate = (-0.0104453, 0, 0.01244822)
+        float3 xformOp:rotateXYZ = (0, -220, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "Ring11" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/Plastic>
+        double size = 1
+        double3 xformOp:translate = (-0.01244822, 0, 0.0104453)
+        float3 xformOp:rotateXYZ = (0, -230, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "Ring12" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/Plastic>
+        double size = 1
+        double3 xformOp:translate = (-0.01407291, 0, 0.008125)
+        float3 xformOp:rotateXYZ = (0, -240, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "Loop" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/Plastic>
+        double size = 1
+        double3 xformOp:translate = (0, 0, 0.0265)
+        float3 xformOp:scale = (0.014, 0.024, 0.017)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+    def Cube "Slot" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/Slot>
+        double size = 1
+        double3 xformOp:translate = (0, 0, 0.027)
+        float3 xformOp:scale = (0.016, 0.006, 0.005)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+        def Scope "Colliders"
+        {
+        def Cube "Ring0" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0.01407291, 0, 0.008125)
+        float3 xformOp:rotateXYZ = (0, -120, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "Ring1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0.01244822, 0, 0.0104453)
+        float3 xformOp:rotateXYZ = (0, -130, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "Ring2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0.0104453, 0, 0.01244822)
+        float3 xformOp:rotateXYZ = (0, -140, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "Ring3" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0.008125, 0, 0.01407291)
+        float3 xformOp:rotateXYZ = (0, -150, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "Ring4" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0.005557827, 0, 0.01527001)
+        float3 xformOp:rotateXYZ = (0, -160, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "Ring5" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0.002821783, 0, 0.01600313)
+        float3 xformOp:rotateXYZ = (0, -170, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "Ring6" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (9.950255e-19, 0, 0.01625)
+        float3 xformOp:rotateXYZ = (0, -180, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "Ring7" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (-0.002821783, 0, 0.01600313)
+        float3 xformOp:rotateXYZ = (0, -190, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "Ring8" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (-0.005557827, 0, 0.01527001)
+        float3 xformOp:rotateXYZ = (0, -200, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "Ring9" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (-0.008125, 0, 0.01407291)
+        float3 xformOp:rotateXYZ = (0, -210, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "Ring10" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (-0.0104453, 0, 0.01244822)
+        float3 xformOp:rotateXYZ = (0, -220, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "Ring11" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (-0.01244822, 0, 0.0104453)
+        float3 xformOp:rotateXYZ = (0, -230, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "Ring12" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (-0.01407291, 0, 0.008125)
+        float3 xformOp:rotateXYZ = (0, -240, 0)
+        float3 xformOp:scale = (0.003391061, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "Loop" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0, 0, 0.0265)
+        float3 xformOp:scale = (0.014, 0.024, 0.017)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        }
+    }
+    def Xform "JawR" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+        doc = "The right jaw: a spring arm ending in a lip. Origin on its hinge."
+    )
+    {
+        float physics:mass = 0.008
+        custom float physxRigidBody:maxDepenetrationVelocity = 0.2
+        custom int physxRigidBody:solverPositionIterationCount = 32
+        custom int physxRigidBody:solverVelocityIterationCount = 4
+        double3 xformOp:translate = (0.0147275, 0, 0.006867547)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+    def Cube "JawA0" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/JawPlastic>
+        double size = 1
+        double3 xformOp:translate = (0.0007361572, 0, -0.0009702796)
+        float3 xformOp:rotateXYZ = (0, -110.875, 0)
+        float3 xformOp:scale = (0.002839488, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "JawA1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/JawPlastic>
+        double size = 1
+        double3 xformOp:translate = (0.001422344, 0, -0.003250229)
+        float3 xformOp:rotateXYZ = (0, -102.625, 0)
+        float3 xformOp:scale = (0.002839488, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "JawA2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/JawPlastic>
+        double size = 1
+        double3 xformOp:translate = (0.001774274, 0, -0.005605047)
+        float3 xformOp:rotateXYZ = (0, -94.375, 0)
+        float3 xformOp:scale = (0.002839488, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "JawA3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/JawPlastic>
+        double size = 1
+        double3 xformOp:translate = (0.001784663, 0, -0.007985995)
+        float3 xformOp:rotateXYZ = (0, -86.125, 0)
+        float3 xformOp:scale = (0.002839488, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "JawB0" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/JawPlastic>
+        double size = 1
+        double3 xformOp:translate = (0.001096106, 0, -0.01033936)
+        float3 xformOp:rotateXYZ = (0, -77.625, 0)
+        float3 xformOp:scale = (0.002957604, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "JawB1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/JawPlastic>
+        double size = 1
+        double3 xformOp:translate = (-0.0002691578, 0, -0.01245381)
+        float3 xformOp:rotateXYZ = (0, -68.875, 0)
+        float3 xformOp:scale = (0.002848352, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "JawB2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/JawPlastic>
+        double size = 1
+        double3 xformOp:translate = (-0.001894212, 0, -0.01423957)
+        float3 xformOp:rotateXYZ = (0, -60.125, 0)
+        float3 xformOp:scale = (0.0027391, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "JawB3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/JawPlastic>
+        double size = 1
+        double3 xformOp:translate = (-0.003711902, 0, -0.01566906)
+        float3 xformOp:rotateXYZ = (0, -51.375, 0)
+        float3 xformOp:scale = (0.002629848, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+
+        def Scope "Colliders"
+        {
+        def Cube "JawA0" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0.0007361572, 0, -0.0009702796)
+        float3 xformOp:rotateXYZ = (0, -110.875, 0)
+        float3 xformOp:scale = (0.002839488, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "JawA1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0.001422344, 0, -0.003250229)
+        float3 xformOp:rotateXYZ = (0, -102.625, 0)
+        float3 xformOp:scale = (0.002839488, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "JawA2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0.001774274, 0, -0.005605047)
+        float3 xformOp:rotateXYZ = (0, -94.375, 0)
+        float3 xformOp:scale = (0.002839488, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "JawA3" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0.001784663, 0, -0.007985995)
+        float3 xformOp:rotateXYZ = (0, -86.125, 0)
+        float3 xformOp:scale = (0.002839488, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "JawB0" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0.001096106, 0, -0.01033936)
+        float3 xformOp:rotateXYZ = (0, -77.625, 0)
+        float3 xformOp:scale = (0.002957604, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "JawB1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (-0.0002691578, 0, -0.01245381)
+        float3 xformOp:rotateXYZ = (0, -68.875, 0)
+        float3 xformOp:scale = (0.002848352, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "JawB2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (-0.001894212, 0, -0.01423957)
+        float3 xformOp:rotateXYZ = (0, -60.125, 0)
+        float3 xformOp:scale = (0.0027391, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "JawB3" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (-0.003711902, 0, -0.01566906)
+        float3 xformOp:rotateXYZ = (0, -51.375, 0)
+        float3 xformOp:scale = (0.002629848, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        }
+    }
+    def Xform "JawL" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+        doc = "The left jaw: a spring arm ending in a lip. Origin on its hinge."
+    )
+    {
+        float physics:mass = 0.008
+        custom float physxRigidBody:maxDepenetrationVelocity = 0.2
+        custom int physxRigidBody:solverPositionIterationCount = 32
+        custom int physxRigidBody:solverVelocityIterationCount = 4
+        double3 xformOp:translate = (-0.0147275, 0, 0.006867547)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+    def Cube "JawA0" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/JawPlastic>
+        double size = 1
+        double3 xformOp:translate = (-0.0007361572, 0, -0.0009702796)
+        float3 xformOp:rotateXYZ = (0, 110.875, 0)
+        float3 xformOp:scale = (0.002839488, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "JawA1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/JawPlastic>
+        double size = 1
+        double3 xformOp:translate = (-0.001422344, 0, -0.003250229)
+        float3 xformOp:rotateXYZ = (0, 102.625, 0)
+        float3 xformOp:scale = (0.002839488, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "JawA2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/JawPlastic>
+        double size = 1
+        double3 xformOp:translate = (-0.001774274, 0, -0.005605047)
+        float3 xformOp:rotateXYZ = (0, 94.375, 0)
+        float3 xformOp:scale = (0.002839488, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "JawA3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/JawPlastic>
+        double size = 1
+        double3 xformOp:translate = (-0.001784663, 0, -0.007985995)
+        float3 xformOp:rotateXYZ = (0, 86.125, 0)
+        float3 xformOp:scale = (0.002839488, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "JawB0" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/JawPlastic>
+        double size = 1
+        double3 xformOp:translate = (-0.001096106, 0, -0.01033936)
+        float3 xformOp:rotateXYZ = (0, 77.625, 0)
+        float3 xformOp:scale = (0.002957604, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "JawB1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/JawPlastic>
+        double size = 1
+        double3 xformOp:translate = (0.0002691578, 0, -0.01245381)
+        float3 xformOp:rotateXYZ = (0, 68.875, 0)
+        float3 xformOp:scale = (0.002848352, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "JawB2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/JawPlastic>
+        double size = 1
+        double3 xformOp:translate = (0.001894212, 0, -0.01423957)
+        float3 xformOp:rotateXYZ = (0, 60.125, 0)
+        float3 xformOp:scale = (0.0027391, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+    def Cube "JawB3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ClipAsm/Looks/JawPlastic>
+        double size = 1
+        double3 xformOp:translate = (0.003711902, 0, -0.01566906)
+        float3 xformOp:rotateXYZ = (0, 51.375, 0)
+        float3 xformOp:scale = (0.002629848, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+    }
+
+        def Scope "Colliders"
+        {
+        def Cube "JawA0" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (-0.0007361572, 0, -0.0009702796)
+        float3 xformOp:rotateXYZ = (0, 110.875, 0)
+        float3 xformOp:scale = (0.002839488, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "JawA1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (-0.001422344, 0, -0.003250229)
+        float3 xformOp:rotateXYZ = (0, 102.625, 0)
+        float3 xformOp:scale = (0.002839488, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "JawA2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (-0.001774274, 0, -0.005605047)
+        float3 xformOp:rotateXYZ = (0, 94.375, 0)
+        float3 xformOp:scale = (0.002839488, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "JawA3" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (-0.001784663, 0, -0.007985995)
+        float3 xformOp:rotateXYZ = (0, 86.125, 0)
+        float3 xformOp:scale = (0.002839488, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "JawB0" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (-0.001096106, 0, -0.01033936)
+        float3 xformOp:rotateXYZ = (0, 77.625, 0)
+        float3 xformOp:scale = (0.002957604, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "JawB1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0.0002691578, 0, -0.01245381)
+        float3 xformOp:rotateXYZ = (0, 68.875, 0)
+        float3 xformOp:scale = (0.002848352, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "JawB2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0.001894212, 0, -0.01423957)
+        float3 xformOp:rotateXYZ = (0, 60.125, 0)
+        float3 xformOp:scale = (0.0027391, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        def Cube "JawB3" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ClipAsm/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0.003711902, 0, -0.01566906)
+        float3 xformOp:rotateXYZ = (0, 51.375, 0)
+        float3 xformOp:scale = (0.002629848, 0.024, 0.0055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+        }
+    }
+
+    def Scope "Joints"
+    {
+        def PhysicsRevoluteJoint "HingeR" (
+            prepend apiSchemas = ["PhysicsDriveAPI:angular"]
+            doc = "The right jaw's hinge: 0 is rest (lip 0.8 mm inside the tube); it opens by turning negative, against a 0.1 N m/rad spring."
+        )
+        {
+            float drive:angular:physics:damping = 2.617994e-05
+            float drive:angular:physics:stiffness = 0.001745329
+            float drive:angular:physics:targetPosition = 0
+            uniform token drive:angular:physics:type = "force"
+            uniform token physics:axis = "Y"
+            rel physics:body0 = </ClipAsm/Clip>
+            rel physics:body1 = </ClipAsm/JawR>
+            point3f physics:localPos0 = (0.0147275, 0, 0.006867547)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = -25
+            float physics:upperLimit = 0
+        }
+        def PhysicsRevoluteJoint "HingeL" (
+            prepend apiSchemas = ["PhysicsDriveAPI:angular"]
+            doc = "The left jaw's hinge: 0 is rest; it opens by turning positive, against a 0.1 N m/rad spring."
+        )
+        {
+            float drive:angular:physics:damping = 2.617994e-05
+            float drive:angular:physics:stiffness = 0.001745329
+            float drive:angular:physics:targetPosition = 0
+            uniform token drive:angular:physics:type = "force"
+            uniform token physics:axis = "Y"
+            rel physics:body0 = </ClipAsm/Clip>
+            rel physics:body1 = </ClipAsm/JawL>
+            point3f physics:localPos0 = (-0.0147275, 0, 0.006867547)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 25
+        }
+    }
+}

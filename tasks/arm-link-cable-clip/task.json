@@ -1,0 +1,23 @@
+{
+  "title": "Snap a fallen cable clip back onto a robot arm link at its painted band",
+  "category": "Impact on AI timelines",
+  "keywords": [
+    "robot maintenance",
+    "robot arm repair",
+    "cable clip",
+    "snap fit",
+    "carbon-fibre link",
+    "spring jaws",
+    "press fit",
+    "pick and place"
+  ],
+  "instruction": "The nylon cable clip has fallen off this robot arm link. Fit it back on the link at the painted band, and leave it there.",
+  "context": "Every robot arm carries its cables on clips along the links, and clips knocked off in handling or by a snagged cable are among the most frequent repairs on an arm that is being built or serviced. The clip goes back where the cable is meant to run, at its painted band, and is pressed straight onto the tube until its two spring jaws spread over it and snap shut behind it. A robot that can maintain and rebuild robot arms makes the machines that gather data for robot learning cheaper to keep running, which is why this is argued as AI-infrastructure work rather than as a service trade.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the arm bases: x forward, y to the robot's left. A robot arm link sits in a repair jig fixed to the table: a 25 mm carbon-fibre tube 300 mm long, its axis along y at x 0.30, y -0.08 and 60 mm above the table, held by an aluminium joint housing (52 mm across, 40 mm long) at each end in a saddle. A 30 mm band is painted yellow on the tube, centred at y -0.08. The clip is a nylon cable clip for a 25 mm tube: a ring 24 mm wide and 38 mm across with a cable-tie loop on top (47 mm tall in all) and two spring jaws; it has 40 g mass. The jaws end in lips 16 mm apart, narrower than the tube (the jaw springs are 0.1 N m/rad, so the tube spreads them as it enters, needing about 1-1.5 N pressed straight down, and they close behind it with the lips 0.8 mm inside the tube's surface). The clip stands on the table at x 0.20, y -0.20, standing on the lips of its jaws, opening down, its loop up and its width along y.",
+  "scoring": "Four steps, 0.2 each, judged as things stand (steps 2 to 4 count only after a gripper has held the clip off the table). (1) Clip picked up: a gripper presses it with both fingers and its bore centre is at least 1 cm above its starting height; counts once reached. (2) Clip on the link at the band: the link's axis within 2 mm of the clip's bore centre, the clip's axis within 8 degrees of the link's and its middle within 6 mm of the band's middle along the link. (3) Jaws snapped shut behind the link: step 2 and each jaw within 6 degrees of rest (a jaw held open by the tube sits at about 2). (4) Let go: step 3 and no gripper pad within 3 cm of the clip. Full score 1.0 (ends the run) only once every full-success condition has held together, without a break, for 1 s: all four steps, the clip still (within 2 mm and 2 degrees of where it was when that second began, each jaw within 2 degrees) and the clip not off the table; any lapse restarts the second, and the step points stop at 0.8. 0 overall if the clip falls off the table.",
+  "run_limit": "600 steps (30 s at 20 Hz)",
+  "reset_notes": "Pull the clip off the link and stand it on the table at its mark, on its jaw lips with the loop up and its width along y.",
+  "fidelity": "Rigid bodies, 240 Hz physics, 20 Hz control. The clip is a small articulation: a rigid ring and two rigid jaws on hinges with 0.1 N m/rad springs, so the snap is real contact: the tube spreads the jaws and they close behind it. The tube and jig are fixed rigid bodies. Real nylon clips flex along their whole arm and have a tolerance in the bore; here the bore leaves 1 mm and the lips have 0.8 mm of interference. Friction about 0.3. No task code moves or seats anything; the cable is not modelled.",
+  "scores": "Dream-1 run: 0.0 (arms moved near the clip, never lifted it); demo: 1.0 (success at step 275, scripted demo on Isaac)",
+  "media": "M-S9M6YE"
+}
