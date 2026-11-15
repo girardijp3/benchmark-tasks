@@ -1,0 +1,25 @@
+{
+  "title": "Close a swollen sliding window by its brittle plastic tab, without bending the tab",
+  "category": "Societal relatability",
+  "keywords": [
+    "household",
+    "window",
+    "sliding sash",
+    "friction",
+    "shed",
+    "greenhouse",
+    "fragile handle",
+    "everyday tasks",
+    "home robot",
+    "pulling"
+  ],
+  "instruction": "Close the sliding window all the way by pulling it with its plastic pull tab, without bending the tab.",
+  "context": "Wooden sliding windows in garden sheds, greenhouses and old houses swell in damp weather and stick in their track, and their only handle is often a small plastic pull tab that snaps if it is pulled by its tip or yanked. Closing one means taking hold of the tab near its root and drawing the sash steadily against the track's drag until it meets the jamb, at home or for someone who cannot manage it. Pushing the sash by its glass or frame is not what a tab-only window allows, and a bent tab is a broken tab.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the arm bases: x forward, y to the robot's left. A sliding-sash window (fixed, middle at x 0.36, y 0.02) has a 40 mm pine sill and an opening 480 x 270 mm. A fixed pane stands in its back lane. In the front lane (22 mm wide, 6 mm lane walls on the sill and the header) a pine sash (250 x 270 x 20 mm, 4 mm glass, 1.5 kg, a free body) rests on the sill with its middle at y -0.015, 150 mm from the left jamb that is its end stop. Pine on pine friction is 0.40, so the sash needs a pull of about 6 N. A plastic pull tab (36 x 10 x 20 mm, 70 mm above the table) is on the sash's front face on a spring hinge (axis vertical, 0.8 N m/rad, plus or minus 25 degrees).",
+  "scoring": "Four steps, 0.2 each, judged as things stand at the end. (1) The sash is at least 10 mm along from where it started. (2) At least 75 mm along. (3) Closed: its left edge within 3 mm of the jamb, in its lane (within 4 mm of the lane's middle in x and of the sill in z, leaning under 4 degrees) and the tab not bent. (4) With step 3, no gripper pad is within 3 cm of the tab and none holds it. Full score 1.0 (ends the run) only once all four steps have held together, without a break, for 1 s, with the sash within 2 mm and 2 degrees of where it was when that second began; any lapse restarts the second, and the step points stop at 0.8. Rule events score 0 for the whole run: the tab bent past 10 degrees at any time; the sash moving more than 1.5 mm in one control step while no gripper holds the tab, or while a gripper that does not hold the tab has its pads within 6 mm of the sash (a push by anything else); the sash lifted 10 mm or leaning past 15 degrees (out of its lane); the sash off the table.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Place the sash on the sill in the front lane with its middle at x 0.36, y -0.015 (150 mm from the jamb), the tab straight; nothing else is moved.",
+  "fidelity": "Rigid pine and glass boxes at true size; the sash is a free body in its lane and its drag is contact friction (0.40 on 1.5 kg, about 6 N), not damping. The tab is a spring hinge (0.8 N m/rad) and over 10 degrees counts as broken (task code); real tab strength is specified, not measured: calibrate with a spring balance at the tip (about 4 N at 36 mm). The fixed pane is one box.",
+  "scores": "Dream-1 run: 0.0 (2400 steps, hit the step limit); demo: 1.0 at step 267 (scripted demo, Isaac Lab-Arena)",
+  "media": "M-DTJVZE"
+}

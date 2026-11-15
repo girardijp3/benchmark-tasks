@@ -1,0 +1,220 @@
+#usda 1.0
+(
+    defaultPrim = "Sash"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Sash" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysicsArticulationRootAPI"]
+    doc = "A sliding sash for a shed or greenhouse window: pine frame 250 x 270 x 20 mm (stiles 38 mm, bottom rail 55 mm, top rail 38 mm), 4 mm glass, 1.5 kg, and a plastic pull tab (36 x 10 x 20 mm) on a spring hinge (joint Handle, axis Z, 0.8 N m/rad). Free root. Origin: the middle of the sash's bottom edge; thickness along x."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0.135)
+    float3 physics:diagonalInertia = (0.016925, 0.0091625, 0.0078625)
+    float physics:mass = 1.5
+
+    def Scope "Looks"
+    {
+        def Material "Phys_wood" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.4
+            float physics:restitution = 0
+            float physics:staticFriction = 0.4
+        }
+
+        def Material "m816744"
+        {
+            token outputs:surface.connect = </Sash/Looks/m816744/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.82, 0.68, 0.45)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_glass" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.3
+        }
+
+        def Material "m698489"
+        {
+            token outputs:surface.connect = </Sash/Looks/m698489/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.85, 0.9)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_tab" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.45
+            float physics:restitution = 0
+            float physics:staticFriction = 0.5
+        }
+
+        def Material "m194479"
+        {
+            token outputs:surface.connect = </Sash/Looks/m194479/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.2, 0.45, 0.8)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "StileL1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Sash/Looks/m816744>
+        rel material:binding:physics = </Sash/Looks/Phys_wood> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.02, 0.038, 0.27)
+        double3 xformOp:translate = (0, 0.106, 0.135)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "StileR2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Sash/Looks/m816744>
+        rel material:binding:physics = </Sash/Looks/Phys_wood> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.02, 0.038, 0.27)
+        double3 xformOp:translate = (0, -0.106, 0.135)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "RailB3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Sash/Looks/m816744>
+        rel material:binding:physics = </Sash/Looks/Phys_wood> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.02, 0.174, 0.055)
+        double3 xformOp:translate = (0, 0, 0.0275)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "RailT4" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Sash/Looks/m816744>
+        rel material:binding:physics = </Sash/Looks/Phys_wood> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.02, 0.174, 0.038)
+        double3 xformOp:translate = (0, 0, 0.251)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Glass5" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Sash/Looks/m698489>
+        rel material:binding:physics = </Sash/Looks/Phys_glass> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.178, 0.181)
+        double3 xformOp:translate = (0, 0, 0.14350000000000002)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Xform "Tab" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (-0.018, 0, 0)
+        float3 physics:diagonalInertia = (2.0833333e-7, 7.0666664e-7, 5.8166665e-7)
+        float physics:mass = 0.005
+        double3 xformOp:translate = (-0.01, 0.08, 0.03)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "TabBody6" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Sash/Looks/m194479>
+            rel material:binding:physics = </Sash/Looks/Phys_tab> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.036, 0.01, 0.02)
+            double3 xformOp:translate = (-0.018, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+
+    def Scope "Joints"
+    {
+        def PhysicsRevoluteJoint "Handle" (
+            prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysxJointAPI"]
+        )
+        {
+            float drive:angular:physics:damping = 0.00006981317
+            float drive:angular:physics:stiffness = 0.013962634
+            float drive:angular:physics:targetPosition = 0
+            uniform token drive:angular:physics:type = "force"
+            uniform token physics:axis = "Z"
+            rel physics:body0 = </Sash>
+            rel physics:body1 = </Sash/Tab>
+            point3f physics:localPos0 = (-0.01, 0.08, 0.03)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = -25
+            float physics:upperLimit = 25
+            custom float physxJoint:armature = 0.000001
+        }
+    }
+}
+
