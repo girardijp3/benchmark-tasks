@@ -92,4 +92,4 @@ edge; stand the green carton on its mark on the table.
 
 ## Status
 
-Dream-1 score: 0.0 (both arms moved up from their bases and the right arm reached toward the green carton on the table, but nothing was lifted or slid: the gap between the blue and red cartons stayed 26 mm for the whole 2,400 steps). Demo: 1.0 (gap opened at 13.4 s, green carton in the row at 24.75 s, success conditions met at 26.2 s, success at step 534). Media: TBD.
+Dream-1 score: 0.0 (both arms moved up from their bases and the right arm reached toward the green carton on the table, but nothing was lifted or slid: the gap between the blue and red cartons stayed 26 mm for the whole 2,400 steps). Demo: 1.0 (gap opened at 13.4 s, green carton in the row at 24.75 s, success conditions met at 26.2 s, success at step 534). Media: M-NFCBQH.
