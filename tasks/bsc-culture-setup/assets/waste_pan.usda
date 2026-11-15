@@ -1,0 +1,191 @@
+#usda 1.0
+(
+    defaultPrim = "WastePan"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "WastePan" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Waste (discard) pan, open, yellow: 80 x 130 x 60 mm, 0.25 kg with its contents. Origin: middle of the base."
+)
+{
+    float physics:mass = 0.25
+    custom float physxRigidBody:maxDepenetrationVelocity = 0.2
+    custom int physxRigidBody:solverPositionIterationCount = 32
+    custom int physxRigidBody:solverVelocityIterationCount = 4
+
+    def Scope "Looks"
+    {
+        def Material "Phys" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.5
+            float physics:restitution = 0
+            float physics:staticFriction = 0.6
+        }
+
+        def Material "Yellow"
+        {
+            token outputs:surface.connect = </WastePan/Looks/Yellow/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.8, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.5
+                token outputs:surface
+            }
+        }
+    }
+
+    def Xform "Visual"
+    {
+        def Mesh "Floor" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.04, -0.065, 0), (0.04, 0.065, 0.004)]
+            int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+            int[] faceVertexIndices = [0, 1, 3, 2, 4, 6, 7, 5, 0, 4, 5, 1, 2, 3, 7, 6, 0, 2, 6, 4, 1, 5, 7, 3]
+            rel material:binding = </WastePan/Looks/Yellow>
+            point3f[] points = [(-0.04, -0.065, 0), (-0.04, -0.065, 0.004), (-0.04, 0.065, 0), (-0.04, 0.065, 0.004), (0.04, -0.065, 0), (0.04, -0.065, 0.004), (0.04, 0.065, 0), (0.04, 0.065, 0.004)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "N" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.04, 0.061, 0.004), (0.04, 0.065, 0.06)]
+            int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+            int[] faceVertexIndices = [0, 1, 3, 2, 4, 6, 7, 5, 0, 4, 5, 1, 2, 3, 7, 6, 0, 2, 6, 4, 1, 5, 7, 3]
+            rel material:binding = </WastePan/Looks/Yellow>
+            point3f[] points = [(-0.04, 0.061, 0.004), (-0.04, 0.061, 0.06), (-0.04, 0.065, 0.004), (-0.04, 0.065, 0.06), (0.04, 0.061, 0.004), (0.04, 0.061, 0.06), (0.04, 0.065, 0.004), (0.04, 0.065, 0.06)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "S" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.04, -0.065, 0.004), (0.04, -0.061, 0.06)]
+            int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+            int[] faceVertexIndices = [0, 1, 3, 2, 4, 6, 7, 5, 0, 4, 5, 1, 2, 3, 7, 6, 0, 2, 6, 4, 1, 5, 7, 3]
+            rel material:binding = </WastePan/Looks/Yellow>
+            point3f[] points = [(-0.04, -0.065, 0.004), (-0.04, -0.065, 0.06), (-0.04, -0.061, 0.004), (-0.04, -0.061, 0.06), (0.04, -0.065, 0.004), (0.04, -0.065, 0.06), (0.04, -0.061, 0.004), (0.04, -0.061, 0.06)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "E" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.036, -0.061, 0.004), (0.04, 0.061, 0.06)]
+            int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+            int[] faceVertexIndices = [0, 1, 3, 2, 4, 6, 7, 5, 0, 4, 5, 1, 2, 3, 7, 6, 0, 2, 6, 4, 1, 5, 7, 3]
+            rel material:binding = </WastePan/Looks/Yellow>
+            point3f[] points = [(0.036, -0.061, 0.004), (0.036, -0.061, 0.06), (0.036, 0.061, 0.004), (0.036, 0.061, 0.06), (0.04, -0.061, 0.004), (0.04, -0.061, 0.06), (0.04, 0.061, 0.004), (0.04, 0.061, 0.06)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "W" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.04, -0.061, 0.004), (-0.036, 0.061, 0.06)]
+            int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+            int[] faceVertexIndices = [0, 1, 3, 2, 4, 6, 7, 5, 0, 4, 5, 1, 2, 3, 7, 6, 0, 2, 6, 4, 1, 5, 7, 3]
+            rel material:binding = </WastePan/Looks/Yellow>
+            point3f[] points = [(-0.04, -0.061, 0.004), (-0.04, -0.061, 0.06), (-0.04, 0.061, 0.004), (-0.04, 0.061, 0.06), (-0.036, -0.061, 0.004), (-0.036, -0.061, 0.06), (-0.036, 0.061, 0.004), (-0.036, 0.061, 0.06)]
+            uniform token subdivisionScheme = "none"
+        }
+    }
+
+    def Xform "Colliders"
+    {
+        def Cube "Floor" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </WastePan/Looks/Phys> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.08, 0.13, 0.004)
+            double3 xformOp:translate = (0, 0, 0.002)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "N" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </WastePan/Looks/Phys> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.08, 0.004, 0.056)
+            double3 xformOp:translate = (0, 0.063, 0.032)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "S" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </WastePan/Looks/Phys> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.08, 0.004, 0.056)
+            double3 xformOp:translate = (0, -0.063, 0.032)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "E" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </WastePan/Looks/Phys> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.004, 0.122, 0.056)
+            double3 xformOp:translate = (0.038000000000000006, 0, 0.032)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "W" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </WastePan/Looks/Phys> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.004, 0.122, 0.056)
+            double3 xformOp:translate = (-0.038000000000000006, 0, 0.032)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+}
+
