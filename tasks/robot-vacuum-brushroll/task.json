@@ -1,0 +1,25 @@
+{
+  "title": "Refit a robot vacuum's brush roll in its bay and latch the drive-end retainer",
+  "category": "Societal relatability",
+  "keywords": [
+    "robot vacuum",
+    "brush roll",
+    "household maintenance",
+    "keyed end",
+    "square drive",
+    "retainer clip",
+    "insertion",
+    "latch",
+    "home robot",
+    "appliance repair"
+  ],
+  "instruction": "Refit the brush roll in the robot vacuum's bay, with both of its ends seated, and then latch the red retainer flap down over the drive end.",
+  "context": "After cleaning, a robot vacuum's brush roll is dropped back into its bay: a round stub goes into a bearing slot on one side and a square drive stub into a matching socket on the other, then a retainer is pressed shut over the drive end. The round stub is wider than the socket and the square one has to be turned to the socket's flats, so the roll only seats the right way round and the right way up.",
+  "setup": "Positions in metres from the midpoint between the arm bases: x forward, y to the robot's left. The bay (fixed, middle at x 0.34, y -0.25): a base plate and two end walls 14 mm thick with inner faces 108 mm from the middle, 50 mm high; the -y wall has a 12 mm bearing slot, the +y wall a 9.5 mm square drive socket, both open at the top with 45 degree lead-ins (slot floors 20.5 and 22 mm up, so a seated roll's axis is 26 mm above the table). A red retainer flap (34 x 30 mm, revolute about x on an ear outside the +y wall, 0 closed over the socket, spring-held open at 75 degrees) is hinged outside the +y wall. The brush roll (0.10 kg; 28 mm x 200 mm body, an 11 mm round stub 18 mm long at -y and an 8 x 8 mm square stub 18 mm long at +y) lies on the table with its axis along y, middle at x 0.225, y -0.25, 115 mm toward the robot.",
+  "scoring": "Four steps, 0.2 each, judged as things stand at the end. (1) The roll was lifted at least 15 mm at some time. (2) The roll is seated: its middle within 3 mm of the bay's middle in x, 4 mm in y and 2 mm in z of its seat, its axis within 4 degrees of y with the square stub toward +y, turned about its own axis within 12 degrees of the socket's flats. (3) The retainer is down (within 4 degrees of closed) and the latch has caught (declared: at 3 degrees the drive target moves below closed), with the roll seated. (4) With step 3, no gripper pad within 3 cm of the roll and none holds it. Full score 1.0 (ends the run) only once all four have held together for 1 s with the roll within 2 mm and 2 degrees of where it was when that second began; the step points stop at 0.8. 0 after any rule event: the roll off the table, or the retainer latched with the roll not seated.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Roll lying on the table with its axis along y, middle at x 0.225, y -0.25, square stub toward +y; retainer open at 75 degrees, latch off.",
+  "fidelity": "Rigid bodies: roll (cylinder and boxes, 0.10 kg), bay and flap at typical robot-vacuum sizes (28 x 200 mm roll, 8 mm square drive). Bristles are not modelled. The slots are boxes and convex prisms with 45 degree lead-ins; the 11 mm stub against the 9.5 mm socket is what keys the roll. The retainer's latch is declared task code and the flap does not touch the seated stub (it sits 20 mm above it): it covers rather than clamps. The flap's spring is 0.01 N m/rad.",
+  "scores": "Dream-1 run: 0.0 (2400 steps, hit the step limit); demo: 1.0 at step 530 (scripted demo, Isaac Lab-Arena)",
+  "media": "M-DCNR86"
+}
