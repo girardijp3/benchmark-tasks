@@ -1,0 +1,23 @@
+{
+  "title": "Re-seat a robot head's camera module on its dovetail mount: set it on the plate and push it along the rail to the stop",
+  "category": "Impact on AI timelines",
+  "keywords": [
+    "robot maintenance",
+    "camera module",
+    "dovetail slide",
+    "sliding mount",
+    "undercut rail",
+    "hard stop",
+    "robot head",
+    "guided push"
+  ],
+  "instruction": "The camera module has come off this robot's head mount. Put it back on the dovetail rail, pushed in until it stops, and leave it there.",
+  "context": "The cameras on a robot's head or wrist are the sensors that collect its learning data, and they sit in sliding dovetail mounts so a module can be swapped or re-seated in seconds: the module is set on the plate in front of the rail and slid on until it meets the stop, where the rail's undercut holds it. Re-seating a knocked-off camera is routine upkeep for the people who build and service such robots, which is why this is argued as AI infrastructure work rather than a general service trade.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the arm bases: x forward, y to the robot's left. A robot head's camera mount is a plate 50 mm above the table (fixed), centred at x 0.34, y -0.05, with a male dovetail rail along y (7 mm half-width at the plate, 11.5 mm at its top, 6 mm tall, from 30 mm behind to 36 mm ahead of the plate's middle along y) that is open at its rear end (toward the robot's right) and closed by a stop block just beyond its front end. The camera module is 36 x 40 x 22 mm and 80 g, with a dovetail slot in its underside: 19 mm wide at the plate (2.5 mm of play round the rail's base), widening to 30 mm at 7.5 mm up; the rail's top is 23 mm wide, so the slot's lips hold the module on the rail. It lies on a parts rack (70 x 70 mm, 30 mm tall, fixed) centred at x 0.20, y -0.28, its slot along y.",
+  "scoring": "Four steps, 0.2 each, judged as things stand (steps 2 to 4 count only after a gripper has held the module off the rack). (1) Module picked up: a gripper presses it with both fingers (pads at least 15 mm apart, pads inside its outline) and its underside is at least 1 cm above the rack; counts once reached. (2) Module on the rail: its underside on the plate (within -0.5 to +1.5 mm), its middle within 2.5 mm of the rail's axis, its slot within 4 degrees of the rail's direction and 2.5 degrees of flat, and its middle at least 12 mm along the rail from the rail's rear end (the rail inside the slot). (3) Step 2 and the module's middle within 2 mm of where it meets the stop (16 mm ahead of the plate's middle). (4) Step 3 and no gripper pad within 3 cm of the module. Full score 1.0 (ends the run) only once every full-success condition has held together, without a break, for 1 s: all four steps and the module still (within 2 mm and 2 degrees of where it was when that second began); any lapse restarts the second, and the step points stop at 0.8. 0 overall if the module falls off the table.",
+  "run_limit": "600 steps (30 s at 20 Hz)",
+  "reset_notes": "Slide the module off the rail's rear end and lay it on the rack on its mark, its slot along y.",
+  "fidelity": "Rigid bodies, 240 Hz physics, 20 Hz control. The module is a rigid body of two convex cheek prisms (the slot's undercut walls) and a roof, the rail and stop are fixed convex prisms and boxes, so the dovetail is real contact (2.5 mm of play round the rail's base, 1.5 mm at the flanks). A real dovetail has a few tenths of play and often a detent or a screw; here the stop and the undercut alone hold it. Friction 0.3-0.4. No task code moves or seats anything.",
+  "scores": "Dream-1 run: 0.0 (600 steps, hit the step limit); demo: 1.0 at step 316 (scripted demo, Isaac Lab-Arena)",
+  "media": "M-6AR424"
+}

@@ -1,0 +1,206 @@
+#usda 1.0
+(
+    defaultPrim = "CameraModule"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "CameraModule" (
+    doc = "Robot camera module with a dovetail slot (slides on the head's rail)."
+)
+{
+    def Scope "Looks"
+    {
+        def Material "Body"
+        {
+            token outputs:surface.connect = </CameraModule/Looks/Body/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.12, 0.13, 0.15)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.5
+                token outputs:surface
+            }
+        }
+        def Material "Lens"
+        {
+            token outputs:surface.connect = </CameraModule/Looks/Lens/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.02, 0.03, 0.06)
+                float inputs:metallic = 0.2
+                float inputs:roughness = 0.15
+                token outputs:surface
+            }
+        }
+        def Material "Ring"
+        {
+            token outputs:surface.connect = </CameraModule/Looks/Ring/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.8
+                float inputs:roughness = 0.3
+                token outputs:surface
+            }
+        }
+        def Material "Label"
+        {
+            token outputs:surface.connect = </CameraModule/Looks/Label/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.9, 0.9, 0.9)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.7
+                token outputs:surface
+            }
+        }
+        def Material "Phys_Plastic" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.4
+        }
+    }
+
+    def Xform "Module" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+        doc = "Camera module: 36 x 40 x 22 mm, 80 g, a dovetail slot in its underside. Origin: the middle of the underside."
+    )
+    {
+        float physics:mass = 0.08
+        point3f physics:centerOfMass = (0, 0, 0.01)
+        custom float physxRigidBody:maxDepenetrationVelocity = 0.2
+        custom int physxRigidBody:solverPositionIterationCount = 32
+        custom int physxRigidBody:solverVelocityIterationCount = 4
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+    def Mesh "CheekL" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CameraModule/Looks/Body>
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7, 3, 2, 1, 3, 1, 0, 4, 5, 6, 4, 6, 7]
+        point3f[] points = [(-0.015125, -0.02, 0.0075), (-0.018, -0.02, 0.0075), (-0.018, -0.02, 0), (-0.0095, -0.02, 0), (-0.015125, 0.02, 0.0075), (-0.018, 0.02, 0.0075), (-0.018, 0.02, 0), (-0.0095, 0.02, 0)]
+        uniform token subdivisionScheme = "none"
+    }
+    def Mesh "CheekR" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CameraModule/Looks/Body>
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7, 3, 2, 1, 3, 1, 0, 4, 5, 6, 4, 6, 7]
+        point3f[] points = [(0.0095, -0.02, 0), (0.018, -0.02, 0), (0.018, -0.02, 0.0075), (0.015125, -0.02, 0.0075), (0.0095, 0.02, 0), (0.018, 0.02, 0), (0.018, 0.02, 0.0075), (0.015125, 0.02, 0.0075)]
+        uniform token subdivisionScheme = "none"
+    }
+    def Cube "Roof" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CameraModule/Looks/Body>
+        double size = 1
+        double3 xformOp:translate = (0, 0, 0.01475)
+        float3 xformOp:scale = (0.036, 0.04, 0.0145)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+    def Cylinder "Barrel" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CameraModule/Looks/Ring>
+        uniform token axis = "Z"
+        double height = 0.006
+        double radius = 0.007
+        double3 xformOp:translate = (0.021, 0, 0.015)
+        float3 xformOp:rotateXYZ = (0, 90, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ"]
+    }
+    def Cylinder "Glass" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CameraModule/Looks/Lens>
+        uniform token axis = "Z"
+        double height = 0.0065
+        double radius = 0.005
+        double3 xformOp:translate = (0.0212, 0, 0.015)
+        float3 xformOp:rotateXYZ = (0, 90, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ"]
+    }
+    def Cube "Label" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CameraModule/Looks/Label>
+        double size = 1
+        double3 xformOp:translate = (0, 0, 0.0223)
+        float3 xformOp:scale = (0.02, 0.012, 0.0005)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+        def Scope "Colliders"
+        {
+        def Mesh "CheekL_col" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </CameraModule/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7, 3, 2, 1, 3, 1, 0, 4, 5, 6, 4, 6, 7]
+            point3f[] points = [(-0.015125, -0.02, 0.0075), (-0.018, -0.02, 0.0075), (-0.018, -0.02, 0), (-0.0095, -0.02, 0), (-0.015125, 0.02, 0.0075), (-0.018, 0.02, 0.0075), (-0.018, 0.02, 0), (-0.0095, 0.02, 0)]
+            uniform token subdivisionScheme = "none"
+        }
+        def Mesh "CheekR_col" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </CameraModule/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7, 3, 2, 1, 3, 1, 0, 4, 5, 6, 4, 6, 7]
+            point3f[] points = [(0.0095, -0.02, 0), (0.018, -0.02, 0), (0.018, -0.02, 0.0075), (0.015125, -0.02, 0.0075), (0.0095, 0.02, 0), (0.018, 0.02, 0), (0.018, 0.02, 0.0075), (0.015125, 0.02, 0.0075)]
+            uniform token subdivisionScheme = "none"
+        }
+        def Cube "Roof" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </CameraModule/Looks/Phys_Plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0, 0, 0.01475)
+        float3 xformOp:scale = (0.036, 0.04, 0.0145)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        }
+    }
+}
