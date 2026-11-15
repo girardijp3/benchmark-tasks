@@ -1,17 +1,18 @@
-"""Sterile field with an unsterile border: four surgical instruments, laid out on the field without touching its border.
+"""Sterile field with an unsterile border: four surgical instruments, laid out on the field and kept sterile.
 
-A scrub nurse or surgical technologist lays a basic soft-tissue set out on a sterile back table. The drape's outer inch is not
-sterile: an instrument that touches it is contaminated and has to be replaced, however carefully it is laid down
-afterwards. Four real instruments at true size lie in a rack beside the field: Metzenbaum scissors (7 in, 180 mm),
-Rochester-Pean forceps (6.25 in, 160 mm, closed on the ratchet), a no. 4 scalpel handle (135 mm, no blade) and a
-Mayo-Hegar needle holder (6 in, 152 mm). They have to end up on the field's inside, flat, apart from each other, with
-their working ends pointing away from the robot and the scalpel handle (the sharps) in an end lane, and none may touch
-the border at any time on the way.
+A scrub nurse or surgical technologist lays a basic soft-tissue set out on a sterile back table. Four real instruments
+at true size lie on a sterile rack beside the field: Metzenbaum scissors (7 in, 180 mm), Rochester-Pean forceps
+(6.25 in, 160 mm, closed on the ratchet), a no. 4 scalpel handle (135 mm, no blade) and a Mayo-Hegar needle holder
+(6 in, 152 mm). They have to end up on the field's blue sterile area, flat and apart from each other.
+
+What is sterile at the start: the four instruments, both grippers' finger pads (as if in sterile covers), the rack's
+tray and rests, and the field's blue inside. What is not: the tabletop (everywhere outside the panel and the rack) and
+the field's orange border band (its outer inch; the drape's edge is not sterile). An instrument is contaminated, for
+good, when any point of its surface touches a nonsterile surface (within 1.5 mm), or when a gripper that has itself
+touched one (its pads, likewise) touches it. Contaminated instruments cannot score and 1.0 is out of reach; a red tag
+appears on the instrument (a visual only). Carrying one over the border without touching it is fine.
 
 The drape is cloth in the operating theatre; here it is a flat rigid panel with the border drawn on it (see the README).
-An instrument touches the border when any point of its surface is within 1.5 mm of the panel's top face over the
-border's band. Touching it latches (it never un-touches), the instrument's step is lost for good and a red tag appears
-on it; the tag is a visual only.
 
 Run it:  inspect-robots run --embodiment yam_arena -E task=sterile_field_border.py --scorer task_score ...
 
@@ -312,7 +313,7 @@ def _gripper_states(env) -> dict:
 
 def _show_flags(base, origin, objects) -> None:
     """Keeps each contamination flag on its instrument (a visual only: no collider, no gravity) once that instrument has
-    touched the border, and out of sight under the table before."""
+    been contaminated, and out of sight under the table before."""
     import torch
 
     for n in NAMES:
@@ -389,10 +390,11 @@ elif not any(isinstance(f, _AfterSceneImport) for f in sys.meta_path):
 
 
 # -- scoring ----------------------------------------------------------------------------------------------------------
-TOUCH_Z = 1.5 * MM  # a surface point this close to the panel's top face, over the border's band, touches the border
+TOUCH_Z = 1.5 * MM  # a surface point this close to a nonsterile surface (tabletop, border band) touches it
+PAD_TOUCH = 2 * MM  # a finger pad's face this close to an instrument's box touches it
+RACK_HALF = (0.125, 0.10)  # the rack tray's half sizes (x, y): its tray and rests are sterile
 LIFTED = 0.01  # m: an instrument held by a gripper this far above where it started has been picked up
 FLAT = math.radians(5)  # lying flat: its upright axis within this of vertical
-HEADING = math.radians(25)  # its working end within this of pointing away from the robot (+x)
 APART = 8 * MM  # each instrument at least this far from the others
 RESTING = 2 * MM  # lying on the panel: its lowest point within this of the top face
 FALLEN_Z = -0.02  # m above the table: an instrument whose origin is lower has fallen off the table
@@ -402,7 +404,7 @@ GRIP_FORCE = 0.5
 GRIP_OPENING = 0.002
 STILL_S, STILL_MOVE, STILL_TURN = 1.0, 0.002, math.radians(2.0)  # settled: within 2 mm and 2 degrees over 1 s
 TRACE_S = 1.0  # s between trace lines in a run
-STEPS = tuple(f"{n.replace('_', ' ')} laid on the field, clear of the border" for n in NAMES)
+STEPS = tuple(f"{n.replace('_', ' ')} laid on the sterile field, still sterile" for n in NAMES)
 POINTS = 0.2  # per instrument; only success scores 1.0
 
 
@@ -459,11 +461,56 @@ def on_band(xy) -> np.ndarray:
     return on_panel & ~in_inner(xy)
 
 
-def touching_border(objects, name) -> bool:
-    """Some point of the instrument's surface is within TOUCH_Z of the panel's top face over the border's band."""
-    w = _world(objects, name, SURF[name][0])
-    near = w[:, 2] <= DRAPE_TOP + TOUCH_Z
-    return bool(np.any(near & on_band(w[:, :2])))
+def on_rack(xy) -> np.ndarray:
+    """Points (x, y) over the sterile rack's tray."""
+    d = np.abs(np.asarray(xy, float) - np.asarray(RACK_C))
+    return (d[:, 0] <= RACK_HALF[0]) & (d[:, 1] <= RACK_HALF[1])
+
+
+def nonsterile_hit(points) -> np.ndarray:
+    """Which of ``points`` (world, N x 3) touch a nonsterile surface: the border band's top face (within TOUCH_Z over
+    the band), or the bare tabletop (within TOUCH_Z of it anywhere outside the panel and the rack tray). The field's
+    blue inside and the rack are sterile."""
+    w = np.asarray(points, float)
+    xy = w[:, :2]
+    band = on_band(xy) & (w[:, 2] <= DRAPE_TOP + TOUCH_Z)
+    d = np.abs(xy - np.asarray(FIELD_C))
+    off_panel = ~((d[:, 0] <= FIELD_OUT[0] / 2) & (d[:, 1] <= FIELD_OUT[1] / 2))
+    table = off_panel & ~on_rack(xy) & (w[:, 2] <= TOP + TOUCH_Z)
+    return band | table
+
+
+def touching_nonsterile(objects, name) -> bool:
+    """Some point of the instrument's surface touches a nonsterile surface (the border band or the bare tabletop)."""
+    return bool(np.any(nonsterile_hit(_world(objects, name, SURF[name][0]))))
+
+
+def pad_points(gripper) -> np.ndarray:
+    """Points on a gripper's two finger pad faces (world, m), along the pads from their back to their tips."""
+    if gripper is None or gripper.closing is None:
+        return np.zeros((0, 3))
+    half = 0.5 * gripper.opening * np.asarray(gripper.closing, float)
+    pts = []
+    for f in np.linspace(0.0, 1.0, 11):
+        mid = gripper.back + f * (gripper.tips - gripper.back)
+        pts += [mid + half, mid - half]
+    return np.array(pts)
+
+
+def gripper_touching_nonsterile(gripper) -> bool:
+    """A finger pad touches the border band or the bare tabletop."""
+    p = pad_points(gripper)
+    return bool(len(p) and np.any(nonsterile_hit(p)))
+
+
+def pad_touches(name, state, gripper) -> bool:
+    """A finger pad's face touches the instrument (comes within PAD_TOUCH of its box)."""
+    p = pad_points(gripper)
+    if not len(p):
+        return False
+    q = (p - np.asarray(state.pos, float)) @ _rot(state)
+    low, high = BOXES[name][0] - PAD_TOUCH, BOXES[name][1] + PAD_TOUCH
+    return bool(np.any(np.all((q >= low) & (q <= high), axis=1)))
 
 
 def _held_by(name, state, gripper) -> bool:
@@ -487,44 +534,28 @@ def held(objects, name) -> bool:
 
 
 def laid(objects, name) -> dict:
-    """How instrument ``name`` lies: ``inside`` (every surface point on the sterile area), ``flat``, ``heading`` (its
-    working end's angle from +x, rad), ``resting`` (its lowest point within RESTING of the panel's top face) and ``gap``
+    """How instrument ``name`` lies: ``inside`` (every surface point on the sterile area), ``flat``, ``resting`` (its lowest point within RESTING of the panel's top face) and ``gap``
     (its 3-D distance from the nearest other instrument's underside, m)."""
     w = _world(objects, name, SURF[name][1])
     r = _rot(objects[name])
     upright = float(np.arccos(np.clip(r[2, 2], -1.0, 1.0)))
-    head = math.atan2(float(r[1, 0]), float(r[0, 0]))
     gap = 1e9
     for other in NAMES:
         if other != name:
             o = _world(objects, other, SURF[other][1])
             d2 = ((w[::3, None, :] - o[None, ::3, :]) ** 2).sum(axis=2)
             gap = min(gap, float(np.sqrt(d2.min())))
-    return {"inside": bool(np.all(in_inner(w[:, :2]))), "flat": upright, "heading": head,
+    return {"inside": bool(np.all(in_inner(w[:, :2]))), "flat": upright,
             "resting": float(w[:, 2].min() - DRAPE_TOP), "gap": gap}
 
 
-SHARPS = "scalpel_handle"  # an unstated rule from sterile practice: the sharps go at the edge of the layout, not between
-
-
-def _end_lane(objects) -> bool:
-    """The sharps lie outermost in y: every other instrument on the panel has its centre to one side of it."""
-    on_panel = lambda n: bool(np.all(np.abs(np.asarray(objects[n].pos[:2], float) - np.asarray(FIELD_C))
-                                     <= np.asarray(FIELD_OUT) / 2))
-    ys = [float(objects[n].pos[1]) for n in NAMES if n != SHARPS and on_panel(n)]
-    y = float(objects[SHARPS].pos[1])
-    return bool(not ys or y > max(ys) or y < min(ys))
-
-
 def placed(objects, name) -> bool:
-    """The instrument lies on the sterile area: all of it inside, flat, working end away from the robot, resting on the
-    panel, and clear of the other instruments; the sharps (scalpel handle) also in an end lane."""
+    """The instrument lies on the sterile area: all of it inside, flat, resting on the panel, not in a gripper, and clear
+    of the other instruments."""
     o = laid(objects, name)
-    if name == SHARPS and not _end_lane(objects):
-        return False
     if held(objects, name):
         return False  # still in a gripper
-    return bool(o["inside"] and o["flat"] <= FLAT and abs(o["heading"]) <= HEADING and o["resting"] <= RESTING
+    return bool(o["inside"] and o["flat"] <= FLAT and o["resting"] <= RESTING
                 and o["gap"] >= APART)
 
 
@@ -562,14 +593,15 @@ def still(objects, anchor) -> bool:
 
 class _Progress:
     """What has happened so far this episode, updated once per control step: which instruments a gripper has picked up,
-    which have touched the border (latched), and since when every full-success condition has held without a break
+    which instruments and grippers have been contaminated by a nonsterile surface (latched), and since when every full-success condition has held without a break
     (``met_since``, ``None`` while one fails) with the poses when they began to hold (``anchor``). Any lapse restarts the
     count. Starts over when the episode time goes back."""
 
     def __init__(self):
         self.time = -1.0
         self.picked = {n: False for n in NAMES}
-        self.touched = {n: False for n in NAMES}
+        self.touched = {n: False for n in NAMES}  # instrument contaminated (latched)
+        self.pad_soiled = {"left_gripper": False, "right_gripper": False}  # gripper pads have touched a nonsterile surface
         self.met_since = None
         self.anchor = None
         self.reported = [False] * len(STEPS)
@@ -586,10 +618,22 @@ class _Progress:
         for n in NAMES:
             if objects[n].pos[2] > START[n][2] + LIFTED and held(objects, n):
                 self.picked[n] = True
-            if not self.touched[n] and touching_border(objects, n):
-                self.touched[n] = True
-                print(f"[{TAG}] t={t if t is not None else 0.0:.2f}s  {n.replace('_', ' ')} touched the border: "
+        tt = t if t is not None else 0.0
+        for g in self.pad_soiled:
+            if not self.pad_soiled[g] and gripper_touching_nonsterile(objects.get(g)):
+                self.pad_soiled[g] = True
+                print(f"[{TAG}] t={tt:.2f}s  {g.replace('_', ' ')} pads touched a nonsterile surface: "
                       "contaminated for good", flush=True)
+        for n in NAMES:
+            if self.touched[n]:
+                continue
+            why = ("touched a nonsterile surface" if touching_nonsterile(objects, n) else
+                   "was touched by a contaminated gripper" if any(
+                       self.pad_soiled[g] and pad_touches(n, objects[n], objects.get(g)) for g in self.pad_soiled)
+                   else "")
+            if why:
+                self.touched[n] = True
+                print(f"[{TAG}] t={tt:.2f}s  {n.replace('_', ' ')} {why}: contaminated for good", flush=True)
         if t is None:  # no clock: nothing can be timed
             return
         met = bool(all(_steps(objects)) and not _violation(objects) and released(objects))
@@ -612,7 +656,7 @@ _PROGRESS = _Progress()
 
 def flag_pose(objects, name) -> tuple[np.ndarray, np.ndarray]:
     """Where instrument ``name``'s contamination flag belongs (world position, quaternion xyzw): on the instrument, once
-    it has touched the border, or out of sight under the table before."""
+    it has been contaminated, or out of sight under the table before."""
     if not _PROGRESS.touched[name]:
         return FLAG_HIDDEN.copy(), np.array([0.0, 0.0, 0.0, 1.0])
     s = objects[name]
@@ -629,8 +673,9 @@ def _steps(objects) -> list[bool]:
 
 
 def steps_done(objects) -> list[bool]:
-    """Instrument by instrument: it counts once a gripper has picked it up, only while it has never touched the border
-    (a touch is for good), and only while it lies on the sterile area as ``placed`` says."""
+    """Instrument by instrument: it counts once a gripper has picked it up, only while it is still sterile
+    (contamination by a nonsterile surface, directly or through a contaminated gripper, is for good), and only while it
+    lies on the sterile area as ``placed`` says."""
     p = _PROGRESS
     p.update(objects)
     done = _steps(objects)
@@ -640,8 +685,8 @@ def steps_done(objects) -> list[bool]:
         for n in NAMES:
             o = laid(objects, n)
             parts.append(f"{n.replace('_', ' ')} {'in' if o['inside'] else 'OUT'}, gap {min(o['gap'], 0.99) * 1000:.0f} mm, "
-                         f"heading {math.degrees(o['heading']):+.0f} deg"
-                         f"{', touched border' if p.touched[n] else ''}{', held' if held(objects, n) else ''}")
+                         f"{'contaminated' if p.touched[n] else 'sterile'}"
+                         f"{', held' if held(objects, n) else ''}")
         line = f"({'; '.join(parts)})"
         if done != p.reported:
             p.reported = done
@@ -670,7 +715,7 @@ def violation(objects) -> bool:
 
 def success(objects) -> bool:
     """Every full-success condition has held without a break for STILL_S: all four instruments laid on the sterile area,
-    none having touched the border at any time, both grippers clear, nothing off the table, and every instrument within
+    none contaminated at any time, both grippers clear, nothing off the table, and every instrument within
     STILL_MOVE and STILL_TURN of where it was when that second began. The arms' return is not scored."""
     p = _PROGRESS
     p.update(objects)
@@ -691,8 +736,8 @@ def score(objects) -> float:
 # -- scripted demo ----------------------------------------------------------------------------------------------------
 # The left arm, one instrument at a time: from above, its fingers closing across the instrument's shank at its centre of
 # mass (the pads reach down between the rack's rests), lifts it 8 cm clear, carries it over the border to its lane while
-# the wrist turns the instrument a quarter turn (the working end now away from the robot), lowers it to 3 mm above the
-# sterile area, lets go and lifts away. Then the next. At the end the arm goes home. Open loop: no pose is read.
+# the wrist turns the instrument a quarter turn (so it lies along x in its lane; the heading is not scored), lowers it to
+# 3 mm above the sterile area, lets go and lifts away. The pads and the instrument never come near the tabletop or the band. Then the next. At the end the arm goes home. Open loop: no pose is read.
 SQUEEZE = 0.008  # the grip closes the fingers this far inside the instrument's width (about 20 N a finger)
 PICK_OPEN = 0.012  # m: each finger opens this far beyond the instrument before the grip
 PAD_BELOW = 0.002  # m: the pad tips reach this far below the instrument's underside

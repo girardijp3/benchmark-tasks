@@ -1,20 +1,31 @@
-# Lay a surgical instrument set on a sterile field without touching its unsterile border
+# Lay a sterile surgical instrument set on a sterile field without touching its unsterile border or the table
 
-A one-arm layout task with a keep-out zone that is judged over the whole handling, not only at the end. Four closed
-surgical instruments, at true size, lie in a rack beside a sterile field. They have to be moved onto the field's blue
-sterile area, flat and apart, and none may touch the field's orange border band (1 inch, 25.4 mm) at any moment on the
-way. A touch is permanent: a contaminated instrument has to be replaced in practice, so here it can never score
-again, however carefully it is put down afterwards.
+A one-arm layout task with contamination that is judged over the whole handling, not only at the end. Four closed
+surgical instruments, at true size, lie on a sterile rack beside a sterile field. They have to be moved onto the field's
+blue sterile area, flat and apart, and nothing sterile may touch a nonsterile surface on the way: neither the field's
+orange border band (1 inch, 25.4 mm) nor the bare tabletop. A touch is permanent: a contaminated instrument has to be
+replaced in practice, so here it can never score again, however carefully it is put down afterwards. The same goes for
+the grippers: a gripper whose finger pads have touched a nonsterile surface contaminates every instrument it then
+touches.
 
 The sterile drape is cloth in an operating theatre. In this task it is a **flat rigid panel** (300 x 440 mm, 3 mm
 thick, about a Mayo stand tray's footprint) with the border drawn on it. The cloth itself (folds, sag, drape over
 the table's edge) is not simulated.
 
+## What starts sterile
+
+| Sterile at the start | Not sterile |
+|---|---|
+| all four instruments | the orange border band of the field (its outer inch) |
+| the whole rack (tray and the silicone rests) | the bare tabletop, everywhere outside the panel and the rack |
+| the blue inside of the field | |
+| both grippers' finger pads (as if in sterile covers) | the rest of the robot is not scored |
+
 | File | What it is |
 |---|---|
-| `sterile_field_border.py` | The `yam_arena` task file: scene, border-contact record, scoring (`success`, `score`, `steps_done`), scripted `demo()` |
+| `sterile_field_border.py` | The `yam_arena` task file: scene, border-contact record, contamination record, scoring (`success`, `score`, `steps_done`), scripted `demo()` |
 | `assets/*.usda` | The four instruments, the sterile field panel, the instrument rack and a contamination flag (OpenUSD, written for this task) |
-| `test_sterile_field_border.py` | Offline checks: scoring outcomes, the permanent border penalty, the 1 s full-success timing, assets match the scoring geometry, reach |
+| `test_sterile_field_border.py` | Offline checks: scoring outcomes, the permanent contamination caps (border, table, soiled gripper), the 1 s full-success timing, assets match the scoring geometry, reach |
 | `task.json` | The task's details for the board |
 
 ## Assets
@@ -58,23 +69,24 @@ inspect-robots run --embodiment yam_arena --policy yam_scripted \
   --instruction "$INSTRUCTION" --scorer task_score --max-steps 1100 --store-frames --log-dir ~/yam-eval/sterile-demo
 ```
 
-The log prints `[sterile_field_border] t=...  steps done: ...` when a step changes, `<instrument> touched the border:
-contaminated for good` the moment a touch happens, and a trace every second (inside or outside the sterile area, gap
-to the nearest instrument, heading, held).
+The log prints `[sterile_field_border] t=...  steps done: ...` when a step changes, `<instrument> touched a nonsterile
+surface: contaminated for good` (or `was touched by a contaminated gripper`) the moment it happens, `<gripper> pads
+touched a nonsterile surface` when a gripper is contaminated, and a trace every second (inside or outside the sterile
+area, gap to the nearest instrument, sterile or contaminated, held).
 
 **The demo.** Open loop (never reads a pose), left arm only, in the order needle holder, scalpel handle, Metzenbaum
 scissors, Pean forceps. For each: from above, fingers across the instrument at its grip point (the centre of mass,
 or on the pivot / box lock for the scissors and forceps), the pad tips 2 mm below its underside between the rests;
-grip (about 20 N a finger), lift 60 mm, carry it over the border while the wrist turns it a quarter turn (working end
-from +y to +x), lower to 3 mm above the sterile area, let go, lift away. Then home. Every success condition holds
-from about 49.5 s and the run succeeds at 1,017 steps (51.35 s task time); On Isaac (L40): the first instrument is laid at 12.65 s, all four at 49.55 s, success conditions met at 50.3 s and 1.0 at step 1016.
+grip (about 20 N a finger), lift 60 mm, carry it over the border while the wrist turns it a quarter turn (so it lies
+along x in its lane; the heading is not scored), lower to 3 mm above the sterile area, let go, lift away. Then home.
+The pads and the instruments stay clear of the tabletop and the band throughout (the log shows no contamination).
+Every success condition holds from 50.3 s and the run succeeds at step 1026 (51.3 s task time); on Isaac (L40) the first instrument is laid at 12.65 s, all four at 49.55 s.
 
 ## Instruction
 
-One sentence of goal: the instruments from the rack onto the blue field, flat and apart, never touching the orange
-border. It does not say where, in which order or how. Two rules from sterile practice are scored but not stated:
-working ends point away from the robot, and the sharps (the scalpel handle) lie at an end of the layout, not between
-other instruments.
+Two sentences of goal and constraint: the sterile instruments from the sterile rack onto the blue field, flat and
+apart, with nothing touching the orange border or the bare table (the grippers start sterile too). It does not say
+where, in which order or how.
 
 ## Scoring
 
@@ -83,33 +95,46 @@ Four steps, **0.2 each**, one per instrument. An instrument counts when all of t
 | Condition | Done when |
 |---|---|
 | Picked up | a gripper has held it (both pads on its box, both fingers pressing) while it was at least 10 mm above where it started |
-| Never touched the border | no point of its surface has ever been within 1.5 mm of the panel's top face over the orange band |
-| On the sterile area | every point of it inside the blue area; flat within 5 deg; working end within 25 deg of +x; resting within 2 mm of the panel; not in a gripper; at least 8 mm (3-D) from the other instruments; the scalpel handle outermost in y among the instruments on the panel |
+| Still sterile | it has never been contaminated (see below) |
+| On the sterile area | every point of it inside the blue area; flat within 5 deg; resting within 2 mm of the panel; not in a gripper; at least 8 mm (3-D) from the other instruments |
 
-Contact with the border is sampled over each instrument's whole surface (top, underside and edges, about 4 mm
-grid and 2 mm along outlines), so a long instrument crossing the 25 mm band with both ends clear still touches it;
-carrying one across the band 1.5 mm or more above the panel does not. It is latched for the episode: that instrument
-can never score and the full score is out of reach. The red tag on the instrument shows it.
+**Contamination** is latched for the episode: the instrument can never score and the full score is out of reach. The
+red tag on the instrument shows it. An instrument is contaminated when
+
+* any point of its surface comes within 1.5 mm of a nonsterile surface: the top face of the orange border band, or the
+  bare tabletop (anywhere outside the panel and the rack tray). It is sampled over the whole surface (top, underside
+  and edges, about 4 mm grid and 2 mm along outlines), so a long instrument crossing the 25 mm band with both ends
+  clear still touches it; carrying one across the band 1.5 mm or more above the panel does not; or
+* a contaminated gripper touches it (a pad face within 2 mm of its bounding box), whether it is lifting it, pushing it
+  or reaching back to a laid instrument. A gripper is contaminated, for good, when a point on its finger pad faces
+  comes within 1.5 mm of a nonsterile surface; that costs nothing until it touches an instrument. Each arm's gripper is
+  tracked separately.
+
+The sterile surfaces are the blue inside of the field and the rack (tray and rests): pads and instruments may rest
+on them. The rest of the robot (wrists, links) is not scored. No heading or position within the layout is scored:
+only that the instrument lies flat, inside the blue area and apart from the others.
 
 1.0 (ends the run) only once every full-success condition has held together, without a break, for 1 s: all four
-steps, no instrument has ever touched the border, both grippers at least 3 cm from every instrument's box, nothing
-off the table, and every instrument within 2 mm and 2 deg of where it was when that second began. The second is
-timed in the task file; any lapse restarts it; step points stop at 0.8, also while it is being timed. The arms'
-return is not scored. 0 if an instrument is off the table.
+steps, no instrument contaminated, both grippers at least 3 cm from every instrument's box, nothing off the table, and
+every instrument within 2 mm and 2 deg of where it was when that second began. The second is timed in the task file;
+any lapse restarts it; step points stop at 0.8, also while it is being timed. The arms' return is not scored. 0 if an
+instrument is off the table.
 
 ## What this task tests
 
-* **Contamination over the whole handling.** Only the end layout is not enough: an instrument set on the border and
-  moved inward still counts as contaminated. Dragging an instrument from the rack across the band, resting an edge
-  on it or laying one half across it all latch the penalty (tests cover each).
+* **Contamination over the whole handling.** Only the end layout is not enough: an instrument set on the border or
+  the table and moved inward still counts as contaminated, and so does one that a gripper touched after that gripper
+  touched a nonsterile surface. Tests cover dragging across the band, resting an edge on it, laying one half across
+  it, setting one on the bare table, a gripper touching the table then handling an instrument (before or after
+  placement), and that a clean gripper still scores.
 * **Real instruments, not bars.** Ring-handled closed instruments with finger holes, crossed shanks and a tapered
   blade are grasped on the pivot or box lock between rests; a 6 mm-tall flank is the grip surface.
-* **A layout, with two unstated rules,** not a single placement.
+* **A layout** of four instruments, apart and flat, not a single placement.
 
 ## Reset
 
-Put the four instruments on the rack rests as in `task.json`'s setup. The border record and the tags restart with
-the episode.
+Put the four instruments on the rack rests as in `task.json`'s setup. The contamination records and the tags restart
+with the episode.
 
 ## Offline checks
 

@@ -1,5 +1,5 @@
-"""Offline checks (no GPU, no network): the task file loads, the scorer covers each outcome, the border penalty is
-persistent, the 1 s full-success timing, the assets match the scoring geometry, and the demo's poses are reachable.
+"""Offline checks (no GPU, no network): the task file loads, the scorer covers each outcome, contamination (an
+instrument or its gripper touching the border band or the bare tabletop) is persistent, the 1 s full-success timing, the assets match the scoring geometry, and the demo's poses are reachable.
 Run in the yam_arena environment:  python -m pytest -q test_sterile_field_border.py"""
 
 import math
@@ -185,25 +185,140 @@ def test_a_long_instrument_across_a_narrow_band_with_both_ends_inside_still_touc
     assert T._PROGRESS.touched["scalpel_handle"] is True
 
 
-def test_the_rack_and_the_bare_table_are_not_the_border():
+def test_the_rack_and_the_sterile_field_are_not_nonsterile():
     e = Episode()
-    e.step(1.0)
+    e.step(1.0)  # on the rack, both grippers at home
+    assert not any(T._PROGRESS.touched.values()) and not any(T._PROGRESS.pad_soiled.values())
+    e.pick("needle_holder")
+    e.lay("needle_holder")  # laid on the blue area
     assert not any(T._PROGRESS.touched.values())
-    e.move("needle_holder", pos=(T.FIELD_C[0], T.FIELD_C[1] + T.FIELD_OUT[1] / 2 + 0.2, T.TOP))  # well beyond the panel
+
+
+def _table_spot(name):
+    """Well beyond the panel and the rack: the bare tabletop."""
+    return np.array([0.20, -0.10, T.TOP])
+
+
+def _pads_on(point):
+    """A gripper whose pad tips rest on ``point`` (z of the surface), fingers open."""
+    p = np.asarray(point, float)
+    return _gripper(p + np.array([0.0, 0.0, T.PAD_TIP_PAST_TCP + 0.0005]), opening=0.011)
+
+
+def test_an_instrument_touching_the_bare_table_is_contaminated_for_good():
+    e = Episode()
+    e.pick("needle_holder")
+    e.lay("needle_holder", pos=_table_spot("needle_holder"))  # set down on the tabletop
+    assert T._PROGRESS.touched["needle_holder"] is True
+    e.pick("needle_holder")
+    e.lay("needle_holder")  # picked up again and laid perfectly on the field
+    assert e.done()[NAMES.index("needle_holder")] is False
+    for n in T.ORDER:
+        if n != "needle_holder":
+            e.pick(n)
+            e.lay(n)
+    history = e.scores(3.0)
+    assert all(s < 1.0 and not ok for s, ok in history)
+    assert max(s for s, _ in history) <= 0.6 + 1e-9
+
+
+def test_an_instrument_dropped_on_the_table_then_returned_is_still_contaminated():
+    """It touches the tabletop only for an instant (one step), then is back on the rack: still latched."""
+    e = Episode()
+    e.pick("scalpel_handle")
+    e.move("scalpel_handle", pos=(0.20, -0.10, T.TOP))
     e.step()
-    assert T._PROGRESS.touched["needle_holder"] is False
+    e.move("scalpel_handle", pos=T.START["scalpel_handle"])
+    e.step(1.0)
+    assert T._PROGRESS.touched["scalpel_handle"] is True
+
+
+def test_gripper_touching_the_tabletop_contaminates_what_it_then_handles():
+    e = Episode()
+    e.step(left=_pads_on(_table_spot("x")))  # the left gripper's pads touch the bare table: no instrument involved
+    assert T._PROGRESS.pad_soiled["left_gripper"] is True
+    assert not any(T._PROGRESS.touched.values())  # touching the table alone costs nothing yet
+    e.step(left=_home())
+    e.pick("needle_holder")  # but the instrument it now picks up is contaminated
+    assert T._PROGRESS.touched["needle_holder"] is True
+    e.lay("needle_holder")
+    assert e.done()[NAMES.index("needle_holder")] is False
+    for n in T.ORDER:
+        if n != "needle_holder":
+            e.pick(n)
+            e.lay(n)
+    history = e.scores(3.0)
+    assert all(s < 1.0 and not ok for s, ok in history)
+    # every pickup was by the same soiled left gripper, so no instrument is clean
+    assert max(s for s, _ in history) == 0.0
+
+
+def test_a_clean_arm_after_a_soiled_one_can_still_score():
+    """Only the gripper that touched a nonsterile surface is soiled: the other one handles instruments cleanly."""
+    e = Episode()
+    e.step(right=_pads_on(_table_spot("x")))
+    assert T._PROGRESS.pad_soiled["right_gripper"] is True and T._PROGRESS.pad_soiled["left_gripper"] is False
+    e.full_course()  # all four by the left gripper
+    assert e.done() == [True] * 4
+    e.step(T.STILL_S - 0.05)
+    assert e.step() == (1.0, True)
+
+
+def test_gripper_pads_on_the_border_band_are_soiled_and_on_the_blue_area_or_rack_are_not():
+    e = Episode()
+    on_inner = np.array([T.FIELD_C[0], T.FIELD_C[1], T.DRAPE_TOP])
+    on_tray = np.array([T.RACK_C[0], T.RACK_C[1], T.TOP + T.RACK_PLATE])
+    e.step(left=_pads_on(on_inner), right=_pads_on(on_tray))
+    assert not any(T._PROGRESS.pad_soiled.values())
+    band = np.array([T.FIELD_C[0], T.FIELD_C[1] - T.FIELD_OUT[1] / 2 + 0.01, T.DRAPE_TOP])
+    e.step(left=_pads_on(band))
+    assert T._PROGRESS.pad_soiled["left_gripper"] is True and T._PROGRESS.pad_soiled["right_gripper"] is False
+
+
+def test_a_soiled_gripper_touching_an_instrument_already_laid_contaminates_it():
+    e = Episode()
+    e.full_course()
+    assert e.done() == [True] * 4
+    e.step(left=_pads_on(_table_spot("x")))  # the arm then touches the bare table
+    assert T._PROGRESS.pad_soiled["left_gripper"] is True and e.done() == [True] * 4
+    e.step(left=_gripper(T.PLACE["pean_forceps"] + (0.0, 0.0, T.PAD_TIP_PAST_TCP + 0.004), opening=0.011,
+                         closing=(0.0, 1.0, 0.0)))  # and reaches back down onto a laid instrument
+    assert T._PROGRESS.touched["pean_forceps"] is True
+    assert max(s for s, _ in e.scores(3.0)) <= 0.6 + 1e-9
+
+
+def test_the_home_poses_and_the_demo_pads_stay_sterile():
+    assert not T.gripper_touching_nonsterile(_home())
+    for arm in ("left", "right"):
+        for w in T.demo()[arm]:
+            rot = w.rot if w.rot is not None else T._START_ROT[arm]
+            tip = np.asarray(w.pos, float) + T.PAD_TIP_PAST_TCP * (rot @ np.array([0.0, 0.0, 1.0]))
+            assert not np.any(T.nonsterile_hit(tip[None, :])), (arm, w.label)
+
+
+def test_heading_and_lane_are_not_scored():
+    """An instrument pointing at the robot and the scalpel handle in a middle lane still score 1.0."""
+    e = Episode()
+    swap = {"scalpel_handle": "needle_holder", "needle_holder": "scalpel_handle"}
+    for n in T.ORDER:
+        e.pick(n)
+        pos = T.PLACE[n].copy()
+        if n in swap:
+            pos[1] = T.LANE_Y[swap[n]]
+        e.lay(n, pos=pos, yaw=math.pi if n == "pean_forceps" else 0.0)
+    assert e.done() == [True] * 4
+    e.step(T.STILL_S - 0.05)
+    assert e.step() == (1.0, True)
 
 
 MISSING = {
     "one instrument never picked": lambda e: [(e.pick(n), e.lay(n)) for n in T.ORDER[:3]] + [e.lay(T.ORDER[3])],
     "instrument outside the sterile area": lambda e: (e.full_course(), e.move("pean_forceps", pos=T.PLACE["pean_forceps"] + (0.0, -0.07, 0.0)), e.step()),
-    "instrument turned across": lambda e: (e.full_course(), e.move("pean_forceps", quat=_quat(math.radians(90))), e.step()),
-    "instrument pointing at the robot": lambda e: (e.full_course(), e.move("needle_holder", quat=_quat(math.pi)), e.step()),
     "instrument leaning": lambda e: (e.full_course(), e.move("metzenbaum_scissors", quat=_quat(0.0, math.radians(8))), e.step()),
     "instrument lying on another": lambda e: (e.full_course(), e.move("needle_holder", pos=T.PLACE["metzenbaum_scissors"] + (0.0, 0.004, 0.0)), e.step()),
     "instrument held above the panel": lambda e: (e.full_course(), e.move("needle_holder", pos=T.PLACE["needle_holder"] + (0.0, 0.0, 0.02)), e.step()),
+    "instrument touched the bare table in passing": lambda e: (e.full_course(), e.move("pean_forceps", pos=(0.20, -0.10, T.TOP)), e.step(), e.move("pean_forceps", pos=T.PLACE["pean_forceps"]), e.step()),
     "gripper within 3 cm": lambda e: (e.full_course(), e.step(left=_gripper(T.PLACE["pean_forceps"] + (0.0, 0.0, 0.05)))),
-    "sharps between the others": lambda e: (e.full_course(), e.move("scalpel_handle", pos=(T.PLACE["scalpel_handle"][0], T.FIELD_C[1] - 0.02, T.DRAPE_TOP)), e.step()),
 }
 
 
