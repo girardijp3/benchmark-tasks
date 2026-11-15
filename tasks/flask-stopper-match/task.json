@@ -1,0 +1,22 @@
+{
+  "title": "Close each flask with the ground-glass stopper that matches its neck",
+  "category": "Impact on jobs",
+  "keywords": [
+    "standard taper joint",
+    "ground glass",
+    "Erlenmeyer flask",
+    "stopper",
+    "laboratory",
+    "size matching",
+    "insertion"
+  ],
+  "instruction": "Close both flasks with the glass stoppers that belong to them, pressing each stopper fully into its neck, then let go of everything and leave the glassware standing.",
+  "context": "Chemical technicians (O*NET 19-4031, about 65,000) and chemists (19-2031, about 90,000), together with the laboratory technologists and assistants who set up glassware (31-9097, 29-2012), stopper flasks many times a day. Standard-taper joints (24/29, 14/23 and so on) only seal when the stopper matches the neck: a smaller cone slides in and falls into the flask, a larger one will not enter. The robot has to pick the right size from the printed joint marks and seat it.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Two open Erlenmeyer flasks stand on the table: a 125 mL flask (67 mm base, 125 mm tall, 34 mm neck) with a 24/29 standard-taper socket at x 0.32, y 0.12, and a 50 mL flask (50 mm base, 95 mm tall, 22 mm neck) with a 14/23 socket at x 0.38, y -0.13. The joint size is printed on each flask. Two solid glass stoppers stand on their cone tips on the table: a 24/29 (40 mm head, 29 mm cone, 45 g) at x 0.27, y 0.22 and a 14/23 (24 mm head, 23 mm cone, 15 g) at x 0.27, y -0.21; the size is printed on each head.",
+  "scoring": "Four steps, 0.2 each, judged as things stand: (1) the 24/29 stopper is seated in the 125 mL flask: head underside within -0.5 and +1.5 mm of the rim, centred within 1 mm, axis within 2 degrees of the neck's, flask upright (10 degrees) and within 2 cm of its place; (2) the same for the 14/23 stopper in the 50 mL flask; (3) both at once; (4) with step 3, no gripper pad within 3 cm of any flask or stopper. Full score 1.0 (ends the run) only once every condition has held together for 1 s with every part within 2 mm and 2 degrees of where it was when the second began; any lapse restarts it; step points stop at 0.8. 0 overall if a stopper goes down inside a neck (the small one into the large flask), a flask tips over 45 degrees at any time, or any part leaves the table.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Stand the flasks and stoppers as in the setup, upright, stoppers on their cone tips; nothing in any neck.",
+  "fidelity": "Joints are real 1:10 tapers (ISO 383 sizes: 24/29 and 14/23). Each socket is 24 convex wedges; the cone has 0.1 mm radial play and a 2.5 mm lead-in at the mouth. The head rests on the rim when seated (real glass also wedges by taper, not modelled). Flask and stopper are solid rigid bodies, glass friction 0.5/0.4. Wrong size: the 24/29 cone cannot enter the 14/23 neck; the 14/23 falls down the 24/29 bore.",
+  "scores": "Dream-1 run: 0.0 (arms hovered, stoppers untouched); demo: 1.0 (success at step 333)",
+  "media": "M-VMHE5F"
+}
