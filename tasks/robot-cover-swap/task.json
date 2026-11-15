@@ -1,0 +1,23 @@
+{
+  "title": "Replace a robot's cracked cover: slide it off its posts into the scrap tray, then lock the new one on",
+  "category": "Impact on AI timelines",
+  "keywords": [
+    "robot maintenance",
+    "cover swap",
+    "keyhole fastener",
+    "slide lock",
+    "mobile robot",
+    "scrap tray",
+    "two-step swap",
+    "ABS cover"
+  ],
+  "instruction": "Replace the cracked cover on this robot's electronics bay with the new white cover, fitted so that it is locked on, and put the cracked cover in the scrap tray.",
+  "context": "Covers and shells on research robots crack in drops and collisions, and swapping one is routine upkeep for the people who build and service the machines that collect robot-learning data. A bay cover hangs on headed posts through keyholes: it is slid off the posts' slots, lifted clear, and the new one is lowered over the posts and slid back so the post heads trap the plate. The task is judged on the robot's bay ending with the new cover locked and the old one out, which makes it robot-building work argued for AI infrastructure rather than for a general service trade.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the arm bases: x forward, y to the robot's left. The top of a small mobile robot's electronics bay is a deck 190 x 140 mm and 12 mm thick, its top face 60 mm above the table, centred at x 0.34, y -0.10, on the robot's body (all fixed to the table), with three headed posts (5 mm shaft, 12 mm head, the head 1 mm above the plate) at (-50, -30), (-50, +30) and (+50, 0) mm from the deck's middle. The grey cover on it is cracked: ABS, 150 x 100 mm, a 20 mm skirt, a 3 mm plate with a 40 x 12 x 14 mm finger rib on top, 100 g. It is locked: its three keyholes (a 22 x 18 mm hole for the head, then an 8 mm wide slot 13 mm long toward the robot) are slid so each post stands at the end of its slot; to unlock it slides 10 mm away from the robot, then lifts straight up off the posts. A new white cover of the same size lies on a parts rack (170 x 120 mm, 30 mm tall, fixed) centred at x 0.20, y -0.30, and an empty scrap tray (174 x 124 mm inside, 35 mm walls, on a 30 mm riser, fixed) is centred at x 0.22, y +0.07.",
+  "scoring": "Four steps, 0.2 each, judged as things stand (the cracked cover counts as off the bay only after a gripper has held it, the new cover as locked only after a gripper has held it). (1) Cracked cover off the bay: its middle at least 0.17 m from the deck's middle. (2) Step 1 and the cracked cover lies in the scrap tray: its middle within 11 mm of the tray's middle in x and y, its lower edge within 2 mm below to 12 mm above the tray floor, within 6 degrees of flat. (3) Step 2 and the new cover locked on the bay: its middle within 2 mm (along x) and 2.5 mm (along y) of the deck's middle, its skirt on the deck's top face (within -1 to +1.5 mm), within 4 degrees of square and 2.5 degrees of flat; this is the cover on its slots' ends, held down by the post heads. (4) Step 3 and no gripper pad within 3 cm of either cover. Full score 1.0 (ends the run) only once every full-success condition has held together, without a break, for 1 s: all four steps, and both covers still (within 2 mm and 2 degrees of where they were when that second began); any lapse restarts the second, and the step points stop at 0.8. 0 overall if either cover falls off the table.",
+  "run_limit": "800 steps (40 s at 20 Hz)",
+  "reset_notes": "Lower the cracked cover onto the posts with the holes over the heads and slide it 10 mm toward the robot until the posts reach the slot ends; lay the new cover on the parts rack on its mark; empty the tray.",
+  "fidelity": "Rigid bodies, 240 Hz physics, 20 Hz control. Each cover is a rigid body of box colliders: the plate is cut into boxes around the three keyholes, so the posts, heads, holes and slots are real contact (0.5 mm slot clearance, 1 mm play under the heads). Deck, rack and tray are fixed. A real ABS cover flexes a little and its keyholes are moulded round; the slide here is limited by skirt friction on the deck (about 0.4). No task code moves or seats anything.",
+  "scores": "Dream-1 run: 0.0 (filming-copy run, step limit hit); demo: 1.0 (success at step 562, Isaac)",
+  "media": "M-KJ6ST5"
+}

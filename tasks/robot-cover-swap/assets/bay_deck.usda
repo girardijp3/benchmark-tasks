@@ -1,0 +1,284 @@
+#usda 1.0
+(
+    defaultPrim = "ROOT"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "ROOT" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "The top deck of a robot's electronics bay: a 190 x 140 x 12 mm plate with three headed posts (5 mm shaft, 12 mm head) that carry the cover's keyholes. Fixed to the table. Origin: the middle of the deck's top face, 60 mm above the table (the robot body below it is a box)."
+)
+{
+    bool physics:kinematicEnabled = true
+    float physics:mass = 3.0
+
+    def Scope "Looks"
+    {
+        def Material "Deck"
+        {
+            token outputs:surface.connect = </ROOT/Looks/Deck/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.25, 0.27, 0.3)
+                float inputs:metallic = 0.3
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+        def Material "Body"
+        {
+            token outputs:surface.connect = </ROOT/Looks/Body/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.12, 0.13, 0.15)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.7
+                token outputs:surface
+            }
+        }
+        def Material "Peg"
+        {
+            token outputs:surface.connect = </ROOT/Looks/Peg/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.78, 0.78, 0.8)
+                float inputs:metallic = 0.9
+                float inputs:roughness = 0.35
+                token outputs:surface
+            }
+        }
+        def Material "Phys_Metal" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.4
+        }
+    }
+
+    def Cube "Deck" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Deck>
+        double size = 1
+        double3 xformOp:translate = (0, 0, -0.006)
+        float3 xformOp:scale = (0.19, 0.14, 0.012)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+    def Cube "Body" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Body>
+        double size = 1
+        double3 xformOp:translate = (0, 0, -0.036)
+        float3 xformOp:scale = (0.16, 0.11, 0.048)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+    def Cylinder "Post0" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Peg>
+        uniform token axis = "Z"
+        double height = 0.024
+        double radius = 0.0025
+        double3 xformOp:translate = (-0.05, -0.03, 0.012)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+    def Cylinder "Head0" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Peg>
+        uniform token axis = "Z"
+        double height = 0.0025
+        double radius = 0.006
+        double3 xformOp:translate = (-0.05, -0.03, 0.02525)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+    def Cylinder "Post1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Peg>
+        uniform token axis = "Z"
+        double height = 0.024
+        double radius = 0.0025
+        double3 xformOp:translate = (-0.05, 0.03, 0.012)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+    def Cylinder "Head1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Peg>
+        uniform token axis = "Z"
+        double height = 0.0025
+        double radius = 0.006
+        double3 xformOp:translate = (-0.05, 0.03, 0.02525)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+    def Cylinder "Post2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Peg>
+        uniform token axis = "Z"
+        double height = 0.024
+        double radius = 0.0025
+        double3 xformOp:translate = (0.05, 0, 0.012)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+    def Cylinder "Head2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Peg>
+        uniform token axis = "Z"
+        double height = 0.0025
+        double radius = 0.006
+        double3 xformOp:translate = (0.05, 0, 0.02525)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Scope "Colliders"
+    {
+        def Cube "Deck" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Metal> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0, 0, -0.006)
+        float3 xformOp:scale = (0.19, 0.14, 0.012)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "Body" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Metal> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0, 0, -0.036)
+        float3 xformOp:scale = (0.16, 0.11, 0.048)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cylinder "Post0" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Metal> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            uniform token axis = "Z"
+            double height = 0.024
+            double radius = 0.0025
+        double3 xformOp:translate = (-0.05, -0.03, 0.012)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+        def Cylinder "Head0" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Metal> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            uniform token axis = "Z"
+            double height = 0.0025
+            double radius = 0.006
+        double3 xformOp:translate = (-0.05, -0.03, 0.02525)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+        def Cylinder "Post1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Metal> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            uniform token axis = "Z"
+            double height = 0.024
+            double radius = 0.0025
+        double3 xformOp:translate = (-0.05, 0.03, 0.012)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+        def Cylinder "Head1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Metal> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            uniform token axis = "Z"
+            double height = 0.0025
+            double radius = 0.006
+        double3 xformOp:translate = (-0.05, 0.03, 0.02525)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+        def Cylinder "Post2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Metal> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            uniform token axis = "Z"
+            double height = 0.024
+            double radius = 0.0025
+        double3 xformOp:translate = (0.05, 0, 0.012)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+        def Cylinder "Head2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Metal> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            uniform token axis = "Z"
+            double height = 0.0025
+            double radius = 0.006
+        double3 xformOp:translate = (0.05, 0, 0.02525)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+    }
+}

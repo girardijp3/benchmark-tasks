@@ -1,0 +1,196 @@
+#usda 1.0
+(
+    defaultPrim = "ROOT"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "ROOT" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A scrap tray: 174 x 124 mm inside, 35 mm walls, 3 mm floor. On a 30 mm riser, fixed to the table. Origin: the middle of the floor's underside, 30 mm above the table."
+)
+{
+    bool physics:kinematicEnabled = true
+    float physics:mass = 1.0
+
+    def Scope "Looks"
+    {
+        def Material "Tray"
+        {
+            token outputs:surface.connect = </ROOT/Looks/Tray/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.15, 0.35, 0.65)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+        def Material "Phys_Tray" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.35
+            float physics:restitution = 0
+            float physics:staticFriction = 0.45
+        }
+    }
+
+    def Cube "Floor" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Tray>
+        double size = 1
+        double3 xformOp:translate = (0, 0, 0.0015)
+        float3 xformOp:scale = (0.18, 0.13, 0.003)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+    def Cube "WallF" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Tray>
+        double size = 1
+        double3 xformOp:translate = (0.0885, 0, 0.0205)
+        float3 xformOp:scale = (0.003, 0.13, 0.035)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+    def Cube "WallB" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Tray>
+        double size = 1
+        double3 xformOp:translate = (-0.0885, 0, 0.0205)
+        float3 xformOp:scale = (0.003, 0.13, 0.035)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+    def Cube "WallL" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Tray>
+        double size = 1
+        double3 xformOp:translate = (0, 0.0635, 0.0205)
+        float3 xformOp:scale = (0.174, 0.003, 0.035)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+    def Cube "WallR" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Tray>
+        double size = 1
+        double3 xformOp:translate = (0, -0.0635, 0.0205)
+        float3 xformOp:scale = (0.174, 0.003, 0.035)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+    def Cube "Riser" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Tray>
+        double size = 1
+        double3 xformOp:translate = (0, 0, -0.015)
+        float3 xformOp:scale = (0.16, 0.11, 0.03)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Scope "Colliders"
+    {
+        def Cube "Floor" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Tray> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0, 0, 0.0015)
+        float3 xformOp:scale = (0.18, 0.13, 0.003)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "WallF" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Tray> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0.0885, 0, 0.0205)
+        float3 xformOp:scale = (0.003, 0.13, 0.035)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "WallB" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Tray> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (-0.0885, 0, 0.0205)
+        float3 xformOp:scale = (0.003, 0.13, 0.035)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "WallL" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Tray> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0, 0.0635, 0.0205)
+        float3 xformOp:scale = (0.174, 0.003, 0.035)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "WallR" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Tray> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0, -0.0635, 0.0205)
+        float3 xformOp:scale = (0.174, 0.003, 0.035)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "Riser" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Tray> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0, 0, -0.015)
+        float3 xformOp:scale = (0.16, 0.11, 0.03)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+}

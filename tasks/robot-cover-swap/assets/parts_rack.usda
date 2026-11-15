@@ -1,0 +1,71 @@
+#usda 1.0
+(
+    defaultPrim = "ROOT"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "ROOT" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A parts rack: a 170 x 120 mm block 30 mm tall that the new cover lies on. Fixed to the table. Origin: the middle of its top face."
+)
+{
+    bool physics:kinematicEnabled = true
+    float physics:mass = 2.0
+
+    def Scope "Looks"
+    {
+        def Material "Rack"
+        {
+            token outputs:surface.connect = </ROOT/Looks/Rack/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.35, 0.38, 0.42)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.7
+                token outputs:surface
+            }
+        }
+        def Material "Phys_Rack" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.35
+            float physics:restitution = 0
+            float physics:staticFriction = 0.45
+        }
+    }
+
+    def Cube "Rack" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Rack>
+        double size = 1
+        double3 xformOp:translate = (0, 0, -0.015)
+        float3 xformOp:scale = (0.17, 0.12, 0.03)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Scope "Colliders"
+    {
+        def Cube "Rack" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Rack> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+        double3 xformOp:translate = (0, 0, -0.015)
+        float3 xformOp:scale = (0.17, 0.12, 0.03)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+}
