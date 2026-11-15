@@ -19,5 +19,5 @@
   "reset_notes": "Put each rod on its saddles and the tag in the rack; stand the tag holders empty. A coin flip chooses which of the two bench test fixtures has channel 4 (117 mm up) open: take its two-pin link out on that receiver board and fit all eight links on the other. Check each by hand with the rod: the sound lamp stays red all the way up, the faulty one goes green near 117 mm.",
   "fidelity": "Rigid bodies, 240 Hz physics, 20 Hz control; curtains, holders, saddles and rack are fixtures. The trip lamp is a declared code effect: a red and a green disc swapped on the receiver's cap, red while a rod covers the whole 10 mm lens of a working beam. The faulty machine (drawn at random each episode) has one beam that never trips; the real trial uses a bench fixture with that channel's link removed. Tag is a 5 mm rigid sign in a slot. Rod 110 g (typical).",
   "scores": "Dream-1 run (1,200 steps, left machine faulty): 0.0 (both arms hovered near the rods, no rod pass, tag not moved); demo: 1.0 at step 798-799 in every run, with the left machine faulty and with the right one faulty",
-  "media": "M-7J5F3K"
+  "media": "M-9TRUQX"
 }
