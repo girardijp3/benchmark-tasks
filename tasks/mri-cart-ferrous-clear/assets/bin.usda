@@ -1,0 +1,193 @@
+#usda 1.0
+(
+    defaultPrim = "bin"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "bin" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Shallow polypropylene storage tote for the metal and electronics, 320 x 240 x 100 mm, 3 mm walls. Origin at the middle of the underside."
+)
+{
+    bool physics:kinematicEnabled = 1
+    float physics:mass = 0.6
+
+    def Scope "Looks"
+    {
+        def Material "Red"
+        {
+            token outputs:surface.connect = </bin/Looks/Red/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.78, 0.08, 0.07)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.45
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_Plastic" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.38
+            float physics:restitution = 0
+            float physics:staticFriction = 0.45
+        }
+
+        def Material "White"
+        {
+            token outputs:surface.connect = </bin/Looks/White/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.95, 0.93)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Floor" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </bin/Looks/Red>
+        double size = 1
+        float3 xformOp:scale = (0.3, 0.22, 0.003)
+        double3 xformOp:translate = (0, 0, 0.0015)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Floor_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </bin/Looks/Phys_Plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.3, 0.22, 0.003)
+        double3 xformOp:translate = (0, 0, 0.0015)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "WallF" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </bin/Looks/Red>
+        double size = 1
+        float3 xformOp:scale = (0.3, 0.003, 0.1)
+        double3 xformOp:translate = (0, 0.1085, 0.05)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "WallF_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </bin/Looks/Phys_Plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.3, 0.003, 0.1)
+        double3 xformOp:translate = (0, 0.1085, 0.05)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "WallB" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </bin/Looks/Red>
+        double size = 1
+        float3 xformOp:scale = (0.3, 0.003, 0.1)
+        double3 xformOp:translate = (0, -0.1085, 0.05)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "WallB_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </bin/Looks/Phys_Plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.3, 0.003, 0.1)
+        double3 xformOp:translate = (0, -0.1085, 0.05)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "WallL" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </bin/Looks/Red>
+        double size = 1
+        float3 xformOp:scale = (0.003, 0.214, 0.1)
+        double3 xformOp:translate = (0.1485, 0, 0.05)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "WallL_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </bin/Looks/Phys_Plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.003, 0.214, 0.1)
+        double3 xformOp:translate = (0.1485, 0, 0.05)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "WallR" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </bin/Looks/Red>
+        double size = 1
+        float3 xformOp:scale = (0.003, 0.214, 0.1)
+        double3 xformOp:translate = (-0.1485, 0, 0.05)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "WallR_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </bin/Looks/Phys_Plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.003, 0.214, 0.1)
+        double3 xformOp:translate = (-0.1485, 0, 0.05)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Label" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </bin/Looks/White>
+        double size = 1
+        float3 xformOp:scale = (0.12, 0.0004, 0.03)
+        double3 xformOp:translate = (0, -0.1102, 0.06)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

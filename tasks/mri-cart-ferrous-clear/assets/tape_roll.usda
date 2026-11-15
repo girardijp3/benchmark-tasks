@@ -1,0 +1,95 @@
+#usda 1.0
+(
+    defaultPrim = "tape_roll"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "tape_roll" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Roll of paper surgical tape, 1 in x 10 yd: 40 mm across, 25 mm wide, white plastic core, 25 g. Origin at the underside's centre; stands on a flat face."
+)
+{
+    float physics:mass = 0.025
+
+    def Scope "Looks"
+    {
+        def Material "PaperTape"
+        {
+            token outputs:surface.connect = </tape_roll/Looks/PaperTape/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.9, 0.84, 0.7)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.8
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_Plastic" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.38
+            float physics:restitution = 0
+            float physics:staticFriction = 0.45
+        }
+
+        def Material "Core"
+        {
+            token outputs:surface.connect = </tape_roll/Looks/Core/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.96, 0.96, 0.96)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.5
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cylinder "Roll" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.025
+        rel material:binding = </tape_roll/Looks/PaperTape>
+        double radius = 0.02
+        double3 xformOp:translate = (0, 0, 0.0125)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Roll_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.025
+        rel material:binding:physics = </tape_roll/Looks/Phys_Plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double radius = 0.02
+        double3 xformOp:translate = (0, 0, 0.0125)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Core" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0254
+        rel material:binding = </tape_roll/Looks/Core>
+        double radius = 0.0125
+        double3 xformOp:translate = (0, 0, 0.0125)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+

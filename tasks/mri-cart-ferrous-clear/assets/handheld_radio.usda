@@ -1,0 +1,195 @@
+#usda 1.0
+(
+    defaultPrim = "handheld_radio"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "handheld_radio" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Handheld two-way radio, body 112 x 58 x 36 mm with a 70 mm antenna, 260 g with its battery (a typical business-band handset). Origin at the underside's centre of the body, x along the body toward the antenna, lying on its back with the front up."
+)
+{
+    float physics:mass = 0.26
+
+    def Scope "Looks"
+    {
+        def Material "RadioBody"
+        {
+            token outputs:surface.connect = </handheld_radio/Looks/RadioBody/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.1, 0.11)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_Radio" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.45
+            float physics:restitution = 0
+            float physics:staticFriction = 0.5
+        }
+
+        def Material "RadioScreen"
+        {
+            token outputs:surface.connect = </handheld_radio/Looks/RadioScreen/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.3, 0.55, 0.4)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.2
+                token outputs:surface
+            }
+        }
+
+        def Material "Keys"
+        {
+            token outputs:surface.connect = </handheld_radio/Looks/Keys/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.3, 0.3, 0.32)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.5
+                token outputs:surface
+            }
+        }
+
+        def Material "Orange"
+        {
+            token outputs:surface.connect = </handheld_radio/Looks/Orange/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.45, 0.05)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.4
+                token outputs:surface
+            }
+        }
+
+        def Material "Knob"
+        {
+            token outputs:surface.connect = </handheld_radio/Looks/Knob/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.25, 0.25, 0.27)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.5
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Body" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </handheld_radio/Looks/RadioBody>
+        double size = 1
+        float3 xformOp:scale = (0.112, 0.058, 0.036)
+        double3 xformOp:translate = (0, 0, 0.018)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Body_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </handheld_radio/Looks/Phys_Radio> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.112, 0.058, 0.036)
+        double3 xformOp:translate = (0, 0, 0.018)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Antenna" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.06
+        rel material:binding = </handheld_radio/Looks/RadioBody>
+        double radius = 0.005
+        double3 xformOp:translate = (0.091, 0, 0.024)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Antenna_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.06
+        rel material:binding:physics = </handheld_radio/Looks/Phys_Radio> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double radius = 0.005
+        double3 xformOp:translate = (0.091, 0, 0.024)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "Display" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </handheld_radio/Looks/RadioScreen>
+        double size = 1
+        float3 xformOp:scale = (0.03, 0.026, 0.0004)
+        double3 xformOp:translate = (0.02, 0, 0.0364)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Keypad" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </handheld_radio/Looks/Keys>
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.04, 0.0006)
+        double3 xformOp:translate = (-0.027, 0, 0.0366)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Emergency" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </handheld_radio/Looks/Orange>
+        double size = 1
+        float3 xformOp:scale = (0.012, 0.012, 0.0012)
+        double3 xformOp:translate = (0.047, 0, 0.0372)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Knob" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.01
+        rel material:binding = </handheld_radio/Looks/Knob>
+        double radius = 0.0085
+        double3 xformOp:translate = (0.048, 0.0195, 0.0405)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+

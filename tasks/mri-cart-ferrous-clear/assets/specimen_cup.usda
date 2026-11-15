@@ -1,0 +1,135 @@
+#usda 1.0
+(
+    defaultPrim = "specimen_cup"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "specimen_cup" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Polypropylene specimen container, 120 mL, 56 mm across the base, 48 mm to the rim, with a blue screw lid 60 mm across and 7 mm thick: 21 g. Origin at the underside's centre."
+)
+{
+    float physics:mass = 0.021
+
+    def Scope "Looks"
+    {
+        def Material "Clear"
+        {
+            token outputs:surface.connect = </specimen_cup/Looks/Clear/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.88, 0.92, 0.94)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.2
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_Plastic" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.38
+            float physics:restitution = 0
+            float physics:staticFriction = 0.45
+        }
+
+        def Material "LidBlue"
+        {
+            token outputs:surface.connect = </specimen_cup/Looks/LidBlue/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.35, 0.8)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.5
+                token outputs:surface
+            }
+        }
+
+        def Material "White"
+        {
+            token outputs:surface.connect = </specimen_cup/Looks/White/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.96, 0.96, 0.95)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cylinder "Cup" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.048
+        rel material:binding = </specimen_cup/Looks/Clear>
+        double radius = 0.028
+        double3 xformOp:translate = (0, 0, 0.024)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Cup_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.048
+        rel material:binding:physics = </specimen_cup/Looks/Phys_Plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double radius = 0.028
+        double3 xformOp:translate = (0, 0, 0.024)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Lid" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.007
+        rel material:binding = </specimen_cup/Looks/LidBlue>
+        double radius = 0.03
+        double3 xformOp:translate = (0, 0, 0.0515)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Lid_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.007
+        rel material:binding:physics = </specimen_cup/Looks/Phys_Plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double radius = 0.03
+        double3 xformOp:translate = (0, 0, 0.0515)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "Label" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </specimen_cup/Looks/White>
+        double size = 1
+        float3 xformOp:scale = (0.03, 0.0004, 0.022)
+        double3 xformOp:translate = (0, -0.0283, 0.024)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

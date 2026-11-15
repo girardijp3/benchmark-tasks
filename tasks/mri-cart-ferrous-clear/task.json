@@ -1,0 +1,21 @@
+{
+  "title": "Strip a sedation cart of magnetic and battery-powered items before the scanner room",
+  "category": "Impact on jobs",
+  "keywords": [
+    "MRI safety",
+    "pick and place",
+    "object identification",
+    "hospital cart",
+    "ferromagnetic screening",
+    "clinical"
+  ],
+  "instruction": "This cart is going into the MRI scanner room. Take everything magnetic or battery-powered off it and put it in the red tote, leaving the MRI-safe supplies where they are.",
+  "context": "Before a sedated patient is wheeled into an MRI scanner room, the escorting nurse or orderly checks the cart for anything the magnet could pull in or that holds a battery: hemostats, scissors, radios, monitors. Registered nurses (SOC 29-1141, about 3.3 million US jobs) and nursing assistants and orderlies (31-1131 and 31-1132, about 1.5 million) do this routinely; a missed steel instrument becomes a projectile in the 1.5 to 3 tesla field. The same cart carries MRI-safe plastic supplies that must stay, and some look like their steel twins (here, plastic locking forceps beside a steel hemostat), so the right items have to be picked.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. A compact rolling cart (460 x 360 mm tray, 120 mm above the table, casters locked) stands at x 0.30, y -0.12, with a red storage tote (320 x 240 x 100 mm) at x 0.24, y -0.52. On the tray, in the half nearer the tote: a Kelly hemostat (5.5 in, 140 mm, steel, 52 g), a handheld two-way radio (112 x 58 x 36 mm body with a 70 mm antenna, 260 g) and a fingertip pulse oximeter (58 x 34 x 31 mm, 50 g). In the other half: a pair of blue plastic locking forceps (5 in, 12 g) that look like the hemostat, a roll of paper tape (40 mm across, 25 mm wide, 25 g) and a specimen container with a blue lid (60 mm, 55 mm tall, 21 g). Everything lies or stands loose on the tray.",
+  "scoring": "Four steps, 0.2 each, judged from the video as things stand at the end. (1) Hemostat in the tote. (2) Radio in the tote. (3) Pulse oximeter in the tote. (4) With 1-3, every MRI-safe item (the plastic forceps, the tape, the container) is still on the tray, upright, and no gripper is within 3 cm of any item. 'In the tote' means every corner of the item's bounds is inside the tote's floor plan and its lowest point is below the rim. Full score 1.0 (ends the run) only once every full-success condition has held together, without a break, for 1 s: all four steps and all six items within 2 mm and 2 degrees of where they were when that second began; any lapse restarts the second, and the step points stop at 0.8, also while it is being timed. 0 overall if any item is off the table.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Put the six items back on the tray where they started (hemostat, radio and oximeter in the half nearer the tote, the plastic forceps, tape and container in the other half) and stand the tote on its spot.",
+  "fidelity": "Rigid bodies, 240 Hz physics, 20 Hz control. Every item is a true-size model with real mass: steel hemostat 52 g, radio 260 g, oximeter 50 g, plastic forceps 12 g, tape 25 g, container 21 g. Colliders are convex hulls and exact boxes. The cart is a fixture (casters locked). Magnetism is not simulated: the scorer only reads where each item ends up.",
+  "scores": "Dream-1 run: 0.0 (arms hovered, no item picked up); demo: 1.0 (success at step 808)",
+  "media": "M-GZ8VJB"
+}

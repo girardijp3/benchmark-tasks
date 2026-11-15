@@ -1,0 +1,257 @@
+#usda 1.0
+(
+    defaultPrim = "pulse_oximeter"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "pulse_oximeter" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Fingertip pulse oximeter, 58 x 34 x 31 mm closed, 50 g with its two AAA cells: a white clamshell with a blue lower case and a display window. Origin at the underside's centre, x along the 58 mm side, lying on its flat lower case with the display up."
+)
+{
+    float physics:mass = 0.05
+
+    def Scope "Looks"
+    {
+        def Material "OxBlue"
+        {
+            token outputs:surface.connect = </pulse_oximeter/Looks/OxBlue/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.08, 0.3, 0.65)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.4
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_Ox" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.4
+            float physics:restitution = 0
+            float physics:staticFriction = 0.45
+        }
+
+        def Material "OxWhite"
+        {
+            token outputs:surface.connect = </pulse_oximeter/Looks/OxWhite/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.93, 0.94, 0.95)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.35
+                token outputs:surface
+            }
+        }
+
+        def Material "OxScreen"
+        {
+            token outputs:surface.connect = </pulse_oximeter/Looks/OxScreen/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.01, 0.01, 0.02)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.1
+                token outputs:surface
+            }
+        }
+
+        def Material "Red0"
+        {
+            token outputs:surface.connect = </pulse_oximeter/Looks/Red0/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.15, 0.15)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.3
+                token outputs:surface
+            }
+        }
+
+        def Material "Red1"
+        {
+            token outputs:surface.connect = </pulse_oximeter/Looks/Red1/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.15, 0.15)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.3
+                token outputs:surface
+            }
+        }
+
+        def Material "Red2"
+        {
+            token outputs:surface.connect = </pulse_oximeter/Looks/Red2/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.15, 0.15)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.3
+                token outputs:surface
+            }
+        }
+
+        def Material "OxButton"
+        {
+            token outputs:surface.connect = </pulse_oximeter/Looks/OxButton/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.2, 0.2, 0.22)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.5
+                token outputs:surface
+            }
+        }
+
+        def Material "Pad"
+        {
+            token outputs:surface.connect = </pulse_oximeter/Looks/Pad/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.15, 0.15, 0.17)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.8
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Lower" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </pulse_oximeter/Looks/OxBlue>
+        double size = 1
+        float3 xformOp:scale = (0.058, 0.034, 0.015)
+        double3 xformOp:translate = (0, 0, 0.0075)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Lower_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </pulse_oximeter/Looks/Phys_Ox> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.058, 0.034, 0.015)
+        double3 xformOp:translate = (0, 0, 0.0075)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Upper" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </pulse_oximeter/Looks/OxWhite>
+        double size = 1
+        float3 xformOp:scale = (0.058, 0.034, 0.016)
+        double3 xformOp:translate = (0, 0, 0.023)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Upper_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </pulse_oximeter/Looks/Phys_Ox> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.058, 0.034, 0.016)
+        double3 xformOp:translate = (0, 0, 0.023)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Window" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </pulse_oximeter/Looks/OxScreen>
+        double size = 1
+        float3 xformOp:scale = (0.03, 0.02, 0.0004)
+        double3 xformOp:translate = (-0.005, 0, 0.0314)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Digit0" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </pulse_oximeter/Looks/Red0>
+        double size = 1
+        float3 xformOp:scale = (0.005, 0.009, 0.0003)
+        double3 xformOp:translate = (-0.012, 0, 0.0317)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Digit1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </pulse_oximeter/Looks/Red1>
+        double size = 1
+        float3 xformOp:scale = (0.005, 0.009, 0.0003)
+        double3 xformOp:translate = (-0.004, 0, 0.0317)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Digit2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </pulse_oximeter/Looks/Red2>
+        double size = 1
+        float3 xformOp:scale = (0.005, 0.009, 0.0003)
+        double3 xformOp:translate = (0.004, 0, 0.0317)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Button" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </pulse_oximeter/Looks/OxButton>
+        double size = 1
+        float3 xformOp:scale = (0.008, 0.008, 0.001)
+        double3 xformOp:translate = (0.021, 0, 0.0312)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Finger" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.012
+        rel material:binding = </pulse_oximeter/Looks/Pad>
+        double radius = 0.0095
+        double3 xformOp:translate = (-0, 0, 0.0155)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+

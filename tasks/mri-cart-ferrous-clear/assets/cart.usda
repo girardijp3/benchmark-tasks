@@ -1,0 +1,481 @@
+#usda 1.0
+(
+    defaultPrim = "cart"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "cart" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Compact two-shelf rolling tray cart, tray 460 x 360 mm, upper face 120 mm above the table (casters locked, so it is a fixture). Origin at the middle of the footprint on the table, x along the 460 mm side."
+)
+{
+    bool physics:kinematicEnabled = 1
+    float physics:mass = 4
+
+    def Scope "Looks"
+    {
+        def Material "Tray"
+        {
+            token outputs:surface.connect = </cart/Looks/Tray/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.8, 0.82, 0.84)
+                float inputs:metallic = 1
+                float inputs:roughness = 0.35
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_Tray" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.35
+            float physics:restitution = 0
+            float physics:staticFriction = 0.4
+        }
+
+        def Material "Frame"
+        {
+            token outputs:surface.connect = </cart/Looks/Frame/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.55, 0.57, 0.6)
+                float inputs:metallic = 1
+                float inputs:roughness = 0.4
+                token outputs:surface
+            }
+        }
+
+        def Material "Rubber"
+        {
+            token outputs:surface.connect = </cart/Looks/Rubber/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.04, 0.04, 0.045)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.9
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Tray" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </cart/Looks/Tray>
+        double size = 1
+        float3 xformOp:scale = (0.46, 0.36, 0.003)
+        double3 xformOp:translate = (0, 0, 0.1185)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Tray_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </cart/Looks/Phys_Tray> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.46, 0.36, 0.003)
+        double3 xformOp:translate = (0, 0, 0.1185)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Rim0" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </cart/Looks/Tray>
+        double size = 1
+        float3 xformOp:scale = (0.46, 0.003, 0.008)
+        double3 xformOp:translate = (0, 0.1785, 0.124)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Rim0_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </cart/Looks/Phys_Tray> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.46, 0.003, 0.008)
+        double3 xformOp:translate = (0, 0.1785, 0.124)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Rim1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </cart/Looks/Tray>
+        double size = 1
+        float3 xformOp:scale = (0.46, 0.003, 0.008)
+        double3 xformOp:translate = (0, -0.1785, 0.124)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Rim1_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </cart/Looks/Phys_Tray> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.46, 0.003, 0.008)
+        double3 xformOp:translate = (0, -0.1785, 0.124)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Rim2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </cart/Looks/Tray>
+        double size = 1
+        float3 xformOp:scale = (0.003, 0.354, 0.008)
+        double3 xformOp:translate = (0.2285, 0, 0.124)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Rim2_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </cart/Looks/Phys_Tray> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.003, 0.354, 0.008)
+        double3 xformOp:translate = (0.2285, 0, 0.124)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Rim3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </cart/Looks/Tray>
+        double size = 1
+        float3 xformOp:scale = (0.003, 0.354, 0.008)
+        double3 xformOp:translate = (-0.2285, 0, 0.124)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Rim3_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </cart/Looks/Phys_Tray> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.003, 0.354, 0.008)
+        double3 xformOp:translate = (-0.2285, 0, 0.124)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Shelf" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </cart/Looks/Frame>
+        double size = 1
+        float3 xformOp:scale = (0.46, 0.36, 0.003)
+        double3 xformOp:translate = (0, 0, 0.045)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Shelf_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </cart/Looks/Phys_Tray> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.46, 0.36, 0.003)
+        double3 xformOp:translate = (0, 0, 0.045)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Post0" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.08499999999999999
+        rel material:binding = </cart/Looks/Frame>
+        double radius = 0.009
+        double3 xformOp:translate = (0.21000000000000002, 0.16, 0.0775)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Post0_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.08499999999999999
+        rel material:binding:physics = </cart/Looks/Phys_Tray> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double radius = 0.009
+        double3 xformOp:translate = (0.21000000000000002, 0.16, 0.0775)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Wheel0" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.016
+        rel material:binding = </cart/Looks/Rubber>
+        double radius = 0.0175
+        double3 xformOp:translate = (0.21000000000000002, 0.16, 0.0175)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Wheel0_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.016
+        rel material:binding:physics = </cart/Looks/Phys_Tray> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double radius = 0.0175
+        double3 xformOp:translate = (0.21000000000000002, 0.16, 0.0175)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "Fork0" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </cart/Looks/Frame>
+        double size = 1
+        float3 xformOp:scale = (0.02, 0.02, 0.02)
+        double3 xformOp:translate = (0.21000000000000002, 0.16, 0.045)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Post1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.08499999999999999
+        rel material:binding = </cart/Looks/Frame>
+        double radius = 0.009
+        double3 xformOp:translate = (0.21000000000000002, -0.16, 0.0775)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Post1_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.08499999999999999
+        rel material:binding:physics = </cart/Looks/Phys_Tray> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double radius = 0.009
+        double3 xformOp:translate = (0.21000000000000002, -0.16, 0.0775)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Wheel1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.016
+        rel material:binding = </cart/Looks/Rubber>
+        double radius = 0.0175
+        double3 xformOp:translate = (0.21000000000000002, -0.16, 0.0175)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Wheel1_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.016
+        rel material:binding:physics = </cart/Looks/Phys_Tray> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double radius = 0.0175
+        double3 xformOp:translate = (0.21000000000000002, -0.16, 0.0175)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "Fork1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </cart/Looks/Frame>
+        double size = 1
+        float3 xformOp:scale = (0.02, 0.02, 0.02)
+        double3 xformOp:translate = (0.21000000000000002, -0.16, 0.045)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Post2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.08499999999999999
+        rel material:binding = </cart/Looks/Frame>
+        double radius = 0.009
+        double3 xformOp:translate = (-0.21000000000000002, 0.16, 0.0775)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Post2_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.08499999999999999
+        rel material:binding:physics = </cart/Looks/Phys_Tray> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double radius = 0.009
+        double3 xformOp:translate = (-0.21000000000000002, 0.16, 0.0775)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Wheel2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.016
+        rel material:binding = </cart/Looks/Rubber>
+        double radius = 0.0175
+        double3 xformOp:translate = (-0.21000000000000002, 0.16, 0.0175)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Wheel2_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.016
+        rel material:binding:physics = </cart/Looks/Phys_Tray> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double radius = 0.0175
+        double3 xformOp:translate = (-0.21000000000000002, 0.16, 0.0175)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "Fork2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </cart/Looks/Frame>
+        double size = 1
+        float3 xformOp:scale = (0.02, 0.02, 0.02)
+        double3 xformOp:translate = (-0.21000000000000002, 0.16, 0.045)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Post3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.08499999999999999
+        rel material:binding = </cart/Looks/Frame>
+        double radius = 0.009
+        double3 xformOp:translate = (-0.21000000000000002, -0.16, 0.0775)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Post3_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.08499999999999999
+        rel material:binding:physics = </cart/Looks/Phys_Tray> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double radius = 0.009
+        double3 xformOp:translate = (-0.21000000000000002, -0.16, 0.0775)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Wheel3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.016
+        rel material:binding = </cart/Looks/Rubber>
+        double radius = 0.0175
+        double3 xformOp:translate = (-0.21000000000000002, -0.16, 0.0175)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Wheel3_C" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.016
+        rel material:binding:physics = </cart/Looks/Phys_Tray> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token purpose = "guide"
+        double radius = 0.0175
+        double3 xformOp:translate = (-0.21000000000000002, -0.16, 0.0175)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "Fork3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </cart/Looks/Frame>
+        double size = 1
+        float3 xformOp:scale = (0.02, 0.02, 0.02)
+        double3 xformOp:translate = (-0.21000000000000002, -0.16, 0.045)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+
