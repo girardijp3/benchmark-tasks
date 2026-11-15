@@ -183,4 +183,4 @@ toward the hand, the sleeve unfolded; empty the tubes (or use fresh ones).
 ## Status
 
 Dream-1 score: 0.0 (both arms stayed near their bases; the right gripper moved over the tray's near edge but never
-moved a tube, and neither touched the holder). Demo: 1.0 at step 1316. Media: TBD (assigned at upload).
+moved a tube, and neither touched the holder). Demo: 1.0 at step 1316. Media: M-EEWGSZ.
