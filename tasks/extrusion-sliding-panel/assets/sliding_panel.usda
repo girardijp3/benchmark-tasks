@@ -1,0 +1,154 @@
+#usda 1.0
+(
+    defaultPrim = "SlidingPanel"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "SlidingPanel" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A 3 mm clear acrylic sliding panel, 100 x 80 mm (thickness along x), with a pull knob on its front face (-x): an 8 mm stem and a 16 (y) x 14 (x) x 16 mm (z) head, 37 g. Origin at the middle of its lower edge."
+)
+{
+    point3f physics:centerOfMass = (-0.003, 0, 0.04)
+    float3 physics:diagonalInertia = (0.000050566665, 0.000023091083, 0.00003419108)
+    float physics:mass = 0.037
+
+    def Scope "Looks"
+    {
+        def Material "Phys_acrylic" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.4
+        }
+
+        def Material "m618191"
+        {
+            token outputs:surface.connect = </SlidingPanel/Looks/m618191/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.62, 0.82, 0.92)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_plastic" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.4
+        }
+
+        def Material "m141416"
+        {
+            token outputs:surface.connect = </SlidingPanel/Looks/m141416/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.15, 0.15, 0.17)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m841409"
+        {
+            token outputs:surface.connect = </SlidingPanel/Looks/m841409/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.85, 0.15, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m899499"
+        {
+            token outputs:surface.connect = </SlidingPanel/Looks/m899499/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.9, 0.95, 1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Box1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </SlidingPanel/Looks/m618191>
+        rel material:binding:physics = </SlidingPanel/Looks/Phys_acrylic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.003, 0.1, 0.08)
+        double3 xformOp:translate = (0, 0, 0.04)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </SlidingPanel/Looks/m141416>
+        rel material:binding:physics = </SlidingPanel/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.012, 0.008, 0.008)
+        double3 xformOp:translate = (-0.0075, 0, 0.055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </SlidingPanel/Looks/m841409>
+        rel material:binding:physics = </SlidingPanel/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.014, 0.016, 0.016)
+        double3 xformOp:translate = (-0.0205, 0, 0.055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </SlidingPanel/Looks/m899499>
+        double size = 1
+        float3 xformOp:scale = (0.0034, 0.1, 0.003)
+        double3 xformOp:translate = (0, 0, 0.0785)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

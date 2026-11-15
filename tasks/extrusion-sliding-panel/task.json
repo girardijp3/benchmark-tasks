@@ -1,0 +1,24 @@
+{
+  "title": "Slide a clear panel along the top and bottom slots of an aluminium frame to its end stop by its pull knob",
+  "category": "Impact on AI timelines",
+  "keywords": [
+    "aluminium extrusion",
+    "2020 T-slot",
+    "sliding panel",
+    "enclosure door",
+    "pull knob",
+    "end stop",
+    "robot cell",
+    "final-state scoring",
+    "one arm"
+  ],
+  "instruction": "Slide the clear panel along its slots until its end meets the stop at the left end of the aluminium frame, then let go of it.",
+  "context": "Enclosures for robot cells, lab automation and compute racks use clear acrylic panels that slide in the T-slots of a top and a bottom aluminium extrusion rail, with a pull knob on the face. The panel has 1.6 mm a side in each 6.2 mm slot, so it has to be pulled along the slots and kept square; pulled from the knob in front of its face it can cock and bind. Opening and closing guards like this is routine work around robot and AI-compute hardware.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. A frame of 20 x 20 mm aluminium extrusion is fixed on the table at x 0.34, y 0: a bottom and a top rail 220 mm long along y with their T-slots facing each other (6.2 mm opening, 1.8 mm lips, 11 x 6 mm cavity; the lips are 67.7 mm apart) and a 20 mm post at each end; the post at y 0.13 is the end stop. A 100 x 80 x 3 mm clear acrylic panel (37 g) stands in both slots with its centre at y 0.0, 60 mm short of the stop, with a red knob on its front face (a 16 mm wide, 16 mm tall head 20 mm in front of the panel, 55 mm above its lower edge). The panel is trapped between the rails and can only slide along them.",
+  "scoring": "Four steps, 0.2 each. (1) Panel started along the slots by a gripper: a gripper holding the panel or its knob has pulled it 1 cm along the slots (once reached). (2) Panel pulled over half way: with step 1, in the slots (plane within 1.9 mm of the slots' axis, upright and square within 3 degrees) and at least 3 cm along. (3) Panel at the end stop: with step 2, its end within 2 mm of the stop. (4) Panel let go: with step 3, no gripper holds it or has its pads within 3 cm of it or its knob. Steps 2 to 4 are judged as things stand, each only with the one before. Full score 1.0, ending the run, only once all four hold together without a break for 1 s, the panel staying within 2 mm and 2 degrees of where it was when that second began; the step points stop at 0.8. A panel moved without a gripper, or left short of the stop, does not count. 0 overall if the panel falls off the table or tips over (more than 30 degrees) or the frame is torn from the table.",
+  "run_limit": "800 steps (40 s at 20 Hz)",
+  "reset_notes": "Slide the panel back along the slots so its centre is at y 0.0 (60 mm short of the stop).",
+  "fidelity": "Rigid bodies, 240 Hz physics, 20 Hz control. Both rails' slots are exact box walls (lips 1.8 mm thick, 11 mm wide, 6 mm deep cavities) with 1.6 mm a side around the 3 mm panel; the other faces' slots are painted strips. The panel is a rigid 100 x 80 x 3 mm box with its real acrylic mass plus a 9 g knob, friction 0.4/0.3 on aluminium 0.35/0.3. No task code moves the panel.",
+  "scores": "Dream-1 run: 0.0 (800 steps, hit the step limit); demo: 1.0 at step 238 (scripted demo, Isaac Lab-Arena)",
+  "media": "M-DW49BM"
+}
