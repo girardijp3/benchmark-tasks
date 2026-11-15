@@ -1,0 +1,132 @@
+#usda 1.0
+(
+    defaultPrim = "PostRack"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "PostRack" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A holder for a 2020 post: a 50 x 50 x 30 mm block with a 22 x 22 mm pocket 18 mm deep (3 mm lead-in chamfer), a fixture. Origin on the table under the pocket's middle."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.001, 0.001, 0.001)
+    float physics:mass = 0.4
+
+    def Scope "Looks"
+    {
+        def Material "Phys_plastic" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.35
+            float physics:restitution = 0
+            float physics:staticFriction = 0.45
+        }
+
+        def Material "m192149"
+        {
+            token outputs:surface.connect = </PostRack/Looks/m192149/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.2, 0.22, 0.5)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Box1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </PostRack/Looks/m192149>
+        rel material:binding:physics = </PostRack/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.05, 0.05, 0.012)
+        double3 xformOp:translate = (0, 0, 0.005999999999999998)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Mesh "Prism2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.025, -0.025, 0.012), (-0.011, 0.025, 0.03)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 2, 5, 7, 6, 0, 2, 3, 5, 8, 7, 0, 3, 4, 5, 9, 8, 0, 6, 1, 0, 5, 6, 1, 7, 2, 1, 6, 7, 2, 8, 3, 2, 7, 8, 3, 9, 4, 3, 8, 9, 4, 5, 0, 4, 9, 5]
+        rel material:binding = </PostRack/Looks/m192149>
+        rel material:binding:physics = </PostRack/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token physics:approximation = "convexHull"
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        point3f[] points = [(-0.011, -0.025, 0.027), (-0.014, -0.025, 0.03), (-0.025, -0.025, 0.03), (-0.025, -0.025, 0.012), (-0.011, -0.025, 0.012), (-0.011, 0.025, 0.027), (-0.014, 0.025, 0.03), (-0.025, 0.025, 0.03), (-0.025, 0.025, 0.012), (-0.011, 0.025, 0.012)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Wall3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.011, -0.025, 0.012), (0.011, -0.011, 0.03)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 2, 1, 5, 6, 7, 0, 3, 2, 5, 7, 8, 0, 4, 3, 5, 8, 9, 0, 1, 6, 0, 6, 5, 1, 2, 7, 1, 7, 6, 2, 3, 8, 2, 8, 7, 3, 4, 9, 3, 9, 8, 4, 0, 5, 4, 5, 9]
+        rel material:binding = </PostRack/Looks/m192149>
+        rel material:binding:physics = </PostRack/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token physics:approximation = "convexHull"
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        point3f[] points = [(-0.011, -0.011, 0.027), (-0.011, -0.014, 0.03), (-0.011, -0.025, 0.03), (-0.011, -0.025, 0.012), (-0.011, -0.011, 0.012), (0.011, -0.011, 0.027), (0.011, -0.014, 0.03), (0.011, -0.025, 0.03), (0.011, -0.025, 0.012), (0.011, -0.011, 0.012)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Prism4" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.011, -0.025, 0.012), (0.025, 0.025, 0.03)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 2, 5, 7, 6, 0, 2, 3, 5, 8, 7, 0, 3, 4, 5, 9, 8, 0, 6, 1, 0, 5, 6, 1, 7, 2, 1, 6, 7, 2, 8, 3, 2, 7, 8, 3, 9, 4, 3, 8, 9, 4, 5, 0, 4, 9, 5]
+        rel material:binding = </PostRack/Looks/m192149>
+        rel material:binding:physics = </PostRack/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token physics:approximation = "convexHull"
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        point3f[] points = [(0.011, -0.025, 0.012), (0.025, -0.025, 0.012), (0.025, -0.025, 0.03), (0.014, -0.025, 0.03), (0.011, -0.025, 0.027), (0.011, 0.025, 0.012), (0.025, 0.025, 0.012), (0.025, 0.025, 0.03), (0.014, 0.025, 0.03), (0.011, 0.025, 0.027)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Wall5" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.011, 0.011, 0.012), (0.011, 0.025, 0.03)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 2, 1, 5, 6, 7, 0, 3, 2, 5, 7, 8, 0, 4, 3, 5, 8, 9, 0, 1, 6, 0, 6, 5, 1, 2, 7, 1, 7, 6, 2, 3, 8, 2, 8, 7, 3, 4, 9, 3, 9, 8, 4, 0, 5, 4, 5, 9]
+        rel material:binding = </PostRack/Looks/m192149>
+        rel material:binding:physics = </PostRack/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token physics:approximation = "convexHull"
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        point3f[] points = [(-0.011, 0.011, 0.012), (-0.011, 0.025, 0.012), (-0.011, 0.025, 0.03), (-0.011, 0.014, 0.03), (-0.011, 0.011, 0.027), (0.011, 0.011, 0.012), (0.011, 0.025, 0.012), (0.011, 0.025, 0.03), (0.011, 0.014, 0.03), (0.011, 0.011, 0.027)]
+        uniform token subdivisionScheme = "none"
+    }
+}
+

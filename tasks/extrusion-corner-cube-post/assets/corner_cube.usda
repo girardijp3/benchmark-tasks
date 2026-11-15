@@ -1,0 +1,214 @@
+#usda 1.0
+(
+    defaultPrim = "CornerCube"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "CornerCube" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A 3-way corner cube connector for 2020 extrusion on two rail stubs, a fixture: a 34 mm cube with a 22 x 22 mm socket opening upward (22 mm deep, 4 mm lead-in chamfer at the mouth) and two side sockets holding two 70 mm stubs of 20 x 20 mm rail, one along +x and one along -y. Origin on the table under the cube's middle."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.001, 0.001, 0.001)
+    float physics:mass = 1
+
+    def Scope "Looks"
+    {
+        def Material "Phys_alu" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.35
+        }
+
+        def Material "m192124"
+        {
+            token outputs:surface.connect = </CornerCube/Looks/m192124/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.2, 0.22, 0.25)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m777982"
+        {
+            token outputs:surface.connect = </CornerCube/Looks/m777982/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.78, 0.8, 0.83)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m090911"
+        {
+            token outputs:surface.connect = </CornerCube/Looks/m090911/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.1, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Box1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CornerCube/Looks/m192124>
+        rel material:binding:physics = </CornerCube/Looks/Phys_alu> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.034, 0.034, 0.012)
+        double3 xformOp:translate = (0, 0, 0.006)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Mesh "Prism2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.017, -0.017, 0.012), (-0.011, 0.017, 0.034)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 2, 5, 7, 6, 0, 2, 3, 5, 8, 7, 0, 3, 4, 5, 9, 8, 0, 6, 1, 0, 5, 6, 1, 7, 2, 1, 6, 7, 2, 8, 3, 2, 7, 8, 3, 9, 4, 3, 8, 9, 4, 5, 0, 4, 9, 5]
+        rel material:binding = </CornerCube/Looks/m192124>
+        rel material:binding:physics = </CornerCube/Looks/Phys_alu> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token physics:approximation = "convexHull"
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        point3f[] points = [(-0.011, -0.017, 0.03), (-0.015, -0.017, 0.034), (-0.017, -0.017, 0.034), (-0.017, -0.017, 0.012), (-0.011, -0.017, 0.012), (-0.011, 0.017, 0.03), (-0.015, 0.017, 0.034), (-0.017, 0.017, 0.034), (-0.017, 0.017, 0.012), (-0.011, 0.017, 0.012)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Wall3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.011, -0.017, 0.012), (0.011, -0.011, 0.034)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 2, 1, 5, 6, 7, 0, 3, 2, 5, 7, 8, 0, 4, 3, 5, 8, 9, 0, 1, 6, 0, 6, 5, 1, 2, 7, 1, 7, 6, 2, 3, 8, 2, 8, 7, 3, 4, 9, 3, 9, 8, 4, 0, 5, 4, 5, 9]
+        rel material:binding = </CornerCube/Looks/m192124>
+        rel material:binding:physics = </CornerCube/Looks/Phys_alu> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token physics:approximation = "convexHull"
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        point3f[] points = [(-0.011, -0.011, 0.03), (-0.011, -0.015, 0.034), (-0.011, -0.017, 0.034), (-0.011, -0.017, 0.012), (-0.011, -0.011, 0.012), (0.011, -0.011, 0.03), (0.011, -0.015, 0.034), (0.011, -0.017, 0.034), (0.011, -0.017, 0.012), (0.011, -0.011, 0.012)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Prism4" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.011, -0.017, 0.012), (0.017, 0.017, 0.034)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 2, 5, 7, 6, 0, 2, 3, 5, 8, 7, 0, 3, 4, 5, 9, 8, 0, 6, 1, 0, 5, 6, 1, 7, 2, 1, 6, 7, 2, 8, 3, 2, 7, 8, 3, 9, 4, 3, 8, 9, 4, 5, 0, 4, 9, 5]
+        rel material:binding = </CornerCube/Looks/m192124>
+        rel material:binding:physics = </CornerCube/Looks/Phys_alu> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token physics:approximation = "convexHull"
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        point3f[] points = [(0.011, -0.017, 0.012), (0.017, -0.017, 0.012), (0.017, -0.017, 0.034), (0.015, -0.017, 0.034), (0.011, -0.017, 0.03), (0.011, 0.017, 0.012), (0.017, 0.017, 0.012), (0.017, 0.017, 0.034), (0.015, 0.017, 0.034), (0.011, 0.017, 0.03)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Wall5" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.011, 0.011, 0.012), (0.011, 0.017, 0.034)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 2, 1, 5, 6, 7, 0, 3, 2, 5, 7, 8, 0, 4, 3, 5, 8, 9, 0, 1, 6, 0, 6, 5, 1, 2, 7, 1, 7, 6, 2, 3, 8, 2, 8, 7, 3, 4, 9, 3, 9, 8, 4, 0, 5, 4, 5, 9]
+        rel material:binding = </CornerCube/Looks/m192124>
+        rel material:binding:physics = </CornerCube/Looks/Phys_alu> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token physics:approximation = "convexHull"
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        point3f[] points = [(-0.011, 0.011, 0.012), (-0.011, 0.017, 0.012), (-0.011, 0.017, 0.034), (-0.011, 0.015, 0.034), (-0.011, 0.011, 0.03), (0.011, 0.011, 0.012), (0.011, 0.017, 0.012), (0.011, 0.017, 0.034), (0.011, 0.015, 0.034), (0.011, 0.011, 0.03)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Cube "Box6" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CornerCube/Looks/m777982>
+        rel material:binding:physics = </CornerCube/Looks/Phys_alu> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.07, 0.02, 0.02)
+        double3 xformOp:translate = (0.052000000000000005, 0, 0.017)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box7" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CornerCube/Looks/m777982>
+        rel material:binding:physics = </CornerCube/Looks/Phys_alu> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.02, 0.07, 0.02)
+        double3 xformOp:translate = (0, -0.052000000000000005, 0.017)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box8" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CornerCube/Looks/m090911>
+        double size = 1
+        float3 xformOp:scale = (0.07, 0.0062, 0.0003)
+        double3 xformOp:translate = (0.052000000000000005, 0, 0.0271)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box9" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CornerCube/Looks/m090911>
+        double size = 1
+        float3 xformOp:scale = (0.0062, 0.07, 0.0003)
+        double3 xformOp:translate = (0, -0.052000000000000005, 0.0271)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

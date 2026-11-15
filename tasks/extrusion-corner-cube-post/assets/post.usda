@@ -1,0 +1,129 @@
+#usda 1.0
+(
+    defaultPrim = "Post"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Post" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A 100 mm length of 20 x 20 mm T-slot aluminium extrusion (2020), 43 g, clear anodized, shown as a solid bar with the slots painted on its four faces and ends. Origin at the middle of its lower end; axis along z."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0.05)
+    float3 physics:diagonalInertia = (0.000037266665, 0.000037266665, 0.0000028666666)
+    float physics:mass = 0.043
+
+    def Scope "Looks"
+    {
+        def Material "Phys_alu" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.35
+        }
+
+        def Material "m777982"
+        {
+            token outputs:surface.connect = </Post/Looks/m777982/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.78, 0.8, 0.83)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m090911"
+        {
+            token outputs:surface.connect = </Post/Looks/m090911/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.1, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Box1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Post/Looks/m777982>
+        rel material:binding:physics = </Post/Looks/Phys_alu> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.02, 0.02, 0.1)
+        double3 xformOp:translate = (0, 0, 0.05)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Post/Looks/m090911>
+        double size = 1
+        float3 xformOp:scale = (0.0003, 0.0062, 0.096)
+        double3 xformOp:translate = (0.0101, 0, 0.05)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Post/Looks/m090911>
+        double size = 1
+        float3 xformOp:scale = (0.0003, 0.0062, 0.096)
+        double3 xformOp:translate = (-0.0101, 0, 0.05)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Post/Looks/m090911>
+        double size = 1
+        float3 xformOp:scale = (0.0062, 0.0003, 0.096)
+        double3 xformOp:translate = (0, 0.0101, 0.05)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Post/Looks/m090911>
+        double size = 1
+        float3 xformOp:scale = (0.0062, 0.0003, 0.096)
+        double3 xformOp:translate = (0, -0.0101, 0.05)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Post/Looks/m090911>
+        double size = 1
+        float3 xformOp:scale = (0.0062, 0.0062, 0.0003)
+        double3 xformOp:translate = (0, 0, 0.10010000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

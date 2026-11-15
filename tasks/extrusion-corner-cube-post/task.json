@@ -1,0 +1,23 @@
+{
+  "title": "Seat an aluminium post in the open socket of a frame's corner cube until it sits on the socket floor",
+  "category": "Impact on AI timelines",
+  "keywords": [
+    "aluminium extrusion",
+    "2020 profile",
+    "corner connector",
+    "frame building",
+    "robot cell",
+    "square insertion",
+    "final-state scoring",
+    "one arm"
+  ],
+  "instruction": "Stand the aluminium post in the open socket of the corner connector so it sits fully down on the socket's floor, then let go of it.",
+  "context": "Test rigs, robot cells, 3D-printer frames and compute-rack carts are assembled from 20 x 20 mm aluminium extrusion, with corner cube connectors joining three profiles at a corner. Each profile end goes into a socket of the cube; a post that is not square and centred over the socket rests on its rim or jams, and a post not driven fully home leaves the frame out of square. Automating such frame assembly is part of building robot and AI-compute hardware at scale.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. A 3-way corner cube connector (34 mm cube) is fixed on the table at x 0.30, y -0.02, with two 70 mm stubs of 20 x 20 mm rail in its side sockets (one toward +x, one toward -y) and its third socket open upward: 22 x 22 mm, 22 mm deep, floor 12 mm above the table, mouth flared 4 mm. A post rack (50 x 50 x 30 mm block with a 22 x 22 mm, 18 mm deep pocket) stands at x 0.30, y 0.22; in it stands a 100 mm length of 20 x 20 mm T-slot extrusion (43 g), free and upright.",
+  "scoring": "Four steps, 0.2 each. (1) Post lifted out of the rack: a gripper has held it at least 2 cm above where it stood (once reached). (2) Post inside the socket: with step 1, its lower end at least 8 mm below the cube's top and within 2 mm of the socket's axis, the post within 8 degrees of vertical. (3) Post seated: with step 2, its lower end within 1.5 mm of the socket's floor, centred within 1.5 mm and within 3 degrees of vertical. (4) Post let go: with step 3, no gripper holds it or has its pads within 3 cm of it. Steps 2 to 4 are judged as things stand, each only with the one before. Full score 1.0, ending the run, only once all four hold together without a break for 1 s, the post staying within 2 mm and 2 degrees of where it was when that second began; the step points stop at 0.8. A post lying on the rim, leaning in the socket, or put in without being lifted by a gripper does not count. 0 overall if the post falls off the table or over (more than 45 degrees) or the cube is torn from the table.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Lift the post out of the socket and stand it in the rack's pocket.",
+  "fidelity": "Rigid bodies, 240 Hz physics, 20 Hz control. The socket is exact box walls and convex chamfered prisms: 22 mm wide for the 20 mm profile (1 mm a side; real cube sockets fit more tightly and are locked by a set screw, which is not modelled). The post is a solid 20 x 20 x 100 mm bar with the slots painted on (real mass 43 g, no hollow core). The cube's side sockets and rail stubs are one fixed body. No task code moves or seats the post; it is held only by the socket.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0 (success at step 340, Isaac)",
+  "media": "M-LS7BDV"
+}
