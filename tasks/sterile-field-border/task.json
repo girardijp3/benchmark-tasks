@@ -19,5 +19,5 @@
   "reset_notes": "Put the four instruments back on the rack rests as described in the setup; nothing on the field needs resetting (the contamination record of instruments and grippers, and the red tags, restart with the episode).",
   "fidelity": "Instruments are rigid, closed, at catalog lengths; cross-sections and masses are typical values, ring holes modelled. The drape is cloth in reality; here a flat rigid 3 mm panel with the border drawn on it. Contamination is judged in task code from poses (instrument surface and finger-pad faces within 1.5 mm of the band or the bare table, latched); sterile covers on the grippers are not modelled, and the red tag is a visual only. Convex colliders, 240 Hz physics.",
   "scores": "Dream-1 run: 0.0 (left arm moved around the rack, nothing picked up, no contamination); demo: 1.0 (success at step 1026, no instrument or gripper contaminated)",
-  "media": "M-XX3VPV"
+  "media": "M-UGFJE2"
 }
