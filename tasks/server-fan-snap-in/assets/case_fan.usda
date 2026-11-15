@@ -1,0 +1,232 @@
+#usda 1.0
+(
+    defaultPrim = "CaseFan"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "CaseFan" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A 120 x 120 x 25 mm case fan, 130 g, shown as a square frame (four 8 mm bars: a 104 mm square opening) with a hub and spokes painted on. Origin at the middle of its lower face; axis along z."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0.0125)
+    float3 physics:diagonalInertia = (0.00016277083, 0.00016277083, 0.000312)
+    float physics:mass = 0.13
+
+    def Scope "Looks"
+    {
+        def Material "Phys_plastic" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.35
+        }
+
+        def Material "m111113"
+        {
+            token outputs:surface.connect = </CaseFan/Looks/m111113/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.12, 0.12, 0.14)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m040405"
+        {
+            token outputs:surface.connect = </CaseFan/Looks/m040405/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.05, 0.05, 0.06)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "blade"
+        {
+            token outputs:surface.connect = </CaseFan/Looks/blade/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.3, 0.32, 0.36)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Box1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CaseFan/Looks/m111113>
+        rel material:binding:physics = </CaseFan/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.12, 0.008, 0.025)
+        double3 xformOp:translate = (0, 0.055999999999999994, 0.0125)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CaseFan/Looks/m111113>
+        rel material:binding:physics = </CaseFan/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.12, 0.008, 0.025)
+        double3 xformOp:translate = (0, -0.055999999999999994, 0.0125)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CaseFan/Looks/m111113>
+        rel material:binding:physics = </CaseFan/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.008, 0.104, 0.025)
+        double3 xformOp:translate = (0.055999999999999994, 0, 0.0125)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Box4" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CaseFan/Looks/m111113>
+        rel material:binding:physics = </CaseFan/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.008, 0.104, 0.025)
+        double3 xformOp:translate = (-0.055999999999999994, 0, 0.0125)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Cyl5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.02
+        rel material:binding = </CaseFan/Looks/m040405>
+        double radius = 0.021
+        double3 xformOp:translate = (0, 0, 0.0125)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "Blade6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CaseFan/Looks/blade>
+        double size = 1
+        float xformOp:rotateZ = 25
+        float3 xformOp:scale = (0.032, 0.014, 0.003)
+        double3 xformOp:translate = (0.0345, 0, 0.0125)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "Blade7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CaseFan/Looks/blade>
+        double size = 1
+        float xformOp:rotateZ = 76.42857
+        float3 xformOp:scale = (0.032, 0.014, 0.003)
+        double3 xformOp:translate = (0.02151039816412631, 0.02697318614514703, 0.0125)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "Blade8" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CaseFan/Looks/blade>
+        double size = 1
+        float xformOp:rotateZ = 127.85714
+        float3 xformOp:scale = (0.032, 0.014, 0.003)
+        double3 xformOp:translate = (-0.0076769722214928456, 0.033635012970272916, 0.0125)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "Blade9" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CaseFan/Looks/blade>
+        double size = 1
+        float xformOp:rotateZ = 179.28572
+        float3 xformOp:scale = (0.032, 0.014, 0.003)
+        double3 xformOp:translate = (-0.03108342594263346, 0.01496898899955576, 0.0125)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "Blade10" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CaseFan/Looks/blade>
+        double size = 1
+        float xformOp:rotateZ = 230.71428
+        float3 xformOp:scale = (0.032, 0.014, 0.003)
+        double3 xformOp:translate = (-0.031083425942633462, -0.014968988999555753, 0.0125)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "Blade11" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CaseFan/Looks/blade>
+        double size = 1
+        float xformOp:rotateZ = 282.14285
+        float3 xformOp:scale = (0.032, 0.014, 0.003)
+        double3 xformOp:translate = (-0.007676972221492854, -0.033635012970272916, 0.0125)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "Blade12" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CaseFan/Looks/blade>
+        double size = 1
+        float xformOp:rotateZ = 333.57144
+        float3 xformOp:scale = (0.032, 0.014, 0.003)
+        double3 xformOp:translate = (0.021510398164126303, -0.026973186145147033, 0.0125)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+}
+

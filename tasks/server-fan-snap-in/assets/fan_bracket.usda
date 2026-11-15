@@ -1,0 +1,411 @@
+#usda 1.0
+(
+    defaultPrim = "FanBracket"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "FanBracket" (
+    doc = "A tool-less bracket for a 120 mm case fan, one articulation: a fixed base (a 147 mm square ring 6 mm high with four L-shaped corner posts, 127 mm opening, 40 mm walls with 6 mm lead-in bevels) and two spring latches (34 mm arms on hinges along x, 7.5 mm hooks 22.6 mm over their hinges) on the middle of the two sides along x. Each latch rests against its inner stop (angle 0) under a 0.09 N m/rad spring preloaded 2 degrees and swings outward 20 degrees at most: positive angle opens the -y latch, negative the +y latch. Origin on the table at the fan's axis."
+)
+{
+    def Scope "Looks"
+    {
+        def Material "Phys_plastic" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.35
+            float physics:restitution = 0
+            float physics:staticFriction = 0.45
+        }
+
+        def Material "m151619"
+        {
+            token outputs:surface.connect = </FanBracket/Looks/m151619/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.16, 0.17, 0.2)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m844409"
+        {
+            token outputs:surface.connect = </FanBracket/Looks/m844409/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.85, 0.45, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_hook" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.25
+            float physics:restitution = 0
+            float physics:staticFriction = 0.3
+        }
+    }
+
+    def Xform "Base" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysicsArticulationRootAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.01)
+        float3 physics:diagonalInertia = (0.005, 0.005, 0.01)
+        float physics:mass = 1
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "Box1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </FanBracket/Looks/m151619>
+            rel material:binding:physics = </FanBracket/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.147, 0.0235, 0.006)
+            double3 xformOp:translate = (0, 0.06175, 0.003)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Box2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </FanBracket/Looks/m151619>
+            rel material:binding:physics = </FanBracket/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.147, 0.0235, 0.006)
+            double3 xformOp:translate = (0, -0.06175, 0.003)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Box3" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </FanBracket/Looks/m151619>
+            rel material:binding:physics = </FanBracket/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.0235, 0.1, 0.006)
+            double3 xformOp:translate = (0.06175, 0, 0.003)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Box4" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </FanBracket/Looks/m151619>
+            rel material:binding:physics = </FanBracket/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.0235, 0.1, 0.006)
+            double3 xformOp:translate = (-0.06175, 0, 0.003)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Mesh "Prism5" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.0715, -0.0715, 0.006), (-0.0635, -0.0575, 0.046)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 1, 2, 5, 7, 6, 0, 2, 3, 5, 8, 7, 0, 3, 4, 5, 9, 8, 0, 6, 1, 0, 5, 6, 1, 7, 2, 1, 6, 7, 2, 8, 3, 2, 7, 8, 3, 9, 4, 3, 8, 9, 4, 5, 0, 4, 9, 5]
+            rel material:binding = </FanBracket/Looks/m151619>
+            rel material:binding:physics = </FanBracket/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.0635, -0.0715, 0.04), (-0.0695, -0.0715, 0.046), (-0.0715, -0.0715, 0.046), (-0.0715, -0.0715, 0.006), (-0.0635, -0.0715, 0.006), (-0.0635, -0.0575, 0.04), (-0.0695, -0.0575, 0.046), (-0.0715, -0.0575, 0.046), (-0.0715, -0.0575, 0.006), (-0.0635, -0.0575, 0.006)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "Wall6" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.0635, -0.0715, 0.006), (-0.0495, -0.0635, 0.046)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 5, 6, 7, 0, 3, 2, 5, 7, 8, 0, 4, 3, 5, 8, 9, 0, 1, 6, 0, 6, 5, 1, 2, 7, 1, 7, 6, 2, 3, 8, 2, 8, 7, 3, 4, 9, 3, 9, 8, 4, 0, 5, 4, 5, 9]
+            rel material:binding = </FanBracket/Looks/m151619>
+            rel material:binding:physics = </FanBracket/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.0635, -0.0635, 0.04), (-0.0635, -0.0695, 0.046), (-0.0635, -0.0715, 0.046), (-0.0635, -0.0715, 0.006), (-0.0635, -0.0635, 0.006), (-0.0495, -0.0635, 0.04), (-0.0495, -0.0695, 0.046), (-0.0495, -0.0715, 0.046), (-0.0495, -0.0715, 0.006), (-0.0495, -0.0635, 0.006)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "Prism7" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.0715, 0.0575, 0.006), (-0.0635, 0.0715, 0.046)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 1, 2, 5, 7, 6, 0, 2, 3, 5, 8, 7, 0, 3, 4, 5, 9, 8, 0, 6, 1, 0, 5, 6, 1, 7, 2, 1, 6, 7, 2, 8, 3, 2, 7, 8, 3, 9, 4, 3, 8, 9, 4, 5, 0, 4, 9, 5]
+            rel material:binding = </FanBracket/Looks/m151619>
+            rel material:binding:physics = </FanBracket/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.0635, 0.0575, 0.04), (-0.0695, 0.0575, 0.046), (-0.0715, 0.0575, 0.046), (-0.0715, 0.0575, 0.006), (-0.0635, 0.0575, 0.006), (-0.0635, 0.0715, 0.04), (-0.0695, 0.0715, 0.046), (-0.0715, 0.0715, 0.046), (-0.0715, 0.0715, 0.006), (-0.0635, 0.0715, 0.006)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "Wall8" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.0635, 0.0635, 0.006), (-0.0495, 0.0715, 0.046)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 5, 6, 7, 0, 3, 2, 5, 7, 8, 0, 4, 3, 5, 8, 9, 0, 1, 6, 0, 6, 5, 1, 2, 7, 1, 7, 6, 2, 3, 8, 2, 8, 7, 3, 4, 9, 3, 9, 8, 4, 0, 5, 4, 5, 9]
+            rel material:binding = </FanBracket/Looks/m151619>
+            rel material:binding:physics = </FanBracket/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.0635, 0.0635, 0.006), (-0.0635, 0.0715, 0.006), (-0.0635, 0.0715, 0.046), (-0.0635, 0.0695, 0.046), (-0.0635, 0.0635, 0.04), (-0.0495, 0.0635, 0.006), (-0.0495, 0.0715, 0.006), (-0.0495, 0.0715, 0.046), (-0.0495, 0.0695, 0.046), (-0.0495, 0.0635, 0.04)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "Prism9" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.0635, -0.0715, 0.006), (0.0715, -0.0575, 0.046)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 1, 2, 5, 7, 6, 0, 2, 3, 5, 8, 7, 0, 3, 4, 5, 9, 8, 0, 6, 1, 0, 5, 6, 1, 7, 2, 1, 6, 7, 2, 8, 3, 2, 7, 8, 3, 9, 4, 3, 8, 9, 4, 5, 0, 4, 9, 5]
+            rel material:binding = </FanBracket/Looks/m151619>
+            rel material:binding:physics = </FanBracket/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(0.0635, -0.0715, 0.006), (0.0715, -0.0715, 0.006), (0.0715, -0.0715, 0.046), (0.0695, -0.0715, 0.046), (0.0635, -0.0715, 0.04), (0.0635, -0.0575, 0.006), (0.0715, -0.0575, 0.006), (0.0715, -0.0575, 0.046), (0.0695, -0.0575, 0.046), (0.0635, -0.0575, 0.04)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "Wall10" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.0495, -0.0715, 0.006), (0.0635, -0.0635, 0.046)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 5, 6, 7, 0, 3, 2, 5, 7, 8, 0, 4, 3, 5, 8, 9, 0, 1, 6, 0, 6, 5, 1, 2, 7, 1, 7, 6, 2, 3, 8, 2, 8, 7, 3, 4, 9, 3, 9, 8, 4, 0, 5, 4, 5, 9]
+            rel material:binding = </FanBracket/Looks/m151619>
+            rel material:binding:physics = </FanBracket/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(0.0495, -0.0635, 0.04), (0.0495, -0.0695, 0.046), (0.0495, -0.0715, 0.046), (0.0495, -0.0715, 0.006), (0.0495, -0.0635, 0.006), (0.0635, -0.0635, 0.04), (0.0635, -0.0695, 0.046), (0.0635, -0.0715, 0.046), (0.0635, -0.0715, 0.006), (0.0635, -0.0635, 0.006)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "Prism11" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.0635, 0.0575, 0.006), (0.0715, 0.0715, 0.046)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 1, 2, 5, 7, 6, 0, 2, 3, 5, 8, 7, 0, 3, 4, 5, 9, 8, 0, 6, 1, 0, 5, 6, 1, 7, 2, 1, 6, 7, 2, 8, 3, 2, 7, 8, 3, 9, 4, 3, 8, 9, 4, 5, 0, 4, 9, 5]
+            rel material:binding = </FanBracket/Looks/m151619>
+            rel material:binding:physics = </FanBracket/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(0.0635, 0.0575, 0.006), (0.0715, 0.0575, 0.006), (0.0715, 0.0575, 0.046), (0.0695, 0.0575, 0.046), (0.0635, 0.0575, 0.04), (0.0635, 0.0715, 0.006), (0.0715, 0.0715, 0.006), (0.0715, 0.0715, 0.046), (0.0695, 0.0715, 0.046), (0.0635, 0.0715, 0.04)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "Wall12" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.0495, 0.0635, 0.006), (0.0635, 0.0715, 0.046)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 5, 6, 7, 0, 3, 2, 5, 7, 8, 0, 4, 3, 5, 8, 9, 0, 1, 6, 0, 6, 5, 1, 2, 7, 1, 7, 6, 2, 3, 8, 2, 8, 7, 3, 4, 9, 3, 9, 8, 4, 0, 5, 4, 5, 9]
+            rel material:binding = </FanBracket/Looks/m151619>
+            rel material:binding:physics = </FanBracket/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(0.0495, 0.0635, 0.006), (0.0495, 0.0715, 0.006), (0.0495, 0.0715, 0.046), (0.0495, 0.0695, 0.046), (0.0495, 0.0635, 0.04), (0.0635, 0.0635, 0.006), (0.0635, 0.0715, 0.006), (0.0635, 0.0715, 0.046), (0.0635, 0.0695, 0.046), (0.0635, 0.0635, 0.04)]
+            uniform token subdivisionScheme = "none"
+        }
+    }
+
+    def Xform "LatchP" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.012)
+        float3 physics:diagonalInertia = (0.000002, 0.000002, 0.000001)
+        float physics:mass = 0.012
+        double3 xformOp:translate = (0, 0.0655, 0.009000000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "Box13" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </FanBracket/Looks/m844409>
+            rel material:binding:physics = </FanBracket/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.02, 0.004, 0.0341)
+            double3 xformOp:translate = (0, 0, 0.017050000000000003)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Mesh "Wall14" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.01, -0.0095, 0.0226), (0.01, -0.002, 0.0341)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </FanBracket/Looks/m844409>
+            rel material:binding:physics = </FanBracket/Looks/Phys_hook> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.01, -0.002, 0.0226), (-0.01, -0.0095, 0.0226), (-0.01, -0.0095, 0.0238), (-0.01, -0.002, 0.0341), (0.01, -0.002, 0.0226), (0.01, -0.0095, 0.0226), (0.01, -0.0095, 0.0238), (0.01, -0.002, 0.0341)]
+            uniform token subdivisionScheme = "none"
+        }
+    }
+
+    def Xform "LatchN" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.012)
+        float3 physics:diagonalInertia = (0.000002, 0.000002, 0.000001)
+        float physics:mass = 0.012
+        double3 xformOp:translate = (0, -0.0655, 0.009000000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "Box15" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </FanBracket/Looks/m844409>
+            rel material:binding:physics = </FanBracket/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.02, 0.004, 0.0341)
+            double3 xformOp:translate = (0, 0, 0.017050000000000003)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Mesh "Wall16" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.01, 0.002, 0.0226), (0.01, 0.0095, 0.0341)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </FanBracket/Looks/m844409>
+            rel material:binding:physics = </FanBracket/Looks/Phys_hook> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.01, 0.002, 0.0341), (-0.01, 0.0095, 0.0238), (-0.01, 0.0095, 0.0226), (-0.01, 0.002, 0.0226), (0.01, 0.002, 0.0341), (0.01, 0.0095, 0.0238), (0.01, 0.0095, 0.0226), (0.01, 0.002, 0.0226)]
+            uniform token subdivisionScheme = "none"
+        }
+    }
+
+    def PhysicsRevoluteJoint "HingeP" (
+        prepend apiSchemas = ["PhysicsDriveAPI:angular"]
+        doc = "Latch hinge: 0 = hook over the fan's top edge (inner stop); the spring pushes 2 deg past the stop."
+    )
+    {
+        float drive:angular:physics:damping = 0.00005235988
+        float drive:angular:physics:stiffness = 0.0015707964
+        float drive:angular:physics:targetPosition = 2
+        uniform token drive:angular:physics:type = "force"
+        uniform token physics:axis = "X"
+        rel physics:body0 = </FanBracket/Base>
+        rel physics:body1 = </FanBracket/LatchP>
+        point3f physics:localPos0 = (0, 0.0655, 0.009)
+        point3f physics:localPos1 = (0, 0, 0)
+        quatf physics:localRot0 = (1, 0, 0, 0)
+        quatf physics:localRot1 = (1, 0, 0, 0)
+        float physics:lowerLimit = -20
+        float physics:upperLimit = 0
+    }
+
+    def PhysicsRevoluteJoint "HingeN" (
+        prepend apiSchemas = ["PhysicsDriveAPI:angular"]
+        doc = "Latch hinge: 0 = hook over the fan's top edge (inner stop); the spring pushes 2 deg past the stop."
+    )
+    {
+        float drive:angular:physics:damping = 0.00005235988
+        float drive:angular:physics:stiffness = 0.0015707964
+        float drive:angular:physics:targetPosition = -2
+        uniform token drive:angular:physics:type = "force"
+        uniform token physics:axis = "X"
+        rel physics:body0 = </FanBracket/Base>
+        rel physics:body1 = </FanBracket/LatchN>
+        point3f physics:localPos0 = (0, -0.0655, 0.009)
+        point3f physics:localPos1 = (0, 0, 0)
+        quatf physics:localRot0 = (1, 0, 0, 0)
+        quatf physics:localRot1 = (1, 0, 0, 0)
+        float physics:lowerLimit = 0
+        float physics:upperLimit = 20
+    }
+}
+

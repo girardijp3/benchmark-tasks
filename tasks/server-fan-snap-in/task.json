@@ -1,0 +1,24 @@
+{
+  "title": "Press a 120 mm case fan down into its tool-less bracket until both latches snap over it",
+  "category": "Impact on AI timelines",
+  "keywords": [
+    "case fan",
+    "120 mm fan",
+    "tool-less bracket",
+    "spring latch",
+    "snap fit",
+    "server cooling",
+    "PC building",
+    "final-state scoring",
+    "one arm"
+  ],
+  "instruction": "Fit the case fan into its tool-less bracket so it sits on the ring with both latches snapped over it, then let go of the fan.",
+  "context": "Servers, GPU rigs and PC cases hold their fans in tool-less brackets: corner guides line the fan up and two spring latches snap over its upper face once it is pressed down onto the ring. A fan that is not square, or is left standing on the latch ramps, is not held and rattles or drops out. Fitting fans is routine work in building and servicing the machines that train and serve AI models.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. A tool-less fan bracket is fixed on the table at x 0.30, y 0.00: a 147 mm square ring 6 mm high with four L-shaped corner posts (46 mm tall, 127 mm opening, 6 mm lead-in bevels) and two spring latches on the middle of its two sides along x (the +y and -y sides): 34 mm arms on hinges at the ring's level with 7.5 mm hooks whose tops are 54 degree ramps, hook underside 0.6 mm above where the fan's upper face will be. Each latch is a spring (0.09 N m/rad, preloaded 2 degrees against its inner stop) that swings outward up to 20 degrees. A 120 x 120 x 25 mm case fan (square frame with 8 mm side bars, 130 g) lies flat on the table at x 0.30, y 0.22.",
+  "scoring": "Four steps, 0.2 each. (1) Fan lifted off the table: a gripper has held it at least 2 cm above where it lay (once reached). (2) Fan lowered into the corner posts: with step 1, its lower face at most 20 mm above the table (8 mm inside the posts), its axis within 3.5 mm of the bracket's, within 3 degrees of square to it and 4 degrees of level. (3) Fan pressed down, both latches over it: with step 2, its lower face within 0.8 mm of the ring, centred within 3 mm, within 2 degrees of square, within 1.5 degrees of level, and both latches swung open at most 2.5 degrees (back at their stops, hooks over the fan's upper face). (4) Fan let go: with step 3, no gripper holds it or has its pads within 3 cm of it. Steps 2 to 4 are judged as things stand, each only with the one before. Full score 1.0, ending the run, only once all four hold together without a break for 1 s, the fan staying within 2 mm and 2 degrees of where it was when that second began; the step points stop at 0.8. A fan resting on the latch ramps or set on the ring with a latch held open does not count, nor does a fan put in without a gripper lifting it. 0 overall if the fan falls off the table or over (more than 45 degrees), the bracket is torn from the table, or the state is not finite.",
+  "run_limit": "800 steps (40 s at 20 Hz)",
+  "reset_notes": "Lift the fan out of the bracket (open both latches) and lay it flat on the table where it started.",
+  "fidelity": "Rigid bodies, 240 Hz physics, 20 Hz control. The bracket is one articulation: a fixed base and two latch links on spring-driven hinges (0.09 N m/rad); a reset event writes the latch drive targets. The latches are lighter than real ones (a real clip takes 5 to 10 N, the arm's press is 4 to 7 N). The fan is a solid-frame model (hub and blades visual only), 130 g. No task code moves the fan or the latches; the hooks hold it by geometry only.",
+  "scores": "Dream-1 run: 0.0 (800 steps, hit the step limit); demo: 1.0 at step 335 (scripted demo, Isaac Lab-Arena)",
+  "media": "M-JBUHQA"
+}
