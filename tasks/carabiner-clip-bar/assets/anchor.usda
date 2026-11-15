@@ -1,0 +1,164 @@
+#usda 1.0
+(
+    defaultPrim = "Anchor"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Anchor" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A fixed tie-down board, 200 x 340 x 8 mm, with a U-shaped staple fixed on it: two 6 mm legs 90 mm apart along y and a 6 mm bar between their tops (axis 30 mm above the table). Origin: table level, the board's middle."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0.004)
+    float3 physics:diagonalInertia = (0.01, 0.01, 0.01)
+    float physics:mass = 2
+
+    def Scope "Looks"
+    {
+        def Material "Phys_wood" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.4
+            float physics:restitution = 0
+            float physics:staticFriction = 0.45
+        }
+
+        def Material "m544429"
+        {
+            token outputs:surface.connect = </Anchor/Looks/m544429/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.55, 0.45, 0.3)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_steel" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.25
+            float physics:restitution = 0
+            float physics:staticFriction = 0.3
+        }
+
+        def Material "m545659"
+        {
+            token outputs:surface.connect = </Anchor/Looks/m545659/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.55, 0.57, 0.6)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Board1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Anchor/Looks/m544429>
+        rel material:binding:physics = </Anchor/Looks/Phys_wood> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.2, 0.34, 0.008)
+        double3 xformOp:translate = (0, 0, 0.004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Leg2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.022
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.003
+        double3 xformOp:translate = (0.035, -0.02, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Leg3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.022
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.003
+        double3 xformOp:translate = (0.035, 0.06999999999999999, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Bar4" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.09
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.003
+        double3 xformOp:translate = (0.035, 0.024999999999999994, 0.03)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Sphere "Corner5" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.003
+        double3 xformOp:translate = (0.035, -0.02, 0.03)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Sphere "Corner6" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.003
+        double3 xformOp:translate = (0.035, 0.06999999999999999, 0.03)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+
