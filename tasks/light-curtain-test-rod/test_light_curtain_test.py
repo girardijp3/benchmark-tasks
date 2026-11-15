@@ -2,6 +2,7 @@
 demo's poses are reachable. Run in the yam_arena environment:  python -m pytest -q test_light_curtain_test.py"""
 
 import math
+import os
 import pathlib
 
 import numpy as np
@@ -10,6 +11,7 @@ from yam_arena.demo import ArmPlan
 from yam_arena.station import BASES
 from yam_arena.task_file import ObjectState, load
 
+os.environ["LIGHT_CURTAIN_FAULTY"] = "right"  # the file draws the faulty machine at random; the tests fix it (and flip it)
 HERE = pathlib.Path(__file__).resolve().parent
 TASK = load(HERE / "light_curtain_test.py")
 T = TASK.module
@@ -17,6 +19,12 @@ T = TASK.module
 UP = np.array([0.0, 0.0, 0.0, 1.0])
 DOWN = np.array([0.0, 0.0, -1.0])
 GOOD = T.other(T.FAULTY)
+
+
+@pytest.fixture(autouse=True)
+def _right_is_faulty(monkeypatch):
+    monkeypatch.setenv("LIGHT_CURTAIN_FAULTY", "right")
+    T.draw_faulty()
 
 
 def _state(pos, quat=UP):
@@ -177,6 +185,75 @@ def test_each_third_counts_once_and_three_are_needed():
     assert e.done()[0] is False
     e.push("left", "left", 0.165)
     assert e.done() == [True, False, False, False]
+
+
+def test_a_middle_pass_off_the_dead_beam_is_not_the_exposing_pass():
+    # 102-152 mm is the middle third, but only a rod within 10 mm of the dead beam covers that beam alone
+    for h in (0.103, 0.106, 0.128, 0.140, 0.150):
+        e = Episode()
+        e.push("left", "left", 0.077)
+        e.push("left", "left", h)
+        e.push("left", "left", 0.165)
+        assert e.done()[0] is False, h
+    for h in (T.EXPOSE_LO + 1e-6, 0.117, T.EXPOSE_HI - 1e-6):
+        e = Episode()
+        e.test("left", heights=(0.077, h, 0.165))
+        assert e.done()[0] is True, h
+
+
+def test_the_scored_middle_band_exposes_the_dead_beam_on_the_faulty_curtain():
+    for h in np.linspace(T.EXPOSE_LO, T.EXPOSE_HI, 15):
+        assert not _lamp(T.FAULTY, h), h  # green: the fault shows
+        assert _lamp(GOOD, h), h
+    assert _lamp(T.FAULTY, T.EXPOSE_LO - 0.012) and _lamp(T.FAULTY, T.EXPOSE_HI + 0.012)
+
+
+def test_tag_before_the_exposing_pass_is_not_step_three():
+    e = Episode()
+    e.test("left")
+    e.test("right", heights=(0.077, 0.140, 0.165))  # a middle pass that hides the fault
+    e.tag_in(T.FAULTY)
+    assert e.done() == [True, False, False, False]
+    for _ in range(4):
+        assert e.step(0.5)[1] is False
+
+
+def test_the_demo_passes_expose_each_fault():
+    assert all(T.EXPOSE_LO <= h <= T.EXPOSE_HI for h in (T.HEIGHTS[1],))
+
+
+@pytest.mark.parametrize("faulty", ["left", "right"])
+def test_both_cases_work_with_their_own_demo(monkeypatch, faulty):
+    monkeypatch.setenv("LIGHT_CURTAIN_FAULTY", faulty)
+    assert T.draw_faulty() == faulty
+    plans = T.demo()
+    tags = [s for s in T.SIDES if any("tag" in w.label for w in plans[s])]
+    assert tags == [faulty]
+    e = Episode()
+    e.test("left")
+    e.test("right")
+    e.tag_in(faulty)
+    assert e.done()[:3] == [True, True, True]
+    e.tag_in(T.other(faulty))
+    assert e.done()[2] is False
+
+
+def test_the_faulty_machine_is_drawn_at_random(monkeypatch):
+    monkeypatch.delenv("LIGHT_CURTAIN_FAULTY", raising=False)
+    drawn = {T.draw_faulty() for _ in range(60)}
+    assert drawn == {"left", "right"}
+
+
+def test_a_new_episode_draws_again(monkeypatch):
+    monkeypatch.delenv("LIGHT_CURTAIN_FAULTY", raising=False)
+    seen = set()
+    for _ in range(40):
+        e = Episode()
+        e.step(0.1)
+        e.t = 0.0
+        e.step(0.05)  # the clock went back: a new episode
+        seen.add(T.FAULTY)
+    assert seen == {"left", "right"}
 
 
 def test_either_rod_can_test_either_curtain():

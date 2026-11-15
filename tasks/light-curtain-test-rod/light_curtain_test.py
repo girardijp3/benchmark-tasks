@@ -2,10 +2,11 @@
 posts, protected height 150 mm, 400 mm between the lenses) and each with its own 30 mm test rod resting on two saddles
 near the robot. A red 'DO NOT USE' tag stands in a rack between the machines, and each machine has an empty tag
 holder. Each receiver has a lamp on its top cap: green while its field is clear, red while a beam is interrupted. One
-receiver has a dead beam channel (its lens covered): the 30 mm rod only trips its lamp where it covers a working beam.
+receiver has a dead beam channel (drawn anew every episode): the 30 mm rod only trips its lamp where it covers a working beam.
 
-The rod is pushed through each field, one pass at the bottom, middle and top, while the lamp is watched; the tag
-goes in the holder of the machine whose curtain missed the rod, after that curtain was tested.
+The rod is pushed through each field, one pass at the bottom, one at the middle (centred on the dead beam's
+height, the only place the rod covers that beam alone) and one at the top, while the lamp is watched; the tag goes in
+the holder of the machine whose curtain missed the rod, after that curtain's passes (the exposing one included).
 
 The curtains, holders, saddles and rack are fixtures; the rods and the tag are rigid bodies. The lamp is a declared
 code effect: a red and a green disc (no collider, no gravity) that the task swaps on the receiver's cap, red while a
@@ -23,6 +24,8 @@ starts), and ``Waypoint.rot`` gives the scripted demo full gripper rotations (``
 import importlib.abc
 import importlib.util
 import math
+import os
+import random
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -52,7 +55,7 @@ HOUSING_TOP = 0.242
 ROD_R, ROD_L = 0.015, 0.30  # the test rod: 30 mm across, 300 mm long
 ROD_AXIS_REST = 0.027  # its axis above the table on the saddles
 DEAD_BEAM = 3  # the failed channel: 57 + 60 = 117 mm, in the field's middle third
-FAULTY = "right"  # the machine whose receiver has the dead channel (the real station's person flips a coin)
+FAULTY = "right"  # the machine whose receiver has the dead channel: drawn anew for every run and every episode (below)
 
 CUR_X = 0.44
 CURTAIN_Y = {"left": 0.38, "right": -0.38}
@@ -67,6 +70,20 @@ FLOOR = 0.006  # the holder's slot floor above the table
 TAG_W, TAG_T, TAG_H = 0.076, 0.005, 0.127
 
 _Z = np.array([0.0, 0.0, 1.0])
+
+
+def draw_faulty() -> str:
+    """Draws which machine's receiver has the dead channel, the way the real station's person flips a coin. Every run
+    and every episode draws again. ``LIGHT_CURTAIN_FAULTY=left|right`` in the environment fixes the draw (used to film
+    and check each case); it changes nothing else."""
+    global FAULTY
+    forced = os.environ.get("LIGHT_CURTAIN_FAULTY", "")
+    FAULTY = forced if forced in ("left", "right") else random.SystemRandom().choice(("left", "right"))
+    print(f"[{TAG}] faulty machine this episode: {FAULTY}", flush=True)
+    return FAULTY
+
+
+draw_faulty()
 
 
 def _p(v):
@@ -259,7 +276,7 @@ def _patch_scene(scene) -> None:
                                     ang_vel=arr(data.root_ang_vel_w), low=pos.copy(), high=pos.copy())
         out.update(_gripper_states(env))
         if out["episode_time"] < _PROGRESS.time:
-            _PROGRESS.__init__()
+            _PROGRESS.restart()
         _show_lamps(base, origin, out)
         return out
 
@@ -297,6 +314,12 @@ PASS_TILT = math.radians(15.0)  # a pass: the rod's axis within this of the fiel
 PASS_BEYOND = 0.04  # ... its tip this far beyond the plane
 PASS_Y = 0.17  # ... crossing the plane within this of the field's middle
 THIRDS = ("bottom", "middle", "top")
+# The middle pass only counts where the rod covers the dead beam's lens and no working beam's: the rod's axis within
+# 10 mm of the dead channel's height (107 to 127 mm; the beams next to it, 20 mm either side, are covered from 10 mm),
+# taken 1 mm inside so that a pass at the edge cannot cover a neighbour. Anywhere else in the middle third a working
+# neighbour trips the lamp and hides the fault.
+EXPOSE_LO = FIRST + PITCH * DEAD_BEAM - (ROD_R - LENS_R) + 0.001
+EXPOSE_HI = FIRST + PITCH * DEAD_BEAM + (ROD_R - LENS_R) - 0.001
 SEAT_X, SEAT_Y, SEAT_DROP, SEAT_RISE = 0.012, 0.004, 0.002, 0.004  # the tag's lower edge's middle off the slot's centre
 SEAT_TILT = math.radians(6.0)
 CLEAR = 0.03  # m: every gripper at least this far from the tag and the rods
@@ -305,14 +328,17 @@ FALLEN_Z = -0.03
 GRIP_PAD_POINTS = 11
 STILL_S, STILL_TURN, STILL_MOVE = 1.0, math.radians(2.0), 0.002
 TRACE_S = 1.0
-STEPS = ("left curtain tested at the bottom, middle and top", "right curtain tested at the bottom, middle and top",
+STEPS = ("left curtain tested at the bottom, at the dead beam's height and at the top",
+         "right curtain tested at the bottom, at the dead beam's height and at the top",
          "tag in the holder of the machine that missed the rod (after its test), none in the other",
          "let go: both rods out of the fields, grippers clear")
 POINTS = 0.2
 
 
-def rod_pass(objects, side: str, rod: str):
-    """Which third of the field (0 bottom, 1 middle, 2 top) ``rod`` is pushed through right now, or None."""
+def pass_height(objects, side: str, rod: str):
+    """The height of ``rod``'s axis above the table where it crosses ``side``'s field plane while it is pushed through
+    (axis within 15 degrees of the plane's normal, tip 4 cm beyond it, rod's middle still in front of it, crossing
+    between the posts, inside the field's height), or None."""
     st = objects[rod]
     pos = np.asarray(st.pos, float)
     a = _rot(st)[:, 0]
@@ -327,10 +353,20 @@ def rod_pass(objects, side: str, rod: str):
     at = pos + s * a
     if abs(at[1] - CURTAIN_Y[side]) > PASS_Y:
         return None
-    h = at[2] - TOP
-    if not FIELD_LO <= h <= FIELD_HI:
+    h = float(at[2] - TOP)
+    return h if FIELD_LO <= h <= FIELD_HI else None
+
+
+def rod_pass(objects, side: str, rod: str):
+    """Which pass (0 bottom third, 1 middle, 2 top third) ``rod`` is making through ``side``'s field right now, or
+    None. The middle pass is only the one with the axis in the band where the rod covers the dead beam alone."""
+    h = pass_height(objects, side, rod)
+    if h is None:
         return None
-    return min(2, int((h - FIELD_LO) / ((FIELD_HI - FIELD_LO) / 3)))
+    third = min(2, int((h - FIELD_LO) / ((FIELD_HI - FIELD_LO) / 3)))
+    if third == 1 and not EXPOSE_LO <= h <= EXPOSE_HI:
+        return None
+    return third
 
 
 def tag_in(objects, holder_xy) -> bool:
@@ -411,20 +447,27 @@ class _Progress:
         self.reported = [False] * len(STEPS)
         self.traced = -1.0
 
+    def restart(self) -> None:
+        """A new episode: forget everything and draw the faulty machine again."""
+        self.__init__()
+        draw_faulty()
+
     def update(self, objects) -> None:
         t = objects.get("episode_time")
         if t is not None:
             if t == self.time:
                 return
             if t < self.time:
-                self.__init__()
+                self.restart()
             self.time = t
         now = t if t is not None else 0.0
         for s in SIDES:
             for rod in ("rod_left", "rod_right"):
                 third = rod_pass(objects, s, rod)
-                if third is not None:
+                if third is not None and third not in self.passed[s]:
                     self.passed[s].add(third)
+                    print(f"[{TAG}] t={now:.2f}s  {s} curtain: {THIRDS[third]} pass counted, rod axis "
+                          f"{pass_height(objects, s, rod) * 1000:.1f} mm", flush=True)
             if len(self.passed[s]) == 3 and self.tested_at[s] is None:
                 self.tested_at[s] = now
             if tag_in(objects, HOLDER_POS[s]):
@@ -474,8 +517,9 @@ def _steps(objects) -> list[bool]:
 
 
 def steps_done(objects) -> list[bool]:
-    """Each of ``STEPS``: 1 and 2 once a rod has been pushed through that field in each third (a rod's axis within
-    15 degrees of the field's normal, its tip 4 cm beyond the plane, crossing between the posts); 3 as things stand
+    """Each of ``STEPS``: 1 and 2 once a rod has been pushed through that field at the bottom third, at the top third
+    and in the middle with its axis within 10 mm of the dead beam's height (a rod's axis within 15 degrees of the
+    field's normal, its tip 4 cm beyond the plane, crossing between the posts); 3 as things stand
     (the tag in the faulty machine's holder, put there after that curtain's test, and none in the other); 4 with
     steps 1 to 3, both rods out of the fields and every gripper at least 3 cm from the tag and the rods."""
     p = _PROGRESS
