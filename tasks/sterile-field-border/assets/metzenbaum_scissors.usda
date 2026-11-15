@@ -1,0 +1,946 @@
+#usda 1.0
+(
+    defaultPrim = "MetzenbaumScissors"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "MetzenbaumScissors" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Metzenbaum scissors, 7 in (180 mm), closed: gold rings, crossed shanks, pivot screw, long slender blades. Origin at the centre of mass on the underside; +x toward the tip."
+)
+{
+    float physics:mass = 0.05
+
+    def Scope "Looks"
+    {
+        def Material "Gold"
+        {
+            token outputs:surface.connect = </MetzenbaumScissors/Looks/Gold/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.88, 0.66, 0.2)
+                float inputs:metallic = 0.9
+                float inputs:roughness = 0.3
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_Steel" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.4
+            float physics:restitution = 0
+            float physics:staticFriction = 0.5
+        }
+
+        def Material "Steel"
+        {
+            token outputs:surface.connect = </MetzenbaumScissors/Looks/Steel/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.8, 0.81, 0.83)
+                float inputs:metallic = 0.9
+                float inputs:roughness = 0.28
+                token outputs:surface
+            }
+        }
+
+        def Material "Screw"
+        {
+            token outputs:surface.connect = </MetzenbaumScissors/Looks/Screw/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.36, 0.37, 0.4)
+                float inputs:metallic = 0.8
+                float inputs:roughness = 0.4
+                token outputs:surface
+            }
+        }
+    }
+
+    def Scope "Visuals"
+    {
+        def Mesh "P0" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.054271825, 0.0116, 0), (-0.04909381, 0.01735, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.05063452, 0.01735, 0), (-0.054271825, 0.01525, 0), (-0.05329381, 0.0116, 0), (-0.04909381, 0.0116, 0), (-0.05063452, 0.01735, 0.0038), (-0.054271825, 0.01525, 0.0038), (-0.05329381, 0.0116, 0.0038), (-0.04909381, 0.0116, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P1" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05694381, 0.01525, 0), (-0.05063452, 0.021559292, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.05484381, 0.021559292, 0), (-0.05694381, 0.017921986, 0), (-0.054271825, 0.01525, 0), (-0.05063452, 0.01735, 0), (-0.05484381, 0.021559292, 0.0038), (-0.05694381, 0.017921986, 0.0038), (-0.054271825, 0.01525, 0.0038), (-0.05063452, 0.01735, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P2" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06059381, 0.017921986, 0), (-0.05484381, 0.0231, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.05484381, 0.021559292, 0), (-0.06059381, 0.0231, 0), (-0.06059381, 0.0189, 0), (-0.05694381, 0.017921986, 0), (-0.05484381, 0.021559292, 0.0038), (-0.06059381, 0.0231, 0.0038), (-0.06059381, 0.0189, 0.0038), (-0.05694381, 0.017921986, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P3" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06634381, 0.017921986, 0), (-0.06059381, 0.0231, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.06059381, 0.0231, 0), (-0.06634381, 0.021559292, 0), (-0.06424381, 0.017921986, 0), (-0.06059381, 0.0189, 0), (-0.06059381, 0.0231, 0.0038), (-0.06634381, 0.021559292, 0.0038), (-0.06424381, 0.017921986, 0.0038), (-0.06059381, 0.0189, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P4" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.0705531, 0.01525, 0), (-0.06424381, 0.021559292, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.06634381, 0.021559292, 0), (-0.0705531, 0.01735, 0), (-0.066915795, 0.01525, 0), (-0.06424381, 0.017921986, 0), (-0.06634381, 0.021559292, 0.0038), (-0.0705531, 0.01735, 0.0038), (-0.066915795, 0.01525, 0.0038), (-0.06424381, 0.017921986, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P5" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.07209381, 0.0116, 0), (-0.066915795, 0.01735, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.0705531, 0.01735, 0), (-0.07209381, 0.0116, 0), (-0.06789381, 0.0116, 0), (-0.066915795, 0.01525, 0), (-0.0705531, 0.01735, 0.0038), (-0.07209381, 0.0116, 0.0038), (-0.06789381, 0.0116, 0.0038), (-0.066915795, 0.01525, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P6" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.07209381, 0.00585, 0), (-0.066915795, 0.0116, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.07209381, 0.0116, 0), (-0.0705531, 0.00585, 0), (-0.066915795, 0.00795, 0), (-0.06789381, 0.0116, 0), (-0.07209381, 0.0116, 0.0038), (-0.0705531, 0.00585, 0.0038), (-0.066915795, 0.00795, 0.0038), (-0.06789381, 0.0116, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P7" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.0705531, 0.0016407078, 0), (-0.06424381, 0.00795, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.0705531, 0.00585, 0), (-0.06634381, 0.0016407078, 0), (-0.06424381, 0.0052780146, 0), (-0.066915795, 0.00795, 0), (-0.0705531, 0.00585, 0.0038), (-0.06634381, 0.0016407078, 0.0038), (-0.06424381, 0.0052780146, 0.0038), (-0.066915795, 0.00795, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P8" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06634381, 0.0001, 0), (-0.06059381, 0.0052780146, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.06634381, 0.0016407078, 0), (-0.06059381, 0.0001, 0), (-0.06059381, 0.0043, 0), (-0.06424381, 0.0052780146, 0), (-0.06634381, 0.0016407078, 0.0038), (-0.06059381, 0.0001, 0.0038), (-0.06059381, 0.0043, 0.0038), (-0.06424381, 0.0052780146, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P9" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06059381, 0.0001, 0), (-0.05484381, 0.0052780146, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.06059381, 0.0043, 0), (-0.06059381, 0.0001, 0), (-0.05484381, 0.0016407078, 0), (-0.05694381, 0.0052780146, 0), (-0.06059381, 0.0043, 0.0038), (-0.06059381, 0.0001, 0.0038), (-0.05484381, 0.0016407078, 0.0038), (-0.05694381, 0.0052780146, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P10" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05694381, 0.0016407078, 0), (-0.05063452, 0.00795, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.05694381, 0.0052780146, 0), (-0.05484381, 0.0016407078, 0), (-0.05063452, 0.00585, 0), (-0.054271825, 0.00795, 0), (-0.05694381, 0.0052780146, 0.0038), (-0.05484381, 0.0016407078, 0.0038), (-0.05063452, 0.00585, 0.0038), (-0.054271825, 0.00795, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P11" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.054271825, 0.00585, 0), (-0.04909381, 0.0116, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.054271825, 0.00795, 0), (-0.05063452, 0.00585, 0), (-0.04909381, 0.0116, 0), (-0.05329381, 0.0116, 0), (-0.054271825, 0.00795, 0.0038), (-0.05063452, 0.00585, 0.0038), (-0.04909381, 0.0116, 0.0038), (-0.05329381, 0.0116, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P12" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05069201, -0.0026620992, 0), (0.008356999, 0.012508957, 0.0064)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Steel>
+            point3f[] points = [(-0.049790394, 0.012508957, 0), (-0.05069201, 0.0071847583, 0), (0.007455382, -0.0026620992, 0), (0.008356999, 0.0026620992, 0), (-0.049790394, 0.012508957, 0.0064), (-0.05069201, 0.0071847583, 0.0064), (0.007455382, -0.0026620992, 0.0064), (0.008356999, 0.0026620992, 0.0064)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P13" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.054271825, -0.0116, 0), (-0.04909381, -0.00585, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.05063452, -0.00585, 0), (-0.054271825, -0.00795, 0), (-0.05329381, -0.0116, 0), (-0.04909381, -0.0116, 0), (-0.05063452, -0.00585, 0.0038), (-0.054271825, -0.00795, 0.0038), (-0.05329381, -0.0116, 0.0038), (-0.04909381, -0.0116, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P14" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05694381, -0.00795, 0), (-0.05063452, -0.0016407078, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.05484381, -0.0016407078, 0), (-0.05694381, -0.0052780146, 0), (-0.054271825, -0.00795, 0), (-0.05063452, -0.00585, 0), (-0.05484381, -0.0016407078, 0.0038), (-0.05694381, -0.0052780146, 0.0038), (-0.054271825, -0.00795, 0.0038), (-0.05063452, -0.00585, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P15" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06059381, -0.0052780146, 0), (-0.05484381, -0.0001, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.05484381, -0.0016407078, 0), (-0.06059381, -0.0001, 0), (-0.06059381, -0.0043, 0), (-0.05694381, -0.0052780146, 0), (-0.05484381, -0.0016407078, 0.0038), (-0.06059381, -0.0001, 0.0038), (-0.06059381, -0.0043, 0.0038), (-0.05694381, -0.0052780146, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P16" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06634381, -0.0052780146, 0), (-0.06059381, -0.0001, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.06059381, -0.0001, 0), (-0.06634381, -0.0016407078, 0), (-0.06424381, -0.0052780146, 0), (-0.06059381, -0.0043, 0), (-0.06059381, -0.0001, 0.0038), (-0.06634381, -0.0016407078, 0.0038), (-0.06424381, -0.0052780146, 0.0038), (-0.06059381, -0.0043, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P17" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.0705531, -0.00795, 0), (-0.06424381, -0.0016407078, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.06634381, -0.0016407078, 0), (-0.0705531, -0.00585, 0), (-0.066915795, -0.00795, 0), (-0.06424381, -0.0052780146, 0), (-0.06634381, -0.0016407078, 0.0038), (-0.0705531, -0.00585, 0.0038), (-0.066915795, -0.00795, 0.0038), (-0.06424381, -0.0052780146, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P18" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.07209381, -0.0116, 0), (-0.066915795, -0.00585, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.0705531, -0.00585, 0), (-0.07209381, -0.0116, 0), (-0.06789381, -0.0116, 0), (-0.066915795, -0.00795, 0), (-0.0705531, -0.00585, 0.0038), (-0.07209381, -0.0116, 0.0038), (-0.06789381, -0.0116, 0.0038), (-0.066915795, -0.00795, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P19" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.07209381, -0.01735, 0), (-0.066915795, -0.0116, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.07209381, -0.0116, 0), (-0.0705531, -0.01735, 0), (-0.066915795, -0.01525, 0), (-0.06789381, -0.0116, 0), (-0.07209381, -0.0116, 0.0038), (-0.0705531, -0.01735, 0.0038), (-0.066915795, -0.01525, 0.0038), (-0.06789381, -0.0116, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P20" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.0705531, -0.021559292, 0), (-0.06424381, -0.01525, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.0705531, -0.01735, 0), (-0.06634381, -0.021559292, 0), (-0.06424381, -0.017921986, 0), (-0.066915795, -0.01525, 0), (-0.0705531, -0.01735, 0.0038), (-0.06634381, -0.021559292, 0.0038), (-0.06424381, -0.017921986, 0.0038), (-0.066915795, -0.01525, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P21" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06634381, -0.0231, 0), (-0.06059381, -0.017921986, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.06634381, -0.021559292, 0), (-0.06059381, -0.0231, 0), (-0.06059381, -0.0189, 0), (-0.06424381, -0.017921986, 0), (-0.06634381, -0.021559292, 0.0038), (-0.06059381, -0.0231, 0.0038), (-0.06059381, -0.0189, 0.0038), (-0.06424381, -0.017921986, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P22" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06059381, -0.0231, 0), (-0.05484381, -0.017921986, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.06059381, -0.0189, 0), (-0.06059381, -0.0231, 0), (-0.05484381, -0.021559292, 0), (-0.05694381, -0.017921986, 0), (-0.06059381, -0.0189, 0.0038), (-0.06059381, -0.0231, 0.0038), (-0.05484381, -0.021559292, 0.0038), (-0.05694381, -0.017921986, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P23" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05694381, -0.021559292, 0), (-0.05063452, -0.01525, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.05694381, -0.017921986, 0), (-0.05484381, -0.021559292, 0), (-0.05063452, -0.01735, 0), (-0.054271825, -0.01525, 0), (-0.05694381, -0.017921986, 0.0038), (-0.05484381, -0.021559292, 0.0038), (-0.05063452, -0.01735, 0.0038), (-0.054271825, -0.01525, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P24" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.054271825, -0.01735, 0), (-0.04909381, -0.0116, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Gold>
+            point3f[] points = [(-0.054271825, -0.01525, 0), (-0.05063452, -0.01735, 0), (-0.04909381, -0.0116, 0), (-0.05329381, -0.0116, 0), (-0.054271825, -0.01525, 0.0038), (-0.05063452, -0.01735, 0.0038), (-0.04909381, -0.0116, 0.0038), (-0.05329381, -0.0116, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P25" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05069201, -0.012508957, 0), (0.008356999, 0.0026620992, 0.0064)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Steel>
+            point3f[] points = [(-0.05069201, -0.0071847583, 0), (-0.049790394, -0.012508957, 0), (0.008356999, -0.0026620992, 0), (0.007455382, 0.0026620992, 0), (-0.05069201, -0.0071847583, 0.0064), (-0.049790394, -0.012508957, 0.0064), (0.008356999, -0.0026620992, 0.0064), (0.007455382, 0.0026620992, 0.0064)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P26" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.0032867924, -0.0046193977, 0), (0.012525588, 0.0046193977, 0.0072)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 8, 9, 10, 0, 3, 2, 8, 10, 11, 0, 4, 3, 8, 11, 12, 0, 5, 4, 8, 12, 13, 0, 6, 5, 8, 13, 14, 0, 7, 6, 8, 14, 15, 0, 1, 9, 0, 9, 8, 1, 2, 10, 1, 10, 9, 2, 3, 11, 2, 11, 10, 3, 4, 12, 3, 12, 11, 4, 5, 13, 4, 13, 12, 5, 6, 14, 5, 14, 13, 6, 7, 15, 6, 15, 14, 7, 0, 8, 7, 8, 15]
+            rel material:binding = </MetzenbaumScissors/Looks/Screw>
+            point3f[] points = [(0.0032867924, 0.0019134171, 0), (0.0032867924, -0.0019134171, 0), (0.005992773, -0.0046193977, 0), (0.009819607, -0.0046193977, 0), (0.012525588, -0.0019134171, 0), (0.012525588, 0.0019134171, 0), (0.009819607, 0.0046193977, 0), (0.005992773, 0.0046193977, 0), (0.0032867924, 0.0019134171, 0.0072), (0.0032867924, -0.0019134171, 0.0072), (0.005992773, -0.0046193977, 0.0072), (0.009819607, -0.0046193977, 0.0072), (0.012525588, -0.0019134171, 0.0072), (0.012525588, 0.0019134171, 0.0072), (0.009819607, 0.0046193977, 0.0072), (0.005992773, 0.0046193977, 0.0072)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P27" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.00790619, -0.0044, 0), (0.05290619, 0.0044, 0.0064)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </MetzenbaumScissors/Looks/Steel>
+            point3f[] points = [(0.00790619, -0.0044, 0), (0.05290619, -0.0034, 0), (0.05290619, 0.0034, 0), (0.00790619, 0.0044, 0), (0.00790619, -0.0044, 0.0064), (0.05290619, -0.0034, 0.0064), (0.05290619, 0.0034, 0.0064), (0.00790619, 0.0044, 0.0064)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P28" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.05290619, -0.0034, 0), (0.10790619, 0.0034, 0.0064)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 5, 6, 7, 0, 3, 2, 5, 7, 8, 0, 4, 3, 5, 8, 9, 0, 1, 6, 0, 6, 5, 1, 2, 7, 1, 7, 6, 2, 3, 8, 2, 8, 7, 3, 4, 9, 3, 9, 8, 4, 0, 5, 4, 5, 9]
+            rel material:binding = </MetzenbaumScissors/Looks/Steel>
+            point3f[] points = [(0.05290619, 0.0034, 0), (0.05290619, -0.0034, 0), (0.10590619, -0.0014, 0), (0.10790619, -2.7726014e-19, 0), (0.10590619, 0.0014, 0), (0.05290619, 0.0034, 0.0064), (0.05290619, -0.0034, 0.0064), (0.10590619, -0.0014, 0.0064), (0.10790619, -2.7726014e-19, 0.0064), (0.10590619, 0.0014, 0.0064)]
+            uniform token subdivisionScheme = "none"
+        }
+    }
+
+    def Scope "Colliders"
+    {
+        def Mesh "C0" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.054271825, 0.0116, 0), (-0.04909381, 0.01735, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.05063452, 0.01735, 0), (-0.054271825, 0.01525, 0), (-0.05329381, 0.0116, 0), (-0.04909381, 0.0116, 0), (-0.05063452, 0.01735, 0.0038), (-0.054271825, 0.01525, 0.0038), (-0.05329381, 0.0116, 0.0038), (-0.04909381, 0.0116, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05694381, 0.01525, 0), (-0.05063452, 0.021559292, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.05484381, 0.021559292, 0), (-0.05694381, 0.017921986, 0), (-0.054271825, 0.01525, 0), (-0.05063452, 0.01735, 0), (-0.05484381, 0.021559292, 0.0038), (-0.05694381, 0.017921986, 0.0038), (-0.054271825, 0.01525, 0.0038), (-0.05063452, 0.01735, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06059381, 0.017921986, 0), (-0.05484381, 0.0231, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.05484381, 0.021559292, 0), (-0.06059381, 0.0231, 0), (-0.06059381, 0.0189, 0), (-0.05694381, 0.017921986, 0), (-0.05484381, 0.021559292, 0.0038), (-0.06059381, 0.0231, 0.0038), (-0.06059381, 0.0189, 0.0038), (-0.05694381, 0.017921986, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C3" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06634381, 0.017921986, 0), (-0.06059381, 0.0231, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.06059381, 0.0231, 0), (-0.06634381, 0.021559292, 0), (-0.06424381, 0.017921986, 0), (-0.06059381, 0.0189, 0), (-0.06059381, 0.0231, 0.0038), (-0.06634381, 0.021559292, 0.0038), (-0.06424381, 0.017921986, 0.0038), (-0.06059381, 0.0189, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C4" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.0705531, 0.01525, 0), (-0.06424381, 0.021559292, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.06634381, 0.021559292, 0), (-0.0705531, 0.01735, 0), (-0.066915795, 0.01525, 0), (-0.06424381, 0.017921986, 0), (-0.06634381, 0.021559292, 0.0038), (-0.0705531, 0.01735, 0.0038), (-0.066915795, 0.01525, 0.0038), (-0.06424381, 0.017921986, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C5" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.07209381, 0.0116, 0), (-0.066915795, 0.01735, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.0705531, 0.01735, 0), (-0.07209381, 0.0116, 0), (-0.06789381, 0.0116, 0), (-0.066915795, 0.01525, 0), (-0.0705531, 0.01735, 0.0038), (-0.07209381, 0.0116, 0.0038), (-0.06789381, 0.0116, 0.0038), (-0.066915795, 0.01525, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C6" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.07209381, 0.00585, 0), (-0.066915795, 0.0116, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.07209381, 0.0116, 0), (-0.0705531, 0.00585, 0), (-0.066915795, 0.00795, 0), (-0.06789381, 0.0116, 0), (-0.07209381, 0.0116, 0.0038), (-0.0705531, 0.00585, 0.0038), (-0.066915795, 0.00795, 0.0038), (-0.06789381, 0.0116, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C7" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.0705531, 0.0016407078, 0), (-0.06424381, 0.00795, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.0705531, 0.00585, 0), (-0.06634381, 0.0016407078, 0), (-0.06424381, 0.0052780146, 0), (-0.066915795, 0.00795, 0), (-0.0705531, 0.00585, 0.0038), (-0.06634381, 0.0016407078, 0.0038), (-0.06424381, 0.0052780146, 0.0038), (-0.066915795, 0.00795, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C8" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06634381, 0.0001, 0), (-0.06059381, 0.0052780146, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.06634381, 0.0016407078, 0), (-0.06059381, 0.0001, 0), (-0.06059381, 0.0043, 0), (-0.06424381, 0.0052780146, 0), (-0.06634381, 0.0016407078, 0.0038), (-0.06059381, 0.0001, 0.0038), (-0.06059381, 0.0043, 0.0038), (-0.06424381, 0.0052780146, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C9" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06059381, 0.0001, 0), (-0.05484381, 0.0052780146, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.06059381, 0.0043, 0), (-0.06059381, 0.0001, 0), (-0.05484381, 0.0016407078, 0), (-0.05694381, 0.0052780146, 0), (-0.06059381, 0.0043, 0.0038), (-0.06059381, 0.0001, 0.0038), (-0.05484381, 0.0016407078, 0.0038), (-0.05694381, 0.0052780146, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C10" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05694381, 0.0016407078, 0), (-0.05063452, 0.00795, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.05694381, 0.0052780146, 0), (-0.05484381, 0.0016407078, 0), (-0.05063452, 0.00585, 0), (-0.054271825, 0.00795, 0), (-0.05694381, 0.0052780146, 0.0038), (-0.05484381, 0.0016407078, 0.0038), (-0.05063452, 0.00585, 0.0038), (-0.054271825, 0.00795, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C11" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.054271825, 0.00585, 0), (-0.04909381, 0.0116, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.054271825, 0.00795, 0), (-0.05063452, 0.00585, 0), (-0.04909381, 0.0116, 0), (-0.05329381, 0.0116, 0), (-0.054271825, 0.00795, 0.0038), (-0.05063452, 0.00585, 0.0038), (-0.04909381, 0.0116, 0.0038), (-0.05329381, 0.0116, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C12" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05069201, -0.0026620992, 0), (0.008356999, 0.012508957, 0.0064)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.049790394, 0.012508957, 0), (-0.05069201, 0.0071847583, 0), (0.007455382, -0.0026620992, 0), (0.008356999, 0.0026620992, 0), (-0.049790394, 0.012508957, 0.0064), (-0.05069201, 0.0071847583, 0.0064), (0.007455382, -0.0026620992, 0.0064), (0.008356999, 0.0026620992, 0.0064)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C13" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.054271825, -0.0116, 0), (-0.04909381, -0.00585, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.05063452, -0.00585, 0), (-0.054271825, -0.00795, 0), (-0.05329381, -0.0116, 0), (-0.04909381, -0.0116, 0), (-0.05063452, -0.00585, 0.0038), (-0.054271825, -0.00795, 0.0038), (-0.05329381, -0.0116, 0.0038), (-0.04909381, -0.0116, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C14" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05694381, -0.00795, 0), (-0.05063452, -0.0016407078, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.05484381, -0.0016407078, 0), (-0.05694381, -0.0052780146, 0), (-0.054271825, -0.00795, 0), (-0.05063452, -0.00585, 0), (-0.05484381, -0.0016407078, 0.0038), (-0.05694381, -0.0052780146, 0.0038), (-0.054271825, -0.00795, 0.0038), (-0.05063452, -0.00585, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C15" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06059381, -0.0052780146, 0), (-0.05484381, -0.0001, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.05484381, -0.0016407078, 0), (-0.06059381, -0.0001, 0), (-0.06059381, -0.0043, 0), (-0.05694381, -0.0052780146, 0), (-0.05484381, -0.0016407078, 0.0038), (-0.06059381, -0.0001, 0.0038), (-0.06059381, -0.0043, 0.0038), (-0.05694381, -0.0052780146, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C16" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06634381, -0.0052780146, 0), (-0.06059381, -0.0001, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.06059381, -0.0001, 0), (-0.06634381, -0.0016407078, 0), (-0.06424381, -0.0052780146, 0), (-0.06059381, -0.0043, 0), (-0.06059381, -0.0001, 0.0038), (-0.06634381, -0.0016407078, 0.0038), (-0.06424381, -0.0052780146, 0.0038), (-0.06059381, -0.0043, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C17" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.0705531, -0.00795, 0), (-0.06424381, -0.0016407078, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.06634381, -0.0016407078, 0), (-0.0705531, -0.00585, 0), (-0.066915795, -0.00795, 0), (-0.06424381, -0.0052780146, 0), (-0.06634381, -0.0016407078, 0.0038), (-0.0705531, -0.00585, 0.0038), (-0.066915795, -0.00795, 0.0038), (-0.06424381, -0.0052780146, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C18" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.07209381, -0.0116, 0), (-0.066915795, -0.00585, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.0705531, -0.00585, 0), (-0.07209381, -0.0116, 0), (-0.06789381, -0.0116, 0), (-0.066915795, -0.00795, 0), (-0.0705531, -0.00585, 0.0038), (-0.07209381, -0.0116, 0.0038), (-0.06789381, -0.0116, 0.0038), (-0.066915795, -0.00795, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C19" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.07209381, -0.01735, 0), (-0.066915795, -0.0116, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.07209381, -0.0116, 0), (-0.0705531, -0.01735, 0), (-0.066915795, -0.01525, 0), (-0.06789381, -0.0116, 0), (-0.07209381, -0.0116, 0.0038), (-0.0705531, -0.01735, 0.0038), (-0.066915795, -0.01525, 0.0038), (-0.06789381, -0.0116, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C20" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.0705531, -0.021559292, 0), (-0.06424381, -0.01525, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.0705531, -0.01735, 0), (-0.06634381, -0.021559292, 0), (-0.06424381, -0.017921986, 0), (-0.066915795, -0.01525, 0), (-0.0705531, -0.01735, 0.0038), (-0.06634381, -0.021559292, 0.0038), (-0.06424381, -0.017921986, 0.0038), (-0.066915795, -0.01525, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C21" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06634381, -0.0231, 0), (-0.06059381, -0.017921986, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.06634381, -0.021559292, 0), (-0.06059381, -0.0231, 0), (-0.06059381, -0.0189, 0), (-0.06424381, -0.017921986, 0), (-0.06634381, -0.021559292, 0.0038), (-0.06059381, -0.0231, 0.0038), (-0.06059381, -0.0189, 0.0038), (-0.06424381, -0.017921986, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C22" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06059381, -0.0231, 0), (-0.05484381, -0.017921986, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.06059381, -0.0189, 0), (-0.06059381, -0.0231, 0), (-0.05484381, -0.021559292, 0), (-0.05694381, -0.017921986, 0), (-0.06059381, -0.0189, 0.0038), (-0.06059381, -0.0231, 0.0038), (-0.05484381, -0.021559292, 0.0038), (-0.05694381, -0.017921986, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C23" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05694381, -0.021559292, 0), (-0.05063452, -0.01525, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.05694381, -0.017921986, 0), (-0.05484381, -0.021559292, 0), (-0.05063452, -0.01735, 0), (-0.054271825, -0.01525, 0), (-0.05694381, -0.017921986, 0.0038), (-0.05484381, -0.021559292, 0.0038), (-0.05063452, -0.01735, 0.0038), (-0.054271825, -0.01525, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C24" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.054271825, -0.01735, 0), (-0.04909381, -0.0116, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.054271825, -0.01525, 0), (-0.05063452, -0.01735, 0), (-0.04909381, -0.0116, 0), (-0.05329381, -0.0116, 0), (-0.054271825, -0.01525, 0.0038), (-0.05063452, -0.01735, 0.0038), (-0.04909381, -0.0116, 0.0038), (-0.05329381, -0.0116, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C25" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05069201, -0.012508957, 0), (0.008356999, 0.0026620992, 0.0064)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.05069201, -0.0071847583, 0), (-0.049790394, -0.012508957, 0), (0.008356999, -0.0026620992, 0), (0.007455382, 0.0026620992, 0), (-0.05069201, -0.0071847583, 0.0064), (-0.049790394, -0.012508957, 0.0064), (0.008356999, -0.0026620992, 0.0064), (0.007455382, 0.0026620992, 0.0064)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C26" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.0032867924, -0.0046193977, 0), (0.012525588, 0.0046193977, 0.0072)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 8, 9, 10, 0, 3, 2, 8, 10, 11, 0, 4, 3, 8, 11, 12, 0, 5, 4, 8, 12, 13, 0, 6, 5, 8, 13, 14, 0, 7, 6, 8, 14, 15, 0, 1, 9, 0, 9, 8, 1, 2, 10, 1, 10, 9, 2, 3, 11, 2, 11, 10, 3, 4, 12, 3, 12, 11, 4, 5, 13, 4, 13, 12, 5, 6, 14, 5, 14, 13, 6, 7, 15, 6, 15, 14, 7, 0, 8, 7, 8, 15]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(0.0032867924, 0.0019134171, 0), (0.0032867924, -0.0019134171, 0), (0.005992773, -0.0046193977, 0), (0.009819607, -0.0046193977, 0), (0.012525588, -0.0019134171, 0), (0.012525588, 0.0019134171, 0), (0.009819607, 0.0046193977, 0), (0.005992773, 0.0046193977, 0), (0.0032867924, 0.0019134171, 0.0072), (0.0032867924, -0.0019134171, 0.0072), (0.005992773, -0.0046193977, 0.0072), (0.009819607, -0.0046193977, 0.0072), (0.012525588, -0.0019134171, 0.0072), (0.012525588, 0.0019134171, 0.0072), (0.009819607, 0.0046193977, 0.0072), (0.005992773, 0.0046193977, 0.0072)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C27" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.00790619, -0.0044, 0), (0.05290619, 0.0044, 0.0064)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(0.00790619, -0.0044, 0), (0.05290619, -0.0034, 0), (0.05290619, 0.0034, 0), (0.00790619, 0.0044, 0), (0.00790619, -0.0044, 0.0064), (0.05290619, -0.0034, 0.0064), (0.05290619, 0.0034, 0.0064), (0.00790619, 0.0044, 0.0064)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C28" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.05290619, -0.0034, 0), (0.10790619, 0.0034, 0.0064)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 5, 6, 7, 0, 3, 2, 5, 7, 8, 0, 4, 3, 5, 8, 9, 0, 1, 6, 0, 6, 5, 1, 2, 7, 1, 7, 6, 2, 3, 8, 2, 8, 7, 3, 4, 9, 3, 9, 8, 4, 0, 5, 4, 5, 9]
+            rel material:binding:physics = </MetzenbaumScissors/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(0.05290619, 0.0034, 0), (0.05290619, -0.0034, 0), (0.10590619, -0.0014, 0), (0.10790619, -2.7726014e-19, 0), (0.10590619, 0.0014, 0), (0.05290619, 0.0034, 0.0064), (0.05290619, -0.0034, 0.0064), (0.10590619, -0.0014, 0.0064), (0.10790619, -2.7726014e-19, 0.0064), (0.10590619, 0.0014, 0.0064)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+    }
+}
+

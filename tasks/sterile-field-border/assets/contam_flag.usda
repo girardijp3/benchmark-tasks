@@ -1,0 +1,48 @@
+#usda 1.0
+(
+    defaultPrim = "ContamFlag"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "ContamFlag" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysxRigidBodyAPI"]
+    doc = "Contamination flag: a 30 x 22 mm red tag, 0.4 mm thick, visual only (no collider, no gravity). It waits out of sight; the task lays it on an instrument that has touched the border."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (1e-7, 1e-7, 1e-7)
+    float physics:mass = 0.001
+    custom bool physxRigidBody:disableGravity = 1
+
+    def Scope "Looks"
+    {
+        def Material "Flag"
+        {
+            token outputs:surface.connect = </ContamFlag/Looks/Flag/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.88, 0.08, 0.08)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Mesh "Flag" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.011, -0.015, 0), (0.011, 0.015, 0.0004)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+        rel material:binding = </ContamFlag/Looks/Flag>
+        point3f[] points = [(-0.011, -0.015, 0), (0.011, -0.015, 0), (0.011, 0.015, 0), (-0.011, 0.015, 0), (-0.011, -0.015, 0.0004), (0.011, -0.015, 0.0004), (0.011, 0.015, 0.0004), (-0.011, 0.015, 0.0004)]
+        uniform token subdivisionScheme = "none"
+    }
+}
+

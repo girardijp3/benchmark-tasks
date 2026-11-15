@@ -1,0 +1,23 @@
+{
+  "title": "Lay a surgical instrument set on a sterile field without touching its unsterile border",
+  "category": "Impact on jobs",
+  "keywords": [
+    "surgical instruments",
+    "sterile field",
+    "contamination",
+    "keep-out zone",
+    "placement",
+    "surgical technologist",
+    "infection control",
+    "rigid body"
+  ],
+  "instruction": "Move the four surgical instruments from the rack onto the blue sterile field, laid flat and apart, without any of them ever touching the orange border around it.",
+  "context": "Laying instruments out on a sterile field is routine work for medical assistants (O*NET 31-9092, about 760,000 US jobs, whose listed tasks include preparing treatment rooms and sterilizing and setting out instruments for procedures), surgical technologists (29-2055, about 110,000) and operating-room nurses. On a sterile drape the outer inch is not sterile: an instrument that touches it is contaminated and has to be replaced, however it is placed afterwards, so contact is judged over the whole handling, not only the end layout. Surgical-site infections are among the commonest hospital-acquired infections.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. A sterile field stands on the table centred at x 0.40, y 0.14: a flat rigid panel 300 x 440 mm, 3 mm thick, blue inside with a 25.4 mm (1 inch) orange border band all round (it stands in for a cloth drape). Beside it, centred at x 0.35, y 0.50, a stainless rack holds four instruments lying flat on silicone rests, side by side 58 mm apart, with their working ends toward +y: needle holder (Mayo-Hegar, 6 in, 152 mm, 70 g), Metzenbaum scissors (7 in, 180 mm, 50 g), Rochester-Pean forceps (6.25 in, 160 mm, 60 g, closed on the ratchet) and a no. 4 scalpel handle (135 mm, 22 g, no blade). All are closed, rigid, free on the rack.",
+  "scoring": "Four steps, 0.2 each, one per instrument. An instrument counts when (1) a gripper has picked it up, (2) it has never touched the border, and (3) it now lies on the sterile area: every point of it inside the blue area, flat (within 5 degrees), its working end pointing away from the robot (within 25 degrees of +x), resting on the panel, not in a gripper, at least 8 mm from the other instruments, and the scalpel handle in an end lane of the layout, not between others. Touching the border means any surface point within 1.5 mm of the panel's top face over the orange band at any time; it is for good (a red tag appears on the instrument), so that instrument can no longer score and 1.0 is out of reach, however it is moved afterwards. Carrying an instrument over the border without touching is fine. Full score 1.0 (ends the run) only once all four steps hold, no instrument has touched the border, both grippers are at least 3 cm from every instrument and everything is still (2 mm, 2 degrees) for 1 s without a break; any lapse restarts the second and the step points stop at 0.8. 0 if an instrument falls off the table.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Put the four instruments back on the rack rests as described in the setup; nothing on the field needs resetting (the border contact record and the red tags restart with the episode).",
+  "fidelity": "Instruments are rigid, closed, at catalog lengths; cross-sections and masses are typical values, ring holes modelled. The drape is cloth in reality; here a flat rigid 3 mm panel with the border drawn on it. Border contact is judged in task code from poses (surface within 1.5 mm of the panel over the band, latched); the red tag is a visual only. Convex colliders, 240 Hz physics.",
+  "scores": "Dream-1 run: 0.0 (the left arm moved to the instrument rack and hovered with its fingers open, the right arm stayed up near its base; no instrument was picked up, no border touch); demo: 1.0 (all four instruments on the field, success conditions met at 50.3 s, success at step 1016)",
+  "media": "M-XX3VPV"
+}

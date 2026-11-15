@@ -1,0 +1,1042 @@
+#usda 1.0
+(
+    defaultPrim = "PeanForceps"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "PeanForceps" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Rochester-Pean forceps, straight, 6.25 in (160 mm), closed on the ratchet. Origin at the centre of mass on the underside; +x toward the tip."
+)
+{
+    float physics:mass = 0.06
+
+    def Scope "Looks"
+    {
+        def Material "Steel"
+        {
+            token outputs:surface.connect = </PeanForceps/Looks/Steel/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.8, 0.81, 0.83)
+                float inputs:metallic = 0.9
+                float inputs:roughness = 0.28
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_Steel" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.4
+            float physics:restitution = 0
+            float physics:staticFriction = 0.5
+        }
+
+        def Material "Screw"
+        {
+            token outputs:surface.connect = </PeanForceps/Looks/Screw/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.36, 0.37, 0.4)
+                float inputs:metallic = 0.8
+                float inputs:roughness = 0.4
+                token outputs:surface
+            }
+        }
+
+        def Material "Mark"
+        {
+            token outputs:surface.connect = </PeanForceps/Looks/Mark/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.07, 0.07, 0.08)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.7
+                token outputs:surface
+            }
+        }
+    }
+
+    def Scope "Visuals"
+    {
+        def Mesh "P0" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05463577, 0.0112, 0), (-0.049697947, 0.0167, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.051171668, 0.0167, 0), (-0.05463577, 0.0147, 0), (-0.053697947, 0.0112, 0), (-0.049697947, 0.0112, 0), (-0.051171668, 0.0167, 0.0038), (-0.05463577, 0.0147, 0.0038), (-0.053697947, 0.0112, 0.0038), (-0.049697947, 0.0112, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P1" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.057197947, 0.0147, 0), (-0.051171668, 0.02072628, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.05519795, 0.02072628, 0), (-0.057197947, 0.017262178, 0), (-0.05463577, 0.0147, 0), (-0.051171668, 0.0167, 0), (-0.05519795, 0.02072628, 0.0038), (-0.057197947, 0.017262178, 0.0038), (-0.05463577, 0.0147, 0.0038), (-0.051171668, 0.0167, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P2" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06069795, 0.017262178, 0), (-0.05519795, 0.0222, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.05519795, 0.02072628, 0), (-0.06069795, 0.0222, 0), (-0.06069795, 0.0182, 0), (-0.057197947, 0.017262178, 0), (-0.05519795, 0.02072628, 0.0038), (-0.06069795, 0.0222, 0.0038), (-0.06069795, 0.0182, 0.0038), (-0.057197947, 0.017262178, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P3" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06619795, 0.017262178, 0), (-0.06069795, 0.0222, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.06069795, 0.0222, 0), (-0.06619795, 0.02072628, 0), (-0.06419795, 0.017262178, 0), (-0.06069795, 0.0182, 0), (-0.06069795, 0.0222, 0.0038), (-0.06619795, 0.02072628, 0.0038), (-0.06419795, 0.017262178, 0.0038), (-0.06069795, 0.0182, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P4" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.070224226, 0.0147, 0), (-0.06419795, 0.02072628, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.06619795, 0.02072628, 0), (-0.070224226, 0.0167, 0), (-0.06676012, 0.0147, 0), (-0.06419795, 0.017262178, 0), (-0.06619795, 0.02072628, 0.0038), (-0.070224226, 0.0167, 0.0038), (-0.06676012, 0.0147, 0.0038), (-0.06419795, 0.017262178, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P5" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.07169795, 0.0112, 0), (-0.06676012, 0.0167, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.070224226, 0.0167, 0), (-0.07169795, 0.0112, 0), (-0.06769795, 0.0112, 0), (-0.06676012, 0.0147, 0), (-0.070224226, 0.0167, 0.0038), (-0.07169795, 0.0112, 0.0038), (-0.06769795, 0.0112, 0.0038), (-0.06676012, 0.0147, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P6" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.07169795, 0.0057, 0), (-0.06676012, 0.0112, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.07169795, 0.0112, 0), (-0.070224226, 0.0057, 0), (-0.06676012, 0.0077, 0), (-0.06769795, 0.0112, 0), (-0.07169795, 0.0112, 0.0038), (-0.070224226, 0.0057, 0.0038), (-0.06676012, 0.0077, 0.0038), (-0.06769795, 0.0112, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P7" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.070224226, 0.0016737205, 0), (-0.06419795, 0.0077, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.070224226, 0.0057, 0), (-0.06619795, 0.0016737205, 0), (-0.06419795, 0.005137822, 0), (-0.06676012, 0.0077, 0), (-0.070224226, 0.0057, 0.0038), (-0.06619795, 0.0016737205, 0.0038), (-0.06419795, 0.005137822, 0.0038), (-0.06676012, 0.0077, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P8" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06619795, 0.0002, 0), (-0.06069795, 0.005137822, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.06619795, 0.0016737205, 0), (-0.06069795, 0.0002, 0), (-0.06069795, 0.0042, 0), (-0.06419795, 0.005137822, 0), (-0.06619795, 0.0016737205, 0.0038), (-0.06069795, 0.0002, 0.0038), (-0.06069795, 0.0042, 0.0038), (-0.06419795, 0.005137822, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P9" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06069795, 0.0002, 0), (-0.05519795, 0.005137822, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.06069795, 0.0042, 0), (-0.06069795, 0.0002, 0), (-0.05519795, 0.0016737205, 0), (-0.057197947, 0.005137822, 0), (-0.06069795, 0.0042, 0.0038), (-0.06069795, 0.0002, 0.0038), (-0.05519795, 0.0016737205, 0.0038), (-0.057197947, 0.005137822, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P10" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.057197947, 0.0016737205, 0), (-0.051171668, 0.0077, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.057197947, 0.005137822, 0), (-0.05519795, 0.0016737205, 0), (-0.051171668, 0.0057, 0), (-0.05463577, 0.0077, 0), (-0.057197947, 0.005137822, 0.0038), (-0.05519795, 0.0016737205, 0.0038), (-0.051171668, 0.0057, 0.0038), (-0.05463577, 0.0077, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P11" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05463577, 0.0057, 0), (-0.049697947, 0.0112, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.05463577, 0.0077, 0), (-0.051171668, 0.0057, 0), (-0.049697947, 0.0112, 0), (-0.053697947, 0.0112, 0), (-0.05463577, 0.0077, 0.0038), (-0.051171668, 0.0057, 0.0038), (-0.049697947, 0.0112, 0.0038), (-0.053697947, 0.0112, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P12" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.051284667, -0.0025622419, 0), (0.0047435453, 0.012064188, 0.007)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.05040168, 0.012064188, 0), (-0.051284667, 0.0069397045, 0), (0.0038605575, -0.0025622419, 0), (0.0047435453, 0.0025622419, 0), (-0.05040168, 0.012064188, 0.007), (-0.051284667, 0.0069397045, 0.007), (0.0038605575, -0.0025622419, 0.007), (0.0047435453, 0.0025622419, 0.007)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P13" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05463577, -0.0112, 0), (-0.049697947, -0.0057, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.051171668, -0.0057, 0), (-0.05463577, -0.0077, 0), (-0.053697947, -0.0112, 0), (-0.049697947, -0.0112, 0), (-0.051171668, -0.0057, 0.0038), (-0.05463577, -0.0077, 0.0038), (-0.053697947, -0.0112, 0.0038), (-0.049697947, -0.0112, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P14" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.057197947, -0.0077, 0), (-0.051171668, -0.0016737205, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.05519795, -0.0016737205, 0), (-0.057197947, -0.005137822, 0), (-0.05463577, -0.0077, 0), (-0.051171668, -0.0057, 0), (-0.05519795, -0.0016737205, 0.0038), (-0.057197947, -0.005137822, 0.0038), (-0.05463577, -0.0077, 0.0038), (-0.051171668, -0.0057, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P15" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06069795, -0.005137822, 0), (-0.05519795, -0.0002, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.05519795, -0.0016737205, 0), (-0.06069795, -0.0002, 0), (-0.06069795, -0.0042, 0), (-0.057197947, -0.005137822, 0), (-0.05519795, -0.0016737205, 0.0038), (-0.06069795, -0.0002, 0.0038), (-0.06069795, -0.0042, 0.0038), (-0.057197947, -0.005137822, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P16" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06619795, -0.005137822, 0), (-0.06069795, -0.0002, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.06069795, -0.0002, 0), (-0.06619795, -0.0016737205, 0), (-0.06419795, -0.005137822, 0), (-0.06069795, -0.0042, 0), (-0.06069795, -0.0002, 0.0038), (-0.06619795, -0.0016737205, 0.0038), (-0.06419795, -0.005137822, 0.0038), (-0.06069795, -0.0042, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P17" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.070224226, -0.0077, 0), (-0.06419795, -0.0016737205, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.06619795, -0.0016737205, 0), (-0.070224226, -0.0057, 0), (-0.06676012, -0.0077, 0), (-0.06419795, -0.005137822, 0), (-0.06619795, -0.0016737205, 0.0038), (-0.070224226, -0.0057, 0.0038), (-0.06676012, -0.0077, 0.0038), (-0.06419795, -0.005137822, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P18" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.07169795, -0.0112, 0), (-0.06676012, -0.0057, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.070224226, -0.0057, 0), (-0.07169795, -0.0112, 0), (-0.06769795, -0.0112, 0), (-0.06676012, -0.0077, 0), (-0.070224226, -0.0057, 0.0038), (-0.07169795, -0.0112, 0.0038), (-0.06769795, -0.0112, 0.0038), (-0.06676012, -0.0077, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P19" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.07169795, -0.0167, 0), (-0.06676012, -0.0112, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.07169795, -0.0112, 0), (-0.070224226, -0.0167, 0), (-0.06676012, -0.0147, 0), (-0.06769795, -0.0112, 0), (-0.07169795, -0.0112, 0.0038), (-0.070224226, -0.0167, 0.0038), (-0.06676012, -0.0147, 0.0038), (-0.06769795, -0.0112, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P20" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.070224226, -0.02072628, 0), (-0.06419795, -0.0147, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.070224226, -0.0167, 0), (-0.06619795, -0.02072628, 0), (-0.06419795, -0.017262178, 0), (-0.06676012, -0.0147, 0), (-0.070224226, -0.0167, 0.0038), (-0.06619795, -0.02072628, 0.0038), (-0.06419795, -0.017262178, 0.0038), (-0.06676012, -0.0147, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P21" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06619795, -0.0222, 0), (-0.06069795, -0.017262178, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.06619795, -0.02072628, 0), (-0.06069795, -0.0222, 0), (-0.06069795, -0.0182, 0), (-0.06419795, -0.017262178, 0), (-0.06619795, -0.02072628, 0.0038), (-0.06069795, -0.0222, 0.0038), (-0.06069795, -0.0182, 0.0038), (-0.06419795, -0.017262178, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P22" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06069795, -0.0222, 0), (-0.05519795, -0.017262178, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.06069795, -0.0182, 0), (-0.06069795, -0.0222, 0), (-0.05519795, -0.02072628, 0), (-0.057197947, -0.017262178, 0), (-0.06069795, -0.0182, 0.0038), (-0.06069795, -0.0222, 0.0038), (-0.05519795, -0.02072628, 0.0038), (-0.057197947, -0.017262178, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P23" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.057197947, -0.02072628, 0), (-0.051171668, -0.0147, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.057197947, -0.017262178, 0), (-0.05519795, -0.02072628, 0), (-0.051171668, -0.0167, 0), (-0.05463577, -0.0147, 0), (-0.057197947, -0.017262178, 0.0038), (-0.05519795, -0.02072628, 0.0038), (-0.051171668, -0.0167, 0.0038), (-0.05463577, -0.0147, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P24" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05463577, -0.0167, 0), (-0.049697947, -0.0112, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.05463577, -0.0147, 0), (-0.051171668, -0.0167, 0), (-0.049697947, -0.0112, 0), (-0.053697947, -0.0112, 0), (-0.05463577, -0.0147, 0.0038), (-0.051171668, -0.0167, 0.0038), (-0.049697947, -0.0112, 0.0038), (-0.053697947, -0.0112, 0.0038)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P25" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.051284667, -0.012064188, 0), (0.0047435453, 0.0025622419, 0.007)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(-0.051284667, -0.0069397045, 0), (-0.05040168, -0.012064188, 0), (0.0047435453, -0.0025622419, 0), (0.0038605575, 0.0025622419, 0), (-0.051284667, -0.0069397045, 0.007), (-0.05040168, -0.012064188, 0.007), (0.0047435453, -0.0025622419, 0.007), (0.0038605575, 0.0025622419, 0.007)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P26" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.0026979486, -0.0045, 0), (0.011302051, 0.0045, 0.008)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Screw>
+            point3f[] points = [(-0.0026979486, -0.0045, 0), (0.011302051, -0.0045, 0), (0.011302051, 0.0045, 0), (-0.0026979486, 0.0045, 0), (-0.0026979486, -0.0045, 0.008), (0.011302051, -0.0045, 0.008), (0.011302051, 0.0045, 0.008), (-0.0026979486, 0.0045, 0.008)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P27" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.011302051, -0.0048, 0), (0.05330205, 0.0048, 0.007)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(0.011302051, -0.0048, 0), (0.05330205, -0.0048, 0), (0.05330205, 0.0048, 0), (0.011302051, 0.0048, 0), (0.011302051, -0.0048, 0.007), (0.05330205, -0.0048, 0.007), (0.05330205, 0.0048, 0.007), (0.011302051, 0.0048, 0.007)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "P28" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.05330205, -0.0048, 0), (0.08830205, 0.0048, 0.007)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Steel>
+            point3f[] points = [(0.05330205, 0.0048, 0), (0.05330205, -0.0048, 0), (0.08830205, -0.0012, 0), (0.08830205, 0.0012, 0), (0.05330205, 0.0048, 0.007), (0.05330205, -0.0048, 0.007), (0.08830205, -0.0012, 0.007), (0.08830205, 0.0012, 0.007)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "M0" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.031697948, -0.0022, 0.007), (-0.030997949, 0.0022, 0.00725)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Mark>
+            point3f[] points = [(-0.031697948, -0.0022, 0.007), (-0.030997949, -0.0022, 0.007), (-0.030997949, 0.0022, 0.007), (-0.031697948, 0.0022, 0.007), (-0.031697948, -0.0022, 0.00725), (-0.030997949, -0.0022, 0.00725), (-0.030997949, 0.0022, 0.00725), (-0.031697948, 0.0022, 0.00725)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "M1" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.029097948, -0.0022, 0.007), (-0.02839795, 0.0022, 0.00725)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Mark>
+            point3f[] points = [(-0.029097948, -0.0022, 0.007), (-0.02839795, -0.0022, 0.007), (-0.02839795, 0.0022, 0.007), (-0.029097948, 0.0022, 0.007), (-0.029097948, -0.0022, 0.00725), (-0.02839795, -0.0022, 0.00725), (-0.02839795, 0.0022, 0.00725), (-0.029097948, 0.0022, 0.00725)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "M2" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.026497949, -0.0022, 0.007), (-0.025797948, 0.0022, 0.00725)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Mark>
+            point3f[] points = [(-0.026497949, -0.0022, 0.007), (-0.025797948, -0.0022, 0.007), (-0.025797948, 0.0022, 0.007), (-0.026497949, 0.0022, 0.007), (-0.026497949, -0.0022, 0.00725), (-0.025797948, -0.0022, 0.00725), (-0.025797948, 0.0022, 0.00725), (-0.026497949, 0.0022, 0.00725)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "M3" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.023897948, -0.0022, 0.007), (-0.023197949, 0.0022, 0.00725)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Mark>
+            point3f[] points = [(-0.023897948, -0.0022, 0.007), (-0.023197949, -0.0022, 0.007), (-0.023197949, 0.0022, 0.007), (-0.023897948, 0.0022, 0.007), (-0.023897948, -0.0022, 0.00725), (-0.023197949, -0.0022, 0.00725), (-0.023197949, 0.0022, 0.00725), (-0.023897948, 0.0022, 0.00725)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "M4" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.021297948, -0.0022, 0.007), (-0.020597948, 0.0022, 0.00725)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Mark>
+            point3f[] points = [(-0.021297948, -0.0022, 0.007), (-0.020597948, -0.0022, 0.007), (-0.020597948, 0.0022, 0.007), (-0.021297948, 0.0022, 0.007), (-0.021297948, -0.0022, 0.00725), (-0.020597948, -0.0022, 0.00725), (-0.020597948, 0.0022, 0.00725), (-0.021297948, 0.0022, 0.00725)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "M5" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.01869795, -0.0022, 0.007), (-0.017997948, 0.0022, 0.00725)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Mark>
+            point3f[] points = [(-0.01869795, -0.0022, 0.007), (-0.017997948, -0.0022, 0.007), (-0.017997948, 0.0022, 0.007), (-0.01869795, 0.0022, 0.007), (-0.01869795, -0.0022, 0.00725), (-0.017997948, -0.0022, 0.00725), (-0.017997948, 0.0022, 0.00725), (-0.01869795, 0.0022, 0.00725)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "M6" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.016097948, -0.0022, 0.007), (-0.015397948, 0.0022, 0.00725)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Mark>
+            point3f[] points = [(-0.016097948, -0.0022, 0.007), (-0.015397948, -0.0022, 0.007), (-0.015397948, 0.0022, 0.007), (-0.016097948, 0.0022, 0.007), (-0.016097948, -0.0022, 0.00725), (-0.015397948, -0.0022, 0.00725), (-0.015397948, 0.0022, 0.00725), (-0.016097948, 0.0022, 0.00725)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "M7" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.013497949, -0.0022, 0.007), (-0.012797949, 0.0022, 0.00725)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </PeanForceps/Looks/Mark>
+            point3f[] points = [(-0.013497949, -0.0022, 0.007), (-0.012797949, -0.0022, 0.007), (-0.012797949, 0.0022, 0.007), (-0.013497949, 0.0022, 0.007), (-0.013497949, -0.0022, 0.00725), (-0.012797949, -0.0022, 0.00725), (-0.012797949, 0.0022, 0.00725), (-0.013497949, 0.0022, 0.00725)]
+            uniform token subdivisionScheme = "none"
+        }
+    }
+
+    def Scope "Colliders"
+    {
+        def Mesh "C0" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05463577, 0.0112, 0), (-0.049697947, 0.0167, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.051171668, 0.0167, 0), (-0.05463577, 0.0147, 0), (-0.053697947, 0.0112, 0), (-0.049697947, 0.0112, 0), (-0.051171668, 0.0167, 0.0038), (-0.05463577, 0.0147, 0.0038), (-0.053697947, 0.0112, 0.0038), (-0.049697947, 0.0112, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.057197947, 0.0147, 0), (-0.051171668, 0.02072628, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.05519795, 0.02072628, 0), (-0.057197947, 0.017262178, 0), (-0.05463577, 0.0147, 0), (-0.051171668, 0.0167, 0), (-0.05519795, 0.02072628, 0.0038), (-0.057197947, 0.017262178, 0.0038), (-0.05463577, 0.0147, 0.0038), (-0.051171668, 0.0167, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06069795, 0.017262178, 0), (-0.05519795, 0.0222, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.05519795, 0.02072628, 0), (-0.06069795, 0.0222, 0), (-0.06069795, 0.0182, 0), (-0.057197947, 0.017262178, 0), (-0.05519795, 0.02072628, 0.0038), (-0.06069795, 0.0222, 0.0038), (-0.06069795, 0.0182, 0.0038), (-0.057197947, 0.017262178, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C3" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06619795, 0.017262178, 0), (-0.06069795, 0.0222, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.06069795, 0.0222, 0), (-0.06619795, 0.02072628, 0), (-0.06419795, 0.017262178, 0), (-0.06069795, 0.0182, 0), (-0.06069795, 0.0222, 0.0038), (-0.06619795, 0.02072628, 0.0038), (-0.06419795, 0.017262178, 0.0038), (-0.06069795, 0.0182, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C4" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.070224226, 0.0147, 0), (-0.06419795, 0.02072628, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.06619795, 0.02072628, 0), (-0.070224226, 0.0167, 0), (-0.06676012, 0.0147, 0), (-0.06419795, 0.017262178, 0), (-0.06619795, 0.02072628, 0.0038), (-0.070224226, 0.0167, 0.0038), (-0.06676012, 0.0147, 0.0038), (-0.06419795, 0.017262178, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C5" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.07169795, 0.0112, 0), (-0.06676012, 0.0167, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.070224226, 0.0167, 0), (-0.07169795, 0.0112, 0), (-0.06769795, 0.0112, 0), (-0.06676012, 0.0147, 0), (-0.070224226, 0.0167, 0.0038), (-0.07169795, 0.0112, 0.0038), (-0.06769795, 0.0112, 0.0038), (-0.06676012, 0.0147, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C6" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.07169795, 0.0057, 0), (-0.06676012, 0.0112, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.07169795, 0.0112, 0), (-0.070224226, 0.0057, 0), (-0.06676012, 0.0077, 0), (-0.06769795, 0.0112, 0), (-0.07169795, 0.0112, 0.0038), (-0.070224226, 0.0057, 0.0038), (-0.06676012, 0.0077, 0.0038), (-0.06769795, 0.0112, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C7" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.070224226, 0.0016737205, 0), (-0.06419795, 0.0077, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.070224226, 0.0057, 0), (-0.06619795, 0.0016737205, 0), (-0.06419795, 0.005137822, 0), (-0.06676012, 0.0077, 0), (-0.070224226, 0.0057, 0.0038), (-0.06619795, 0.0016737205, 0.0038), (-0.06419795, 0.005137822, 0.0038), (-0.06676012, 0.0077, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C8" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06619795, 0.0002, 0), (-0.06069795, 0.005137822, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.06619795, 0.0016737205, 0), (-0.06069795, 0.0002, 0), (-0.06069795, 0.0042, 0), (-0.06419795, 0.005137822, 0), (-0.06619795, 0.0016737205, 0.0038), (-0.06069795, 0.0002, 0.0038), (-0.06069795, 0.0042, 0.0038), (-0.06419795, 0.005137822, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C9" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06069795, 0.0002, 0), (-0.05519795, 0.005137822, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.06069795, 0.0042, 0), (-0.06069795, 0.0002, 0), (-0.05519795, 0.0016737205, 0), (-0.057197947, 0.005137822, 0), (-0.06069795, 0.0042, 0.0038), (-0.06069795, 0.0002, 0.0038), (-0.05519795, 0.0016737205, 0.0038), (-0.057197947, 0.005137822, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C10" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.057197947, 0.0016737205, 0), (-0.051171668, 0.0077, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.057197947, 0.005137822, 0), (-0.05519795, 0.0016737205, 0), (-0.051171668, 0.0057, 0), (-0.05463577, 0.0077, 0), (-0.057197947, 0.005137822, 0.0038), (-0.05519795, 0.0016737205, 0.0038), (-0.051171668, 0.0057, 0.0038), (-0.05463577, 0.0077, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C11" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05463577, 0.0057, 0), (-0.049697947, 0.0112, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.05463577, 0.0077, 0), (-0.051171668, 0.0057, 0), (-0.049697947, 0.0112, 0), (-0.053697947, 0.0112, 0), (-0.05463577, 0.0077, 0.0038), (-0.051171668, 0.0057, 0.0038), (-0.049697947, 0.0112, 0.0038), (-0.053697947, 0.0112, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C12" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.051284667, -0.0025622419, 0), (0.0047435453, 0.012064188, 0.007)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.05040168, 0.012064188, 0), (-0.051284667, 0.0069397045, 0), (0.0038605575, -0.0025622419, 0), (0.0047435453, 0.0025622419, 0), (-0.05040168, 0.012064188, 0.007), (-0.051284667, 0.0069397045, 0.007), (0.0038605575, -0.0025622419, 0.007), (0.0047435453, 0.0025622419, 0.007)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C13" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05463577, -0.0112, 0), (-0.049697947, -0.0057, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.051171668, -0.0057, 0), (-0.05463577, -0.0077, 0), (-0.053697947, -0.0112, 0), (-0.049697947, -0.0112, 0), (-0.051171668, -0.0057, 0.0038), (-0.05463577, -0.0077, 0.0038), (-0.053697947, -0.0112, 0.0038), (-0.049697947, -0.0112, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C14" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.057197947, -0.0077, 0), (-0.051171668, -0.0016737205, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.05519795, -0.0016737205, 0), (-0.057197947, -0.005137822, 0), (-0.05463577, -0.0077, 0), (-0.051171668, -0.0057, 0), (-0.05519795, -0.0016737205, 0.0038), (-0.057197947, -0.005137822, 0.0038), (-0.05463577, -0.0077, 0.0038), (-0.051171668, -0.0057, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C15" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06069795, -0.005137822, 0), (-0.05519795, -0.0002, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.05519795, -0.0016737205, 0), (-0.06069795, -0.0002, 0), (-0.06069795, -0.0042, 0), (-0.057197947, -0.005137822, 0), (-0.05519795, -0.0016737205, 0.0038), (-0.06069795, -0.0002, 0.0038), (-0.06069795, -0.0042, 0.0038), (-0.057197947, -0.005137822, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C16" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06619795, -0.005137822, 0), (-0.06069795, -0.0002, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.06069795, -0.0002, 0), (-0.06619795, -0.0016737205, 0), (-0.06419795, -0.005137822, 0), (-0.06069795, -0.0042, 0), (-0.06069795, -0.0002, 0.0038), (-0.06619795, -0.0016737205, 0.0038), (-0.06419795, -0.005137822, 0.0038), (-0.06069795, -0.0042, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C17" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.070224226, -0.0077, 0), (-0.06419795, -0.0016737205, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.06619795, -0.0016737205, 0), (-0.070224226, -0.0057, 0), (-0.06676012, -0.0077, 0), (-0.06419795, -0.005137822, 0), (-0.06619795, -0.0016737205, 0.0038), (-0.070224226, -0.0057, 0.0038), (-0.06676012, -0.0077, 0.0038), (-0.06419795, -0.005137822, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C18" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.07169795, -0.0112, 0), (-0.06676012, -0.0057, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.070224226, -0.0057, 0), (-0.07169795, -0.0112, 0), (-0.06769795, -0.0112, 0), (-0.06676012, -0.0077, 0), (-0.070224226, -0.0057, 0.0038), (-0.07169795, -0.0112, 0.0038), (-0.06769795, -0.0112, 0.0038), (-0.06676012, -0.0077, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C19" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.07169795, -0.0167, 0), (-0.06676012, -0.0112, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.07169795, -0.0112, 0), (-0.070224226, -0.0167, 0), (-0.06676012, -0.0147, 0), (-0.06769795, -0.0112, 0), (-0.07169795, -0.0112, 0.0038), (-0.070224226, -0.0167, 0.0038), (-0.06676012, -0.0147, 0.0038), (-0.06769795, -0.0112, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C20" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.070224226, -0.02072628, 0), (-0.06419795, -0.0147, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.070224226, -0.0167, 0), (-0.06619795, -0.02072628, 0), (-0.06419795, -0.017262178, 0), (-0.06676012, -0.0147, 0), (-0.070224226, -0.0167, 0.0038), (-0.06619795, -0.02072628, 0.0038), (-0.06419795, -0.017262178, 0.0038), (-0.06676012, -0.0147, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C21" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06619795, -0.0222, 0), (-0.06069795, -0.017262178, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.06619795, -0.02072628, 0), (-0.06069795, -0.0222, 0), (-0.06069795, -0.0182, 0), (-0.06419795, -0.017262178, 0), (-0.06619795, -0.02072628, 0.0038), (-0.06069795, -0.0222, 0.0038), (-0.06069795, -0.0182, 0.0038), (-0.06419795, -0.017262178, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C22" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.06069795, -0.0222, 0), (-0.05519795, -0.017262178, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.06069795, -0.0182, 0), (-0.06069795, -0.0222, 0), (-0.05519795, -0.02072628, 0), (-0.057197947, -0.017262178, 0), (-0.06069795, -0.0182, 0.0038), (-0.06069795, -0.0222, 0.0038), (-0.05519795, -0.02072628, 0.0038), (-0.057197947, -0.017262178, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C23" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.057197947, -0.02072628, 0), (-0.051171668, -0.0147, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.057197947, -0.017262178, 0), (-0.05519795, -0.02072628, 0), (-0.051171668, -0.0167, 0), (-0.05463577, -0.0147, 0), (-0.057197947, -0.017262178, 0.0038), (-0.05519795, -0.02072628, 0.0038), (-0.051171668, -0.0167, 0.0038), (-0.05463577, -0.0147, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C24" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.05463577, -0.0167, 0), (-0.049697947, -0.0112, 0.0038)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.05463577, -0.0147, 0), (-0.051171668, -0.0167, 0), (-0.049697947, -0.0112, 0), (-0.053697947, -0.0112, 0), (-0.05463577, -0.0147, 0.0038), (-0.051171668, -0.0167, 0.0038), (-0.049697947, -0.0112, 0.0038), (-0.053697947, -0.0112, 0.0038)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C25" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.051284667, -0.012064188, 0), (0.0047435453, 0.0025622419, 0.007)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.051284667, -0.0069397045, 0), (-0.05040168, -0.012064188, 0), (0.0047435453, -0.0025622419, 0), (0.0038605575, 0.0025622419, 0), (-0.051284667, -0.0069397045, 0.007), (-0.05040168, -0.012064188, 0.007), (0.0047435453, -0.0025622419, 0.007), (0.0038605575, 0.0025622419, 0.007)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C26" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.0026979486, -0.0045, 0), (0.011302051, 0.0045, 0.008)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.0026979486, -0.0045, 0), (0.011302051, -0.0045, 0), (0.011302051, 0.0045, 0), (-0.0026979486, 0.0045, 0), (-0.0026979486, -0.0045, 0.008), (0.011302051, -0.0045, 0.008), (0.011302051, 0.0045, 0.008), (-0.0026979486, 0.0045, 0.008)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C27" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.011302051, -0.0048, 0), (0.05330205, 0.0048, 0.007)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(0.011302051, -0.0048, 0), (0.05330205, -0.0048, 0), (0.05330205, 0.0048, 0), (0.011302051, 0.0048, 0), (0.011302051, -0.0048, 0.007), (0.05330205, -0.0048, 0.007), (0.05330205, 0.0048, 0.007), (0.011302051, 0.0048, 0.007)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "C28" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.05330205, -0.0048, 0), (0.08830205, 0.0048, 0.007)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </PeanForceps/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(0.05330205, 0.0048, 0), (0.05330205, -0.0048, 0), (0.08830205, -0.0012, 0), (0.08830205, 0.0012, 0), (0.05330205, 0.0048, 0.007), (0.05330205, -0.0048, 0.007), (0.08830205, -0.0012, 0.007), (0.08830205, 0.0012, 0.007)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+    }
+}
+

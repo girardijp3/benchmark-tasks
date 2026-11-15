@@ -1,0 +1,202 @@
+#usda 1.0
+(
+    defaultPrim = "SterileField"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "SterileField" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI"]
+    doc = "Sterile field: a flat rigid panel 300 x 440 mm, 3 mm thick, standing in for the cloth drape; the unsterile border (25.4 mm, 1 inch) is drawn on it in orange. Origin at the centre of its underside."
+)
+{
+    bool physics:kinematicEnabled = 1
+
+    def Scope "Looks"
+    {
+        def Material "Phys_Drape" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.4
+            float physics:restitution = 0
+            float physics:staticFriction = 0.5
+        }
+
+        def Material "Field"
+        {
+            token outputs:surface.connect = </SterileField/Looks/Field/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.42, 0.74)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.85
+                token outputs:surface
+            }
+        }
+
+        def Material "Band"
+        {
+            token outputs:surface.connect = </SterileField/Looks/Band/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.93, 0.5, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.85
+                token outputs:surface
+            }
+        }
+
+        def Material "Line"
+        {
+            token outputs:surface.connect = </SterileField/Looks/Line/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.97, 0.97, 0.97)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.7
+                token outputs:surface
+            }
+        }
+    }
+
+    def Scope "Visuals"
+    {
+        def Mesh "Inner" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.1246, -0.1946, 0), (0.1246, 0.1946, 0.003)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </SterileField/Looks/Field>
+            point3f[] points = [(-0.1246, -0.1946, 0), (0.1246, -0.1946, 0), (0.1246, 0.1946, 0), (-0.1246, 0.1946, 0), (-0.1246, -0.1946, 0.003), (0.1246, -0.1946, 0.003), (0.1246, 0.1946, 0.003), (-0.1246, 0.1946, 0.003)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "BandN" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.1246, -0.22, 0), (0.15, 0.22, 0.003)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </SterileField/Looks/Band>
+            point3f[] points = [(0.1246, -0.22, 0), (0.15, -0.22, 0), (0.15, 0.22, 0), (0.1246, 0.22, 0), (0.1246, -0.22, 0.003), (0.15, -0.22, 0.003), (0.15, 0.22, 0.003), (0.1246, 0.22, 0.003)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "BandS" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.15, -0.22, 0), (-0.1246, 0.22, 0.003)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </SterileField/Looks/Band>
+            point3f[] points = [(-0.15, -0.22, 0), (-0.1246, -0.22, 0), (-0.1246, 0.22, 0), (-0.15, 0.22, 0), (-0.15, -0.22, 0.003), (-0.1246, -0.22, 0.003), (-0.1246, 0.22, 0.003), (-0.15, 0.22, 0.003)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "BandE" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.1246, 0.1946, 0), (0.1246, 0.22, 0.003)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </SterileField/Looks/Band>
+            point3f[] points = [(-0.1246, 0.1946, 0), (0.1246, 0.1946, 0), (0.1246, 0.22, 0), (-0.1246, 0.22, 0), (-0.1246, 0.1946, 0.003), (0.1246, 0.1946, 0.003), (0.1246, 0.22, 0.003), (-0.1246, 0.22, 0.003)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "BandW" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.1246, -0.22, 0), (0.1246, -0.1946, 0.003)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </SterileField/Looks/Band>
+            point3f[] points = [(-0.1246, -0.22, 0), (0.1246, -0.22, 0), (0.1246, -0.1946, 0), (-0.1246, -0.1946, 0), (-0.1246, -0.22, 0.003), (0.1246, -0.22, 0.003), (0.1246, -0.1946, 0.003), (-0.1246, -0.1946, 0.003)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "LineN" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.1246, -0.1961, 0.003), (0.1261, 0.1961, 0.0031)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </SterileField/Looks/Line>
+            point3f[] points = [(0.1246, -0.1961, 0.003), (0.1261, -0.1961, 0.003), (0.1261, 0.1961, 0.003), (0.1246, 0.1961, 0.003), (0.1246, -0.1961, 0.0031), (0.1261, -0.1961, 0.0031), (0.1261, 0.1961, 0.0031), (0.1246, 0.1961, 0.0031)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "LineS" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.1261, -0.1961, 0.003), (-0.1246, 0.1961, 0.0031)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </SterileField/Looks/Line>
+            point3f[] points = [(-0.1261, -0.1961, 0.003), (-0.1246, -0.1961, 0.003), (-0.1246, 0.1961, 0.003), (-0.1261, 0.1961, 0.003), (-0.1261, -0.1961, 0.0031), (-0.1246, -0.1961, 0.0031), (-0.1246, 0.1961, 0.0031), (-0.1261, 0.1961, 0.0031)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "LineE" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.1246, 0.1946, 0.003), (0.1246, 0.1961, 0.0031)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </SterileField/Looks/Line>
+            point3f[] points = [(-0.1246, 0.1946, 0.003), (0.1246, 0.1946, 0.003), (0.1246, 0.1961, 0.003), (-0.1246, 0.1961, 0.003), (-0.1246, 0.1946, 0.0031), (0.1246, 0.1946, 0.0031), (0.1246, 0.1961, 0.0031), (-0.1246, 0.1961, 0.0031)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "LineW" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.1246, -0.1961, 0.003), (0.1246, -0.1946, 0.0031)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding = </SterileField/Looks/Line>
+            point3f[] points = [(-0.1246, -0.1961, 0.003), (0.1246, -0.1961, 0.003), (0.1246, -0.1946, 0.003), (-0.1246, -0.1946, 0.003), (-0.1246, -0.1961, 0.0031), (0.1246, -0.1961, 0.0031), (0.1246, -0.1946, 0.0031), (-0.1246, -0.1946, 0.0031)]
+            uniform token subdivisionScheme = "none"
+        }
+    }
+
+    def Scope "Colliders"
+    {
+        def Mesh "Panel" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.15, -0.22, 0), (0.15, 0.22, 0.003)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 4, 5, 6, 0, 3, 2, 4, 6, 7, 0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 3, 0, 4, 3, 4, 7]
+            rel material:binding:physics = </SterileField/Looks/Phys_Drape> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.15, -0.22, 0), (0.15, -0.22, 0), (0.15, 0.22, 0), (-0.15, 0.22, 0), (-0.15, -0.22, 0.003), (0.15, -0.22, 0.003), (0.15, 0.22, 0.003), (-0.15, 0.22, 0.003)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+    }
+}
+
