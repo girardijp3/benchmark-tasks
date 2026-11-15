@@ -153,4 +153,4 @@ let the stopper hang beside the shoulder. Stand the bottle back on its spot, the
 ## Status
 
 Dream-1 score: 0.0 (both arms stayed folded near their bases and never reached the bottle). Demo: 1.0 at step 587.
-Media: TBD (assigned at upload).
+Media: M-4TXNGK.
