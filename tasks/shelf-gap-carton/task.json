@@ -1,0 +1,23 @@
+{
+  "title": "Stock a shelf row where no gap is wide enough: slide the cartons together, then stand the new one in",
+  "category": "Impact on jobs",
+  "keywords": [
+    "shelf stocking",
+    "retail",
+    "cartons",
+    "make room",
+    "slide neighbours",
+    "ordered row",
+    "final-state scoring",
+    "two arms"
+  ],
+  "instruction": "Stock the green carton on this shelf in the row between the blue and the red carton, with every carton left standing on the board.",
+  "context": "Stocking shelves is a regular core duty of stockers and order fillers (O*NET 53-7065, about 2.9 million US jobs, BLS OEWS) and of retail salespersons (41-2031, about 3.9 million): when the shelf is full the new product does not fit any one gap, so the cartons beside it are slid together first to open one. The row keeps its order (the new carton goes between the two named cartons), and every carton must end standing upright in the row.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the arm bases: x forward, y to the robot's left. An open shelf bay (18 mm melamine-faced chipboard board 436 x 220 mm, two 18 mm end dividers 140 mm tall with 400 mm clear between them, a 3 mm hardboard back panel; fixed) stands on the table, its board centred at x 0.42, y 0. Four retail cartons stand on the board in a row with their fronts level, from the robot's right to its left: yellow tea-bag carton (80 wide x 60 deep x 130 tall mm, 240 g), blue herbal-tea carton (62 x 70 x 105, 95 g), red soup carton (78 x 52 x 120, 180 g), white tablet carton (60 x 45 x 110, 60 g). The gaps are 20, 20, 26, 24 and 30 mm (the row's free width is 120 mm; no gap is wider than 30 mm). A green tea-bag carton (74 x 62 x 125 mm, 200 g) stands on the table at x 0.22, y -0.14: 74 mm wide, so it fits no gap until the neighbours are slid together.",
+  "scoring": "Four steps, 0.2 each, judged as things stand (final state only: nothing is penalised for lifting, sliding or replacing a carton). (1) The gap between the blue and the red carton is at least 78 mm (the green carton's width plus 4 mm). (2) The green carton stands on the board (base within 6 mm of its top face, within 10 degrees of upright, front within 20 mm of the row's front line, sides inside the dividers) with its centre between the blue and the red carton's centres. (3) All five cartons so stand, none overlaps another by more than 2 mm, and from the right they run yellow, blue, green, red, white. (4) Step 3 holds and no gripper pad is within 3 cm of any carton. Full score 1.0 (ends the run) only once every full-success condition has held together, without a break, for 1 s: all four steps and every carton still (within 2 mm and 2 degrees of where it was when that second began); any lapse restarts the second, and the step points stop at 0.8. 0 overall only if a carton falls off the table (tracked over the whole run).",
+  "run_limit": "800 steps (40 s at 20 Hz)",
+  "reset_notes": "Stand the four cartons on the board in the row as at the start (gaps 20, 20, 26, 24, 30 mm from the right divider), fronts level 45 mm behind the board's front edge; stand the green carton on the table on its mark.",
+  "fidelity": "Rigid bodies, 240 Hz physics, 20 Hz control. The shelf is a fixed rigid body of box colliders; each carton is a rigid box with its real mass (board-on-melamine friction about 0.5/0.4), so it can be pinched, lifted, slid, tipped or knocked over. Cartons are solid boxes: no flex, no contents moving. Carton sizes are typical values of each product class, not one catalogue entry. No task code moves or seats anything.",
+  "scores": "Dream-1 run: 0.0 (the right arm reached toward the green carton but nothing was lifted or slid; the blue-red gap stayed 26 mm for all 2,400 steps); demo: 1.0 (gap opened at 13.4 s, green carton in the row at 24.75 s, success at step 534)",
+  "media": "M-NFCBQH"
+}

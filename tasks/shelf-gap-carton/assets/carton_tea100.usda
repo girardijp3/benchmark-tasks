@@ -1,0 +1,116 @@
+#usda 1.0
+(
+    defaultPrim = "ROOT"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "ROOT" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Tea-bag carton for 100 bags, 80 x 60 x 130 mm (typical value for retail tea cartons), 240 g."
+)
+{
+    float physics:mass = 0.24
+
+    def Scope "Looks"
+    {
+        def Material "Board"
+        {
+            token outputs:surface.connect = </ROOT/Looks/Board/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.93, 0.78, 0.15)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.8
+                token outputs:surface
+            }
+        }
+        def Material "Print"
+        {
+            token outputs:surface.connect = </ROOT/Looks/Print/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.55, 0.12, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+        def Material "Edge"
+        {
+            token outputs:surface.connect = </ROOT/Looks/Edge/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7905, 0.663, 0.1275)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.8
+                token outputs:surface
+            }
+        }
+        def Material "Phys_Board" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.4
+            float physics:restitution = 0
+            float physics:staticFriction = 0.55
+        }
+    }
+
+    def Cube "Body" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Board>
+        double size = 1
+        float3 xformOp:scale = (0.06, 0.08, 0.13)
+        double3 xformOp:translate = (0, 0, 0.065)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+    def Cube "FrontPrint" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Print>
+        double size = 1
+        float3 xformOp:scale = (0.0008, 0.0576, 0.0442)
+        double3 xformOp:translate = (-0.0304, 0, 0.0806)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+    def Cube "TopBand" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Edge>
+        double size = 1
+        float3 xformOp:scale = (0.0608, 0.0808, 0.01)
+        double3 xformOp:translate = (0, 0, 0.125)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Scope "Colliders"
+    {
+        def Cube "Box" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Board> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.06, 0.08, 0.13)
+            double3 xformOp:translate = (0, 0, 0.065)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+}

@@ -1,0 +1,159 @@
+#usda 1.0
+(
+    defaultPrim = "ROOT"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "ROOT" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Open shelf bay: 18 mm melamine-faced chipboard board 436 x 220 mm, two 18 mm end dividers 140 mm tall (400 mm clear between them), 3 mm hardboard back panel. Fixed. Origin: middle of the board on the table."
+)
+{
+    bool physics:kinematicEnabled = true
+    float physics:mass = 6.0
+
+    def Scope "Looks"
+    {
+        def Material "Melamine"
+        {
+            token outputs:surface.connect = </ROOT/Looks/Melamine/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.8, 0.68, 0.5)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.5
+                token outputs:surface
+            }
+        }
+        def Material "Panel"
+        {
+            token outputs:surface.connect = </ROOT/Looks/Panel/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.62, 0.5, 0.36)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.8
+                token outputs:surface
+            }
+        }
+        def Material "Phys_Melamine" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.4
+            float physics:restitution = 0
+            float physics:staticFriction = 0.5
+        }
+    }
+
+    def Cube "Board" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Melamine>
+        double size = 1
+        float3 xformOp:scale = (0.22, 0.436, 0.018)
+        double3 xformOp:translate = (0, 0, 0.009)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+    def Cube "DividerL" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Melamine>
+        double size = 1
+        float3 xformOp:scale = (0.22, 0.018, 0.14)
+        double3 xformOp:translate = (0, 0.209, 0.07)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+    def Cube "DividerR" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Melamine>
+        double size = 1
+        float3 xformOp:scale = (0.22, 0.018, 0.14)
+        double3 xformOp:translate = (0, -0.209, 0.07)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+    def Cube "Back" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </ROOT/Looks/Panel>
+        double size = 1
+        float3 xformOp:scale = (0.003, 0.436, 0.14)
+        double3 xformOp:translate = (0.1115, 0, 0.07)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Scope "Colliders"
+    {
+        def Cube "Board" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Melamine> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.22, 0.436, 0.018)
+            double3 xformOp:translate = (0, 0, 0.009)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "DividerL" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Melamine> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.22, 0.018, 0.14)
+            double3 xformOp:translate = (0, 0.209, 0.07)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "DividerR" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Melamine> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.22, 0.018, 0.14)
+            double3 xformOp:translate = (0, -0.209, 0.07)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+        def Cube "Back" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </ROOT/Looks/Phys_Melamine> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.002
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.003, 0.436, 0.14)
+            double3 xformOp:translate = (0.1115, 0, 0.07)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+}
