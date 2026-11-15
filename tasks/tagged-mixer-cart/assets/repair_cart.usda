@@ -1,0 +1,220 @@
+#usda 1.0
+(
+    defaultPrim = "RepairCart"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "RepairCart" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Repair cart: a low wheeled cart (30 mm deck height shown) with a flat tray 200 x 160 mm inside, 12 mm rim. Fixed. Origin: middle of the tray floor on the table."
+)
+{
+    bool physics:kinematicEnabled = 1
+    float physics:mass = 8
+    custom float physxRigidBody:maxDepenetrationVelocity = 0.2
+    custom int physxRigidBody:solverPositionIterationCount = 32
+    custom int physxRigidBody:solverVelocityIterationCount = 4
+
+    def Scope "Looks"
+    {
+        def Material "Steel"
+        {
+            token outputs:surface.connect = </RepairCart/Looks/Steel/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.55, 0.57, 0.6)
+                float inputs:metallic = 0.6
+                float inputs:roughness = 0.4
+                token outputs:surface
+            }
+        }
+
+        def Material "Blue"
+        {
+            token outputs:surface.connect = </RepairCart/Looks/Blue/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.25, 0.6)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.5
+                token outputs:surface
+            }
+        }
+
+        def Material "Yellow"
+        {
+            token outputs:surface.connect = </RepairCart/Looks/Yellow/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.8, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.5
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.4
+            float physics:restitution = 0
+            float physics:staticFriction = 0.5
+        }
+    }
+
+    def Xform "Visual"
+    {
+        def Mesh "Base" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.092, -0.112, 0), (0.092, 0.112, 0.03)]
+            int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+            int[] faceVertexIndices = [0, 1, 3, 2, 4, 6, 7, 5, 0, 4, 5, 1, 2, 3, 7, 6, 0, 2, 6, 4, 1, 5, 7, 3]
+            rel material:binding = </RepairCart/Looks/Blue>
+            point3f[] points = [(-0.092, -0.112, 0), (-0.092, -0.112, 0.03), (-0.092, 0.112, 0), (-0.092, 0.112, 0.03), (0.092, -0.112, 0), (0.092, -0.112, 0.03), (0.092, 0.112, 0), (0.092, 0.112, 0.03)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "WallN" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.092, 0.1, 0.03), (0.092, 0.112, 0.042)]
+            int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+            int[] faceVertexIndices = [0, 1, 3, 2, 4, 6, 7, 5, 0, 4, 5, 1, 2, 3, 7, 6, 0, 2, 6, 4, 1, 5, 7, 3]
+            rel material:binding = </RepairCart/Looks/Yellow>
+            point3f[] points = [(-0.092, 0.1, 0.03), (-0.092, 0.1, 0.042), (-0.092, 0.112, 0.03), (-0.092, 0.112, 0.042), (0.092, 0.1, 0.03), (0.092, 0.1, 0.042), (0.092, 0.112, 0.03), (0.092, 0.112, 0.042)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "WallS" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.092, -0.112, 0.03), (0.092, -0.1, 0.042)]
+            int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+            int[] faceVertexIndices = [0, 1, 3, 2, 4, 6, 7, 5, 0, 4, 5, 1, 2, 3, 7, 6, 0, 2, 6, 4, 1, 5, 7, 3]
+            rel material:binding = </RepairCart/Looks/Yellow>
+            point3f[] points = [(-0.092, -0.112, 0.03), (-0.092, -0.112, 0.042), (-0.092, -0.1, 0.03), (-0.092, -0.1, 0.042), (0.092, -0.112, 0.03), (0.092, -0.112, 0.042), (0.092, -0.1, 0.03), (0.092, -0.1, 0.042)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "WallE" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.08, -0.1, 0.03), (0.092, 0.1, 0.042)]
+            int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+            int[] faceVertexIndices = [0, 1, 3, 2, 4, 6, 7, 5, 0, 4, 5, 1, 2, 3, 7, 6, 0, 2, 6, 4, 1, 5, 7, 3]
+            rel material:binding = </RepairCart/Looks/Yellow>
+            point3f[] points = [(0.08, -0.1, 0.03), (0.08, -0.1, 0.042), (0.08, 0.1, 0.03), (0.08, 0.1, 0.042), (0.092, -0.1, 0.03), (0.092, -0.1, 0.042), (0.092, 0.1, 0.03), (0.092, 0.1, 0.042)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "WallW" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.092, -0.1, 0.03), (-0.08, 0.1, 0.042)]
+            int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+            int[] faceVertexIndices = [0, 1, 3, 2, 4, 6, 7, 5, 0, 4, 5, 1, 2, 3, 7, 6, 0, 2, 6, 4, 1, 5, 7, 3]
+            rel material:binding = </RepairCart/Looks/Yellow>
+            point3f[] points = [(-0.092, -0.1, 0.03), (-0.092, -0.1, 0.042), (-0.092, 0.1, 0.03), (-0.092, 0.1, 0.042), (-0.08, -0.1, 0.03), (-0.08, -0.1, 0.042), (-0.08, 0.1, 0.03), (-0.08, 0.1, 0.042)]
+            uniform token subdivisionScheme = "none"
+        }
+    }
+
+    def Xform "Colliders"
+    {
+        def Cube "Base" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </RepairCart/Looks/Phys> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.184, 0.224, 0.03)
+            double3 xformOp:translate = (0, 0, 0.015)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "WallN" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </RepairCart/Looks/Phys> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.184, 0.012, 0.012)
+            double3 xformOp:translate = (0, 0.10600000000000001, 0.036)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "WallS" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </RepairCart/Looks/Phys> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.184, 0.012, 0.012)
+            double3 xformOp:translate = (0, -0.10600000000000001, 0.036)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "WallE" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </RepairCart/Looks/Phys> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.2, 0.012)
+            double3 xformOp:translate = (0.086, 0, 0.036)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "WallW" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </RepairCart/Looks/Phys> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0003
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.2, 0.012)
+            double3 xformOp:translate = (-0.086, 0, 0.036)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+}
+

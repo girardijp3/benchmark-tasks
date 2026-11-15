@@ -1,0 +1,23 @@
+{
+  "title": "Take the out-of-service tagged vortex mixer to the repair cart",
+  "category": "Impact on jobs",
+  "keywords": [
+    "equipment tag",
+    "out of service",
+    "lockout tagout",
+    "laboratory",
+    "repair cart",
+    "vortex mixer",
+    "pick and place",
+    "safety"
+  ],
+  "instruction": "One of the three mixers on the bench is tagged out of service. Move that one onto the repair cart's tray, standing upright, and leave the working mixers where they are.",
+  "context": "Biomedical equipment repairers (O*NET 49-9062, about 55,000), clinical and chemical technicians (19-4031, 29-2012, together over 120,000) and facility maintenance staff (49-9071, about 1.5 million) pull tagged-out equipment from service and send it to repair without disturbing working units: a red hold tag means do not use, and a unit that is moved or put in the wrong place can be missed or can fail a safety audit.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Three mini vortex mixers (110 x 80 x 65 mm body plus a 15 mm rubber cup, 0.45 kg each, typical of a small bench mixer) stand in a row on the table at x 0.32, y 0.09, -0.03 and -0.15. Each has a 60 x 36 mm paper equipment tag with a four-digit number on its front face: the one at y 0.09 has a red tag (5121), the other two green (5120, 5122). A low repair cart stands at x 0.31, y 0.27: a 30 mm deck with a flat tray 160 x 200 mm inside a 12 mm rim, fixed.",
+  "scoring": "Four steps, 0.2 each, judged as things stand and from the video: (1) the red-tagged mixer has been lifted at least 2 cm in a gripper (both fingers pressing); (2) with step 1, it stands on the tray floor, upright (10 degrees), its centre inside the tray less 1 cm; (3) with step 2, both green-tagged mixers are still upright within 2 cm of their places; (4) with step 3, no gripper pad within 3 cm of any mixer. Full score 1.0 (ends the run) only once every condition has held together for 1 s with every mixer within 2 mm and 2 degrees of where it was when the second began; any lapse restarts it; step points stop at 0.8. 0 overall if a mixer tips over 45 degrees at any time, a green-tagged mixer is put over the cart's tray, or a mixer leaves the table.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Stand the three mixers upright in the row as in the setup, red tag at y 0.09; cart at x 0.31, y 0.27.",
+  "fidelity": "Mixers are rigid, no motor or vibration: box body, cylinder cup, friction 0.6/0.5, 0.45 kg. Tags are thin visual cards with printed digits (no collider). Cart is a fixed deck and tray (wheels not modelled). Mixer size is a typical value for a small bench vortex mixer, not one catalogue model.",
+  "scores": "Dream-1 run: 0.0 (arms hovered, red unit never touched); demo: 1.0 (success at step 296)",
+  "media": "M-VTEEAV"
+}
