@@ -1,0 +1,478 @@
+#usda 1.0
+(
+    defaultPrim = "Clipper"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Clipper" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Hand clipper lying on its flat back, 160 mm overall (housing 93 mm, blade collar 22 mm, blade head 45 mm), 280 g. Origin on the table at the blade collar's front face on the centre line, +x toward the blade tip. A catch ridge on the collar's top holds the guard's rear clip."
+)
+{
+    point3f physics:centerOfMass = (-0.05357235, 0, 0.015779816)
+    float3 physics:diagonalInertia = (0.00007196638, 0.00046707434, 0.00048502506)
+    float physics:mass = 0.28
+    quatf physics:principalAxes = (0, 0.045548033, 0, 0.99896216)
+
+    def Scope "Looks"
+    {
+        def Material "Phys_ABS" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.35
+            float physics:restitution = 0
+            float physics:staticFriction = 0.4
+        }
+
+        def Material "Phys_Steel" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.35
+        }
+
+        def Material "Housing"
+        {
+            token outputs:surface.connect = </Clipper/Looks/Housing/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.12, 0.16)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.45
+                token outputs:surface
+            }
+        }
+
+        def Material "HousingTrim"
+        {
+            token outputs:surface.connect = </Clipper/Looks/HousingTrim/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.55, 0.57, 0.6)
+                float inputs:metallic = 0.8
+                float inputs:roughness = 0.35
+                token outputs:surface
+            }
+        }
+
+        def Material "Switch"
+        {
+            token outputs:surface.connect = </Clipper/Looks/Switch/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.8, 0.12, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.5
+                token outputs:surface
+            }
+        }
+
+        def Material "Steel"
+        {
+            token outputs:surface.connect = </Clipper/Looks/Steel/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.74, 0.76, 0.79)
+                float inputs:metallic = 1
+                float inputs:roughness = 0.25
+                token outputs:surface
+            }
+        }
+
+        def Material "BladeDark"
+        {
+            token outputs:surface.connect = </Clipper/Looks/BladeDark/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.25, 0.26, 0.28)
+                float inputs:metallic = 1
+                float inputs:roughness = 0.4
+                token outputs:surface
+            }
+        }
+    }
+
+    def Scope "Colliders"
+    {
+        def Cube "Housing" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </Clipper/Looks/Phys_ABS> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0005
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.093, 0.042, 0.036)
+            double3 xformOp:translate = (-0.0685, 0, 0.018000000000000002)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Collar" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </Clipper/Looks/Phys_ABS> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0005
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.022, 0.056, 0.013)
+            double3 xformOp:translate = (-0.011, 0, 0.006500000000000001)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Blade" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </Clipper/Looks/Phys_Steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0005
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.045, 0.046, 0.009)
+            double3 xformOp:translate = (0.0225, 0, 0.007)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Mesh "Ridge" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            int[] faceVertexCounts = [3, 3, 4, 4, 4]
+            int[] faceVertexIndices = [2, 1, 0, 3, 4, 5, 0, 1, 4, 3, 1, 2, 5, 4, 2, 0, 3, 5]
+            rel material:binding:physics = </Clipper/Looks/Phys_ABS> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.0005
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.002, -0.005, 0.013), (-0.005, -0.005, 0.0152), (-0.0068, -0.005, 0.013), (-0.002, 0.005, 0.013), (-0.005, 0.005, 0.0152), (-0.0068, 0.005, 0.013)]
+            uniform token purpose = "guide"
+            uniform token subdivisionScheme = "none"
+        }
+    }
+
+    def Mesh "Housing" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.115, -0.021, 0), (-0.022, 0.021, 0.036)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [3, 2, 1, 0, 4, 5, 6, 7, 0, 1, 5, 4, 1, 2, 6, 5, 2, 3, 7, 6, 3, 0, 4, 7]
+        rel material:binding = </Clipper/Looks/Housing>
+        point3f[] points = [(-0.115, -0.021, 0), (-0.022, -0.021, 0), (-0.022, -0.021, 0.036), (-0.115, -0.021, 0.036), (-0.115, 0.021, 0), (-0.022, 0.021, 0), (-0.022, 0.021, 0.036), (-0.115, 0.021, 0.036)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Band" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.07, -0.0214, 0.006), (-0.038, 0.0214, 0.03)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/HousingTrim>
+        point3f[] points = [(-0.07, -0.0214, 0.006), (-0.038, -0.0214, 0.006), (-0.07, 0.0214, 0.006), (-0.038, 0.0214, 0.006), (-0.07, -0.0214, 0.03), (-0.038, -0.0214, 0.03), (-0.07, 0.0214, 0.03), (-0.038, 0.0214, 0.03)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Switch" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.096, -0.005, 0.036), (-0.08, 0.005, 0.039)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Switch>
+        point3f[] points = [(-0.096, -0.005, 0.036), (-0.08, -0.005, 0.036), (-0.096, 0.005, 0.036), (-0.08, 0.005, 0.036), (-0.096, -0.005, 0.039), (-0.08, -0.005, 0.039), (-0.096, 0.005, 0.039), (-0.08, 0.005, 0.039)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Collar" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.022, -0.028, 0), (0, 0.028, 0.013)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/HousingTrim>
+        point3f[] points = [(-0.022, -0.028, 0), (0, -0.028, 0), (-0.022, 0.028, 0), (0, 0.028, 0), (-0.022, -0.028, 0.013), (0, -0.028, 0.013), (-0.022, 0.028, 0.013), (0, 0.028, 0.013)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "RidgeVis" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.0068, -0.005, 0.013), (-0.002, 0.005, 0.0152)]
+        int[] faceVertexCounts = [3, 3, 4, 4, 4]
+        int[] faceVertexIndices = [2, 1, 0, 3, 4, 5, 0, 1, 4, 3, 1, 2, 5, 4, 2, 0, 3, 5]
+        rel material:binding = </Clipper/Looks/HousingTrim>
+        point3f[] points = [(-0.002, -0.005, 0.013), (-0.005, -0.005, 0.0152), (-0.0068, -0.005, 0.013), (-0.002, 0.005, 0.013), (-0.005, 0.005, 0.0152), (-0.0068, 0.005, 0.013)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Blade" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0, -0.023, 0.0025), (0.045, 0.023, 0.0085)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0, -0.023, 0.0025), (0.045, -0.023, 0.0025), (0, 0.023, 0.0025), (0.045, 0.023, 0.0025), (0, -0.023, 0.0085), (0.045, -0.023, 0.0085), (0, 0.023, 0.0085), (0.045, 0.023, 0.0085)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Cutter" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.002, -0.021, 0.0085), (0.043, 0.021, 0.0115)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/BladeDark>
+        point3f[] points = [(0.002, -0.021, 0.0085), (0.043, -0.021, 0.0085), (0.002, 0.021, 0.0085), (0.043, 0.021, 0.0085), (0.002, -0.021, 0.0115), (0.043, -0.021, 0.0115), (0.002, 0.021, 0.0115), (0.043, 0.021, 0.0115)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tooth00" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.043, -0.022, 0.0055), (0.045, -0.0206, 0.0105)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0.043, -0.022, 0.0055), (0.045, -0.022, 0.0055), (0.043, -0.0206, 0.0055), (0.045, -0.0206, 0.0055), (0.043, -0.022, 0.0105), (0.045, -0.022, 0.0105), (0.043, -0.0206, 0.0105), (0.045, -0.0206, 0.0105)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tooth01" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.043, -0.01955, 0.0055), (0.045, -0.01815, 0.0105)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0.043, -0.01955, 0.0055), (0.045, -0.01955, 0.0055), (0.043, -0.01815, 0.0055), (0.045, -0.01815, 0.0055), (0.043, -0.01955, 0.0105), (0.045, -0.01955, 0.0105), (0.043, -0.01815, 0.0105), (0.045, -0.01815, 0.0105)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tooth02" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.043, -0.0171, 0.0055), (0.045, -0.0157, 0.0105)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0.043, -0.0171, 0.0055), (0.045, -0.0171, 0.0055), (0.043, -0.0157, 0.0055), (0.045, -0.0157, 0.0055), (0.043, -0.0171, 0.0105), (0.045, -0.0171, 0.0105), (0.043, -0.0157, 0.0105), (0.045, -0.0157, 0.0105)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tooth03" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.043, -0.01465, 0.0055), (0.045, -0.01325, 0.0105)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0.043, -0.01465, 0.0055), (0.045, -0.01465, 0.0055), (0.043, -0.01325, 0.0055), (0.045, -0.01325, 0.0055), (0.043, -0.01465, 0.0105), (0.045, -0.01465, 0.0105), (0.043, -0.01325, 0.0105), (0.045, -0.01325, 0.0105)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tooth04" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.043, -0.0122, 0.0055), (0.045, -0.0108, 0.0105)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0.043, -0.0122, 0.0055), (0.045, -0.0122, 0.0055), (0.043, -0.0108, 0.0055), (0.045, -0.0108, 0.0055), (0.043, -0.0122, 0.0105), (0.045, -0.0122, 0.0105), (0.043, -0.0108, 0.0105), (0.045, -0.0108, 0.0105)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tooth05" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.043, -0.00975, 0.0055), (0.045, -0.00835, 0.0105)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0.043, -0.00975, 0.0055), (0.045, -0.00975, 0.0055), (0.043, -0.00835, 0.0055), (0.045, -0.00835, 0.0055), (0.043, -0.00975, 0.0105), (0.045, -0.00975, 0.0105), (0.043, -0.00835, 0.0105), (0.045, -0.00835, 0.0105)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tooth06" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.043, -0.0073, 0.0055), (0.045, -0.0059, 0.0105)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0.043, -0.0073, 0.0055), (0.045, -0.0073, 0.0055), (0.043, -0.0059, 0.0055), (0.045, -0.0059, 0.0055), (0.043, -0.0073, 0.0105), (0.045, -0.0073, 0.0105), (0.043, -0.0059, 0.0105), (0.045, -0.0059, 0.0105)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tooth07" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.043, -0.00485, 0.0055), (0.045, -0.00345, 0.0105)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0.043, -0.00485, 0.0055), (0.045, -0.00485, 0.0055), (0.043, -0.00345, 0.0055), (0.045, -0.00345, 0.0055), (0.043, -0.00485, 0.0105), (0.045, -0.00485, 0.0105), (0.043, -0.00345, 0.0105), (0.045, -0.00345, 0.0105)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tooth08" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.043, -0.0024, 0.0055), (0.045, -0.001, 0.0105)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0.043, -0.0024, 0.0055), (0.045, -0.0024, 0.0055), (0.043, -0.001, 0.0055), (0.045, -0.001, 0.0055), (0.043, -0.0024, 0.0105), (0.045, -0.0024, 0.0105), (0.043, -0.001, 0.0105), (0.045, -0.001, 0.0105)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tooth09" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.043, 0.00005, 0.0055), (0.045, 0.00145, 0.0105)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0.043, 0.00005, 0.0055), (0.045, 0.00005, 0.0055), (0.043, 0.00145, 0.0055), (0.045, 0.00145, 0.0055), (0.043, 0.00005, 0.0105), (0.045, 0.00005, 0.0105), (0.043, 0.00145, 0.0105), (0.045, 0.00145, 0.0105)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tooth10" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.043, 0.0025, 0.0055), (0.045, 0.0039, 0.0105)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0.043, 0.0025, 0.0055), (0.045, 0.0025, 0.0055), (0.043, 0.0039, 0.0055), (0.045, 0.0039, 0.0055), (0.043, 0.0025, 0.0105), (0.045, 0.0025, 0.0105), (0.043, 0.0039, 0.0105), (0.045, 0.0039, 0.0105)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tooth11" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.043, 0.00495, 0.0055), (0.045, 0.00635, 0.0105)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0.043, 0.00495, 0.0055), (0.045, 0.00495, 0.0055), (0.043, 0.00635, 0.0055), (0.045, 0.00635, 0.0055), (0.043, 0.00495, 0.0105), (0.045, 0.00495, 0.0105), (0.043, 0.00635, 0.0105), (0.045, 0.00635, 0.0105)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tooth12" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.043, 0.0074, 0.0055), (0.045, 0.0088, 0.0105)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0.043, 0.0074, 0.0055), (0.045, 0.0074, 0.0055), (0.043, 0.0088, 0.0055), (0.045, 0.0088, 0.0055), (0.043, 0.0074, 0.0105), (0.045, 0.0074, 0.0105), (0.043, 0.0088, 0.0105), (0.045, 0.0088, 0.0105)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tooth13" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.043, 0.00985, 0.0055), (0.045, 0.01125, 0.0105)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0.043, 0.00985, 0.0055), (0.045, 0.00985, 0.0055), (0.043, 0.01125, 0.0055), (0.045, 0.01125, 0.0055), (0.043, 0.00985, 0.0105), (0.045, 0.00985, 0.0105), (0.043, 0.01125, 0.0105), (0.045, 0.01125, 0.0105)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tooth14" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.043, 0.0123, 0.0055), (0.045, 0.0137, 0.0105)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0.043, 0.0123, 0.0055), (0.045, 0.0123, 0.0055), (0.043, 0.0137, 0.0055), (0.045, 0.0137, 0.0055), (0.043, 0.0123, 0.0105), (0.045, 0.0123, 0.0105), (0.043, 0.0137, 0.0105), (0.045, 0.0137, 0.0105)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tooth15" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.043, 0.01475, 0.0055), (0.045, 0.01615, 0.0105)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0.043, 0.01475, 0.0055), (0.045, 0.01475, 0.0055), (0.043, 0.01615, 0.0055), (0.045, 0.01615, 0.0055), (0.043, 0.01475, 0.0105), (0.045, 0.01475, 0.0105), (0.043, 0.01615, 0.0105), (0.045, 0.01615, 0.0105)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tooth16" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.043, 0.0172, 0.0055), (0.045, 0.0186, 0.0105)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0.043, 0.0172, 0.0055), (0.045, 0.0172, 0.0055), (0.043, 0.0186, 0.0055), (0.045, 0.0186, 0.0055), (0.043, 0.0172, 0.0105), (0.045, 0.0172, 0.0105), (0.043, 0.0186, 0.0105), (0.045, 0.0186, 0.0105)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Tooth17" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.043, 0.01965, 0.0055), (0.045, 0.02105, 0.0105)]
+        int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+        int[] faceVertexIndices = [0, 2, 3, 1, 4, 5, 7, 6, 0, 1, 5, 4, 2, 6, 7, 3, 0, 4, 6, 2, 1, 3, 7, 5]
+        rel material:binding = </Clipper/Looks/Steel>
+        point3f[] points = [(0.043, 0.01965, 0.0055), (0.045, 0.01965, 0.0055), (0.043, 0.02105, 0.0055), (0.045, 0.02105, 0.0055), (0.043, 0.01965, 0.0105), (0.045, 0.01965, 0.0105), (0.043, 0.02105, 0.0105), (0.045, 0.02105, 0.0105)]
+        uniform token subdivisionScheme = "none"
+    }
+}
+

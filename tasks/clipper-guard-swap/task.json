@@ -1,0 +1,23 @@
+{
+  "title": "Swap a hair clipper's number 2 guide comb for the number 4 and clip it on",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "barber",
+    "hairdresser",
+    "hair clipper",
+    "guide comb",
+    "snap fit",
+    "clip",
+    "numbered guides"
+  ],
+  "instruction": "Change the clipper's guide comb from a number 2 to a number 4, so that the number 4 is clipped onto the blade and the clipper is left lying on the table.",
+  "context": "Barbers (O*NET 39-5011) and hairdressers, hairstylists and cosmetologists (39-5012), about 650,000 US jobs together including the self-employed (BLS Occupational Outlook Handbook, barbers, hairstylists and cosmetologists), change the guide comb on their clippers many times a day: the number (1/8 inch per number: a 2 leaves 1/4 inch, a 4 leaves 1/2 inch) sets the cut length, so a wrong comb is a visible mistake in the client's hair. The clipper is put down loose on the station while the comb is pulled off and pushed on, and the guides are kept in a tray.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the two arm bases: x forward, y to the robot's left. Hair clipper (Wahl-type class, typical values): 160 mm long, 280 g, lying on its flat back along y with the blade toward -y; housing 93 x 42 x 36 mm, blade collar 22 x 56 x 13 mm with a 2.2 mm catch ridge on its top, blade head 45 x 46 x 9 mm; the collar's front face is at (0.42, -0.010). The number 2 guide comb is clipped on it. Guide combs (ABS-class plastic, 54 wide, 53 long, 14 to 17 g, lengths 1/8 to 6/8 inch: roof 16.2, 19.4, 22.5, 25.7, 28.9 and 32.1 mm high for numbers 1 to 6), each with a raised white number on its roof and a sprung rear clip (hook arm on a hinge). Tray (238 x 150 x 2 mm, 4 mm rim) centred at (0.42, -0.215): two rows of three slots, 70 mm apart across and 66 mm along, holding guides 1, 3, 4, 5 and 6 (the number 4 in the left slot of the row nearer the clipper, x 0.35); the middle slot of that row, x 0.42, is empty. All guides point teeth toward -y.",
+  "scoring": "Four steps, 0.2 each. (1) Number 2 off the clipper: its rear edge is at least 50 mm past the collar (clear of the blade); counts once reached. (2) Number 4 lifted: a gripper holds it (both fingers pressing, pads apart) with the guide at least 12 mm above where it started; counts once reached. (3) Number 4 on the blade: after a gripper has held it, it is on the blade by at least 15 mm, within 4 mm sideways, 3 mm in height and 6 degrees of the blade's direction; counts once reached. (4) Number 4 clipped on, as things stand: after steps 1 and 2, its rear edge is against the collar (within -0.8 to +2.5 mm), square (3 mm, 3 degrees, 4 degrees tilt) and its clip's hook has dropped (arm within 1.5 degrees of down), and no other guide is on the blade. Full score 1.0, ending the run, when all four hold, the other four guides are still in the tray where they were (15 mm, 15 degrees), no gripper pinches and every gripper's pads are at least 3 cm from the clipper and every guide, and the clipper and all guides have stayed within 2 mm and 2 degrees for 1 s. All four steps without the rest score 0.8. 0 if the clipper or a guide falls off the table. Real-world check: a pull on the seated number 4 of about 5 N must not take it off.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Lay the clipper on its back at its mark with the number 2 pushed fully onto the blade (clip dropped), and put guides 1, 3, 4, 5 and 6 in their tray slots, teeth toward -y; the tray's middle slot of the near row stays empty. The guides may be shuffled between slots from trial to trial.",
+  "fidelity": "Articulated bodies, 240 Hz physics, 20 Hz control. The clipper is a free rigid body (280 g); each guide is a free articulation whose rear clip is a sprung hook arm that rides up the collar's catch ridge and drops behind it (designed for about 3 N to push on and 5 N to pull off; the loose clipper holds back only about 1.4 N). Teeth gaps are not in the colliders; the comb is solid plastic, the clip arm is 1.5 mm thick (real: moulded flex). No cutting or hair.",
+  "scores": "Dream-1 run: 0.0 (both arms moved up from their bases and hovered; the number 2 guide stayed on the clipper and nothing was picked from the tray, in the 1,200-step run limit); demo: 1.0 (number 2 off at 9.65 s, number 4 lifted by 23.15 s, on the blade at 32.15 s, clipped on and success at step 789)",
+  "media": "M-BTZ59Z"
+}
