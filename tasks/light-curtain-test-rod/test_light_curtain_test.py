@@ -24,6 +24,7 @@ GOOD = T.other(T.FAULTY)
 @pytest.fixture(autouse=True)
 def _right_is_faulty(monkeypatch):
     monkeypatch.setenv("LIGHT_CURTAIN_FAULTY", "right")
+    monkeypatch.setenv("LIGHT_CURTAIN_DEAD", "3")
     T.draw_faulty()
 
 
@@ -81,19 +82,28 @@ class Episode:
     def rod_at(self, side, x, y, h, quat=UP):
         self.rods[side] = (np.array([x, y, T.TOP + h]), np.asarray(quat, float))
 
-    def push(self, rod_side, curtain, h, seconds=0.2, past=T.TIP_PAST):
-        """Rod ``rod_side`` pushed through ``curtain``'s field with its axis ``h`` above the table, then drawn back."""
-        y = T.CURTAIN_Y[curtain]
-        self.rod_at(rod_side, T.CUR_X + past - T.ROD_L / 2, y, h)
-        self.step(seconds)
-        self.rod_at(rod_side, T.LANE_X0, y, h)
-        self.step(seconds)
+    def at_lane(self, rod_side, curtain, lane, h, past=T.TIP_PAST):
+        self.rod_at(rod_side, T.CUR_X + past - T.ROD_L / 2, T.CURTAIN_Y[curtain] + T.LANES[lane], h)
 
-    def test(self, side, rod_side=None, heights=T.HEIGHTS):
-        for h in heights:
-            self.push(rod_side or side, side, h)
-        self.rod_at(rod_side or side, *T.ROD_XY[rod_side or side], T.ROD_AXIS_REST)
+    def sweep(self, side, rod_side=None, lanes=(0, 1, 2), lo=T.FIELD_LO + 0.001, hi=T.FIELD_HI - 0.001, dh=0.004,
+              skip=()):
+        """Rod ``rod_side`` (default: the curtain's own) swept up lane 0, down lane 1, up lane 2 (the serpentine of the
+        demo), one control step per ``dh`` of axis height, then drawn back to its saddles. ``skip`` leaves out axis
+        heights (m, a range) so a hole can be left in a lane."""
+        rod = rod_side or side
+        for n, lane in enumerate(lanes):
+            hs = list(np.arange(lo, hi + 1e-9, dh))
+            for h in (hs if n % 2 == 0 else hs[::-1]):
+                if any(a <= h <= b for a, b in skip):
+                    continue
+                self.at_lane(rod, side, lane, h)
+                self.step(0.05)
+        self.rod_at(rod, T.LANE_X0, T.CURTAIN_Y[side], 0.12)
+        self.step(0.05)
+        self.rod_at(rod, *T.ROD_XY[rod], T.ROD_AXIS_REST)
         self.step()
+
+    test = sweep
 
     def holder(self, side):
         return T.HOLDER_POS[side]
@@ -134,9 +144,16 @@ def _lamp(side, h, rod="left"):
     return T.lamp_red(o, side)
 
 
-@pytest.mark.parametrize("h", T.HEIGHTS)
+@pytest.mark.parametrize("h", np.arange(T.FIELD_LO, T.FIELD_HI + 1e-9, 0.002))
 def test_healthy_curtain_trips_at_every_height(h):
     assert _lamp(GOOD, h)
+
+
+@pytest.mark.parametrize("k", range(T.BEAMS - 1))
+def test_sound_lamp_does_not_flicker_midway_between_two_beams(k):
+    mid = T.FIRST + T.PITCH * k + T.PITCH / 2  # exactly 10 mm from both beams: the 30 mm resolution limit
+    for d in (-2e-6, 0.0, 2e-6, 1e-4):
+        assert _lamp(GOOD, mid + d), (k, d)
 
 
 def test_clear_field_is_green():
@@ -157,7 +174,7 @@ def test_dead_beam_is_missed_at_its_height_and_only_there():
     assert not _lamp(T.FAULTY, dead_h - 0.008)
     assert _lamp(T.FAULTY, dead_h + 0.012)  # now it also covers a working beam's whole lens
     assert _lamp(T.FAULTY, dead_h - 0.012)
-    assert _lamp(T.FAULTY, T.HEIGHTS[0]) and _lamp(T.FAULTY, T.HEIGHTS[2])  # bottom and top still trip it
+    assert _lamp(T.FAULTY, 0.056) and _lamp(T.FAULTY, 0.2)  # bottom and top still trip it
 
 
 def test_the_other_curtain_trips_at_the_dead_beams_height():
@@ -176,50 +193,95 @@ def test_lamp_discs_swap_on_the_receiver_cap():
 
 
 # -- the steps ---------------------------------------------------------------------------------------------------------
-def test_each_third_counts_once_and_three_are_needed():
+def test_grid_is_three_lanes_by_the_fields_full_height():
+    assert len(T.LANES) == 3 and T.LANES[0] < 0 < T.LANES[2] and T.LANES[1] == 0
+    assert T.CELLS_Z * T.CELL == pytest.approx(T.FIELD_HI - T.FIELD_LO)
+    assert len(T.ALL_CELLS) == 3 * T.CELLS_Z
+
+
+def test_a_full_sweep_covers_the_field():
     e = Episode()
-    e.push("left", "left", 0.077)
-    e.push("left", "left", 0.077)
-    assert e.done()[0] is False
-    e.push("left", "left", 0.117)
-    assert e.done()[0] is False
-    e.push("left", "left", 0.165)
+    e.sweep("left")
     assert e.done() == [True, False, False, False]
+    assert T.covered(T._PROGRESS.cells["left"]) and not T.missed(T._PROGRESS.cells["left"])
 
 
-def test_a_middle_pass_off_the_dead_beam_is_not_the_exposing_pass():
-    # 102-152 mm is the middle third, but only a rod within 10 mm of the dead beam covers that beam alone
-    for h in (0.103, 0.106, 0.128, 0.140, 0.150):
-        e = Episode()
-        e.push("left", "left", 0.077)
-        e.push("left", "left", h)
-        e.push("left", "left", 0.165)
-        assert e.done()[0] is False, h
-    for h in (T.EXPOSE_LO + 1e-6, 0.117, T.EXPOSE_HI - 1e-6):
-        e = Episode()
-        e.test("left", heights=(0.077, h, 0.165))
-        assert e.done()[0] is True, h
-
-
-def test_the_scored_middle_band_exposes_the_dead_beam_on_the_faulty_curtain():
-    for h in np.linspace(T.EXPOSE_LO, T.EXPOSE_HI, 15):
-        assert not _lamp(T.FAULTY, h), h  # green: the fault shows
-        assert _lamp(GOOD, h), h
-    assert _lamp(T.FAULTY, T.EXPOSE_LO - 0.012) and _lamp(T.FAULTY, T.EXPOSE_HI + 0.012)
-
-
-def test_tag_before_the_exposing_pass_is_not_step_three():
+def test_three_isolated_passes_do_not_cover_the_field():
+    """The old three passes (bottom, middle, top at one place) are no longer enough."""
     e = Episode()
-    e.test("left")
-    e.test("right", heights=(0.077, 0.140, 0.165))  # a middle pass that hides the fault
+    for h in (0.077, 0.117, 0.165):
+        e.at_lane("left", "left", 1, h)
+        e.step(0.2)
+    assert e.done()[0] is False and len(T._PROGRESS.cells["left"]) < len(T.ALL_CELLS) / 3
+
+
+@pytest.mark.parametrize("lane", [0, 1, 2])
+def test_missing_a_lane_is_not_covered(lane):
+    e = Episode()
+    e.sweep("left", lanes=tuple(i for i in range(3) if i != lane))
+    assert e.done()[0] is False
+
+
+@pytest.mark.parametrize("hole", [(0.050, 0.0625), (0.100, 0.1125), (0.130, 0.1425), (0.1915, 0.2035)])
+def test_a_hole_in_one_lane_is_not_covered(hole):
+    # a gap of one cell (10 mm) or more in the swept heights of one lane: the cell is never crossed
+    e = Episode()
+    e.sweep("left", skip=((hole[0], hole[1]),), dh=0.0025)
+    assert e.done()[0] is False, hole
+
+
+def test_a_fast_sweep_leaves_cells_uncrossed():
+    e = Episode()
+    e.sweep("left", dh=0.025)  # 25 mm a control step (0.5 m/s): the lamp is not read often enough
+    assert e.done()[0] is False
+
+
+def test_a_sweep_off_the_lanes_does_not_count():
+    e = Episode()
+    for lane in range(3):
+        for h in np.arange(0.053, 0.2, 0.004):
+            e.rod_at("left", T.CUR_X + T.TIP_PAST - T.ROD_L / 2, T.CURTAIN_Y["left"] + T.LANES[lane] + 0.04, h)
+            e.step(0.05)
+    assert e.done()[0] is False
+
+
+def test_the_faulty_curtain_shows_not_red_in_its_covered_field_wherever_the_dead_channel_is(monkeypatch):
+    for dead in range(8):
+        monkeypatch.setenv("LIGHT_CURTAIN_DEAD", str(dead))
+        T.draw_faulty()
+        e = Episode()
+        e.sweep(T.FAULTY)
+        assert e.done()[0 if T.FAULTY == "left" else 1] is True
+        assert T.missed(T._PROGRESS.cells[T.FAULTY]), dead
+        e2 = Episode()
+        e2.sweep(GOOD)
+        assert not T.missed(T._PROGRESS.cells[GOOD]), dead
+
+
+def test_the_dead_channel_is_drawn_at_random(monkeypatch):
+    monkeypatch.delenv("LIGHT_CURTAIN_DEAD", raising=False)
+    assert {(T.draw_faulty(), T.DEAD_BEAM)[1] for _ in range(200)} == set(range(8))
+
+
+def test_tag_before_the_field_is_covered_is_not_step_three():
+    e = Episode()
+    e.sweep("left")
+    e.sweep("right", lanes=(0, 1))  # the right field's receiver lane never covered
     e.tag_in(T.FAULTY)
     assert e.done() == [True, False, False, False]
     for _ in range(4):
         assert e.step(0.5)[1] is False
 
 
-def test_the_demo_passes_expose_each_fault():
-    assert all(T.EXPOSE_LO <= h <= T.EXPOSE_HI for h in (T.HEIGHTS[1],))
+def test_tag_needs_the_lamp_seen_not_red_on_that_curtain():
+    # the curtain that is declared faulty but whose lamp was never seen green (a policy that never crossed the dead
+    # channel's beam cannot exist once every cell is crossed; this checks the rule itself)
+    e = Episode()
+    e.sweep("left")
+    e.sweep("right")
+    T._PROGRESS.cells[T.FAULTY] = {c: [v[0] + v[1], 0] for c, v in T._PROGRESS.cells[T.FAULTY].items()}
+    e.tag_in(T.FAULTY)
+    assert e.done()[2] is False
 
 
 @pytest.mark.parametrize("faulty", ["left", "right"])
@@ -230,8 +292,8 @@ def test_both_cases_work_with_their_own_demo(monkeypatch, faulty):
     tags = [s for s in T.SIDES if any("tag" in w.label for w in plans[s])]
     assert tags == [faulty]
     e = Episode()
-    e.test("left")
-    e.test("right")
+    e.sweep("left")
+    e.sweep("right")
     e.tag_in(faulty)
     assert e.done()[:3] == [True, True, True]
     e.tag_in(T.other(faulty))
@@ -258,7 +320,7 @@ def test_a_new_episode_draws_again(monkeypatch):
 
 def test_either_rod_can_test_either_curtain():
     e = Episode()
-    e.test("left", rod_side="right")
+    e.sweep("left", rod_side="right")
     assert e.done()[0] is True
 
 
@@ -284,16 +346,16 @@ def test_not_a_pass(what):
 
 def test_tag_in_faulty_holder_after_both_tests_is_step_three():
     e = Episode()
-    e.test("left")
-    e.test("right")
+    e.sweep("left")
+    e.sweep("right")
     e.tag_in(T.FAULTY)
     assert e.done() == [True, True, True, True]
 
 
 def test_tag_in_the_wrong_holder_is_not_step_three():
     e = Episode()
-    e.test("left")
-    e.test("right")
+    e.sweep("left")
+    e.sweep("right")
     e.tag_in(GOOD)
     assert e.done()[2] is False
     assert e.done()[3] is False
@@ -301,8 +363,8 @@ def test_tag_in_the_wrong_holder_is_not_step_three():
 
 def test_tag_in_both_is_not_step_three():
     e = Episode()
-    e.test("left")
-    e.test("right")
+    e.sweep("left")
+    e.sweep("right")
     e.tag_in(T.FAULTY)
     _PROGRESS_SEATED_GOOD = T._PROGRESS.seated_since
     # (one tag cannot be in two holders: put it in the other and the faulty one is empty)
@@ -315,8 +377,8 @@ def test_tag_before_the_test_does_not_count_until_it_is_set_again():
     e = Episode()
     e.tag_in(T.FAULTY)
     e.step(0.5)
-    e.test("left")
-    e.test("right")
+    e.sweep("left")
+    e.sweep("right")
     assert e.done()[2] is False
     e.tag = np.array([*T.RACK_POS, T.TOP + T.FLOOR])
     e.step(0.2)
@@ -326,7 +388,7 @@ def test_tag_before_the_test_does_not_count_until_it_is_set_again():
 
 def test_tag_without_testing_the_faulty_curtain_is_not_step_three():
     e = Episode()
-    e.test(GOOD)
+    e.sweep(GOOD)
     e.tag_in(T.FAULTY)
     assert e.done()[2] is False and e.done()[3] is False
 
@@ -336,8 +398,8 @@ def test_tag_resting_tilted_or_off_centre_in_the_holder_is_not_seated():
     for pos, quat in [((h[0], h[1], T.TOP + T.FLOOR + 0.02), UP), ((h[0], h[1] + 0.008, T.TOP + T.FLOOR), UP),
                       ((h[0] + 0.03, h[1], T.TOP + T.FLOOR), UP), ((h[0], h[1], T.TOP + T.FLOOR), _q((1, 0, 0), 0.3))]:
         e = Episode()
-        e.test("left")
-        e.test("right")
+        e.sweep("left")
+        e.sweep("right")
         e.tag, e.tag_quat = np.array(pos), quat
         e.step()
         assert e.done()[2] is False
@@ -382,9 +444,9 @@ def test_step_points_stop_short_of_one():
 def test_no_full_score_while_a_condition_is_missing(missing):
     e = Episode()
     if missing != "left test":
-        e.test("left")
+        e.sweep("left")
     if missing != "right test":
-        e.test("right")
+        e.sweep("right")
     if missing != "tag":
         e.tag_in(T.FAULTY)
     if missing == "release":
@@ -428,8 +490,8 @@ def test_part_off_the_table_scores_zero(part):
 def test_a_swapped_fault_flips_the_right_answer(monkeypatch):
     monkeypatch.setattr(T, "FAULTY", T.other(T.FAULTY))
     e = Episode()
-    e.test("left")
-    e.test("right")
+    e.sweep("left")
+    e.sweep("right")
     e.tag_in(T.other(T.FAULTY))  # the tag in what was the right answer
     assert e.done()[2] is False
 

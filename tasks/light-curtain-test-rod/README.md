@@ -1,18 +1,28 @@
-# Test two machine light curtains with their test rods and tag out the one that fails
+# Test two machine light curtains over their whole field with test rods and tag out the one that fails
 
 A start-of-shift safety check with a decision in it. Two benchtop machines stand side by side, each guarded by a safety
 light curtain (a 30 mm-resolution hand-protection pair, protected height 150 mm). Each machine has its own 30 mm test
 rod resting in front of its field and an empty tag holder; a red DO NOT USE tag stands in a rack between them.
-- Each rod is pushed through its machine's field, tip first, at the bottom, middle and top, while the receiver's lamp
-  is watched: it goes red while a beam is interrupted.
-- One curtain has a dead beam channel (an open channel) in the middle of its field; **which machine it is is drawn at
-  random every trial**. The 30 mm rod covers a working beam at most heights, so that lamp still goes red at the bottom
-  and top, but where the rod covers only the dead beam (axis 107 to 127 mm) it stays green.
+- Each rod is moved slowly through its machine's **whole protective field**, as the test-rod check of a real curtain
+  prescribes (below): up along the sender post's edge, down the middle, up along the receiver post's edge, full height,
+  while the receiver's lamp is watched. The lamp goes red while a beam is interrupted and must stay red throughout.
+- One curtain has a dead beam channel (an open channel); **which machine it is, and which of the 8 channels, is drawn at
+  random every trial**. The 30 mm rod covers a working beam at most heights, so that lamp is red nearly everywhere, but
+  where the rod covers only the dead beam (axis within 9.5 mm of it) it stays green, at whatever height that channel is.
 - The tag goes in the holder of the machine whose curtain missed the rod. The other machine is left available.
 
-The skill is the whole check: handling a test rod so that its tip, not the hand, goes through the field level and square
-at three heights, reading the lamp, and then tagging the right machine. Tagging without testing, tagging the sound
-machine, testing without ever covering the dead beam alone, or testing and leaving both available all fail.
+The skill is the whole check: handling a test rod so that its tip, not the hand, goes through the field level and square,
+sweeping the entire field slowly enough to read the lamp, and then tagging the right machine. Tagging without testing,
+tagging the sound machine, sweeping only some heights or lanes of a field, and testing and leaving both available all fail.
+
+**The real procedure this follows.** SICK AG, *deTec4 operating instructions* (document 8021645), section 4.5.1 "Test rod
+check": with an opaque test rod whose diameter equals the curtain's resolution, (1) move the rod slowly through the area to
+be protected, (2) the receiver's field indicator must light red continuously, never green or flashing yellow, then (3)
+guide the rod along the edges of the area to be protected with the same continuous-red requirement; a lamp that shows green,
+even briefly, means work stops and the installation is checked. The same check is in other makers' manuals and in the
+test-piece clauses of IEC 61496-2. Here the "area to be protected" is the field plane of 400 x 150 mm and the rod covers it
+as a grid (below); the sender and receiver edges are the two outer lanes, the bottom and top edges are reached by the rod's
+lowest and highest positions. A real curtain's own manual governs a real check.
 
 | File | What it is |
 |---|---|
@@ -53,38 +63,54 @@ A light curtain's receiver shows a red lamp while a beam is interrupted. The lam
 receiver has a green and a red disc (no collider, no gravity) that the task swaps on its top cap, once per control
 step. It is red while a rod covers a **working** beam: a beam is a line along the field, its lens 10 mm across, and a
 rod covers it when the beam's centre is within 15 - 5 = 10 mm of the rod's axis along the rod's length (the rod holds
-the whole lens). It follows only the rod's real pose. It never moves, holds, places or releases anything and plays no
-part in the score; the score only reads the rods, the tag and the grippers.
+the whole lens), plus a 0.5 mm slack so that a rod exactly midway between two beams (the 30 mm resolution limit, pitch 20
++ lens 10) does not flicker the lamp of a sound curtain; a real receiver trips on any partly blocked beam anyway. It follows only the rod's real pose. It never moves, holds, places or releases anything and plays no
+part in the score; the score only reads the rods, the lamp's colour at each crossing, the tag and the grippers.
 - Because the pitch is 20 mm and the rod 30 mm, a rod always covers at least one whole lens, but with a rod axis within
-  10 mm of the dead beam's height (107 to 127 mm) it covers only the dead beam. The faulty lamp therefore stays green
-  at about 117 mm and goes red at the bottom (77 mm) and the top (165 mm). A sound curtain goes red at all three.
-- Which machine is faulty is **drawn at random** by the task file at the start of every run and every episode
-  (`draw_faulty()`, the log prints `faulty machine this episode: ...`); the real station's person does it by coin
-  flip (see the real-world check). Setting `LIGHT_CURTAIN_FAULTY=left` or `right` in the environment fixes the draw (used
-  to film and to check each case); it changes nothing else. The demo is a fixed open-loop script for the machine drawn
-  when it is built; it reads nothing from the simulator.
+  9.5 mm of the dead beam's height it covers only the dead beam. The faulty lamp therefore stays green in a 19 mm band of
+  axis heights around the dead channel (its 8 channels are at 57, 77, ... 197 mm) and is red everywhere else in the field.
+  A sound curtain is red at every height.
+- Which machine is faulty, and which channel, is **drawn at random** by the task file at the start of every run and
+  every episode (`draw_faulty()`, the log prints `faulty machine this episode: ..., dead channel ...`); the real
+  station's person does it by coin flip and die roll (see the real-world check). Setting `LIGHT_CURTAIN_FAULTY=left|right`
+  and `LIGHT_CURTAIN_DEAD=0..7` in the environment fixes the draw (used to film and to check each case); it changes nothing
+  else. The demo is a fixed open-loop script that sweeps the whole field of both machines the same way whichever channel is
+  dead; it reads nothing from the simulator and is built for the machine drawn when it starts.
 
 ## Scoring
 
 Four steps, 0.2 each, judged as things stand at the end except steps 1 and 2, which count once reached.
 
+The field of each curtain is a **grid of 3 lanes by 15 cells**: lanes along the sender post's edge, the middle and the
+receiver post's edge (rod axis crossing the plane at -150, 0 and +150 mm from the field's middle, within 25 mm), cells of
+10 mm of rod-axis height from 52 to 202 mm above the table (so the rod's edge reaches the field's bottom and top edge).
+A cell is crossed when, at a control step (20 Hz), a rod is in the field (axis within 15 degrees of the field's normal, tip
+4 cm beyond the plane, crossing between the posts, the rod's middle still in front of the plane) with its axis in the
+lane's band and the cell's height. The lamp's colour is read at that same step. Because a cell is only crossed when a step
+falls in it, a sweep faster than 0.2 m/s leaves cells uncrossed: the rod has to be moved slowly, as the real check says.
+
 | Step | Done when |
 |---|---|
-| 1. Left field tested | a rod has been pushed through it (axis within 15 degrees of the field's normal, tip 4 cm beyond the plane, crossing between the posts, the rod's middle still in front of the plane) three times: with its axis at 52-102 mm (bottom), at 108-126 mm (middle: the rod covers the dead channel's beam at 117 mm and no working beam; the lamp of a faulty curtain stays green there) and at 152-202 mm (top). A middle pass anywhere else in 102-152 mm does not count: a working neighbour beam trips the lamp and hides the fault |
-| 2. Right field tested | the same |
-| 3. Tag decision | the tag stands in the holder of the machine whose curtain missed the rod (lower edge's middle within 12 mm along the slot, 4 mm across, -2/+4 mm of the slot floor, within 6 degrees of upright), it was put there after that curtain's three passes (the exposing middle pass included) were done, and it is not in the other holder |
+| 1. Left field covered | every one of the 45 cells of the left curtain's grid has been crossed by a rod (either rod; the order, direction and any extra movement are free) |
+| 2. Right field covered | the same for the right curtain |
+| 3. Tag decision | the tag stands in the holder of the machine whose curtain missed the rod (lower edge's middle within 12 mm along the slot, 4 mm across, -2/+4 mm of the slot floor, within 6 degrees of upright), where the lamp was seen not red at a crossing, it was put there after that curtain's grid was covered, and it is not in the other holder |
 | 4. Let go | with steps 1 to 3, both rods are out of both fields and no gripper is within 3 cm of the tag or either rod |
+
+Three isolated passes at one place cover about a tenth of a grid and score nothing for the field. A sound curtain's grid is
+covered with the lamp red in every cell; the faulty one's grid shows the lamp not red in the cells where the rod covers
+only the dead beam, in all three lanes, and the tag counts only after the whole grid, so a sweep that missed a part of
+the field cannot be rescued by tagging.
 
 1.0 (ends the run) only once all four steps have held together without a break for 1 s, with the rods and the tag within
 2 mm and 2 degrees of where they were when that second began. It is timed in the task file; any lapse restarts it. Step
 points stop at 0.8, also while it is being timed. The tests check no 1.0 at 0.95 s, 1.0 at 1 s, a lapse restarting it,
 and no 1.0 while any one condition is missing. A rod or the tag off the table scores 0.
 
-Shortcuts the tests and runs cover: doing nothing 0; tagging without testing 0; testing both and tagging the sound
-machine 0.4; testing both and no tag 0.4; tagging first, then testing 0.4; testing and tagging only the faulty machine
-0.4; testing the sound curtain fully, the faulty one with a middle pass off the dead beam (e.g. at 140 mm), and tagging
-the faulty machine 0.2 (that curtain's test never exposed the fault, so step 3 and the full score cannot count);
-a rod that stops short of the plane, tilts, goes beside the posts, or runs at the table is no pass.
+Shortcuts the tests and runs cover: doing nothing 0; tagging without testing 0; testing both fields fully and tagging the sound
+machine 0.4; testing both and no tag 0.4; tagging first, then testing 0.4; testing and tagging only the faulty machine 0.4;
+three passes at one place, or a sweep that leaves one lane, a 10 mm height band or the ends of a lane out, or one made too fast to
+cross every cell, and then tagging the faulty machine 0.2 at most (that curtain's field was not covered, so step 3 and the full
+score cannot count); a rod that stops short of the plane, tilts, goes beside the posts, or runs at the table is no crossing.
 
 ## Run it
 
@@ -96,23 +122,28 @@ inspect-robots run --embodiment yam_arena --policy dream \
   --instruction "$INSTRUCTION" --scorer task_score --max-steps 1200 --store-frames --log-dir ~/yam-eval/lc-dream1
 ```
 
-The log prints a `[light_curtain] t=...  steps done: ...` line when a step is done or undone, plus a trace every second:
-the passes made at each curtain, both lamps' colours and which holder the tag stands in.
+The log prints a `[light_curtain] t=...  steps done: ...` line when a step is done or undone, a line when a field's grid is
+fully covered or the lamp is first seen not red, and a trace every second: the cells crossed at each curtain, both lamps'
+colours and which holder the tag stands in.
 
-**The demo.** On Isaac (L40) it ran with each machine drawn as the faulty one (`LIGHT_CURTAIN_FAULTY=left`, then `right`),
-and a third time with the left one for the film: 1.0 every time, at step 799 (left, twice) and 798 (right). Both curtains tested by
-18.5 s, the tag stood in the faulty machine's holder at 36.45 s, success conditions met at 39.4 s. The middle passes counted at
-axis 115.2 and 115.3 mm (inside the 108-126 mm exposing band), the bottom ones at 75.4 mm and the top ones at 163.3 mm. Timeline:
-both arms work at once. Each, from above with its fingers closing across the rod's middle, lifts its rod off the saddles
-and pushes it through its field at 77, 117 and 165 mm (axis commanded), pausing 0.8 s in the field and drawing it back each time,
-then sets it back on the saddles and lets go (both curtains tested by about 18.5 s). The arm of the machine that missed the rod
-(the demo is built for the machine drawn when it starts) then takes the tag from the rack by its upper part and stands it in that
-machine's holder (about 36.5 s), lets go and lifts away; full success follows a second later (step 799, about 40 s).
+**The demo.** On Isaac (L40) it ran with the left machine faulty (dead channel 3, 117 mm), with the right one faulty (dead channel
+6, 177 mm) and once more with the left one for the film: 1.0 every time, with no re-tuning of the MuJoCo script (the success
+conditions were met at 47.25 s, 47.20 s and 47.25 s; the run ended with the full score at step 965 for the film). Both fields were
+fully covered by 24.6 s (the right one at 24.45 s), the tag stood in the faulty machine's holder at about 44 s. Timeline: both
+arms work at once. Each, from above with its fingers closing across the rod's middle, lifts its rod off the saddles and carries it
+to its field, pushes it in tip first at the bottom of the sender-edge lane, and sweeps it slowly (about 36 mm/s, 4 s per 145 mm):
+up the sender-edge lane, across the top, down the middle lane, across the bottom, up the receiver-edge lane (the rod stays in the
+field the whole time), then draws it back, sets it on the saddles and lets go. To reach the top of the outer lanes the hand is
+rolled up to 25 degrees about the rod's own axis (the rod is a cylinder, so the grip on it does not change). The arm of the
+machine that missed the rod (the demo is built for the machine drawn when it starts) then takes the tag from the rack by its upper
+part and stands it in that machine's holder, lets go and lifts away; full success follows a second later. The demo path does
+not depend on which channel is dead; the lamp's not-red stretch in the faulty machine's field lands wherever that channel is
+(checked in MuJoCo for channels 0, 3 and 7 and in Isaac for 3 and 6). The film ends on the full score, held 3 s.
 
 ## Instruction
 
-It says what to do (test each curtain with its rod at three heights; tag a machine whose curtain fails). It does not say
-which machine fails, how to hold the rod, or what the lamp shows.
+It says what to do (test each curtain's whole field with its rod; tag a machine whose curtain fails). It does not say
+which machine fails, which channel, how to hold the rod, which path to take, or what the lamp shows.
 
 ## Real-world check
 
@@ -124,19 +155,24 @@ simulated curtains and guard nothing (no machine behind them can move):
   pitch behind 10 mm lenses, 57 to 197 mm above the table (30 mm resolution, 150 mm protected height). The receiver board
   ORs the 8 channels into a red/green lamp: red while any enabled channel is interrupted, green while all are clear (a
   real curtain's OFF/ON state). Each channel reaches the OR through its own labelled two-pin link on the board.
-- **Documented fault: an open channel.** Channel 4 (the beam 117 mm up) has its link removed; its emitter and receiver still
+- **Documented fault: an open channel.** One channel (any of the 8) has its link removed; its emitter and receiver still
   work, but its output never reaches the lamp, so that beam can no longer trip it. A fitted link is the sound state. It is
   reproducible (a link in or out), safe (no hazard, no cover over any lens) and gives exactly the simulated behaviour:
   the lamp is green only while the rod covers no working beam, which for a 30 mm rod on a 20 mm pitch means its axis
-  within 10 mm of 117 mm.
-- **Inspection method.** The test-piece check of IEC 61496-2 as in curtain manuals: a test piece of the curtain's
-  resolution (30 mm, 300 mm long rod) is moved into the protected field, tip first and square to it, and the receiver must
-  show interrupted wherever the rod sits in the field; a lamp that stays green anywhere is a failed curtain. Here the rod
-  is placed at three heights (bottom, the dead channel's height, top). The task tests the manipulation and the decision;
-  a real curtain's manual governs the real procedure.
-- **Reset.** Before each trial a coin flip chooses which fixture has link 4 out (the other has all eight in; note the
-  draw). The person checks each fixture by hand with the rod: the sound one stays red all the way up, the faulty one goes green
-  only with the rod near 117 mm. Rods back on their saddles, the tag in the rack, the holders empty.
-- **Review.** Each rod passes through its field at three heights with its tip first and the hand outside the field; the lamp
-  goes red at each pass on the sound fixture and stays green on the faulty one at the middle pass; the tag ends in the
-  holder of the faulty fixture only, after that fixture's middle pass.
+  within about 10 mm of that channel's height.
+- **Inspection method.** The test-rod check of a real curtain: SICK deTec4 operating instructions (document 8021645),
+  section 4.5.1 (the same method as in other makers' manuals and the test-piece clauses of IEC 61496-2). An opaque rod of the
+  curtain's resolution (30 mm, 300 mm long) is moved slowly through the area to be protected, tip first and square to it,
+  then guided along the edges of that area, while the person watches the receiver's lamp, which must stay red the whole
+  time; green, even briefly, is a failed curtain. Here the area is the 400 x 150 mm field, covered as three vertical lanes
+  (along the sender post's edge, the middle, along the receiver post's edge) swept over the full height, which reaches all
+  four edges. A person marks the lanes with tape on the table in front of the field (150 mm either side of the middle, 25 mm
+  tolerance) and times each sweep at 3 s or more per 150 mm lane (at most 50 mm/s, checked with a stopwatch or the video). The task tests the manipulation and the decision; a real curtain's manual governs the real procedure.
+- **Reset.** Before each trial a coin flip chooses which fixture has a link out and the roll of an eight-sided die
+  chooses which channel; the other fixture has all eight links in (note the draw). The person checks each
+  fixture by hand with the rod: the sound one stays red all the way up, the faulty one goes green only with the rod near
+  that channel's height. Rods back on their saddles, the tag in the rack, the holders empty.
+- **Review.** Each rod covers its field's three lanes over the full height, tip first, the hand outside the field and the
+  rod level; the lamp stays red throughout on the sound fixture and goes green on the faulty one where the rod covers only the
+  open channel, in every lane; the tag ends in the holder of the faulty fixture only, after that fixture's whole field was
+  covered. A sweep that skips a lane, a stretch of height or goes too fast does not count.

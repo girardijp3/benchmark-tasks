@@ -2,11 +2,15 @@
 posts, protected height 150 mm, 400 mm between the lenses) and each with its own 30 mm test rod resting on two saddles
 near the robot. A red 'DO NOT USE' tag stands in a rack between the machines, and each machine has an empty tag
 holder. Each receiver has a lamp on its top cap: green while its field is clear, red while a beam is interrupted. One
-receiver has a dead beam channel (drawn anew every episode): the 30 mm rod only trips its lamp where it covers a working beam.
+receiver has a dead beam channel (drawn anew every episode, with its channel): the 30 mm rod only trips its lamp where it covers a working beam.
 
-The rod is pushed through each field, one pass at the bottom, one at the middle (centred on the dead beam's
-height, the only place the rod covers that beam alone) and one at the top, while the lamp is watched; the tag goes in
-the holder of the machine whose curtain missed the rod, after that curtain's passes (the exposing one included).
+Each rod is swept through its machine's whole protective field, as in the test-rod check of a real curtain (SICK deTec4
+operating instructions 8021645, section 4.5.1: the rod is moved slowly through the area to be protected and guided
+along its edges while the receiver's indicator must stay red): three vertical lanes (along the sender post's edge, the
+middle, along the receiver post's edge), full height, every cell of the lane-by-height grid crossed with the lamp
+watched. A curtain with a dead channel shows a not-red lamp where the rod covers only that channel's beam, wherever in the
+height that is (the channel is drawn anew every episode); the tag goes in the holder of the machine whose curtain
+missed the rod, after that curtain's whole field was covered.
 
 The curtains, holders, saddles and rack are fixtures; the rods and the tag are rigid bodies. The lamp is a declared
 code effect: a red and a green disc (no collider, no gravity) that the task swaps on the receiver's cap, red while a
@@ -51,17 +55,19 @@ FIELD_HALF = 0.20  # the beams run this far either side of the footprint's middl
 BEAMS, PITCH, FIRST = 8, 0.020, 0.057  # beam heights above the table: 57 mm + 20 mm k (field 52 to 202 mm)
 FIELD_LO, FIELD_HI = 0.052, 0.202
 LENS_R = 0.005
+COVER_SLACK = 0.0005  # a lens counts as covered within 0.5 mm of whole: a rod exactly midway between two beams (the 30 mm
+# resolution limit: pitch 20 + lens 10) must not flicker the lamp of a sound curtain
 HOUSING_TOP = 0.242
 ROD_R, ROD_L = 0.015, 0.30  # the test rod: 30 mm across, 300 mm long
 ROD_AXIS_REST = 0.027  # its axis above the table on the saddles
-DEAD_BEAM = 3  # the failed channel: 57 + 60 = 117 mm, in the field's middle third
+DEAD_BEAM = 3  # the failed channel (0 to 7, 57 mm + 20 mm k above the table): drawn anew for every run and episode (below)
 FAULTY = "right"  # the machine whose receiver has the dead channel: drawn anew for every run and every episode (below)
 
 CUR_X = 0.44
 CURTAIN_Y = {"left": 0.38, "right": -0.38}
 HOLDER_POS = {"left": (0.29, 0.49), "right": (0.29, -0.27)}
 RACK_POS = (0.26, 0.0)
-TIP_BEFORE, TIP_PAST = 0.05, 0.08  # a pass starts with the tip this far before the plane and ends this far past it
+TIP_BEFORE, TIP_PAST = 0.05, 0.045  # a pass starts with the tip this far before the plane and ends this far past it
 LANE_X0 = CUR_X - TIP_BEFORE - ROD_L / 2  # the rod rests on its saddles here, in front of its field
 LANE_X1 = CUR_X + TIP_PAST - ROD_L / 2
 ROD_XY = {s: (LANE_X0, y) for s, y in CURTAIN_Y.items()}
@@ -73,13 +79,18 @@ _Z = np.array([0.0, 0.0, 1.0])
 
 
 def draw_faulty() -> str:
-    """Draws which machine's receiver has the dead channel, the way the real station's person flips a coin. Every run
-    and every episode draws again. ``LIGHT_CURTAIN_FAULTY=left|right`` in the environment fixes the draw (used to film
-    and check each case); it changes nothing else."""
-    global FAULTY
+    """Draws which machine's receiver has the dead channel and which of the 8 channels it is, the way the real
+    station's person flips a coin and rolls a die. Every run and every episode draws again.
+    ``LIGHT_CURTAIN_FAULTY=left|right`` and ``LIGHT_CURTAIN_DEAD=0..7`` in the environment fix the draw (used to film
+    and check each case); they change nothing else."""
+    global FAULTY, DEAD_BEAM
+    rng = random.SystemRandom()
     forced = os.environ.get("LIGHT_CURTAIN_FAULTY", "")
-    FAULTY = forced if forced in ("left", "right") else random.SystemRandom().choice(("left", "right"))
-    print(f"[{TAG}] faulty machine this episode: {FAULTY}", flush=True)
+    FAULTY = forced if forced in ("left", "right") else rng.choice(("left", "right"))
+    dead = os.environ.get("LIGHT_CURTAIN_DEAD", "")
+    DEAD_BEAM = int(dead) if dead in tuple("01234567") else rng.randrange(BEAMS)
+    print(f"[{TAG}] faulty machine this episode: {FAULTY}, dead channel {DEAD_BEAM} "
+          f"({(FIRST + PITCH * DEAD_BEAM) * 1000:.0f} mm)", flush=True)
     return FAULTY
 
 
@@ -202,8 +213,8 @@ _BEAM_Z = TOP + FIRST + PITCH * np.arange(BEAMS)
 
 def blocked_beams(objects, side: str) -> list[int]:
     """The beams of ``side``'s curtain a rod covers: a rod covers a beam when, at some point along it, the beam's whole
-    10 mm lens lies inside the rod's cross-section (the beam's centre within 15 - 5 = 10 mm of the rod's axis), within
-    the rod's length. Either rod can cover either curtain's beams."""
+    10 mm lens lies inside the rod's cross-section (the beam's centre within 15 - 5 = 10 mm of the rod's axis) give or take
+    ``COVER_SLACK``, within the rod's length. Either rod can cover either curtain's beams."""
     cy = CURTAIN_Y[side]
     pts = np.array([[CUR_X, cy + y, z] for z in _BEAM_Z for y in _YS])
     out = set()
@@ -213,7 +224,7 @@ def blocked_beams(objects, side: str) -> list[int]:
         d = pts - np.asarray(st.pos, float)
         t = d @ a
         r = np.linalg.norm(d - t[:, None] * a, axis=1)
-        hit = (np.abs(t) <= ROD_L / 2) & (r <= ROD_R - LENS_R)
+        hit = (np.abs(t) <= ROD_L / 2) & (r <= ROD_R - LENS_R + COVER_SLACK)
         out |= {int(k) for k in np.nonzero(hit.reshape(BEAMS, -1).any(axis=1))[0]}
     return sorted(out)
 
@@ -313,13 +324,18 @@ elif not any(isinstance(f, _AfterSceneImport) for f in sys.meta_path):
 PASS_TILT = math.radians(15.0)  # a pass: the rod's axis within this of the field's normal
 PASS_BEYOND = 0.04  # ... its tip this far beyond the plane
 PASS_Y = 0.17  # ... crossing the plane within this of the field's middle
-THIRDS = ("bottom", "middle", "top")
-# The middle pass only counts where the rod covers the dead beam's lens and no working beam's: the rod's axis within
-# 10 mm of the dead channel's height (107 to 127 mm; the beams next to it, 20 mm either side, are covered from 10 mm),
-# taken 1 mm inside so that a pass at the edge cannot cover a neighbour. Anywhere else in the middle third a working
-# neighbour trips the lamp and hides the fault.
-EXPOSE_LO = FIRST + PITCH * DEAD_BEAM - (ROD_R - LENS_R) + 0.001
-EXPOSE_HI = FIRST + PITCH * DEAD_BEAM + (ROD_R - LENS_R) - 0.001
+# Coverage of the protective field, after the test-rod check of a real curtain (SICK deTec4 operating instructions
+# 8021645, section 4.5.1: the rod is moved slowly through the area to be protected, then guided along its edges, and
+# the receiver's indicator must light red continuously). The field is a grid: three vertical lanes (along the sender
+# post's edge, the middle, along the receiver post's edge) by 15 cells of 10 mm of rod-axis height (52 to 202 mm: at
+# either end the rod's edge reaches the field's bottom and top edge). A cell is crossed when a rod in the field
+# (below) has its axis in the lane's band and in the cell at a control step; the lamp is read at that step.
+LANES = (-0.15, 0.0, 0.15)  # lane centres, m along the beams from the field's middle (sender side first)
+LANE_NAMES = ("sender edge", "middle", "receiver edge")
+LANE_TOL = 0.025  # the rod's axis crosses the plane within this of the lane's centre
+CELL = 0.010
+CELLS_Z = int(round((FIELD_HI - FIELD_LO) / CELL))  # 15
+ALL_CELLS = frozenset((lane, k) for lane in range(len(LANES)) for k in range(CELLS_Z))
 SEAT_X, SEAT_Y, SEAT_DROP, SEAT_RISE = 0.012, 0.004, 0.002, 0.004  # the tag's lower edge's middle off the slot's centre
 SEAT_TILT = math.radians(6.0)
 CLEAR = 0.03  # m: every gripper at least this far from the tag and the rods
@@ -328,8 +344,8 @@ FALLEN_Z = -0.03
 GRIP_PAD_POINTS = 11
 STILL_S, STILL_TURN, STILL_MOVE = 1.0, math.radians(2.0), 0.002
 TRACE_S = 1.0
-STEPS = ("left curtain tested at the bottom, at the dead beam's height and at the top",
-         "right curtain tested at the bottom, at the dead beam's height and at the top",
+STEPS = ("left curtain's whole field covered with the rod (three lanes, full height, lamp watched)",
+         "right curtain's whole field covered with the rod (three lanes, full height, lamp watched)",
          "tag in the holder of the machine that missed the rod (after its test), none in the other",
          "let go: both rods out of the fields, grippers clear")
 POINTS = 0.2
@@ -357,16 +373,22 @@ def pass_height(objects, side: str, rod: str):
     return h if FIELD_LO <= h <= FIELD_HI else None
 
 
-def rod_pass(objects, side: str, rod: str):
-    """Which pass (0 bottom third, 1 middle, 2 top third) ``rod`` is making through ``side``'s field right now, or
-    None. The middle pass is only the one with the axis in the band where the rod covers the dead beam alone."""
+def rod_cell(objects, side: str, rod: str):
+    """The (lane, height cell) of ``side``'s field that ``rod`` is crossing right now (in the field with its axis within
+    15 degrees of the normal, its tip 4 cm beyond the plane, its middle in front of it, its axis within 2.5 cm of a
+    lane's centre and inside the field's height), or None."""
     h = pass_height(objects, side, rod)
     if h is None:
         return None
-    third = min(2, int((h - FIELD_LO) / ((FIELD_HI - FIELD_LO) / 3)))
-    if third == 1 and not EXPOSE_LO <= h <= EXPOSE_HI:
+    st = objects[rod]
+    a = _rot(st)[:, 0]
+    if a[0] < 0:
+        a = -a
+    y = float(np.asarray(st.pos, float)[1] + (CUR_X - st.pos[0]) / a[0] * a[1]) - CURTAIN_Y[side]
+    lane = min(range(len(LANES)), key=lambda i: abs(y - LANES[i]))
+    if abs(y - LANES[lane]) > LANE_TOL:
         return None
-    return third
+    return lane, min(CELLS_Z - 1, int((h - FIELD_LO) / CELL))
 
 
 def tag_in(objects, holder_xy) -> bool:
@@ -439,7 +461,7 @@ class _Progress:
 
     def __init__(self):
         self.time = -1.0
-        self.passed = {s: set() for s in SIDES}
+        self.cells = {s: {} for s in SIDES}  # (lane, cell) -> [samples with the lamp red, samples with it not red]
         self.tested_at = {s: None for s in SIDES}
         self.seated_since = {s: None for s in SIDES}
         self.met_since = None
@@ -463,13 +485,17 @@ class _Progress:
         now = t if t is not None else 0.0
         for s in SIDES:
             for rod in ("rod_left", "rod_right"):
-                third = rod_pass(objects, s, rod)
-                if third is not None and third not in self.passed[s]:
-                    self.passed[s].add(third)
-                    print(f"[{TAG}] t={now:.2f}s  {s} curtain: {THIRDS[third]} pass counted, rod axis "
-                          f"{pass_height(objects, s, rod) * 1000:.1f} mm", flush=True)
-            if len(self.passed[s]) == 3 and self.tested_at[s] is None:
+                cell = rod_cell(objects, s, rod)
+                if cell is not None:
+                    seen = self.cells[s].setdefault(cell, [0, 0])
+                    was = (seen[1] > 0, len(self.cells[s]))
+                    seen[0 if lamp_red(objects, s) else 1] += 1
+                    if seen[1] > 0 and not was[0]:
+                        print(f"[{TAG}] t={now:.2f}s  {s} curtain: lamp NOT red with the rod at lane "
+                              f"{LANE_NAMES[cell[0]]}, axis {pass_height(objects, s, rod) * 1000:.0f} mm", flush=True)
+            if self.tested_at[s] is None and covered(self.cells[s]):
                 self.tested_at[s] = now
+                print(f"[{TAG}] t={now:.2f}s  {s} curtain: whole field covered", flush=True)
             if tag_in(objects, HOLDER_POS[s]):
                 if self.seated_since[s] is None:
                     self.seated_since[s] = now
@@ -498,18 +524,28 @@ def other(side: str) -> str:
     return "left" if side == "right" else "right"
 
 
+def covered(cells) -> bool:
+    """Every cell of the field grid has been crossed."""
+    return ALL_CELLS <= set(cells)
+
+
+def missed(cells) -> bool:
+    """The lamp was not red at some crossing of a cell: the curtain missed the rod there."""
+    return any(v[1] > 0 for v in cells.values())
+
+
 def tag_decision(objects) -> bool:
-    """The tag stands in the holder of the machine whose curtain missed the rod, not before that curtain's test was
-    complete, and not in the other holder."""
+    """The tag stands in the holder of the machine whose curtain missed the rod (the lamp was not red somewhere in its
+    covered field), not before that curtain's field was fully covered, and not in the other holder."""
     p = _PROGRESS
     bad, good = FAULTY, other(FAULTY)
-    return bool(p.seated_since[bad] is not None and p.tested_at[bad] is not None
+    return bool(p.seated_since[bad] is not None and p.tested_at[bad] is not None and missed(p.cells[bad])
                 and p.seated_since[bad] >= p.tested_at[bad] and p.seated_since[good] is None)
 
 
 def _steps(objects) -> list[bool]:
     p = _PROGRESS
-    one, two = (len(p.passed[s]) == 3 for s in SIDES)
+    one, two = (covered(p.cells[s]) for s in SIDES)
     three = bool(tag_decision(objects))
     four = bool(one and two and three and not rod_in_field(objects, "left") and not rod_in_field(objects, "right")
                 and let_go(objects))
@@ -517,10 +553,10 @@ def _steps(objects) -> list[bool]:
 
 
 def steps_done(objects) -> list[bool]:
-    """Each of ``STEPS``: 1 and 2 once a rod has been pushed through that field at the bottom third, at the top third
-    and in the middle with its axis within 10 mm of the dead beam's height (a rod's axis within 15 degrees of the
-    field's normal, its tip 4 cm beyond the plane, crossing between the posts); 3 as things stand
-    (the tag in the faulty machine's holder, put there after that curtain's test, and none in the other); 4 with
+    """Each of ``STEPS``: 1 and 2 once a rod has crossed every cell of that field's grid (3 lanes x 15 cells of 10 mm
+    of axis height, a rod's axis within 15 degrees of the field's normal, its tip 4 cm beyond the plane); 3 as things
+    stand (the tag in the faulty machine's holder, put there after that curtain's field was covered, where the lamp
+    was seen not red, and none in the other); 4 with
     steps 1 to 3, both rods out of the fields and every gripper at least 3 cm from the tag and the rods."""
     p = _PROGRESS
     p.update(objects)
@@ -528,7 +564,9 @@ def steps_done(objects) -> list[bool]:
     t = objects.get("episode_time")
     if t is not None and (done != p.reported or t - p.traced >= TRACE_S):
         red = {s: lamp_red(objects, s) for s in SIDES}
-        line = (f"(passes left {sorted(p.passed['left'])} right {sorted(p.passed['right'])}; lamps "
+        line = (f"(cells crossed left {len(p.cells['left'])}/{len(ALL_CELLS)} right {len(p.cells['right'])}/"
+                f"{len(ALL_CELLS)}; lamp not red seen left {missed(p.cells['left'])} right "
+                f"{missed(p.cells['right'])}; lamps "
                 f"left {'red' if red['left'] else 'green'} right {'red' if red['right'] else 'green'}; tag in "
                 f"{[s for s in SIDES if tag_in(objects, HOLDER_POS[s])] or 'neither holder'})")
         if done != p.reported:
@@ -577,8 +615,9 @@ def score(objects) -> float:
 # -- scripted demo ----------------------------------------------------------------------------------------------------
 # Each arm, straight down with its fingers closing across the rod (along y), takes its rod off the saddles by its middle
 # (the rod stays level: its centre of mass is in the grip), carries it to its machine's field and pushes it through, tip
-# first, at the bottom, middle and top of the field (axis 77, 117 and 165 mm above the table), pausing in the field and
-# drawing it back each time; puts the rod back on its saddles and lets go. Then the arm on the machine that missed the
+# first, and sweeps it through the field, the rod staying in it: up the sender edge lane (axis 56 to 200 mm above the
+# table), across the top, down the middle lane, across the bottom, up the receiver edge lane, then draws it back; puts
+# the rod back on its saddles and lets go. Then the arm on the machine that missed the
 # rod takes the tag from the rack by its upper part and stands it in that machine's holder.
 SQUEEZE = 0.010
 ROD_OPEN = -(2 * ROD_R + 0.030) / 2
@@ -587,7 +626,8 @@ TAG_OPEN = -(TAG_T + 0.024) / 2
 TAG_HOLD = -(TAG_T - 0.004) / 2
 TRAVEL = 0.15  # the rod's axis height when carried
 GRIP_ABOVE_AXIS = 0.012  # the TCP this far above the rod's axis (the pad tips end 1 mm below it)
-HEIGHTS = (0.077, 0.117, 0.165)  # the rod's axis above the table for the bottom, middle and top passes
+H_LO, H_HI = 0.0535, 0.2005  # the rod's axis (commanded) at the bottom and top of a sweep; about 1.5 mm lower is reached
+SWEEP_S = 4.0  # one 144 mm sweep up or down the field takes this long (36 mm/s: the lamp is read every 1.8 mm)
 AIM = {"left": np.zeros(3), "right": np.zeros(3)}  # measured droop offsets added to the commands (m)
 
 
@@ -616,8 +656,22 @@ yam_demo.ArmPlan.target = _target
 DOWN = yam_demo.grip_rotation(0.0)  # pointing down, the fingers closing along y
 
 
+ROLL_MAX, ROLL_SPAN = math.radians(25.0), 0.075  # hand roll about the rod's own axis, by the rod's lateral offset
+
+
 def _rod_tcp(x, y, axis_h, side):
     return np.array([x, y, TOP + axis_h + GRIP_ABOVE_AXIS]) + AIM[side]
+
+
+def _swept(x, y, axis_h, side):
+    """TCP and rotation that hold the rod with its axis at (x, y, axis_h) with the hand rolled about the rod's own axis
+    (the rod is a cylinder, so the grip on it does not change; the roll leans the hand away from the arm's base, which
+    the arm needs to reach the top of the field): roll = 25 degrees x the rod's offset from the base, saturating at 7.5 cm."""
+    roll = ROLL_MAX * float(np.clip((y - BASES[side][1]) / ROLL_SPAN, -1.0, 1.0))
+    c, s = math.cos(roll), math.sin(roll)
+    rot = np.array([[1, 0, 0], [0, c, -s], [0, s, c]]) @ DOWN
+    pointing = rot[:, 2]
+    return np.array([x, y, TOP + axis_h]) - GRIP_ABOVE_AXIS * pointing + AIM[side], rot
 
 
 def rod_plan(side: str, t_wait: float = 0.0) -> list[Waypoint]:
@@ -632,13 +686,27 @@ def rod_plan(side: str, t_wait: float = 0.0) -> list[Waypoint]:
         Waypoint(1.2, at, ROD_OPEN, "around the rod", rot=DOWN),
         Waypoint(0.8, at, ROD_HOLD, "grip the rod", rot=DOWN),
     ]
-    for h, name in zip(HEIGHTS, THIRDS, strict=True):
-        wps += [
-            Waypoint(1.2, _rod_tcp(LANE_X0, cy, h, side), ROD_HOLD, f"to the {name} of the field", rot=DOWN),
-            Waypoint(2.0, _rod_tcp(LANE_X1, cy, h, side), ROD_HOLD, f"push it through at the {name}", rot=DOWN),
-            Waypoint(0.8, _rod_tcp(LANE_X1, cy, h, side), ROD_HOLD, "hold it in the field", rot=DOWN),
-            Waypoint(1.5, _rod_tcp(LANE_X0, cy, h, side), ROD_HOLD, "draw it back", rot=DOWN),
-        ]
+    # Serpentine through the field, the rod staying in it: up the sender edge lane, across at the top, down the middle
+    # lane, across at the bottom, up the receiver edge lane; then drawn back.
+    y0, y1, y2 = (cy + lane for lane in LANES)
+
+    def wp(dur, x, y, h, label):
+        pos, rot = _swept(x, y, h, side)
+        return Waypoint(dur, pos, ROD_HOLD, label, rot=rot)
+
+    wps += [
+        wp(1.5, LANE_X0, y0, H_LO, "to the sender edge lane, low"),
+        wp(2.0, LANE_X1, y0, H_LO, "push it into the field"),
+        wp(0.5, LANE_X1, y0, H_LO, "steady at the bottom edge"),
+        wp(SWEEP_S, LANE_X1, y0, H_HI, "sweep up the sender edge lane"),
+        wp(2.0, LANE_X1, y1, H_HI, "across the top to the middle lane"),
+        wp(SWEEP_S, LANE_X1, y1, H_LO, "sweep down the middle lane"),
+        wp(2.0, LANE_X1, y2, H_LO, "across the bottom to the receiver edge lane"),
+        wp(SWEEP_S, LANE_X1, y2, H_HI, "sweep up the receiver edge lane"),
+        wp(0.5, LANE_X1, y2, H_HI, "steady at the top edge"),
+        wp(2.0, LANE_X0, y2, H_HI, "draw it back"),
+        Waypoint(1.8, _rod_tcp(LANE_X0, cy, ROD_AXIS_REST + 0.04, side), ROD_HOLD, "back over the saddles", rot=DOWN),
+    ]
     wps += [
         Waypoint(1.2, at + (0, 0, 0.004), ROD_HOLD, "lower it onto the saddles", rot=DOWN),
         Waypoint(0.6, at + (0, 0, 0.004), ROD_OPEN, "let go of the rod", rot=DOWN),

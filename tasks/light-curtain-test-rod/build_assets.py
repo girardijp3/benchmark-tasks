@@ -74,14 +74,36 @@ class Asset:
         g.AddScaleOp().Set(Gf.Vec3f(*size))
         self._finish(g, rgb, collide, key)
 
-    def cyl(self, center, radius, height, axis="Z", rgb=None, collide=None, key="c", name=None):
+    def cyl(self, center, radius, height, axis="Z", rgb=None, collide=None, key="c", name=None, segments=64):
+        """A closed cylinder mesh with ``segments`` sides (smooth when rendered close up); a collider is its convex hull."""
         self.n += 1
-        g = UsdGeom.Cylinder.Define(self.stage, f"/{self.name}/{name or 'Cyl'}{self.n}")
-        g.CreateRadiusAttr(radius)
-        g.CreateHeightAttr(height)
-        g.CreateAxisAttr(axis)
+        g = UsdGeom.Mesh.Define(self.stage, f"/{self.name}/{name or 'Cyl'}{self.n}")
+        ring = [(radius * math.cos(2 * math.pi * i / segments), radius * math.sin(2 * math.pi * i / segments))
+                for i in range(segments)]
+        h = height / 2
+        pts = [(u, v, -h) for u, v in ring] + [(u, v, h) for u, v in ring]  # axis along local z
+        faces, counts = [], []
+        for i in range(1, segments - 1):  # caps
+            faces += [0, i + 1, i]
+            faces += [segments, segments + i, segments + i + 1]
+            counts += [3, 3]
+        for i in range(segments):  # sides
+            j = (i + 1) % segments
+            faces += [i, j, segments + j, i, segments + j, segments + i]
+            counts += [3, 3]
+        if axis == "X":  # local (u, v, w) -> (w, u, v): the cylinder's axis becomes x
+            pts = [(w, u, v) for u, v, w in pts]
+        elif axis == "Y":
+            pts = [(v, w, u) for u, v, w in pts]
+        g.CreatePointsAttr(Vt.Vec3fArray([Gf.Vec3f(*p) for p in pts]))
+        g.CreateFaceVertexCountsAttr(counts)
+        g.CreateFaceVertexIndicesAttr(faces)
+        g.CreateSubdivisionSchemeAttr("none")
+        lo = [min(p[i] for p in pts) for i in range(3)]
+        hi = [max(p[i] for p in pts) for i in range(3)]
+        g.CreateExtentAttr(Vt.Vec3fArray([Gf.Vec3f(*lo), Gf.Vec3f(*hi)]))
         self._xf(g, center)
-        self._finish(g, rgb, collide, key)
+        self._finish(g, rgb, collide, key, mesh=True)
 
     def prism_x(self, poly_yz, x0, x1, rgb, collide=None, key="c", name="Wall"):
         """A convex prism along x: cross-section ``poly_yz`` (list of (y, z), counter-clockwise seen from +x)."""
