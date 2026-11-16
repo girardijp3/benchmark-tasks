@@ -1,0 +1,172 @@
+#usda 1.0
+(
+    defaultPrim = "Cradles"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Cradles" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Two fixed bench cradles (y +-0.10 m): each a flat tray 40 mm wide and 20 mm long between two 8 mm side walls, on which the tube lies with its axis at 0.115 m, and two end stops 1.5 mm outside its caps. Origin: table level at the tube's axis x, y 0."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0.05)
+    float3 physics:diagonalInertia = (0.001, 0.001, 0.001)
+    float physics:mass = 0.5
+
+    def Scope "Looks"
+    {
+        def Material "Phys_wood" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.4
+            float physics:restitution = 0
+            float physics:staticFriction = 0.45
+        }
+
+        def Material "m543924"
+        {
+            token outputs:surface.connect = </Cradles/Looks/m543924/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.55, 0.4, 0.25)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Tray1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Cradles/Looks/m543924>
+        rel material:binding:physics = </Cradles/Looks/Phys_wood> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.056, 0.02, 0.102)
+        double3 xformOp:translate = (0, 0.1, 0.051000000000000004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Side2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Cradles/Looks/m543924>
+        rel material:binding:physics = </Cradles/Looks/Phys_wood> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.008, 0.02, 0.115)
+        double3 xformOp:translate = (0.024, 0.1, 0.0575)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Side3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Cradles/Looks/m543924>
+        rel material:binding:physics = </Cradles/Looks/Phys_wood> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.008, 0.02, 0.115)
+        double3 xformOp:translate = (-0.024, 0.1, 0.0575)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Tray4" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Cradles/Looks/m543924>
+        rel material:binding:physics = </Cradles/Looks/Phys_wood> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.056, 0.02, 0.102)
+        double3 xformOp:translate = (0, -0.1, 0.051000000000000004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Side5" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Cradles/Looks/m543924>
+        rel material:binding:physics = </Cradles/Looks/Phys_wood> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.008, 0.02, 0.115)
+        double3 xformOp:translate = (0.024, -0.1, 0.0575)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Side6" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Cradles/Looks/m543924>
+        rel material:binding:physics = </Cradles/Looks/Phys_wood> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.008, 0.02, 0.115)
+        double3 xformOp:translate = (-0.024, -0.1, 0.0575)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Stop7" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Cradles/Looks/m543924>
+        rel material:binding:physics = </Cradles/Looks/Phys_wood> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.006, 0.108)
+        double3 xformOp:translate = (0, 0.2995, 0.054)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Stop8" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Cradles/Looks/m543924>
+        rel material:binding:physics = </Cradles/Looks/Phys_wood> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.006, 0.108)
+        double3 xformOp:translate = (0, -0.2995, 0.054)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

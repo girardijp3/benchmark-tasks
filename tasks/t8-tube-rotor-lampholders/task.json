@@ -1,0 +1,23 @@
+{
+  "title": "Relamp a T8 batten: fit the tube in both rotor lampholders",
+  "category": "Impact on jobs",
+  "keywords": [
+    "relamping",
+    "T8 fluorescent tube",
+    "G13 lampholder",
+    "rotor lampholder",
+    "quarter turn",
+    "building maintenance",
+    "two hands",
+    "insertion"
+  ],
+  "instruction": "Relamp the wall-mounted batten: fit the new T8 tube into both rotor lampholders so it locks in place and lights, then let go of it.",
+  "context": "Maintenance and repair workers, general (SOC 49-9071, about 1.5 million employed in the US, BLS OEWS) relamp linear batten fittings as routine upkeep of warehouses, car parks, schools and plant rooms; LED replacement tubes keep the same G13 bi-pin caps. In a T8 batten each end of the tube sits in a G13 rotor lampholder: both bi-pin ends are pushed into the holders' front notches at once, with the 590 mm tube held level in the air, and the tube is turned a quarter turn so both rotors reach their 90 degree stop, which closes the contact; the tube is retained and lit. One hand cannot do it: both ends enter at once. The batten is on an upright board at bench height, as on a workshop test board. Unlike merged #175 (tube lowered down fixed sockets), here the pins enter sideways into rotors that light the tube only when both reach their stops.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the arm bases: x forward, y to the robot's left, z up from the table. A single 600 mm T8 batten (fixed: a pan 680 mm long on a back board, 53 mm behind the tube's axis) stands at x 0.42, with two G13 rotor lampholders whose inner faces are 596 mm apart at y +-0.298 and whose axis is 0.115 m above the table. Each holder is a housing with a round 10 mm pocket and an entry notch open to the front (3.4 mm wide with a 30 degree lead-in out to 13.4 mm), round a rotor (a 3.2 mm diametral slot, on a revolute joint about the tube's axis; 0 degrees: the slot lines up with the notch). The rotor clicks at 90 degrees (a stop). The new tube (free: 26 mm across, 590 mm cap to cap, bi-pins 2.47 mm, 12.7 mm apart, 7.5 mm out of each cap, 0.13 kg) lies in two bench trays at y +-0.10 at x 0.33, its pin line horizontal, between two end stops 1.5 mm outside its caps.",
+  "scoring": "Four steps, 0.2 each, judged as things stand at the end. (1) Both pin pairs are in both holders: the tube's axis within 3.5 mm of the holders' axis at both ends, within 2.9 mm of the middle along y (the pins at least 1.5 mm into each holder) and level within 3 degrees. (2) With step 1: both rotors have turned 45 degrees or more. (3) With step 2: both rotors are at their stops, 90 degrees within 5, and the tube is lit (the lamp is on only while step 1 holds and both rotors are at their stops). (4) With step 3: no gripper holds the tube and no pad is within 3 cm of it. Full score 1.0 (ends the run) only once all four steps have held together, without a break, for 1 s, with the tube within 2 mm and 2 degrees of where it was when that second began; any lapse restarts the second, and the step points stop at 0.8. Scoring 0 for the whole run: the tube dropped (its axis falling 35 mm or more below the holders' height, as a tube would break on the floor), or off the table.",
+  "run_limit": "1,600 steps (80 seconds at 20 Hz)",
+  "reset_notes": "Lay the tube in its trays with its pin line horizontal and its caps between the end stops; both rotors at 0 degrees, the lamp off. Nothing is held.",
+  "fidelity": "Declared: rotor click (drive past 45 deg goes to 90, short returns to 0; peak 0.1 N m, est.) and lamp (four visual strips, lit only with both pin pairs in and both rotors at 90 +-5 deg). Holder slot, notch, lead-in and pin length (7.5 mm) are estimates; G13 pin spacing 12.7 mm and pin diameter (2.47 mm max used) are IEC 60061. Holders front-entry, fixed length; BJB's 2 mm leaf-spring compensation omitted. Friction plastic on brass 0.30/0.25; tube on pads 0.6/0.5.",
+  "scores": "Dream-1 run: 0.0 (1600 steps, hit the step limit); demo: 1.0 at step 627 (scripted demo, Isaac Lab-Arena)",
+  "media": "M-97BDXU"
+}

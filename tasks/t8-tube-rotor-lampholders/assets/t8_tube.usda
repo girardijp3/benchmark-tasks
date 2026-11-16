@@ -1,0 +1,494 @@
+#usda 1.0
+(
+    defaultPrim = "T8Tube"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "T8Tube" (
+    delete apiSchemas = ["PhysicsMassAPI", "PhysicsRigidBodyAPI"]
+    doc = "A T8 fluorescent tube, 26 mm x 590 mm cap to cap, G13 bi-pins (2.47 mm, 12.7 mm apart, 7.5 mm out of each end), 0.13 kg. Free root; four visual strips on prismatic joints show when it is lit. Origin: the tube's middle, y along the tube, pins along x at 0 degrees."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.003776576, 0.00002197, 0.003776576)
+    float physics:mass = 0.1296
+
+    def Scope "Looks"
+    {
+        def Material "Phys_glass" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.5
+            float physics:restitution = 0
+            float physics:staticFriction = 0.6
+        }
+
+        def Material "m969693"
+        {
+            token outputs:surface.connect = </T8Tube/Looks/m969693/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.97, 0.97, 0.94)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.22
+                token outputs:surface
+            }
+        }
+
+        def Material "m777879"
+        {
+            token outputs:surface.connect = </T8Tube/Looks/m777879/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.78, 0.79, 0.8)
+                float inputs:metallic = 0.85
+                float inputs:roughness = 0.3
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_brass" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.25
+            float physics:restitution = 0
+            float physics:staticFriction = 0.3
+        }
+
+        def Material "m816224"
+        {
+            token outputs:surface.connect = </T8Tube/Looks/m816224/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.82, 0.63, 0.25)
+                float inputs:metallic = 0.9
+                float inputs:roughness = 0.3
+                token outputs:surface
+            }
+        }
+
+        def Material "m293032"
+        {
+            token outputs:surface.connect = </T8Tube/Looks/m293032/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.3, 0.31, 0.33)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m798593"
+        {
+            token outputs:surface.connect = </T8Tube/Looks/m798593/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.8, 0.86, 0.94)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m092454"
+        {
+            token outputs:surface.connect = </T8Tube/Looks/m092454/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.25, 0.55)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m997704"
+        {
+            token outputs:surface.connect = </T8Tube/Looks/m997704/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (1, 0.78, 0.05)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Xform "Base" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysicsArticulationRootAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float3 physics:diagonalInertia = (0.003776576, 0.00002197, 0.003776576)
+        float physics:mass = 0.1296
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cylinder "Body1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.578
+            rel material:binding = </T8Tube/Looks/m969693>
+            rel material:binding:physics = </T8Tube/Looks/Phys_glass> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double radius = 0.013000000000000001
+            double3 xformOp:translate = (0, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Cap2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.012
+            rel material:binding = </T8Tube/Looks/m777879>
+            rel material:binding:physics = </T8Tube/Looks/Phys_glass> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double radius = 0.012700000000000001
+            double3 xformOp:translate = (0, 0.289, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Capsule "Pin3" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.006030000000000001
+            rel material:binding = </T8Tube/Looks/m816224>
+            rel material:binding:physics = </T8Tube/Looks/Phys_brass> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double radius = 0.0012350000000000002
+            double3 xformOp:translate = (0.00635, 0.29824999999999996, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Capsule "Pin4" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.006030000000000001
+            rel material:binding = </T8Tube/Looks/m816224>
+            rel material:binding:physics = </T8Tube/Looks/Phys_brass> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double radius = 0.0012350000000000002
+            double3 xformOp:translate = (-0.00635, 0.29824999999999996, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Cap5" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.012
+            rel material:binding = </T8Tube/Looks/m777879>
+            rel material:binding:physics = </T8Tube/Looks/Phys_glass> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double radius = 0.012700000000000001
+            double3 xformOp:translate = (0, -0.289, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Capsule "Pin6" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.006030000000000001
+            rel material:binding = </T8Tube/Looks/m816224>
+            rel material:binding:physics = </T8Tube/Looks/Phys_brass> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double radius = 0.0012350000000000002
+            double3 xformOp:translate = (0.00635, -0.29824999999999996, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Capsule "Pin7" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.006030000000000001
+            rel material:binding = </T8Tube/Looks/m816224>
+            rel material:binding:physics = </T8Tube/Looks/Phys_brass> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double radius = 0.0012350000000000002
+            double3 xformOp:translate = (-0.00635, -0.29824999999999996, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "CapRing8" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.0012
+            rel material:binding = </T8Tube/Looks/m293032>
+            double radius = 0.01305
+            double3 xformOp:translate = (0, 0.2825, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "CapRing9" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.0012
+            rel material:binding = </T8Tube/Looks/m293032>
+            double radius = 0.01305
+            double3 xformOp:translate = (0, -0.2825, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Label10" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.16
+            rel material:binding = </T8Tube/Looks/m798593>
+            double radius = 0.013150000000000002
+            double3 xformOp:translate = (0, -0.13, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "LabelRing11" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.003
+            rel material:binding = </T8Tube/Looks/m092454>
+            double radius = 0.013200000000000002
+            double3 xformOp:translate = (0, -0.052000000000000005, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "LabelRing12" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.003
+            rel material:binding = </T8Tube/Looks/m092454>
+            double radius = 0.013200000000000002
+            double3 xformOp:translate = (0, -0.20800000000000002, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+    }
+
+    def Xform "Glow0" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float3 physics:diagonalInertia = (1e-8, 1e-8, 1e-8)
+        float physics:mass = 0.0001
+        double3 xformOp:translate = (0, 0, 0.011)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "Strip13" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </T8Tube/Looks/m997704>
+            double size = 1
+            float3 xformOp:scale = (0.008, 0.56, 0.0016)
+            double3 xformOp:translate = (0, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+
+    def Scope "Joints"
+    {
+        def PhysicsPrismaticJoint "Glow0" (
+            prepend apiSchemas = ["PhysicsDriveAPI:linear"]
+        )
+        {
+            float drive:linear:physics:damping = 0.3
+            float drive:linear:physics:stiffness = 20
+            float drive:linear:physics:targetPosition = 0
+            uniform token drive:linear:physics:type = "force"
+            uniform token physics:axis = "Z"
+            rel physics:body0 = </T8Tube/Base>
+            rel physics:body1 = </T8Tube/Glow0>
+            point3f physics:localPos0 = (0, 0, 0.011)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 0.0035
+        }
+
+        def PhysicsPrismaticJoint "Glow1" (
+            prepend apiSchemas = ["PhysicsDriveAPI:linear"]
+        )
+        {
+            float drive:linear:physics:damping = 0.3
+            float drive:linear:physics:stiffness = 20
+            float drive:linear:physics:targetPosition = 0
+            uniform token drive:linear:physics:type = "force"
+            uniform token physics:axis = "Z"
+            rel physics:body0 = </T8Tube/Base>
+            rel physics:body1 = </T8Tube/Glow1>
+            point3f physics:localPos0 = (0, 0, -0.011)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = -0.0035
+            float physics:upperLimit = 0
+        }
+
+        def PhysicsPrismaticJoint "Glow2" (
+            prepend apiSchemas = ["PhysicsDriveAPI:linear"]
+        )
+        {
+            float drive:linear:physics:damping = 0.3
+            float drive:linear:physics:stiffness = 20
+            float drive:linear:physics:targetPosition = 0
+            uniform token drive:linear:physics:type = "force"
+            uniform token physics:axis = "X"
+            rel physics:body0 = </T8Tube/Base>
+            rel physics:body1 = </T8Tube/Glow2>
+            point3f physics:localPos0 = (0.011, 0, 0)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 0.0035
+        }
+
+        def PhysicsPrismaticJoint "Glow3" (
+            prepend apiSchemas = ["PhysicsDriveAPI:linear"]
+        )
+        {
+            float drive:linear:physics:damping = 0.3
+            float drive:linear:physics:stiffness = 20
+            float drive:linear:physics:targetPosition = 0
+            uniform token drive:linear:physics:type = "force"
+            uniform token physics:axis = "X"
+            rel physics:body0 = </T8Tube/Base>
+            rel physics:body1 = </T8Tube/Glow3>
+            point3f physics:localPos0 = (-0.011, 0, 0)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = -0.0035
+            float physics:upperLimit = 0
+        }
+    }
+
+    def Xform "Glow1" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float3 physics:diagonalInertia = (1e-8, 1e-8, 1e-8)
+        float physics:mass = 0.0001
+        double3 xformOp:translate = (0, 0, -0.011)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "Strip14" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </T8Tube/Looks/m997704>
+            double size = 1
+            float3 xformOp:scale = (0.008, 0.56, 0.0016)
+            double3 xformOp:translate = (0, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+
+    def Xform "Glow2" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float3 physics:diagonalInertia = (1e-8, 1e-8, 1e-8)
+        float physics:mass = 0.0001
+        double3 xformOp:translate = (0.011, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "Strip15" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </T8Tube/Looks/m997704>
+            double size = 1
+            float3 xformOp:scale = (0.0016, 0.56, 0.008)
+            double3 xformOp:translate = (0, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+
+    def Xform "Glow3" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float3 physics:diagonalInertia = (1e-8, 1e-8, 1e-8)
+        float physics:mass = 0.0001
+        double3 xformOp:translate = (-0.011, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "Strip16" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </T8Tube/Looks/m997704>
+            double size = 1
+            float3 xformOp:scale = (0.0016, 0.56, 0.008)
+            double3 xformOp:translate = (0, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+}
+

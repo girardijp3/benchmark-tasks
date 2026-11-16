@@ -1,0 +1,980 @@
+#usda 1.0
+(
+    defaultPrim = "Batten"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Batten" (
+    delete apiSchemas = ["PhysicsMassAPI", "PhysicsRigidBodyAPI"]
+    doc = "A fixed 600 mm T8 batten on a back board with two G13 rotor lampholders. Each holder: a housing with a round 10 mm pocket, an entry notch from the front with a lead-in, and a rotor (9.4 mm) with a 3.2 mm diametral slot on a revolute joint about y. The notch lines up with the slot at 0 degrees; at -90 degrees the pins are behind the pocket wall. Origin: table level on the tube's axis, y 0 midway."
+)
+{
+    point3f physics:centerOfMass = (0.03, 0, 0.1)
+    float3 physics:diagonalInertia = (0.1, 0.1, 0.1)
+    float physics:mass = 2
+
+    def Scope "Looks"
+    {
+        def Material "Phys_pan" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.25
+            float physics:restitution = 0
+            float physics:staticFriction = 0.3
+        }
+
+        def Material "m959594"
+        {
+            token outputs:surface.connect = </Batten/Looks/m959594/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.96, 0.96, 0.95)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.4
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_wood" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.25
+            float physics:restitution = 0
+            float physics:staticFriction = 0.3
+        }
+
+        def Material "m858173"
+        {
+            token outputs:surface.connect = </Batten/Looks/m858173/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.86, 0.82, 0.74)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m949492"
+        {
+            token outputs:surface.connect = </Batten/Looks/m949492/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.95, 0.93)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_plastic" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.25
+            float physics:restitution = 0
+            float physics:staticFriction = 0.3
+        }
+
+        def Material "m797873"
+        {
+            token outputs:surface.connect = </Batten/Looks/m797873/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.8, 0.79, 0.74)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m656668"
+        {
+            token outputs:surface.connect = </Batten/Looks/m656668/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.66, 0.67, 0.69)
+                float inputs:metallic = 0.85
+                float inputs:roughness = 0.35
+                token outputs:surface
+            }
+        }
+    }
+
+    def Xform "Base" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysicsArticulationRootAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0.03, 0, 0.1)
+        float3 physics:diagonalInertia = (0.1, 0.1, 0.1)
+        float physics:mass = 2
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "Pan1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m959594>
+            rel material:binding:physics = </Batten/Looks/Phys_pan> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.003, 0.68, 0.08)
+            double3 xformOp:translate = (0.05450000000000001, 0, 0.115)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Board2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m858173>
+            rel material:binding:physics = </Batten/Looks/Phys_wood> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.018, 0.76, 0.19)
+            double3 xformOp:translate = (0.065, 0, 0.095)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "HousingRotL3" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            double size = 1
+            float3 xformOp:scale = (0.077, 0.014, 0.048)
+            double3 xformOp:translate = (0.014500000000000002, 0.305, 0.115)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "RingRotL4" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (0.0125, 0.30224999999999996, 0.115)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "RingRotL5" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 22.5
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (0.011548494156391085, 0.30224999999999996, 0.11021645709543638)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotL6" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 45
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (0.008838834764831846, 0.30224999999999996, 0.10616116523516816)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotL7" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 67.5
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (0.004783542904563624, 0.30224999999999996, 0.10345150584360892)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotL8" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 90
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (7.654042494670958e-19, 0.30224999999999996, 0.10250000000000001)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotL9" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 112.5
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (-0.004783542904563622, 0.30224999999999996, 0.10345150584360892)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotL10" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 135
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (-0.008838834764831844, 0.30224999999999996, 0.10616116523516816)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotL11" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 225
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (-0.008838834764831846, 0.30224999999999996, 0.12383883476483185)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotL12" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 247.5
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (-0.004783542904563619, 0.30224999999999996, 0.12654849415639108)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotL13" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 270
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (-2.296212748401287e-18, 0.30224999999999996, 0.1275)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotL14" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 292.5
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (0.004783542904563625, 0.30224999999999996, 0.12654849415639108)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotL15" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 315
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (0.008838834764831842, 0.30224999999999996, 0.12383883476483185)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotL16" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 337.5
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (0.011548494156391087, 0.30224999999999996, 0.11978354290456363)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "LeadRotL17" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 30.000729
+            float3 xformOp:scale = (0.00999978, 0.0085, 0.0025)
+            double3 xformOp:translate = (-0.01433, 0.30224999999999996, 0.12028252381578593)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "LeadRotL18" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = -30.000729
+            float3 xformOp:scale = (0.00999978, 0.0085, 0.0025)
+            double3 xformOp:translate = (-0.01433, 0.30224999999999996, 0.10971747618421408)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "BackRotL19" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.024, 0.002, 0.024)
+            double3 xformOp:translate = (0, 0.3075, 0.115)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "HousingRotR23" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            double size = 1
+            float3 xformOp:scale = (0.077, 0.014, 0.048)
+            double3 xformOp:translate = (0.014500000000000002, -0.305, 0.115)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "RingRotR24" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (0.0125, -0.30224999999999996, 0.115)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "RingRotR25" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 22.5
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (0.011548494156391085, -0.30224999999999996, 0.11021645709543638)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotR26" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 45
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (0.008838834764831846, -0.30224999999999996, 0.10616116523516816)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotR27" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 67.5
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (0.004783542904563624, -0.30224999999999996, 0.10345150584360892)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotR28" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 90
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (7.654042494670958e-19, -0.30224999999999996, 0.10250000000000001)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotR29" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 112.5
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (-0.004783542904563622, -0.30224999999999996, 0.10345150584360892)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotR30" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 135
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (-0.008838834764831844, -0.30224999999999996, 0.10616116523516816)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotR31" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 225
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (-0.008838834764831846, -0.30224999999999996, 0.12383883476483185)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotR32" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 247.5
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (-0.004783542904563619, -0.30224999999999996, 0.12654849415639108)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotR33" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 270
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (-2.296212748401287e-18, -0.30224999999999996, 0.1275)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotR34" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 292.5
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (0.004783542904563625, -0.30224999999999996, 0.12654849415639108)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotR35" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 315
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (0.008838834764831842, -0.30224999999999996, 0.12383883476483185)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "RingRotR36" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 337.5
+            float3 xformOp:scale = (0.005, 0.0085, 0.0061463923)
+            double3 xformOp:translate = (0.011548494156391087, -0.30224999999999996, 0.11978354290456363)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "LeadRotR37" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = 30.000729
+            float3 xformOp:scale = (0.00999978, 0.0085, 0.0025)
+            double3 xformOp:translate = (-0.01433, -0.30224999999999996, 0.12028252381578593)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "LeadRotR38" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateY = -30.000729
+            float3 xformOp:scale = (0.00999978, 0.0085, 0.0025)
+            double3 xformOp:translate = (-0.01433, -0.30224999999999996, 0.10971747618421408)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateY", "xformOp:scale"]
+        }
+
+        def Cube "BackRotR39" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m949492>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.024, 0.002, 0.024)
+            double3 xformOp:translate = (0, -0.3075, 0.115)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cylinder "Screw43" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.0015
+            rel material:binding = </Batten/Looks/m656668>
+            double radius = 0.003
+            double3 xformOp:translate = (0.051000000000000004, 0.25, 0.14)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Screw44" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.0015
+            rel material:binding = </Batten/Looks/m656668>
+            double radius = 0.003
+            double3 xformOp:translate = (0.051000000000000004, 0.25, 0.09)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Screw45" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.0015
+            rel material:binding = </Batten/Looks/m656668>
+            double radius = 0.003
+            double3 xformOp:translate = (0.051000000000000004, -0.25, 0.14)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Screw46" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.0015
+            rel material:binding = </Batten/Looks/m656668>
+            double radius = 0.003
+            double3 xformOp:translate = (0.051000000000000004, -0.25, 0.09)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Screw47" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.0015
+            rel material:binding = </Batten/Looks/m656668>
+            double radius = 0.003
+            double3 xformOp:translate = (0.051000000000000004, 0, 0.14)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Screw48" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.0015
+            rel material:binding = </Batten/Looks/m656668>
+            double radius = 0.003
+            double3 xformOp:translate = (0.051000000000000004, 0, 0.09)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cube "Lip49" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m959594>
+            double size = 1
+            float3 xformOp:scale = (0.008, 0.68, 0.0012)
+            double3 xformOp:translate = (0.049, 0, 0.1555)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Lip50" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m959594>
+            double size = 1
+            float3 xformOp:scale = (0.008, 0.68, 0.0012)
+            double3 xformOp:translate = (0.049, 0, 0.07450000000000001)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+
+    def Xform "RotL" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0.003, 0)
+        float3 physics:diagonalInertia = (0.0000015, 0.000001, 0.0000015)
+        float physics:mass = 0.02
+        double3 xformOp:translate = (0, 0.298, 0.115)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "WallRotL20" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m797873>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.0176, 0.007, 0.0017)
+            double3 xformOp:translate = (0, 0.0035, 0.00245)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "WallRotL21" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m797873>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.0176, 0.007, 0.0017)
+            double3 xformOp:translate = (0, 0.0035, -0.00245)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cylinder "FloorRotL22" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.0015
+            rel material:binding = </Batten/Looks/m797873>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double radius = 0.0094
+            double3 xformOp:translate = (0, 0.00775, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+    }
+
+    def Scope "Joints"
+    {
+        def PhysicsRevoluteJoint "RotL" (
+            prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysxJointAPI"]
+        )
+        {
+            float drive:angular:physics:damping = 0.0004
+            float drive:angular:physics:stiffness = 0.0022222223
+            float drive:angular:physics:targetPosition = 0
+            uniform token drive:angular:physics:type = "force"
+            uniform token physics:axis = "Y"
+            rel physics:body0 = </Batten/Base>
+            rel physics:body1 = </Batten/RotL>
+            point3f physics:localPos0 = (0, 0.298, 0.115)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = -93
+            float physics:upperLimit = 3
+            custom float physxJoint:armature = 0.00003
+        }
+
+        def PhysicsRevoluteJoint "RotR" (
+            prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysxJointAPI"]
+        )
+        {
+            float drive:angular:physics:damping = 0.0004
+            float drive:angular:physics:stiffness = 0.0022222223
+            float drive:angular:physics:targetPosition = 0
+            uniform token drive:angular:physics:type = "force"
+            uniform token physics:axis = "Y"
+            rel physics:body0 = </Batten/Base>
+            rel physics:body1 = </Batten/RotR>
+            point3f physics:localPos0 = (0, -0.298, 0.115)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = -93
+            float physics:upperLimit = 3
+            custom float physxJoint:armature = 0.00003
+        }
+    }
+
+    def Xform "RotR" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, -0.003, 0)
+        float3 physics:diagonalInertia = (0.0000015, 0.000001, 0.0000015)
+        float physics:mass = 0.02
+        double3 xformOp:translate = (0, -0.298, 0.115)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "WallRotR40" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m797873>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.0176, 0.007, 0.0017)
+            double3 xformOp:translate = (0, -0.0035, 0.00245)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "WallRotR41" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Batten/Looks/m797873>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.0176, 0.007, 0.0017)
+            double3 xformOp:translate = (0, -0.0035, -0.00245)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cylinder "FloorRotR42" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.0015
+            rel material:binding = </Batten/Looks/m797873>
+            rel material:binding:physics = </Batten/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double radius = 0.0094
+            double3 xformOp:translate = (0, -0.00775, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+    }
+}
+
