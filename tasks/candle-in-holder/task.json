@@ -1,0 +1,23 @@
+{
+  "title": "Press and twist a taper candle into a free brass candlestick",
+  "category": "Societal relatability",
+  "keywords": [
+    "household",
+    "candle",
+    "candlestick",
+    "insertion",
+    "table setting",
+    "everyday tasks",
+    "home robot",
+    "dining"
+  ],
+  "instruction": "Put the taper candle in the brass candlestick, seated all the way down in its socket, so that it stands upright by itself.",
+  "context": "Putting candles in candlesticks is part of setting a table for dinner at home, and of laying tables before service in restaurants and hotels. A dinner candle's base is a short taper made to wedge in the standard 7/8 in socket: it has to be pressed and twisted in until it is down to the floor and stands upright by itself, or it leans, drips onto the cloth and can topple once lit. The candlestick is free on the table (not clamped), so the push must not tip or slide it. The other hand may steady its stem (the demo does), but one hand is enough here.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the arm bases: x forward, y to the robot's left. A free 4 in solid-brass altar candlestick (340 g, 127 mm foot, 24 mm waisted stem, socket 22.2 mm across and 22 mm deep with its rim 101.6 mm above the table, a 4 mm 45 degree flared mouth) stands at x 0.30, y -0.08. An 8 in taper-base dinner candle (46 g, 203 mm: a 25 mm base taper widening from 20.0 to 23.4 mm across, 17 mm at the top) stands on its base end at x 0.26, y -0.20.",
+  "scoring": "Four steps, 0.2 each, judged as things stand at the end except the first. (1) The candle was lifted at least 15 mm off the table at some time. (2) Its tapered base is wedging in the socket: at least 16 mm below the rim, base within 5 mm of the socket's axis, within 8 degrees of upright. (3) Wedged to the floor: at least 20.5 mm below the rim, base within 1.5 mm of the socket's axis, within 2 degrees of upright. (4) With step 3, no gripper holds the candle or the candlestick and no pad is within 3 cm of the candle. Full score 1.0 (ends the run) only once all four steps have held together, without a break, for 1 s, with the candle and the candlestick each within 2 mm and 2 degrees of where they were when that second began; any lapse restarts the second, and the step points stop at 0.8. Rule events score 0 for the whole run: the candle or the candlestick off the table, or the candlestick tipping over 10 degrees or sliding more than 10 mm from its start.",
+  "run_limit": "480 steps (24 s at 20 Hz): the demo succeeds at about step 370, plus about 30 %",
+  "reset_notes": "Stand the candle on its base end at x 0.26, y -0.20 and the candlestick on its foot at x 0.30, y -0.08 with the socket empty.",
+  "fidelity": "Candlestick: Prospect Hill Co. 4 in altar candlestick (5 in base, 7/8 in socket, 340 g, maker's listing), profile modelled, not scanned. Candle: 8 in taper-base dinner candle, 46 g (scaled from listed tapers); its 20.0-23.4 mm base taper is a design value. Socket: 12 sprung walls (7,700 N/m, 0.6 mm) for the wax's give; the 8 N seating push and 3.5 N pull-out are sim values, not measured. One hand is enough. Start window about 1 mm. Details in README.",
+  "scores": "Dream-1 run: 0.2 (480 steps, hit the step limit); demo: 1.0 at step 371 (scripted demo, Isaac Lab-Arena)",
+  "media": "M-HL2LGE"
+}
