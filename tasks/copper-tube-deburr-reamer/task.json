@@ -1,0 +1,24 @@
+{
+  "title": "Ream the burr off a freshly cut copper tube",
+  "category": "Impact on jobs",
+  "keywords": [
+    "plumbing",
+    "deburring",
+    "copper tube",
+    "reamer",
+    "hand tool",
+    "pipe fitting",
+    "HVAC",
+    "two hands",
+    "tool use"
+  ],
+  "instruction": "Remove the burr from inside the freshly cut copper tube's end with the hand reamer, without chamfering the thin wall, then stand the tube back in its rack and put the reamer down.",
+  "context": "Plumbers, pipefitters and steamfitters (O*NET 47-2152.00, about 0.5 million employed in the US) and HVAC mechanics and installers (49-9021.00, about 0.4 million) cut copper tube all day, and every cut leaves a burr round the inside of the end. Reaming it off is a required step before a joint is made (the fitting makers and ASTM B828 call for it): a left burr makes turbulence and erosion in the line, and a reamer run too long chamfers the thin wall. The tube is held upright in one hand while the other turns the reamer, and since the wrist does not turn far the hand lets go and re-grips between strokes.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the arm bases: x forward, y to the robot's left. A tube rack (fixed: a 90 x 90 x 4 mm plate with a 27 mm bore through a 20 mm high wall, with a 7 mm 45 degree lead-in) stands at x 0.27, y -0.05. A freshly cut piece of 22 x 0.9 mm copper tube (EN 1057 R250: 22 mm outside, 20.2 mm bore, 100 mm long, 0.053 kg, free) stands in it, open end up, with a 0.4 mm burr round the inside of the end. A reamer rest (fixed: a 90 x 90 x 6 mm plate with an 18 mm bore through an 18 mm high wall, 5 mm lead-in) stands at x 0.22, y -0.20; the reamer (free: an inner-outer deburring reamer with a conical blade 8 mm at the tip and 26 mm across 14 mm up, a 45 mm cutting cup and a 30 mm handle, 72 mm long, 0.090 kg) stands in it, cone down.",
+  "scoring": "Four steps, 0.2 each, judged as things stand at the end. (1) The reamer's cone was seated in the bore of the tube while a gripper held it (cone tip at least 6 mm below the rim, tip within 3 mm of the bore's axis, axis within 8 degrees of the tube's). (2) Every one of 12 sectors of the bore has had at least one blade pass (the burr at least half removed all round). (3) Every sector has had two passes (burr removed all round) and no sector's rim has been chamfered past 0.5 mm. (4) With step 3: the tube stands in its rack (its lower end within 4 mm of the bore's axis and of its seat, leaning less than 20 degrees), the reamer's cone is out of the bore, no gripper holds either part and no pad is within 3 cm of either. A blade pass counts only while the reamer turns clockwise, the cone is seated, a gripper holds the tube; turning back, or turning in any other state, cuts nothing. Each pass over a sector with its burr gone chamfers its rim by 0.2 mm, so turning on past the burr thins the wall: past 0.5 mm steps 3 and 4 are lost for good (score at most 0.4). Full score 1.0 (ends the run) only once all four steps have held together, without a break, for 1 s, with the tube and reamer within 2 mm and 2 degrees of where they were when that second began; any lapse restarts the second, and the step points stop at 0.8. Scoring 0 for the whole run: the tube or the reamer off the table, or the tube dropped or knocked over (tipped more than 60 degrees).",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Stand the tube in the rack (lower end on its plate), open end up, with its burr; stand the reamer cone-down in its rest. Nothing is held.",
+  "fidelity": "Burr and chamfer are declared effects, not simulated material (12 sectors, two blades, 0.2 mm off the burr per pass). Cutting torque IS modelled as an equal and opposite pair, 0.08 N m on the tube and on the reamer while cone seated and turning clockwise (estimate from burr shear: 200 MPa copper x 2e-8 m2 x 2 blades x 10 mm); the holding hand must react it, an unheld tube turns. 100 mm offcut so the left arm can reach it. Rack is the authors' bench fixture. Rigid parts at true size.",
+  "scores": "Dream-1 run: 0.0 (2400 steps, hit the step limit); demo: 1.0 at step 1027 (scripted demo, Isaac Lab-Arena)",
+  "media": "M-C7YEFJ"
+}
