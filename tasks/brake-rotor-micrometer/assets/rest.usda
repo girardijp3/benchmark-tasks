@@ -1,0 +1,128 @@
+#usda 1.0
+(
+    defaultPrim = "Rest"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Rest" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "The micrometer's bench rest (fixed): two upright ribs the frame's arms lie across, a base, and a 32 mm slot between the ribs, open toward -x, for the lower finger pad. Origin: on the table under the anvil face's centre."
+)
+{
+    point3f physics:centerOfMass = (-0.015, -0.011, 0.07)
+    float3 physics:diagonalInertia = (0.01, 0.01, 0.01)
+    float physics:mass = 1
+
+    def Scope "Looks"
+    {
+        def Material "Phys_plastic" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.4
+            float physics:restitution = 0
+            float physics:staticFriction = 0.45
+        }
+
+        def Material "m092954"
+        {
+            token outputs:surface.connect = </Rest/Looks/m092954/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.3, 0.55)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m030303"
+        {
+            token outputs:surface.connect = </Rest/Looks/m030303/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.04, 0.04, 0.04)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "RibAnvil1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Rest/Looks/m092954>
+        rel material:binding:physics = </Rest/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.046, 0.006, 0.146)
+        double3 xformOp:translate = (-0.015, 0.01, 0.073)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "RibSpindle2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Rest/Looks/m092954>
+        rel material:binding:physics = </Rest/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.046, 0.006, 0.146)
+        double3 xformOp:translate = (-0.015, -0.032, 0.073)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Base3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Rest/Looks/m092954>
+        rel material:binding:physics = </Rest/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.08, 0.08, 0.03)
+        double3 xformOp:translate = (-0.015, -0.011, 0.015)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "RubberCap4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Rest/Looks/m030303>
+        double size = 1
+        float3 xformOp:scale = (0.046, 0.006, 0.0008)
+        double3 xformOp:translate = (-0.015, 0.01, 0.1464)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "RubberCap5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Rest/Looks/m030303>
+        double size = 1
+        float3 xformOp:scale = (0.046, 0.006, 0.0008)
+        double3 xformOp:translate = (-0.015, -0.032, 0.1464)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+
