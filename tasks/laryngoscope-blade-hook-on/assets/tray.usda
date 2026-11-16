@@ -1,0 +1,134 @@
+#usda 1.0
+(
+    defaultPrim = "Tray"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Tray" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A fixed dark crash-cart tray 260 x 400 x 3 mm with a low rim. Origin: table level at its centre."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0.0015)
+    float3 physics:diagonalInertia = (0.01, 0.01, 0.01)
+    float physics:mass = 1
+
+    def Scope "Looks"
+    {
+        def Material "Phys_steel" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.35
+            float physics:restitution = 0
+            float physics:staticFriction = 0.4
+        }
+
+        def Material "P_tray"
+        {
+            token outputs:surface.connect = </Tray/Looks/P_tray/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.09, 0.1, 0.12)
+                float inputs:metallic = 0.5
+                float inputs:roughness = 0.45
+                token outputs:surface
+            }
+        }
+
+        def Material "P_rim"
+        {
+            token outputs:surface.connect = </Tray/Looks/P_rim/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.3, 0.32, 0.36)
+                float inputs:metallic = 0.7
+                float inputs:roughness = 0.35
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Plate1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </Tray/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.26, 0.4, 0.003)
+        double3 xformOp:translate = (0, 0, 0.0015)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Mesh "PlateV2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.13, -0.2, 0), (0.13, 0.2, 0.003)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 2, 1, 0, 3, 2, 4, 6, 7, 4, 5, 6, 0, 5, 4, 0, 1, 5, 3, 6, 2, 3, 7, 6, 0, 7, 3, 0, 4, 7, 1, 6, 5, 1, 2, 6]
+        rel material:binding = </Tray/Looks/P_tray>
+        point3f[] points = [(-0.13, -0.2, 0), (-0.13, 0.2, 0), (-0.13, 0.2, 0.003), (-0.13, -0.2, 0.003), (0.13, -0.13, 0), (0.13, 0.13, 0), (0.13, 0.13, 0.003), (0.13, -0.13, 0.003)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "RimV3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.13, -0.2, 0.003), (0.13, -0.198, 0.0055)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 2, 1, 0, 3, 2, 4, 6, 7, 4, 5, 6, 0, 5, 4, 0, 1, 5, 3, 6, 2, 3, 7, 6, 0, 7, 3, 0, 4, 7, 1, 6, 5, 1, 2, 6]
+        rel material:binding = </Tray/Looks/P_rim>
+        point3f[] points = [(-0.13, -0.2, 0.003), (-0.13, -0.198, 0.003), (-0.13, -0.198, 0.0055), (-0.13, -0.2, 0.0055), (0.13, -0.2, 0.003), (0.13, -0.198, 0.003), (0.13, -0.198, 0.0055), (0.13, -0.2, 0.0055)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "RimV4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.13, 0.198, 0.003), (0.13, 0.2, 0.0055)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 2, 1, 0, 3, 2, 4, 6, 7, 4, 5, 6, 0, 5, 4, 0, 1, 5, 3, 6, 2, 3, 7, 6, 0, 7, 3, 0, 4, 7, 1, 6, 5, 1, 2, 6]
+        rel material:binding = </Tray/Looks/P_rim>
+        point3f[] points = [(-0.13, 0.198, 0.003), (-0.13, 0.2, 0.003), (-0.13, 0.2, 0.0055), (-0.13, 0.198, 0.0055), (0.13, 0.198, 0.003), (0.13, 0.2, 0.003), (0.13, 0.2, 0.0055), (0.13, 0.198, 0.0055)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "RimV5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.13, -0.2, 0.003), (-0.128, 0.2, 0.0055)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 2, 1, 0, 3, 2, 4, 6, 7, 4, 5, 6, 0, 5, 4, 0, 1, 5, 3, 6, 2, 3, 7, 6, 0, 7, 3, 0, 4, 7, 1, 6, 5, 1, 2, 6]
+        rel material:binding = </Tray/Looks/P_rim>
+        point3f[] points = [(-0.13, -0.2, 0.003), (-0.13, 0.2, 0.003), (-0.13, 0.2, 0.0055), (-0.13, -0.2, 0.0055), (-0.128, -0.2, 0.003), (-0.128, 0.2, 0.003), (-0.128, 0.2, 0.0055), (-0.128, -0.2, 0.0055)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "RimV6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.128, -0.2, 0.003), (0.13, 0.2, 0.0055)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 2, 1, 0, 3, 2, 4, 6, 7, 4, 5, 6, 0, 5, 4, 0, 1, 5, 3, 6, 2, 3, 7, 6, 0, 7, 3, 0, 4, 7, 1, 6, 5, 1, 2, 6]
+        rel material:binding = </Tray/Looks/P_rim>
+        point3f[] points = [(0.128, -0.2, 0.003), (0.128, 0.2, 0.003), (0.128, 0.2, 0.0055), (0.128, -0.2, 0.0055), (0.13, -0.2, 0.003), (0.13, 0.2, 0.003), (0.13, 0.2, 0.0055), (0.13, -0.2, 0.0055)]
+        uniform token subdivisionScheme = "none"
+    }
+}
+

@@ -1,0 +1,24 @@
+{
+  "title": "Hook a laryngoscope blade onto its handle and click it into the lit position",
+  "category": "Impact on jobs",
+  "keywords": [
+    "nursing",
+    "emergency medical",
+    "crash cart",
+    "laryngoscope",
+    "hook-on blade",
+    "hinge",
+    "detent",
+    "equipment check",
+    "tool use"
+  ],
+  "instruction": "Ready the laryngoscope for the crash-cart check: hook the blade onto the handle's hinge bar, swing it out until it clicks into the lit position, and leave the lit scope on the tray.",
+  "context": "Registered nurses (O*NET 29-1141.00, about 3.2 million employed in the US, BLS OEWS May 2023) and emergency medical technicians and paramedics (29-2042.00 and 29-2043.00, about 0.27 million) check the laryngoscope on every crash cart and in every ambulance at each shift or daily check: the blade is hooked onto the handle's hinge bar and swung out into its locked position, which closes the lamp contact, and the light has to be seen to come on. A blade that is not fully clicked in gives no light, which is otherwise found out only during an emergency intubation. A robot that runs these routine equipment checks would free nurse time on every ward. Here the handle lies on the tray: one hand can do the hook-on and the two-stage swing (the other may steady the handle, but it does not have to).",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the arm bases: x forward, y to the robot's left. A steel crash-cart tray (fixed, 260 x 400 x 3 mm, centre x 0.33, y 0.03) holds both parts, which lie on their sides. The handle (free: a medium C-cell fibre-optic handle of the Welch Allyn 60813 class, ISO 7376 green standard, 28 mm x 150 mm grip, 0.25 kg) lies along y with its base end at y 0.20 and, at its head end, a bridge carrying a vertical 4.5 mm hinge bar at x 0.31, y 0.038. The blade (free: a Macintosh 3 style fibre-optic blade, 130 mm long, 20 mm high, 0.08 kg, with a 5 mm wide hook slot with a 3 mm 45 degree lead-in in its base face) lies in line with the handle, pointing along -y, its base face 45 mm short of the bar and the slot facing it.",
+  "scoring": "Four steps, 0.2 each, judged as things stand at the end. (1) The blade is hooked on the bar: the bar is in the slot 3 mm or more (within 1 mm of its centre line, 4 mm of its height), the blade lies flat and within 10 degrees of in line with the handle when it goes on. (2) The blade is swung 45 degrees or more out from in line. (3) The blade is clicked into the detent (swung 87 degrees or more, then held at 90) and within 3 degrees of 90, so the lamp is lit. (4) With step 3: both parts lie on the tray (middles, and the blade's tip, over it), no gripper holds either and no pad is within 3 cm of either. A hooked blade turns only about the bar and comes off only by being pulled straight back while in line; pulling it back out of the detent by 4 degrees in one step puts the lamp out. Full score 1.0 (ends the run) only once all four steps have held together, without a break, for 1 s, with the handle and blade within 2 mm and 2 degrees of where they were when that second began; any lapse restarts the second, and the step points stop at 0.8. Scoring 0 for the whole run: the handle or the blade off the table.",
+  "run_limit": "1,600 steps (80 seconds at 20 Hz)",
+  "reset_notes": "Lay the handle and the blade on the tray as in Setup, blade in line with the handle, 45 mm short of the bar, nothing held, lamp out.",
+  "fidelity": "Declared: hinge (blade turns only about the bar once in the slot) and detent (at 87 deg+ blade held at 90 deg, lamp lights, sliding marker). Not modelled: detent torque (click unmeasured, est. 0.1-0.3 N m), swing reaction, hinge friction. Bar diameter 4.505 mm from ISO 7376 Fig. 2; slot, lead-in, handle, tray, click angle estimated. Blade drawn straight (real Macintosh 3 is curved; the scored hook-on base is the same). Ends at the light check; folding closed again is not part of it.",
+  "scores": "Dream-1 run: 0.0 (1600 steps, hit the step limit); demo: 1.0 at step 542 (scripted demo, Isaac Lab-Arena)",
+  "media": "M-2WSUQ6"
+}
