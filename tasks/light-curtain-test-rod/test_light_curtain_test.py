@@ -1,5 +1,6 @@
-"""Offline checks (no GPU, no network): the task file loads, the lamp rule and the scorer cover each outcome, and the
-demo's poses are reachable. Run in the yam_arena environment:  python -m pytest -q test_light_curtain_test.py"""
+"""Offline checks (no GPU, no network): the task file loads, the lamp rule and the scorer cover each outcome, the
+50 mm/s / 3 s lane gate holds, and the demo's poses are reachable. Run in the yam_arena environment:
+python -m pytest -q test_light_curtain_test.py"""
 
 import math
 import os
@@ -85,11 +86,11 @@ class Episode:
     def at_lane(self, rod_side, curtain, lane, h, past=T.TIP_PAST):
         self.rod_at(rod_side, T.CUR_X + past - T.ROD_L / 2, T.CURTAIN_Y[curtain] + T.LANES[lane], h)
 
-    def sweep(self, side, rod_side=None, lanes=(0, 1, 2), lo=T.FIELD_LO + 0.001, hi=T.FIELD_HI - 0.001, dh=0.004,
+    def sweep(self, side, rod_side=None, lanes=(0, 1, 2), lo=T.FIELD_LO + 0.001, hi=T.FIELD_HI - 0.001, dh=0.002,
               skip=()):
         """Rod ``rod_side`` (default: the curtain's own) swept up lane 0, down lane 1, up lane 2 (the serpentine of the
-        demo), one control step per ``dh`` of axis height, then drawn back to its saddles. ``skip`` leaves out axis
-        heights (m, a range) so a hole can be left in a lane."""
+        demo), one control step per ``dh`` of axis height, then drawn back to its saddles. ``dh=0.002`` is 40 mm/s,
+        inside the 50 mm/s limit; ``skip`` leaves out axis heights (m, a range) so a hole can be left in a lane."""
         rod = rod_side or side
         for n, lane in enumerate(lanes):
             hs = list(np.arange(lo, hi + 1e-9, dh))
@@ -226,7 +227,7 @@ def test_missing_a_lane_is_not_covered(lane):
 def test_a_hole_in_one_lane_is_not_covered(hole):
     # a gap of one cell (10 mm) or more in the swept heights of one lane: the cell is never crossed
     e = Episode()
-    e.sweep("left", skip=((hole[0], hole[1]),), dh=0.0025)
+    e.sweep("left", skip=((hole[0], hole[1]),), dh=0.002)  # 40 mm/s: the lane gate is not what fails here
     assert e.done()[0] is False, hole
 
 
@@ -234,6 +235,35 @@ def test_a_fast_sweep_leaves_cells_uncrossed():
     e = Episode()
     e.sweep("left", dh=0.025)  # 25 mm a control step (0.5 m/s): the lamp is not read often enough
     assert e.done()[0] is False
+
+
+def test_a_hundred_mm_per_second_sweep_does_not_count():
+    e = Episode()
+    e.sweep("left", dh=0.005)  # 5 mm a control step = 100 mm/s: every 10 mm cell is still hit
+    assert T.covered(T._PROGRESS.cells["left"])
+    assert e.done()[0] is False
+    assert not any(T.lane_done("left", lane) for lane in range(len(T.LANES)))
+
+
+def test_a_three_second_lane_at_the_limit_counts():
+    e = Episode()
+    for h in np.linspace(T.FIELD_LO, T.FIELD_HI, 61):  # 150 mm in 60 control steps = 3.0 s at 50 mm/s
+        e.at_lane("left", "left", 0, h)
+        e.step(0.05)
+    e.sweep("left", lanes=(1, 2))
+    assert e.done()[0] is True
+
+
+def test_a_full_grid_swept_too_fast_does_not_reach_full_score():
+    e = Episode()
+    e.sweep("left", dh=0.005)
+    e.sweep("right", dh=0.005)
+    e.tag_in(T.FAULTY)
+    assert all(T.covered(T._PROGRESS.cells[s]) for s in T.SIDES)
+    assert e.done()[:3] == [False, False, False]
+    for _ in range(6):
+        score, ok = e.step(0.5)
+        assert ok is False and score < 1.0
 
 
 def test_a_sweep_off_the_lanes_does_not_count():

@@ -8,9 +8,10 @@ Each rod is swept through its machine's whole protective field, as in the test-r
 operating instructions 8021645, section 4.5.1: the rod is moved slowly through the area to be protected and guided
 along its edges while the receiver's indicator must stay red): three vertical lanes (along the sender post's edge, the
 middle, along the receiver post's edge), full height, every cell of the lane-by-height grid crossed with the lamp
-watched. A curtain with a dead channel shows a not-red lamp where the rod covers only that channel's beam, wherever in the
-height that is (the channel is drawn anew every episode); the tag goes in the holder of the machine whose curtain
-missed the rod, after that curtain's whole field was covered.
+watched, each lane in one continuous run of at least 3 s at no more than 50 mm/s (150 mm / 3 s, as a stopwatch on the
+video checks it). A curtain with a dead channel shows a not-red lamp where the rod covers only that channel's beam,
+wherever in the height that is (the channel is drawn anew every episode); the tag goes in the holder of the machine whose
+curtain missed the rod, after that curtain's whole field was covered.
 
 The curtains, holders, saddles and rack are fixtures; the rods and the tag are rigid bodies. The lamp is a declared
 code effect: a red and a green disc (no collider, no gravity) that the task swaps on the receiver's cap, red while a
@@ -336,6 +337,10 @@ LANE_TOL = 0.025  # the rod's axis crosses the plane within this of the lane's c
 CELL = 0.010
 CELLS_Z = int(round((FIELD_HI - FIELD_LO) / CELL))  # 15
 ALL_CELLS = frozenset((lane, k) for lane in range(len(LANES)) for k in range(CELLS_Z))
+SWEEP_MAX = 0.050  # m/s: the real test-rod check guides the rod through a lane no faster than this (SICK deTec4
+# operating instructions 8021645, section 4.5.1: 3 s or more for each 150 mm lane, timed with a stopwatch on the video)
+LANE_S = (FIELD_HI - FIELD_LO) / SWEEP_MAX  # 3.0 s for one 150 mm lane
+LANE_GAP = 0.11  # s: crossings further apart than this are separate runs, not one continuous lane sweep
 SEAT_X, SEAT_Y, SEAT_DROP, SEAT_RISE = 0.012, 0.004, 0.002, 0.004  # the tag's lower edge's middle off the slot's centre
 SEAT_TILT = math.radians(6.0)
 CLEAR = 0.03  # m: every gripper at least this far from the tag and the rods
@@ -344,8 +349,10 @@ FALLEN_Z = -0.03
 GRIP_PAD_POINTS = 11
 STILL_S, STILL_TURN, STILL_MOVE = 1.0, math.radians(2.0), 0.002
 TRACE_S = 1.0
-STEPS = ("left curtain's whole field covered with the rod (three lanes, full height, lamp watched)",
-         "right curtain's whole field covered with the rod (three lanes, full height, lamp watched)",
+STEPS = ("left curtain's whole field covered with the rod (three lanes, full height, each lane >= 3 s at <= 50 mm/s, "
+         "lamp watched)",
+         "right curtain's whole field covered with the rod (three lanes, full height, each lane >= 3 s at <= 50 mm/s, "
+         "lamp watched)",
          "tag in the holder of the machine that missed the rod (after its test), none in the other",
          "let go: both rods out of the fields, grippers clear")
 POINTS = 0.2
@@ -462,6 +469,9 @@ class _Progress:
     def __init__(self):
         self.time = -1.0
         self.cells = {s: {} for s in SIDES}  # (lane, cell) -> [samples with the lamp red, samples with it not red]
+        # (rod, lane) -> [(time, axis height)]: each lane run is one rod's continuous sweep
+        self.lanes = {s: {(rod, lane): [] for rod in ("rod_left", "rod_right") for lane in range(len(LANES))}
+                      for s in SIDES}
         self.tested_at = {s: None for s in SIDES}
         self.seated_since = {s: None for s in SIDES}
         self.met_since = None
@@ -490,10 +500,11 @@ class _Progress:
                     seen = self.cells[s].setdefault(cell, [0, 0])
                     was = (seen[1] > 0, len(self.cells[s]))
                     seen[0 if lamp_red(objects, s) else 1] += 1
+                    self.lanes[s][(rod, cell[0])].append((now, pass_height(objects, s, rod)))
                     if seen[1] > 0 and not was[0]:
                         print(f"[{TAG}] t={now:.2f}s  {s} curtain: lamp NOT red with the rod at lane "
                               f"{LANE_NAMES[cell[0]]}, axis {pass_height(objects, s, rod) * 1000:.0f} mm", flush=True)
-            if self.tested_at[s] is None and covered(self.cells[s]):
+            if self.tested_at[s] is None and field_covered(s):
                 self.tested_at[s] = now
                 print(f"[{TAG}] t={now:.2f}s  {s} curtain: whole field covered", flush=True)
             if tag_in(objects, HOLDER_POS[s]):
@@ -529,6 +540,46 @@ def covered(cells) -> bool:
     return ALL_CELLS <= set(cells)
 
 
+def _lane_run_swept(run) -> bool:
+    """One continuous lane run counts when it crosses all 15 cells, lasts at least LANE_S and its mean speed along
+    the lane is at most SWEEP_MAX (the 150 mm / 3 s limit of the real test-rod check)."""
+    if len(run) < 2:
+        return False
+    span = run[-1][0] - run[0][0]
+    if span < LANE_S - 1e-6:
+        return False
+    path = sum(abs(b[1] - a[1]) for a, b in zip(run, run[1:]))
+    if path > SWEEP_MAX * span + 1e-6:
+        return False
+    cells = {min(CELLS_Z - 1, int((h - FIELD_LO) / CELL)) for _, h in run}
+    return len(cells) == CELLS_Z
+
+
+def lane_swept(samples) -> bool:
+    """A lane counts only when one continuous run of crossings covers all 15 cells in at least LANE_S (3 s for the
+    150 mm lane) at a mean speed of at most SWEEP_MAX (50 mm/s); a longer gap starts a new run."""
+    run = []
+    for t, h in samples:
+        if run and t - run[-1][0] > LANE_GAP:
+            if _lane_run_swept(run):
+                return True
+            run = []
+        run.append((t, h))
+    return _lane_run_swept(run)
+
+
+def lane_done(side: str, lane: int) -> bool:
+    """One rod has swept ``lane`` of ``side``'s field in a continuous run of at least 3 s at no more than 50 mm/s."""
+    p = _PROGRESS
+    return any(lane_swept(p.lanes[side][(rod, lane)]) for rod in ("rod_left", "rod_right"))
+
+
+def field_covered(side: str) -> bool:
+    """Every cell of ``side``'s grid crossed, and each of its three lanes swept by one rod in a continuous run of at
+    least 3 s at no more than 50 mm/s."""
+    return covered(_PROGRESS.cells[side]) and all(lane_done(side, lane) for lane in range(len(LANES)))
+
+
 def missed(cells) -> bool:
     """The lamp was not red at some crossing of a cell: the curtain missed the rod there."""
     return any(v[1] > 0 for v in cells.values())
@@ -544,8 +595,7 @@ def tag_decision(objects) -> bool:
 
 
 def _steps(objects) -> list[bool]:
-    p = _PROGRESS
-    one, two = (covered(p.cells[s]) for s in SIDES)
+    one, two = (field_covered(s) for s in SIDES)
     three = bool(tag_decision(objects))
     four = bool(one and two and three and not rod_in_field(objects, "left") and not rod_in_field(objects, "right")
                 and let_go(objects))
@@ -554,18 +604,21 @@ def _steps(objects) -> list[bool]:
 
 def steps_done(objects) -> list[bool]:
     """Each of ``STEPS``: 1 and 2 once a rod has crossed every cell of that field's grid (3 lanes x 15 cells of 10 mm
-    of axis height, a rod's axis within 15 degrees of the field's normal, its tip 4 cm beyond the plane); 3 as things
-    stand (the tag in the faulty machine's holder, put there after that curtain's field was covered, where the lamp
-    was seen not red, and none in the other); 4 with
-    steps 1 to 3, both rods out of the fields and every gripper at least 3 cm from the tag and the rods."""
+    of axis height, a rod's axis within 15 degrees of the field's normal, its tip 4 cm beyond the plane) and each of
+    its lanes has been swept in one continuous run of at least 3 s at no more than 50 mm/s; 3 as things stand (the tag
+    in the faulty machine's holder, put there after that curtain's field was covered, where the lamp was seen not red,
+    and none in the other); 4 with steps 1 to 3, both rods out of the fields and every gripper at least 3 cm from the
+    tag and the rods."""
     p = _PROGRESS
     p.update(objects)
     done = _steps(objects)
     t = objects.get("episode_time")
     if t is not None and (done != p.reported or t - p.traced >= TRACE_S):
         red = {s: lamp_red(objects, s) for s in SIDES}
+        lanes = {s: sum(lane_done(s, lane) for lane in range(len(LANES))) for s in SIDES}
         line = (f"(cells crossed left {len(p.cells['left'])}/{len(ALL_CELLS)} right {len(p.cells['right'])}/"
-                f"{len(ALL_CELLS)}; lamp not red seen left {missed(p.cells['left'])} right "
+                f"{len(ALL_CELLS)}; lanes swept left {lanes['left']}/{len(LANES)} right {lanes['right']}/{len(LANES)}; "
+                f"lamp not red seen left {missed(p.cells['left'])} right "
                 f"{missed(p.cells['right'])}; lamps "
                 f"left {'red' if red['left'] else 'green'} right {'red' if red['right'] else 'green'}; tag in "
                 f"{[s for s in SIDES if tag_in(objects, HOLDER_POS[s])] or 'neither holder'})")
@@ -627,7 +680,8 @@ TAG_HOLD = -(TAG_T - 0.004) / 2
 TRAVEL = 0.15  # the rod's axis height when carried
 GRIP_ABOVE_AXIS = 0.012  # the TCP this far above the rod's axis (the pad tips end 1 mm below it)
 H_LO, H_HI = 0.0535, 0.2005  # the rod's axis (commanded) at the bottom and top of a sweep; about 1.5 mm lower is reached
-SWEEP_S = 4.0  # one 144 mm sweep up or down the field takes this long (36 mm/s: the lamp is read every 1.8 mm)
+SWEEP_S = 4.0  # one 147 mm sweep up or down the field takes this long (37 mm/s, inside the 50 mm/s / 3 s lane
+# limit; the lamp is read every 1.85 mm)
 AIM = {"left": np.zeros(3), "right": np.zeros(3)}  # measured droop offsets added to the commands (m)
 
 

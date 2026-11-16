@@ -34,7 +34,7 @@ lowest and highest positions. A real curtain's own manual governs a real check.
 | `assets/tag_holder.usda` | A tag holder (also used as the tag rack), a fixture |
 | `assets/tag.usda` | The DO NOT USE tag, one rigid body |
 | `assets/lamp_green.usda`, `assets/lamp_red.usda` | The receiver's lamp discs: visual only, no collider, no gravity |
-| `test_light_curtain_test.py` | Offline checks: the file loads, the lamp rule, every scoring outcome, the 1 s full-success timing, both arms' reach (no GPU, no network) |
+| `test_light_curtain_test.py` | Offline checks: the file loads, the lamp rule, every scoring outcome, the 50 mm/s / 3 s lane gate, the 1 s full-success timing, both arms' reach (no GPU, no network) |
 | `task.json` | The task's details for the board |
 
 ## Assets and sizes
@@ -86,12 +86,14 @@ receiver post's edge (rod axis crossing the plane at -150, 0 and +150 mm from th
 10 mm of rod-axis height from 52 to 202 mm above the table (so the rod's edge reaches the field's bottom and top edge).
 A cell is crossed when, at a control step (20 Hz), a rod is in the field (axis within 15 degrees of the field's normal, tip
 4 cm beyond the plane, crossing between the posts, the rod's middle still in front of the plane) with its axis in the
-lane's band and the cell's height. The lamp's colour is read at that same step. Because a cell is only crossed when a step
-falls in it, a sweep faster than 0.2 m/s leaves cells uncrossed: the rod has to be moved slowly, as the real check says.
+lane's band and the cell's height. The lamp's colour is read at that same step. A lane counts only when one continuous run
+crosses all 15 of its cells with the rod's axis moving along the lane at no more than 50 mm/s for at least 3 s (the real
+check's 150 mm / 3 s limit, timed with a stopwatch on the video); a faster lane does not count even if every cell was
+crossed.
 
 | Step | Done when |
 |---|---|
-| 1. Left field covered | every one of the 45 cells of the left curtain's grid has been crossed by a rod (either rod; the order, direction and any extra movement are free) |
+| 1. Left field covered | every one of the 45 cells of the left curtain's grid has been crossed by a rod, with each of the three lanes swept in one continuous run of at least 3 s at no more than 50 mm/s (either rod; the order, direction and any extra movement are free) |
 | 2. Right field covered | the same for the right curtain |
 | 3. Tag decision | the tag stands in the holder of the machine whose curtain missed the rod (lower edge's middle within 12 mm along the slot, 4 mm across, -2/+4 mm of the slot floor, within 6 degrees of upright), where the lamp was seen not red at a crossing, it was put there after that curtain's grid was covered, and it is not in the other holder |
 | 4. Let go | with steps 1 to 3, both rods are out of both fields and no gripper is within 3 cm of the tag or either rod |
@@ -108,9 +110,10 @@ and no 1.0 while any one condition is missing. A rod or the tag off the table sc
 
 Shortcuts the tests and runs cover: doing nothing 0; tagging without testing 0; testing both fields fully and tagging the sound
 machine 0.4; testing both and no tag 0.4; tagging first, then testing 0.4; testing and tagging only the faulty machine 0.4;
-three passes at one place, or a sweep that leaves one lane, a 10 mm height band or the ends of a lane out, or one made too fast to
-cross every cell, and then tagging the faulty machine 0.2 at most (that curtain's field was not covered, so step 3 and the full
-score cannot count); a rod that stops short of the plane, tilts, goes beside the posts, or runs at the table is no crossing.
+three passes at one place, or a sweep that leaves one lane, a 10 mm height band or the ends of a lane out, or one made faster
+than 50 mm/s (under 3 s per 150 mm lane) even if it crossed every cell, and then tagging the faulty machine 0.2 at most (that
+curtain's field was not covered, so step 3 and the full score cannot count); a rod that stops short of the plane, tilts, goes
+beside the posts, or runs at the table is no crossing.
 
 ## Run it
 
@@ -123,18 +126,20 @@ inspect-robots run --embodiment yam_arena --policy dream \
 ```
 
 The log prints a `[light_curtain] t=...  steps done: ...` line when a step is done or undone, a line when a field's grid is
-fully covered or the lamp is first seen not red, and a trace every second: the cells crossed at each curtain, both lamps'
-colours and which holder the tag stands in.
+fully covered or the lamp is first seen not red, and a trace every second: the cells crossed and lanes swept at each
+curtain, both lamps' colours and which holder the tag stands in.
 
 **The demo.** On Isaac (L40) it ran with the left machine faulty (dead channel 3, 117 mm), with the right one faulty (dead channel
 6, 177 mm) and once more with the left one for the film: 1.0 every time, with no re-tuning of the MuJoCo script (the success
-conditions were met at 47.25 s, 47.20 s and 47.25 s; the run ended with the full score at step 965 for the film). Both fields were
+conditions were met at 47.25 s, 47.20 s and 47.25 s; the runs ended at step 954 with the right machine faulty and step 955 with
+the left one, and the film is the step-955 run). Both fields were
 fully covered by 24.6 s (the right one at 24.45 s), the tag stood in the faulty machine's holder at about 44 s. Timeline: both
 arms work at once. Each, from above with its fingers closing across the rod's middle, lifts its rod off the saddles and carries it
-to its field, pushes it in tip first at the bottom of the sender-edge lane, and sweeps it slowly (about 36 mm/s, 4 s per 145 mm):
-up the sender-edge lane, across the top, down the middle lane, across the bottom, up the receiver-edge lane (the rod stays in the
-field the whole time), then draws it back, sets it on the saddles and lets go. To reach the top of the outer lanes the hand is
-rolled up to 25 degrees about the rod's own axis (the rod is a cylinder, so the grip on it does not change). The arm of the
+to its field, pushes it in tip first at the bottom of the sender-edge lane, and sweeps it slowly (about 37 mm/s, 4 s per 147 mm
+lane, inside the 50 mm/s / 3 s limit): up the sender-edge lane, across the top, down the middle lane, across the bottom, up the
+receiver-edge lane (the rod stays in the field the whole time), then draws it back, sets it on the saddles and lets go. To reach
+the top of the outer lanes the hand is rolled up to 25 degrees about the rod's own axis (the rod is a cylinder, so the grip on it
+does not change). The arm of the
 machine that missed the rod (the demo is built for the machine drawn when it starts) then takes the tag from the rack by its upper
 part and stands it in that machine's holder, lets go and lifts away; full success follows a second later. The demo path does
 not depend on which channel is dead; the lamp's not-red stretch in the faulty machine's field lands wherever that channel is
@@ -167,7 +172,9 @@ simulated curtains and guard nothing (no machine behind them can move):
   time; green, even briefly, is a failed curtain. Here the area is the 400 x 150 mm field, covered as three vertical lanes
   (along the sender post's edge, the middle, along the receiver post's edge) swept over the full height, which reaches all
   four edges. A person marks the lanes with tape on the table in front of the field (150 mm either side of the middle, 25 mm
-  tolerance) and times each sweep at 3 s or more per 150 mm lane (at most 50 mm/s, checked with a stopwatch or the video). The task tests the manipulation and the decision; a real curtain's manual governs the real procedure.
+  tolerance) and times each sweep at 3 s or more per 150 mm lane (at most 50 mm/s, with a stopwatch on the video; the task
+  applies the same 3 s / 50 mm/s gate). The task tests the manipulation and the decision; a real curtain's manual governs the
+  real procedure.
 - **Reset.** Before each trial a coin flip chooses which fixture has a link out and the roll of an eight-sided die
   chooses which channel; the other fixture has all eight links in (note the draw). The person checks each
   fixture by hand with the rod: the sound one stays red all the way up, the faulty one goes green only with the rod near
