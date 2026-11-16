@@ -1,0 +1,72 @@
+#usda 1.0
+(
+    defaultPrim = "Bubble"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Bubble" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "The 7 mm green spirit bubble in the AUX220's circular level (visual indicator; gravity off, no collision). Origin: the bubble's centre."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (1e-9, 1e-9, 2e-9)
+    float physics:mass = 0.0005
+    custom bool physxRigidBody:disableGravity = 1
+
+    def Scope "Looks"
+    {
+        def Material "m299441"
+        {
+            token outputs:surface.connect = </Bubble/Looks/m299441/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.3, 0.95, 0.42)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m449949"
+        {
+            token outputs:surface.connect = </Bubble/Looks/m449949/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.45, 1, 0.5)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cylinder "Bubble1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0012
+        rel material:binding = </Bubble/Looks/m299441>
+        double radius = 0.0035
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Sphere "BubbleTop2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bubble/Looks/m449949>
+        double radius = 0.0032
+        double3 xformOp:translate = (0, 0, 0.0003)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+
