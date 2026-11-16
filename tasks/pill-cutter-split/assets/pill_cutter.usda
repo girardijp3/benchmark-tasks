@@ -1,0 +1,365 @@
+#usda 1.0
+(
+    defaultPrim = "PillCutter"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "PillCutter" (
+    doc = "A typical pill splitter, 80 x 40 mm, 11 mm tall base with a 20 mm wide V cradle along y (5.5 mm deep) and a hinged lid (80 x 40 mm, 12 mm clearance, a blade over the cradle's middle, a 24 mm tall, 6 mm thick pull fin standing on its top near the free edge). The hinge (axis along y, at the rim, on the robot's side) turns 0 shut to -95 deg open with 0.6 N m s/rad of friction. Origin on the table at the base's middle."
+)
+{
+    def Scope "Looks"
+    {
+        def Material "Phys_abs" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.4
+            float physics:restitution = 0
+            float physics:staticFriction = 0.5
+        }
+
+        def Material "m929289"
+        {
+            token outputs:surface.connect = </PillCutter/Looks/m929289/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.93, 0.93, 0.9)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m595959"
+        {
+            token outputs:surface.connect = </PillCutter/Looks/m595959/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.6, 0.6, 0.6)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m090909"
+        {
+            token outputs:surface.connect = </PillCutter/Looks/m090909/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.1, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m195479"
+        {
+            token outputs:surface.connect = </PillCutter/Looks/m195479/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.2, 0.55, 0.8)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m143961"
+        {
+            token outputs:surface.connect = </PillCutter/Looks/m143961/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.15, 0.4, 0.62)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m717377"
+        {
+            token outputs:surface.connect = </PillCutter/Looks/m717377/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.72, 0.74, 0.78)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Xform "Base" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysicsArticulationRootAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.006)
+        float3 physics:diagonalInertia = (0.0000031551667, 0.000011955167, 0.000014666667)
+        float physics:mass = 0.022
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Mesh "BaseL1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.04, -0.02, 0), (0, 0.02, 0.011)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 1, 2, 5, 7, 6, 0, 2, 3, 5, 8, 7, 0, 3, 4, 5, 9, 8, 0, 6, 1, 0, 5, 6, 1, 7, 2, 1, 6, 7, 2, 8, 3, 2, 7, 8, 3, 9, 4, 3, 8, 9, 4, 5, 0, 4, 9, 5]
+            rel material:binding = </PillCutter/Looks/m929289>
+            rel material:binding:physics = </PillCutter/Looks/Phys_abs> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(-0.04, -0.02, 0), (0, -0.02, 0), (0, -0.02, 0.0055), (-0.01, -0.02, 0.011), (-0.04, -0.02, 0.011), (-0.04, 0.02, 0), (0, 0.02, 0), (0, 0.02, 0.0055), (-0.01, 0.02, 0.011), (-0.04, 0.02, 0.011)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Mesh "BaseR2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0, -0.02, 0), (0.04, 0.02, 0.011)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 1, 2, 5, 7, 6, 0, 2, 3, 5, 8, 7, 0, 3, 4, 5, 9, 8, 0, 6, 1, 0, 5, 6, 1, 7, 2, 1, 6, 7, 2, 8, 3, 2, 7, 8, 3, 9, 4, 3, 8, 9, 4, 5, 0, 4, 9, 5]
+            rel material:binding = </PillCutter/Looks/m929289>
+            rel material:binding:physics = </PillCutter/Looks/Phys_abs> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(0, -0.02, 0), (0.04, -0.02, 0), (0.04, -0.02, 0.011), (0.01, -0.02, 0.011), (0, -0.02, 0.0055), (0, 0.02, 0), (0.04, 0.02, 0), (0.04, 0.02, 0.011), (0.01, 0.02, 0.011), (0, 0.02, 0.0055)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Cube "Box3" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </PillCutter/Looks/m595959>
+            double size = 1
+            float3 xformOp:scale = (0.06, 0.0012, 0.0004)
+            double3 xformOp:translate = (0, 0, 0.0053)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Box4" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </PillCutter/Looks/m090909>
+            double size = 1
+            float3 xformOp:scale = (0.008, 0.008, 0.001)
+            double3 xformOp:translate = (-0.03, -0.014, 0.0005)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Box5" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </PillCutter/Looks/m090909>
+            double size = 1
+            float3 xformOp:scale = (0.008, 0.008, 0.001)
+            double3 xformOp:translate = (-0.03, 0.014, 0.0005)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Box6" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </PillCutter/Looks/m090909>
+            double size = 1
+            float3 xformOp:scale = (0.008, 0.008, 0.001)
+            double3 xformOp:translate = (0.03, -0.014, 0.0005)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Box7" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </PillCutter/Looks/m090909>
+            double size = 1
+            float3 xformOp:scale = (0.008, 0.008, 0.001)
+            double3 xformOp:translate = (0.03, 0.014, 0.0005)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+
+    def Xform "Lid" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0.04, 0, 0.008)
+        float3 physics:diagonalInertia = (0.000001856, 0.000006656, 0.000008)
+        float physics:mass = 0.012
+        double3 xformOp:translate = (-0.04, 0, 0.011)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "LidTop8" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </PillCutter/Looks/m195479>
+            rel material:binding:physics = </PillCutter/Looks/Phys_abs> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.08, 0.04, 0.003)
+            double3 xformOp:translate = (0.04, 0, 0.0135)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "LidRail9" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </PillCutter/Looks/m195479>
+            rel material:binding:physics = </PillCutter/Looks/Phys_abs> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.08, 0.0015, 0.012)
+            double3 xformOp:translate = (0.04, -0.01925, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "LidRail10" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </PillCutter/Looks/m195479>
+            rel material:binding:physics = </PillCutter/Looks/Phys_abs> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.08, 0.0015, 0.012)
+            double3 xformOp:translate = (0.04, 0.01925, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "LidFront11" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </PillCutter/Looks/m195479>
+            rel material:binding:physics = </PillCutter/Looks/Phys_abs> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.003, 0.037, 0.012)
+            double3 xformOp:translate = (0.0785, 0, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "LidBack12" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </PillCutter/Looks/m195479>
+            rel material:binding:physics = </PillCutter/Looks/Phys_abs> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.003, 0.037, 0.012)
+            double3 xformOp:translate = (0.0015, 0, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Fin13" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </PillCutter/Looks/m143961>
+            rel material:binding:physics = </PillCutter/Looks/Phys_abs> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.014, 0.006, 0.024)
+            double3 xformOp:translate = (0.068, 0, 0.027)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Blade14" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </PillCutter/Looks/m717377>
+            double size = 1
+            float3 xformOp:scale = (0.016, 0.0008, 0.018)
+            double3 xformOp:translate = (0.04, 0, 0.003)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "BladeCollider15" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </PillCutter/Looks/Phys_abs> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.016, 0.0008, 0.007)
+            double3 xformOp:translate = (0.04, 0, 0.0085)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+
+    def PhysicsRevoluteJoint "Hinge" (
+        prepend apiSchemas = ["PhysicsDriveAPI:angular"]
+        doc = "Lid hinge: 0 shut (lid away from the robot), negative opens up and back toward the robot, stop at -95 deg."
+    )
+    {
+        float drive:angular:physics:damping = 0.010471975
+        float drive:angular:physics:stiffness = 0
+        float drive:angular:physics:targetPosition = 0
+        uniform token drive:angular:physics:type = "force"
+        uniform token physics:axis = "Y"
+        rel physics:body0 = </PillCutter/Base>
+        rel physics:body1 = </PillCutter/Lid>
+        point3f physics:localPos0 = (-0.04, 0, 0.011)
+        point3f physics:localPos1 = (0, 0, 0)
+        quatf physics:localRot0 = (1, 0, 0, 0)
+        quatf physics:localRot1 = (1, 0, 0, 0)
+        float physics:lowerLimit = -95
+        float physics:upperLimit = 1
+    }
+}
+

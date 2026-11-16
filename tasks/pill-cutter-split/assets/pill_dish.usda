@@ -1,0 +1,132 @@
+#usda 1.0
+(
+    defaultPrim = "PillDish"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "PillDish" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A pill dish: a 40 x 26 x 3 mm plate with an oblong pocket (11 x 21.5 mm at the floor, 1 mm above the table, 2 mm chamfer all round) that holds one caplet. Origin on the table at the pocket's middle. Fixed."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.000001, 0.000001, 0.000001)
+    float physics:mass = 0.05
+
+    def Scope "Looks"
+    {
+        def Material "Phys_dish" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.4
+        }
+
+        def Material "m898985"
+        {
+            token outputs:surface.connect = </PillDish/Looks/m898985/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.9, 0.9, 0.86)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Mesh "SideL1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.02, -0.013, 0), (-0.0055, 0.013, 0.003)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 2, 5, 7, 6, 0, 2, 3, 5, 8, 7, 0, 3, 4, 5, 9, 8, 0, 6, 1, 0, 5, 6, 1, 7, 2, 1, 6, 7, 2, 8, 3, 2, 7, 8, 3, 9, 4, 3, 8, 9, 4, 5, 0, 4, 9, 5]
+        rel material:binding = </PillDish/Looks/m898985>
+        rel material:binding:physics = </PillDish/Looks/Phys_dish> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token physics:approximation = "convexHull"
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        point3f[] points = [(-0.02, -0.013, 0), (-0.0055, -0.013, 0), (-0.0055, -0.013, 0.001), (-0.0075, -0.013, 0.003), (-0.02, -0.013, 0.003), (-0.02, 0.013, 0), (-0.0055, 0.013, 0), (-0.0055, 0.013, 0.001), (-0.0075, 0.013, 0.003), (-0.02, 0.013, 0.003)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "SideR2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0.0055, -0.013, 0), (0.02, 0.013, 0.003)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 2, 5, 7, 6, 0, 2, 3, 5, 8, 7, 0, 3, 4, 5, 9, 8, 0, 6, 1, 0, 5, 6, 1, 7, 2, 1, 6, 7, 2, 8, 3, 2, 7, 8, 3, 9, 4, 3, 8, 9, 4, 5, 0, 4, 9, 5]
+        rel material:binding = </PillDish/Looks/m898985>
+        rel material:binding:physics = </PillDish/Looks/Phys_dish> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token physics:approximation = "convexHull"
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        point3f[] points = [(0.0055, -0.013, 0), (0.02, -0.013, 0), (0.02, -0.013, 0.003), (0.0075, -0.013, 0.003), (0.0055, -0.013, 0.001), (0.0055, 0.013, 0), (0.02, 0.013, 0), (0.02, 0.013, 0.003), (0.0075, 0.013, 0.003), (0.0055, 0.013, 0.001)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "EndN3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.0055, -0.013, 0), (0.0055, -0.01075, 0.003)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 2, 1, 5, 6, 7, 0, 3, 2, 5, 7, 8, 0, 4, 3, 5, 8, 9, 0, 1, 6, 0, 6, 5, 1, 2, 7, 1, 7, 6, 2, 3, 8, 2, 8, 7, 3, 4, 9, 3, 9, 8, 4, 0, 5, 4, 5, 9]
+        rel material:binding = </PillDish/Looks/m898985>
+        rel material:binding:physics = </PillDish/Looks/Phys_dish> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token physics:approximation = "convexHull"
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        point3f[] points = [(-0.0055, -0.013, 0), (-0.0055, -0.01075, 0), (-0.0055, -0.01075, 0.001), (-0.0055, -0.01275, 0.003), (-0.0055, -0.013, 0.003), (0.0055, -0.013, 0), (0.0055, -0.01075, 0), (0.0055, -0.01075, 0.001), (0.0055, -0.01275, 0.003), (0.0055, -0.013, 0.003)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "EndS4" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.0055, 0.01075, 0), (0.0055, 0.013, 0.003)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 2, 1, 5, 6, 7, 0, 3, 2, 5, 7, 8, 0, 4, 3, 5, 8, 9, 0, 1, 6, 0, 6, 5, 1, 2, 7, 1, 7, 6, 2, 3, 8, 2, 8, 7, 3, 4, 9, 3, 9, 8, 4, 0, 5, 4, 5, 9]
+        rel material:binding = </PillDish/Looks/m898985>
+        rel material:binding:physics = </PillDish/Looks/Phys_dish> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token physics:approximation = "convexHull"
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        point3f[] points = [(-0.0055, 0.01075, 0), (-0.0055, 0.013, 0), (-0.0055, 0.013, 0.003), (-0.0055, 0.01275, 0.003), (-0.0055, 0.01075, 0.001), (0.0055, 0.01075, 0), (0.0055, 0.013, 0), (0.0055, 0.013, 0.003), (0.0055, 0.01275, 0.003), (0.0055, 0.01075, 0.001)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Cube "Floor5" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </PillDish/Looks/m898985>
+        rel material:binding:physics = </PillDish/Looks/Phys_dish> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.011, 0.0215, 0.001)
+        double3 xformOp:translate = (0, 0, 0.0005)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

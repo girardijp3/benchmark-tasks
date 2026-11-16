@@ -1,0 +1,607 @@
+#usda 1.0
+(
+    defaultPrim = "CupTray"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "CupTray" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A dosing tray: a 56 x 120 x 4 mm base holding two 30 mL medicine cups (38 mm inside, 30 mm tall), 60 mm apart along y. Origin on the table at the tray's middle. Fixed."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.000001, 0.000001, 0.000001)
+    float physics:mass = 0.2
+
+    def Scope "Looks"
+    {
+        def Material "Phys_tray" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.4
+        }
+
+        def Material "m848587"
+        {
+            token outputs:surface.connect = </CupTray/Looks/m848587/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.85, 0.86, 0.88)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_cup" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.4
+        }
+
+        def Material "m947429"
+        {
+            token outputs:surface.connect = </CupTray/Looks/m947429/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.75, 0.3)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m395484"
+        {
+            token outputs:surface.connect = </CupTray/Looks/m395484/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.4, 0.55, 0.85)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Box1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m848587>
+        rel material:binding:physics = </CupTray/Looks/Phys_tray> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.056, 0.12, 0.004)
+        double3 xformOp:translate = (0, 0, 0.002)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "CupFloor2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.002
+        rel material:binding = </CupTray/Looks/m947429>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.020999999999999998
+        double3 xformOp:translate = (0, -0.03, 0.005)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "CupWall3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m947429>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 0
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (0.02, -0.03, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall4" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m947429>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 25.714285
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (0.018019377358048382, -0.021322325217648836, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall5" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m947429>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 51.42857
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (0.012469796037174671, -0.014363370350639403, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall6" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m947429>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 77.14286
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (0.004450418679126289, -0.010501441756363528, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall7" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m947429>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 102.85714
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (-0.004450418679126287, -0.010501441756363528, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall8" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m947429>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 128.57143
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (-0.01246979603717467, -0.0143633703506394, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall9" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m947429>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 154.28572
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (-0.018019377358048382, -0.021322325217648833, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall10" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m947429>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 180
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (-0.02, -0.029999999999999995, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall11" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m947429>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 205.71428
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (-0.018019377358048382, -0.03867767478235116, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall12" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m947429>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 231.42857
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (-0.012469796037174675, -0.04563662964936059, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall13" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m947429>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 257.14285
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (-0.004450418679126292, -0.04949855824363647, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall14" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m947429>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 282.85715
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (0.004450418679126267, -0.04949855824363648, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall15" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m947429>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 308.57144
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (0.012469796037174668, -0.0456366296493606, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall16" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m947429>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 334.2857
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (0.01801937735804839, -0.03867767478235115, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cylinder "CupFloor17" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.002
+        rel material:binding = </CupTray/Looks/m395484>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.020999999999999998
+        double3 xformOp:translate = (0, 0.03, 0.005)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "CupWall18" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m395484>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 0
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (0.02, 0.03, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall19" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m395484>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 25.714285
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (0.018019377358048382, 0.038677674782351165, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall20" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m395484>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 51.42857
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (0.012469796037174671, 0.04563662964936059, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall21" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m395484>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 77.14286
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (0.004450418679126289, 0.04949855824363647, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall22" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m395484>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 102.85714
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (-0.004450418679126287, 0.04949855824363647, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall23" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m395484>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 128.57143
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (-0.01246979603717467, 0.0456366296493606, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall24" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m395484>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 154.28572
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (-0.018019377358048382, 0.038677674782351165, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall25" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m395484>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 180
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (-0.02, 0.030000000000000002, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall26" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m395484>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 205.71428
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (-0.018019377358048382, 0.02132232521764884, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall27" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m395484>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 231.42857
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (-0.012469796037174675, 0.014363370350639403, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall28" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m395484>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 257.14285
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (-0.004450418679126292, 0.010501441756363528, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall29" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m395484>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 282.85715
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (0.004450418679126267, 0.01050144175636352, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall30" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m395484>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 308.57144
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (0.012469796037174668, 0.0143633703506394, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+
+    def Cube "CupWall31" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CupTray/Looks/m395484>
+        rel material:binding:physics = </CupTray/Looks/Phys_cup> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float xformOp:rotateZ = 334.2857
+        float3 xformOp:scale = (0.002, 0.009677524, 0.03)
+        double3 xformOp:translate = (0.01801937735804839, 0.021322325217648846, 0.019)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+    }
+}
+
