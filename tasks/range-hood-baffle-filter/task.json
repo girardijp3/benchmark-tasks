@@ -1,0 +1,23 @@
+{
+  "title": "Refit a washed baffle filter in a range hood",
+  "category": "Impact on jobs",
+  "keywords": [
+    "range hood",
+    "baffle filter",
+    "grease filter",
+    "spring latch",
+    "kitchen cleaning",
+    "two hands",
+    "latch",
+    "commercial kitchen"
+  ],
+  "instruction": "Refit the washed baffle filter in the range hood so it sits flat in its trough and the spring latch holds its top edge, then let go of it.",
+  "context": "Dishwashers (SOC 35-9021, about 0.5 million employed in the US), restaurant cooks (35-2014, about 1.3 million) and janitors and building cleaners (37-2011, about 2 million; BLS OEWS, approximate) take grease filters out of kitchen hoods, wash them and refit them as a routine closing or weekly duty. A refit has two hard parts: the filter is a heavy, awkward slab (a 10 x 16 in stainless baffle filter weighs 2.6 lb, about 1.2 kg), and it has to be stood in the bottom channel with its top swung out, then swung in past a spring latch that must be pulled out of the way and let go to drop over the filter's top edge. The setting is the nightly close of a commercial kitchen: every baffle filter goes through the dish machine and must be refitted and latched before the next service, since a missing or loose filter lets grease into the duct, a fire risk.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the arm bases: x forward, y to the robot's left, z up from the table. A hood filter panel (fixed, 580 mm wide) leans back 60 degrees from vertical (30 degrees above horizontal); its bottom trough (a floor and a front lip 18 mm high, a 49.5 mm slot with a 45 degree lead-in at the mouth) has its inner corner at x 0.27, 0.02 m above the table. A spring latch rides on the panel: a plate that slides up the panel on a prismatic joint (16.5 mm of travel, spring 150 N/m with a 3 N preload: 5.5 N at full travel), its hook 2.5 mm in front of the seated filter face, covering the top 8 mm of the filter, with an ear out to y -0.255 carrying a T handle (a 15 mm wide head bar, 34 mm out from the plate). The filter (free: 406.4 x 254 x 44.45 mm, 1.18 kg, two drop handles on its face with 15 mm crossbars 90 mm long, 22 mm out, at y +-0.16) lies flat on the counter at x 0.115, handles up.",
+  "scoring": "Four steps, 0.2 each, judged as things stand at the end. (1) The filter's bottom edge is in the trough: both bottom edges between the panel and the lip, no more than 45 mm up the panel, within 30 mm of the middle along y. (2) With step 1: the filter lies flat on the panel and on the trough floor: its centre within 3 mm of the panel face offset, 6 mm of its seated height up the panel and 30 mm along y, and within 3 degrees of the panel. (3) With step 2: the latch plate is back down within 1.5 mm of its spring stop (so its hook is over the filter's top edge). (4) With step 3: no gripper holds the filter and no pad is within 3 cm of it. Full score 1.0 (ends the run) only once all four steps have held together, without a break, for 1 s, with the filter within 2 mm and 2 degrees of where it was when that second began; any lapse restarts the second, and the step points stop at 0.8. Scoring 0 for the whole run: the filter dropped (after being lifted 7 cm off the counter its centre falls below 5 cm, which also catches it off the table).",
+  "run_limit": "1,600 steps (80 seconds at 20 Hz)",
+  "reset_notes": "Lay the filter flat on the counter at x 0.115 with its handles up and the latch plate down at its spring stop. Nothing is held.",
+  "fidelity": "Real part: Component Hardware FR51-1016 class 10 x 16 x 1.75 in baffle filter, 2.6 lb; drop handles per AllPoints 263888 (sizes est.). Estimates: latch spring (3 N preload, 150 N/m, 5.5 N at full travel; no published force, inside the 3-10 N spring-plunger band; a first 8.5 N was too strong), trough, lip, hook overlap, panel lean. Solid slab with visual baffles. Friction steel 0.30/0.25; pads 0.6/0.5. Station: bank at counter height, leaning back 30 deg (real hood: overhead, 45 deg+).",
+  "scores": "Dream-1 run: 0.0 (1600 steps, hit the step limit); demo: 1.0 at step 795 (scripted demo, Isaac Lab-Arena)",
+  "media": "M-QTEAZN"
+}
