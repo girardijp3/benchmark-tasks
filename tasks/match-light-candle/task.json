@@ -1,0 +1,25 @@
+{
+  "title": "Light a dinner candle with a safety match struck on its box, then put the match in the ashtray",
+  "category": "Societal relatability",
+  "keywords": [
+    "household",
+    "candle",
+    "safety match",
+    "matchbox",
+    "ashtray",
+    "dining table",
+    "two-hand task",
+    "everyday tasks",
+    "home robot",
+    "fire safety"
+  ],
+  "instruction": "Light the candle in the brass holder with a safety match struck on its box, put the used match in the ashtray and leave the matchbox on the table.",
+  "context": "Most adults have lit a candle with a match. A safety match lights only when its head is pressed on the striker strip and drawn across it quickly, so the box has to be held in one hand while the other strikes. The flame then has to be brought to the wick and held there for a couple of seconds, and the burning match has to go in the ashtray before the flame creeps down to the fingers. A lit match dropped on the table, or a knocked-over candle, is a fire.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the arm bases: x forward, y to the robot's left. A Swan Vestas class matchbox (52 x 36 x 16 mm, 12 g, a striker strip on each long narrow side) lies flat at x 0.27, y 0.17, long side along x. One safety match (47 mm, 2.1 mm splint, red head) lies at x 0.20, y -0.20 along y, head toward -y. A low brass candle holder (91 mm dish, rim 30 mm up, 0.35 kg, free on the table) at x 0.44, y -0.075 holds a 22 x 250 mm dinner candle (80 g, wick tip 263 mm above the table). A round ceramic ashtray (104 mm, 24 mm tall, 0.20 kg, free) stands at x 0.33, y -0.11, in front of the candle holder.",
+  "scoring": "Four steps. (1, 0.25) The match is struck alight: its head pressed on the strip with at least 2 N (read from the strip's spring panel) and drawn over it at 0.3 m/s or more for 15 mm or more. (2, 0.25) The flame is held within 5 mm of the wick for 0.5 s. (3, 0.25) The wick is lit: 2 s in the flame. (4) The used match lies in the ashtray's bowl, the candle is lit, upright and seated, the box is down on the table, and no gripper holds or is within 3 cm of the match or box. Full score 1.0 (ends the run) only once step 4 has held together with step 3 for 1 s, every part within 2 mm and 2 degrees of where it was when that second began; the step points stop at 0.75. The flame burns down the stick at 2 mm/s: if it reaches the pads of a gripper holding the match the score is capped at 0.5 and 1.0 is lost. A lit match on the table outside the ashtray, or a candle tilted more than 15 degrees, scores 0 for the rest of the run.",
+  "run_limit": "580 steps (29 seconds at 20 Hz)",
+  "reset_notes": "Lay the box flat at x 0.27, y 0.17; lay the match at x 0.20, y -0.20 along y, head toward -y; stand the candle in the candle holder at x 0.44, y -0.075; put the ashtray at x 0.33, y -0.11. Nothing is lit.",
+  "fidelity": "Match true size but 2 g (real ~0.12 g; 0.12 g tried: pads do not pick it up); splint friction 1.2 (PhysX effective 0.85). Ignition, flames, burn-down (2 mm/s, est.) declared; strike gate 2 N, 0.3 m/s, 15 mm (est.). Strip on 4000 N/m panel (real ~3000, est.). Head-strip friction 0.2, not real ~0.4 (0.4 tried: stick pulled out of pinch). Match pinched 12 mm from base (8-11 mm turned out). Candle 250 mm, 80 g, holder rim 30 mm (real 30-60). Match lies loose; box matches not modelled.",
+  "scores": "Dream-1 run: 0.0 (580 steps, hit the step limit); demo: 1.0 at step 431 (scripted demo, Isaac Lab-Arena)",
+  "media": "M-VY4P4W"
+}
