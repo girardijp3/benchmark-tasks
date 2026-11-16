@@ -1,0 +1,200 @@
+#usda 1.0
+(
+    defaultPrim = "CapRest"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "CapRest" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "The calibration cap's bench rest: a base, two uprights and a top plate, fixed. Origin: on the bench, the cap's sealing plane 60 mm up."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0.03)
+    float3 physics:diagonalInertia = (0.0002925, 0.00025, 0.0003625)
+    float physics:mass = 0.3
+
+    def Scope "Looks"
+    {
+        def Material "Phys_steel" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.35
+        }
+
+        def Material "m192021"
+        {
+            token outputs:surface.connect = </CapRest/Looks/m192021/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.2, 0.21, 0.22)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_rubber" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.35
+        }
+
+        def Material "m070708"
+        {
+            token outputs:surface.connect = </CapRest/Looks/m070708/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.08, 0.08, 0.09)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m792907"
+        {
+            token outputs:surface.connect = </CapRest/Looks/m792907/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.8, 0.3, 0.08)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "BaseCol1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </CapRest/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.08, 0.09, 0.01)
+        double3 xformOp:translate = (0, 0, 0.005)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "BaseVis2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CapRest/Looks/m192021>
+        double size = 1
+        float3 xformOp:scale = (0.08, 0.09, 0.01)
+        double3 xformOp:translate = (0, 0, 0.005)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "PostCol3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </CapRest/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.01, 0.08, 0.039)
+        double3 xformOp:translate = (0.03, 0, 0.0295)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "PostVis4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CapRest/Looks/m192021>
+        double size = 1
+        float3 xformOp:scale = (0.01, 0.08, 0.039)
+        double3 xformOp:translate = (0.03, 0, 0.0295)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "PostCol5" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </CapRest/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.01, 0.08, 0.039)
+        double3 xformOp:translate = (-0.03, 0, 0.0295)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "PostVis6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CapRest/Looks/m192021>
+        double size = 1
+        float3 xformOp:scale = (0.01, 0.08, 0.039)
+        double3 xformOp:translate = (-0.03, 0, 0.0295)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TopCol7" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </CapRest/Looks/Phys_rubber> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.08, 0.06, 0.006)
+        double3 xformOp:translate = (0, 0, 0.046)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TopVis8" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CapRest/Looks/m070708>
+        double size = 1
+        float3 xformOp:scale = (0.08, 0.06, 0.006)
+        double3 xformOp:translate = (0, 0, 0.046)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Pad9" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </CapRest/Looks/m792907>
+        double size = 1
+        float3 xformOp:scale = (0.06, 0.032, 0.001)
+        double3 xformOp:translate = (0, 0, 0.0495)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

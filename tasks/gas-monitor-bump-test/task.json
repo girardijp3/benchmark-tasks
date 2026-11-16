@@ -1,0 +1,23 @@
+{
+  "title": "Bump-test a four-gas monitor with its calibration cap and regulator before a confined-space entry",
+  "category": "Impact on jobs",
+  "keywords": [
+    "four-gas monitor",
+    "bump test",
+    "calibration cap",
+    "regulator valve",
+    "confined space",
+    "sensor response",
+    "gas reading",
+    "process"
+  ],
+  "instruction": "Bump-test the four-gas monitor: fit the calibration cap, open the regulator, let the readings reach the cylinder's gas values, then shut the gas off and remove the cap.",
+  "context": "Confined-space entrants and plant maintenance workers (SOC 49-9071, about 1.5 million employed in the US, BLS OEWS) bump-test a four-gas monitor before every entry under OSHA 1910.146 and the monitor maker's procedure. The MSA ALTAIR 4X manual: fit the calibration cap over the sensor openings, connect it to a 0.25 L/min fixed-flow regulator on the calibration cylinder, open the valve, let the sensors respond (a <15 s bump), then close the valve and remove the cap. The gas mix here is MSA's 34 L quad mix: 1.45 % CH4, 15 % O2, 60 ppm CO, 20 ppm H2S in nitrogen. The job is a routine instrument check, not a rescue: the hazard is the atmosphere the monitor is proving, and the monitor is the instrument the entrant relies on.",
+  "setup": "Left and right are the robot's. Positions in metres from the midpoint between the arm bases: x forward, y left, z up from the table. An MSA ALTAIR 4X four-gas monitor (112 x 76 x 33 mm, 224 g) lies face up at (0.400, 0.000), its sensor plate at (0.374, 0.000) on top; its four LCD bar pointers show H2S, CO, LEL and O2. Its calibration cap (MSA 10089321, a 62 x 84 x 12 mm shell with an orange silicone gasket, two side snap tabs and a 6 mm hose barb) starts on a rest at (0.290, -0.100), sealing face 60 mm up, hose connected to the regulator. A 34 L aluminium calibration cylinder (76 x 289 mm, 2.0 kg full) lies in a bench cradle at y -0.220 with its C-10 valve toward the robot; the 0.25 L/min fixed-flow regulator (0.239 kg) stands on the valve, its knurled on/off knob on a vertical axis at (0.274, -0.220), 58 mm up, with a pointer, a red CLOSE and a green OPEN mark. The right arm does the task; the cap's tabs snap under the monitor's 1.6 mm side ridges and seal the gasket.",
+  "scoring": "Four states: the cap seated and its gasket sealed (0.25); the regulator opened after the cap sealed (0.50); the four readings stable inside the cylinder's values (0.75); gas shut off, cap off and clear, monitor back on fresh air (1.0). A reading is stable when all four channels are within +-10 % of the cylinder's value (O2 +-0.5 % vol) and hold inside that band for 3 s in the real 5-45 s window after the valve opens. The seal is gasket contact with both side tabs closed; a cap that is not snapped leaks about 40 L/min and the readings never come up. Caps: gas opened before the cap seals, a cap leak, or the cap pulled while gas is on -> 0.25; a reading that never stabilises -> 0.50; gas left on at the end -> 0.75. 1.0 only when the final state has held 1 s with the cap and monitor within 2 mm and 2 degrees of where they were when that second began. Idle 0; a cap or monitor off the table 0 for the rest of the run.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz; the scripted demo reaches 1.0 at step 1,951)",
+  "reset_notes": "Put the cap on its rest with its sealing face down and its hose on the regulator barb; the monitor lies face up at (0.400, 0.000). The regulator knob is closed (0 degrees), the cylinder is in its cradle, and nothing is held.",
+  "fidelity": "Real MSA ALTAIR 4X 112 x 76 x 33 mm, 224 g, cap 10089321, 0.25 L/min regulator, 34 L cylinder, quad mix 1.45 % CH4/15 % O2/60 ppm CO/20 ppm H2S (manual). The reading is a declared finite model: 25 mL cap volume, 0.25 L/min flow, a 40 L/min unsealed leak, sensor T90 10 s; the gas fraction integrates every step. The cap seal is geometry (gasket + tabs). Hose is a visual tube (no collider). Real values: 0.25 L/min, not the row's approximate 0.5; MSA specifies 0.25.",
+  "scores": "Dream-1: 0.0 (2,400 steps); demo: 1.0 at step 1,951 (Isaac twice + film; MuJoCo 1.0). pytest 27; +1 mm nudge 0.75.",
+  "media": "M-UVQ76R"
+}
