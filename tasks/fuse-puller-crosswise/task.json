@@ -1,0 +1,25 @@
+{
+  "title": "Pull the middle blade fuse out of a fuse block with a tweezer puller held crosswise to it, and put it in a tray",
+  "category": "Impact on jobs",
+  "keywords": [
+    "automotive service technician",
+    "fuse puller",
+    "blade fuse",
+    "fuse block",
+    "tool use",
+    "tweezers",
+    "spring clips",
+    "maintenance",
+    "tool on a part",
+    "fuse box"
+  ],
+  "instruction": "Remove the middle fuse from the fuse block with the fuse puller and put it in the tray, leaving the other two fuses in place, then let go.",
+  "context": "Automotive service technicians and mechanics (O*NET 49-3023, about 0.8 million US jobs) replace blade fuses all the time (MAXI and ATO blade fuses are automotive parts), and a fuse in a crowded block is pulled with a plastic tweezer-type puller, not with fingers. The fuse stands upright in its sockets, so the puller is carried across it (roughly horizontally, perpendicular to the fuse's axis, its jaws tipped down toward the fuse), its two jaws slid down either side of the fuse's flat faces between the neighbouring fuses, squeezed shut, and the fuse drawn straight up out of the spring clips that hold it.",
+  "setup": "Left and right are the robot's. Positions are in metres from the midpoint between the arm bases: x forward, y to the robot's left. A fuse block (fixed) lies on the table at x 0.38, y -0.12: a 52 x 84 x 20 mm base with three MAXI blade fuse positions 28 mm apart along y. Each is a pocket 30.6 x 9.5 x 12 mm deep holding a free fuse (29.2 x 8.5 x 34 mm, 8 g, 12 mm of it in the pocket: the 50 A red one at -y, the 30 A green one in the middle, the 20 A yellow one at +y) between two spring clips (1.5 mm of interference, about 4 N a side: about 4 N to pull it out). A 54 mm square tray with a 10 mm rim lies at x 0.33, y -0.01. The tweezer puller (one articulation with a free root, 30 g, red plastic) lies on the table at x 0.16, y -0.12, jaws pointing away from the robot: a head block and two 3 mm arms 100 mm long and 12 mm tall hinged about the vertical at 21 mm apart, 28 mm long jaw plates 14 mm apart open, springs holding them open (about 6 N at the pads).",
+  "scoring": "Four steps, 0.2 each. (1) The puller's jaws were closed on the fuse at some time: both arms closed 1.2 to 3.2 degrees (the fuse stops them at about 1.8; empty they close to 4.5), the fuse's middle within 3.5 mm of the jaws' midline with at least 20 mm of its width and 8 mm of its height between the jaw plates, the puller within 20 degrees of flat. (2) The fuse is out of its pocket (its underside above the rim) and was taken out by the puller: if the fuse is ever lifted or moved 3 mm before the jaws have been closed on it, or first leaves its pocket with the jaws not closed on it within the last 0.5 s, this step can no longer count, even if the puller grips it afterwards. (3) With step 2, the fuse rests in the tray (middle within 25 mm of the tray's middle, no higher than 27 mm over the tray floor). (4) With step 3, the jaws are open (both arms within 0.8 degrees of open), the puller lies on the table (within 20 degrees of flat, its hinge line within 2 cm of the table) and no gripper holds it, none holds the fuse, and neither a gripper pad nor any part of the puller (its head, both arms and jaw plates, at their current angles) is within 3 cm of the fuse's body. Full score 1.0 (ends the run) only once all four steps have held together, without a break, for 1 s, with the fuse and the puller each within 2 mm and 2 degrees of where they were when that second began; any lapse restarts the second, and the step points stop at 0.8. The fuse or the puller leaving the table scores 0 for the whole run, and so does either neighbouring fuse (the 50 A and the 20 A) being moved more than 3 mm from its pocket at any time.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Stand the fuse in the block's middle pocket, lay the puller on the table at x 0.16, y -0.12 with its jaws toward +x (yaw 0), jaws open; nothing else is moved.",
+  "fidelity": "Rigid boxes and prisms at true size (MAXI blade fuse 29.2 x 8.5 mm); friction 0.50/0.45 fuse, 0.90/0.80 puller jaws, 0.50/0.45 clips. Three free fuses, each held by a pair of spring teeth (4.05 N, friction retention about 4 N); blades and terminals not modelled (lower 12 mm sits in the pocket). Estimates: a real MAXI fuse takes roughly 10-30 N to pull, so 4 N is deliberately light; a real puller gives a few N at the tips, sim 3 N m/rad is about 6 N at the pads (0.5 slipped).",
+  "scores": "Dream-1 run: 0.0 (2400 steps, hit the step limit); demo: 1.0 at step 642 (scripted demo, Isaac Lab-Arena)",
+  "media": "M-3DSA9N"
+}

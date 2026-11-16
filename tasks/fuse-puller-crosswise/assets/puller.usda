@@ -1,0 +1,462 @@
+#usda 1.0
+(
+    defaultPrim = "Puller"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Puller" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysicsArticulationRootAPI"]
+    doc = "A tweezer-type fuse puller: a head block and two 3 mm arms 100 mm long and 12 mm tall hinged about Z at (2 mm, +-10.5 mm), with jaw plates (28 mm long, inner faces 14 mm apart open); joints ArmP and ArmM, springs to the open stops. Free root. Origin: table level at the hinge line, middle; jaws toward +x."
+)
+{
+    point3f physics:centerOfMass = (0.02, 0, 0.006)
+    float3 physics:diagonalInertia = (0.00002, 0.00002, 0.00002)
+    float physics:mass = 0.03
+
+    def Scope "Looks"
+    {
+        def Material "Phys_puller" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.5
+            float physics:restitution = 0
+            float physics:staticFriction = 0.6
+        }
+
+        def Material "m811107"
+        {
+            token outputs:surface.connect = </Puller/Looks/m811107/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.82, 0.12, 0.08)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m777880"
+        {
+            token outputs:surface.connect = </Puller/Looks/m777880/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.78, 0.79, 0.81)
+                float inputs:metallic = 0.9
+                float inputs:roughness = 0.3
+                token outputs:surface
+            }
+        }
+
+        def Material "m340403"
+        {
+            token outputs:surface.connect = </Puller/Looks/m340403/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.35, 0.05, 0.04)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_jaw" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.8
+            float physics:restitution = 0
+            float physics:staticFriction = 0.9
+        }
+    }
+
+    def Cube "Head1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </Puller/Looks/Phys_puller> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.016, 0.034, 0.012)
+        double3 xformOp:translate = (-0.006, 0, 0.006)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Mesh "HeadLook2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.014, -0.017, 0), (0.002, 0.017, 0.012)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 2, 1, 6, 7, 8, 0, 3, 2, 6, 8, 9, 0, 4, 3, 6, 9, 10, 0, 5, 4, 6, 10, 11, 0, 1, 7, 0, 7, 6, 1, 2, 8, 1, 8, 7, 2, 3, 9, 2, 9, 8, 3, 4, 10, 3, 10, 9, 4, 5, 11, 4, 11, 10, 5, 0, 6, 5, 6, 11]
+        rel material:binding = </Puller/Looks/m811107>
+        point3f[] points = [(-0.011, -0.017, 0), (0.002, -0.017, 0), (0.002, 0.017, 0), (-0.011, 0.017, 0), (-0.014, 0.014, 0), (-0.014, -0.014, 0), (-0.011, -0.017, 0.012), (0.002, -0.017, 0.012), (0.002, 0.017, 0.012), (-0.011, 0.017, 0.012), (-0.014, 0.014, 0.012), (-0.014, -0.014, 0.012)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Rivet3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 4, 1, 1, 5, 2, 1, 4, 5, 2, 5, 3, 0, 6, 4, 4, 7, 5, 4, 6, 7, 5, 7, 3, 0, 8, 6, 6, 9, 7, 6, 8, 9, 7, 9, 3, 0, 10, 8, 8, 11, 9, 8, 10, 11, 9, 11, 3, 0, 12, 10, 10, 13, 11, 10, 12, 13, 11, 13, 3, 0, 14, 12, 12, 15, 13, 12, 14, 15, 13, 15, 3, 0, 16, 14, 14, 17, 15, 14, 16, 17, 15, 17, 3, 0, 18, 16, 16, 19, 17, 16, 18, 19, 17, 19, 3, 0, 20, 18, 18, 21, 19, 18, 20, 21, 19, 21, 3, 0, 22, 20, 20, 23, 21, 20, 22, 23, 21, 23, 3, 0, 24, 22, 22, 25, 23, 22, 24, 25, 23, 25, 3, 0, 26, 24, 24, 27, 25, 24, 26, 27, 25, 27, 3, 0, 28, 26, 26, 29, 27, 26, 28, 29, 27, 29, 3, 0, 30, 28, 28, 31, 29, 28, 30, 31, 29, 31, 3, 0, 32, 30, 30, 33, 31, 30, 32, 33, 31, 33, 3, 0, 34, 32, 32, 35, 33, 32, 34, 35, 33, 35, 3, 0, 36, 34, 34, 37, 35, 34, 36, 37, 35, 37, 3, 0, 38, 36, 36, 39, 37, 36, 38, 39, 37, 39, 3, 0, 40, 38, 38, 41, 39, 38, 40, 41, 39, 41, 3, 0, 42, 40, 40, 43, 41, 40, 42, 43, 41, 43, 3, 0, 44, 42, 42, 45, 43, 42, 44, 45, 43, 45, 3, 0, 46, 44, 44, 47, 45, 44, 46, 47, 45, 47, 3, 0, 48, 46, 46, 49, 47, 46, 48, 49, 47, 49, 3, 0, 50, 48, 48, 51, 49, 48, 50, 51, 49, 51, 3, 0, 52, 50, 50, 53, 51, 50, 52, 53, 51, 53, 3, 0, 54, 52, 52, 55, 53, 52, 54, 55, 53, 55, 3, 0, 56, 54, 54, 57, 55, 54, 56, 57, 55, 57, 3, 0, 58, 56, 56, 59, 57, 56, 58, 59, 57, 59, 3, 0, 60, 58, 58, 61, 59, 58, 60, 61, 59, 61, 3, 0, 62, 60, 60, 63, 61, 60, 62, 63, 61, 63, 3, 0, 64, 62, 62, 65, 63, 62, 64, 65, 63, 65, 3, 0, 66, 64, 64, 67, 65, 64, 66, 67, 65, 67, 3, 0, 68, 66, 66, 69, 67, 66, 68, 69, 67, 69, 3, 0, 70, 68, 68, 71, 69, 68, 70, 71, 69, 71, 3, 0, 72, 70, 70, 73, 71, 70, 72, 73, 71, 73, 3, 0, 74, 72, 72, 75, 73, 72, 74, 75, 73, 75, 3, 0, 76, 74, 74, 77, 75, 74, 76, 77, 75, 77, 3, 0, 78, 76, 76, 79, 77, 76, 78, 79, 77, 79, 3, 0, 80, 78, 78, 81, 79, 78, 80, 81, 79, 81, 3, 0, 82, 80, 80, 83, 81, 80, 82, 83, 81, 83, 3, 0, 84, 82, 82, 85, 83, 82, 84, 85, 83, 85, 3, 0, 86, 84, 84, 87, 85, 84, 86, 87, 85, 87, 3, 0, 88, 86, 86, 89, 87, 86, 88, 89, 87, 89, 3, 0, 90, 88, 88, 91, 89, 88, 90, 91, 89, 91, 3, 0, 92, 90, 90, 93, 91, 90, 92, 93, 91, 93, 3, 0, 94, 92, 92, 95, 93, 92, 94, 95, 93, 95, 3, 0, 96, 94, 94, 97, 95, 94, 96, 97, 95, 97, 3, 0, 1, 96, 96, 2, 97, 96, 1, 2, 97, 2, 3]
+        rel material:binding = </Puller/Looks/m777880>
+        point3f[] points = [(0.002, -0.0105, 0.012), (0.0042, -0.0105, 0.012), (0.0042, -0.0105, 0.0124), (0.002, -0.0105, 0.0124), (0.0041811788, -0.010212842, 0.012), (0.0041811788, -0.010212842, 0.0124), (0.0041250368, -0.009930599, 0.012), (0.0041250368, -0.009930599, 0.0124), (0.004032535, -0.009658096, 0.012), (0.004032535, -0.009658096, 0.0124), (0.0039052558, -0.0094, 0.012), (0.0039052558, -0.0094, 0.0124), (0.0037453773, -0.0091607245, 0.012), (0.0037453773, -0.0091607245, 0.0124), (0.003555635, -0.008944365, 0.012), (0.003555635, -0.008944365, 0.0124), (0.0033392753, -0.008754622, 0.012), (0.0033392753, -0.008754622, 0.0124), (0.0031, -0.008594744, 0.012), (0.0031, -0.008594744, 0.0124), (0.0028419036, -0.008467465, 0.012), (0.0028419036, -0.008467465, 0.0124), (0.0025694019, -0.008374963, 0.012), (0.0025694019, -0.008374963, 0.0124), (0.0022871576, -0.008318821, 0.012), (0.0022871576, -0.008318821, 0.0124), (0.002, -0.0083, 0.012), (0.002, -0.0083, 0.0124), (0.0017128424, -0.008318821, 0.012), (0.0017128424, -0.008318821, 0.0124), (0.0014305981, -0.008374963, 0.012), (0.0014305981, -0.008374963, 0.0124), (0.0011580965, -0.008467465, 0.012), (0.0011580965, -0.008467465, 0.0124), (0.0009, -0.008594744, 0.012), (0.0009, -0.008594744, 0.0124), (0.0006607249, -0.008754622, 0.012), (0.0006607249, -0.008754622, 0.0124), (0.00044436508, -0.008944365, 0.012), (0.00044436508, -0.008944365, 0.0124), (0.00025462266, -0.0091607245, 0.012), (0.00025462266, -0.0091607245, 0.0124), (0.000094744115, -0.0094, 0.012), (0.000094744115, -0.0094, 0.0124), (-0.000032534972, -0.009658096, 0.012), (-0.000032534972, -0.009658096, 0.0124), (-0.00012503682, -0.009930599, 0.012), (-0.00012503682, -0.009930599, 0.0124), (-0.0001811787, -0.010212842, 0.012), (-0.0001811787, -0.010212842, 0.0124), (-0.0002, -0.0105, 0.012), (-0.0002, -0.0105, 0.0124), (-0.0001811787, -0.010787157, 0.012), (-0.0001811787, -0.010787157, 0.0124), (-0.00012503682, -0.011069402, 0.012), (-0.00012503682, -0.011069402, 0.0124), (-0.000032534972, -0.011341903, 0.012), (-0.000032534972, -0.011341903, 0.0124), (0.000094744115, -0.0116, 0.012), (0.000094744115, -0.0116, 0.0124), (0.00025462266, -0.011839275, 0.012), (0.00025462266, -0.011839275, 0.0124), (0.00044436508, -0.0120556345, 0.012), (0.00044436508, -0.0120556345, 0.0124), (0.0006607249, -0.0122453775, 0.012), (0.0006607249, -0.0122453775, 0.0124), (0.0009, -0.012405256, 0.012), (0.0009, -0.012405256, 0.0124), (0.0011580965, -0.012532535, 0.012), (0.0011580965, -0.012532535, 0.0124), (0.0014305981, -0.012625037, 0.012), (0.0014305981, -0.012625037, 0.0124), (0.0017128424, -0.012681179, 0.012), (0.0017128424, -0.012681179, 0.0124), (0.002, -0.0127, 0.012), (0.002, -0.0127, 0.0124), (0.0022871576, -0.012681179, 0.012), (0.0022871576, -0.012681179, 0.0124), (0.0025694019, -0.012625037, 0.012), (0.0025694019, -0.012625037, 0.0124), (0.0028419036, -0.012532535, 0.012), (0.0028419036, -0.012532535, 0.0124), (0.0031, -0.012405256, 0.012), (0.0031, -0.012405256, 0.0124), (0.0033392753, -0.0122453775, 0.012), (0.0033392753, -0.0122453775, 0.0124), (0.003555635, -0.0120556345, 0.012), (0.003555635, -0.0120556345, 0.0124), (0.0037453773, -0.011839275, 0.012), (0.0037453773, -0.011839275, 0.0124), (0.0039052558, -0.0116, 0.012), (0.0039052558, -0.0116, 0.0124), (0.004032535, -0.011341903, 0.012), (0.004032535, -0.011341903, 0.0124), (0.0041250368, -0.011069402, 0.012), (0.0041250368, -0.011069402, 0.0124), (0.0041811788, -0.010787157, 0.012), (0.0041811788, -0.010787157, 0.0124)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Rivet4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 4, 1, 1, 5, 2, 1, 4, 5, 2, 5, 3, 0, 6, 4, 4, 7, 5, 4, 6, 7, 5, 7, 3, 0, 8, 6, 6, 9, 7, 6, 8, 9, 7, 9, 3, 0, 10, 8, 8, 11, 9, 8, 10, 11, 9, 11, 3, 0, 12, 10, 10, 13, 11, 10, 12, 13, 11, 13, 3, 0, 14, 12, 12, 15, 13, 12, 14, 15, 13, 15, 3, 0, 16, 14, 14, 17, 15, 14, 16, 17, 15, 17, 3, 0, 18, 16, 16, 19, 17, 16, 18, 19, 17, 19, 3, 0, 20, 18, 18, 21, 19, 18, 20, 21, 19, 21, 3, 0, 22, 20, 20, 23, 21, 20, 22, 23, 21, 23, 3, 0, 24, 22, 22, 25, 23, 22, 24, 25, 23, 25, 3, 0, 26, 24, 24, 27, 25, 24, 26, 27, 25, 27, 3, 0, 28, 26, 26, 29, 27, 26, 28, 29, 27, 29, 3, 0, 30, 28, 28, 31, 29, 28, 30, 31, 29, 31, 3, 0, 32, 30, 30, 33, 31, 30, 32, 33, 31, 33, 3, 0, 34, 32, 32, 35, 33, 32, 34, 35, 33, 35, 3, 0, 36, 34, 34, 37, 35, 34, 36, 37, 35, 37, 3, 0, 38, 36, 36, 39, 37, 36, 38, 39, 37, 39, 3, 0, 40, 38, 38, 41, 39, 38, 40, 41, 39, 41, 3, 0, 42, 40, 40, 43, 41, 40, 42, 43, 41, 43, 3, 0, 44, 42, 42, 45, 43, 42, 44, 45, 43, 45, 3, 0, 46, 44, 44, 47, 45, 44, 46, 47, 45, 47, 3, 0, 48, 46, 46, 49, 47, 46, 48, 49, 47, 49, 3, 0, 50, 48, 48, 51, 49, 48, 50, 51, 49, 51, 3, 0, 52, 50, 50, 53, 51, 50, 52, 53, 51, 53, 3, 0, 54, 52, 52, 55, 53, 52, 54, 55, 53, 55, 3, 0, 56, 54, 54, 57, 55, 54, 56, 57, 55, 57, 3, 0, 58, 56, 56, 59, 57, 56, 58, 59, 57, 59, 3, 0, 60, 58, 58, 61, 59, 58, 60, 61, 59, 61, 3, 0, 62, 60, 60, 63, 61, 60, 62, 63, 61, 63, 3, 0, 64, 62, 62, 65, 63, 62, 64, 65, 63, 65, 3, 0, 66, 64, 64, 67, 65, 64, 66, 67, 65, 67, 3, 0, 68, 66, 66, 69, 67, 66, 68, 69, 67, 69, 3, 0, 70, 68, 68, 71, 69, 68, 70, 71, 69, 71, 3, 0, 72, 70, 70, 73, 71, 70, 72, 73, 71, 73, 3, 0, 74, 72, 72, 75, 73, 72, 74, 75, 73, 75, 3, 0, 76, 74, 74, 77, 75, 74, 76, 77, 75, 77, 3, 0, 78, 76, 76, 79, 77, 76, 78, 79, 77, 79, 3, 0, 80, 78, 78, 81, 79, 78, 80, 81, 79, 81, 3, 0, 82, 80, 80, 83, 81, 80, 82, 83, 81, 83, 3, 0, 84, 82, 82, 85, 83, 82, 84, 85, 83, 85, 3, 0, 86, 84, 84, 87, 85, 84, 86, 87, 85, 87, 3, 0, 88, 86, 86, 89, 87, 86, 88, 89, 87, 89, 3, 0, 90, 88, 88, 91, 89, 88, 90, 91, 89, 91, 3, 0, 92, 90, 90, 93, 91, 90, 92, 93, 91, 93, 3, 0, 94, 92, 92, 95, 93, 92, 94, 95, 93, 95, 3, 0, 96, 94, 94, 97, 95, 94, 96, 97, 95, 97, 3, 0, 1, 96, 96, 2, 97, 96, 1, 2, 97, 2, 3]
+        rel material:binding = </Puller/Looks/m777880>
+        point3f[] points = [(0.002, 0.0105, 0.012), (0.0042, 0.0105, 0.012), (0.0042, 0.0105, 0.0124), (0.002, 0.0105, 0.0124), (0.0041811788, 0.010787157, 0.012), (0.0041811788, 0.010787157, 0.0124), (0.0041250368, 0.011069402, 0.012), (0.0041250368, 0.011069402, 0.0124), (0.004032535, 0.011341903, 0.012), (0.004032535, 0.011341903, 0.0124), (0.0039052558, 0.0116, 0.012), (0.0039052558, 0.0116, 0.0124), (0.0037453773, 0.011839275, 0.012), (0.0037453773, 0.011839275, 0.0124), (0.003555635, 0.0120556345, 0.012), (0.003555635, 0.0120556345, 0.0124), (0.0033392753, 0.0122453775, 0.012), (0.0033392753, 0.0122453775, 0.0124), (0.0031, 0.012405256, 0.012), (0.0031, 0.012405256, 0.0124), (0.0028419036, 0.012532535, 0.012), (0.0028419036, 0.012532535, 0.0124), (0.0025694019, 0.012625037, 0.012), (0.0025694019, 0.012625037, 0.0124), (0.0022871576, 0.012681179, 0.012), (0.0022871576, 0.012681179, 0.0124), (0.002, 0.0127, 0.012), (0.002, 0.0127, 0.0124), (0.0017128424, 0.012681179, 0.012), (0.0017128424, 0.012681179, 0.0124), (0.0014305981, 0.012625037, 0.012), (0.0014305981, 0.012625037, 0.0124), (0.0011580965, 0.012532535, 0.012), (0.0011580965, 0.012532535, 0.0124), (0.0009, 0.012405256, 0.012), (0.0009, 0.012405256, 0.0124), (0.0006607249, 0.0122453775, 0.012), (0.0006607249, 0.0122453775, 0.0124), (0.00044436508, 0.0120556345, 0.012), (0.00044436508, 0.0120556345, 0.0124), (0.00025462266, 0.011839275, 0.012), (0.00025462266, 0.011839275, 0.0124), (0.000094744115, 0.0116, 0.012), (0.000094744115, 0.0116, 0.0124), (-0.000032534972, 0.011341903, 0.012), (-0.000032534972, 0.011341903, 0.0124), (-0.00012503682, 0.011069402, 0.012), (-0.00012503682, 0.011069402, 0.0124), (-0.0001811787, 0.010787157, 0.012), (-0.0001811787, 0.010787157, 0.0124), (-0.0002, 0.0105, 0.012), (-0.0002, 0.0105, 0.0124), (-0.0001811787, 0.010212842, 0.012), (-0.0001811787, 0.010212842, 0.0124), (-0.00012503682, 0.009930599, 0.012), (-0.00012503682, 0.009930599, 0.0124), (-0.000032534972, 0.009658096, 0.012), (-0.000032534972, 0.009658096, 0.0124), (0.000094744115, 0.0094, 0.012), (0.000094744115, 0.0094, 0.0124), (0.00025462266, 0.0091607245, 0.012), (0.00025462266, 0.0091607245, 0.0124), (0.00044436508, 0.008944365, 0.012), (0.00044436508, 0.008944365, 0.0124), (0.0006607249, 0.008754622, 0.012), (0.0006607249, 0.008754622, 0.0124), (0.0009, 0.008594744, 0.012), (0.0009, 0.008594744, 0.0124), (0.0011580965, 0.008467465, 0.012), (0.0011580965, 0.008467465, 0.0124), (0.0014305981, 0.008374963, 0.012), (0.0014305981, 0.008374963, 0.0124), (0.0017128424, 0.008318821, 0.012), (0.0017128424, 0.008318821, 0.0124), (0.002, 0.0083, 0.012), (0.002, 0.0083, 0.0124), (0.0022871576, 0.008318821, 0.012), (0.0022871576, 0.008318821, 0.0124), (0.0025694019, 0.008374963, 0.012), (0.0025694019, 0.008374963, 0.0124), (0.0028419036, 0.008467465, 0.012), (0.0028419036, 0.008467465, 0.0124), (0.0031, 0.008594744, 0.012), (0.0031, 0.008594744, 0.0124), (0.0033392753, 0.008754622, 0.012), (0.0033392753, 0.008754622, 0.0124), (0.003555635, 0.008944365, 0.012), (0.003555635, 0.008944365, 0.0124), (0.0037453773, 0.0091607245, 0.012), (0.0037453773, 0.0091607245, 0.0124), (0.0039052558, 0.0094, 0.012), (0.0039052558, 0.0094, 0.0124), (0.004032535, 0.009658096, 0.012), (0.004032535, 0.009658096, 0.0124), (0.0041250368, 0.009930599, 0.012), (0.0041250368, 0.009930599, 0.0124), (0.0041811788, 0.010212842, 0.012), (0.0041811788, 0.010212842, 0.0124)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Xform "ArmP" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0.05, 0, 0.006)
+        float3 physics:diagonalInertia = (2e-7, 0.000002, 0.000002)
+        float physics:mass = 0.006
+        double3 xformOp:translate = (0.002, 0.0105, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "Arm5" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </Puller/Looks/Phys_puller> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.1, 0.003, 0.012)
+            double3 xformOp:translate = (0.05, 0, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "ArmLook6" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Puller/Looks/m811107>
+            double size = 1
+            float3 xformOp:scale = (0.1, 0.003, 0.012)
+            double3 xformOp:translate = (0.05, 0, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Rib7" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Puller/Looks/m340403>
+            double size = 1
+            float3 xformOp:scale = (0.0022, 0.00008, 0.01)
+            double3 xformOp:translate = (0.02, 0.0015400000000000001, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Rib8" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Puller/Looks/m340403>
+            double size = 1
+            float3 xformOp:scale = (0.0022, 0.00008, 0.01)
+            double3 xformOp:translate = (0.025, 0.0015400000000000001, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Rib9" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Puller/Looks/m340403>
+            double size = 1
+            float3 xformOp:scale = (0.0022, 0.00008, 0.01)
+            double3 xformOp:translate = (0.03, 0.0015400000000000001, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Rib10" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Puller/Looks/m340403>
+            double size = 1
+            float3 xformOp:scale = (0.0022, 0.00008, 0.01)
+            double3 xformOp:translate = (0.035, 0.0015400000000000001, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Rib11" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Puller/Looks/m340403>
+            double size = 1
+            float3 xformOp:scale = (0.0022, 0.00008, 0.01)
+            double3 xformOp:translate = (0.04, 0.0015400000000000001, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Rib12" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Puller/Looks/m340403>
+            double size = 1
+            float3 xformOp:scale = (0.0022, 0.00008, 0.01)
+            double3 xformOp:translate = (0.045, 0.0015400000000000001, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Rib13" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Puller/Looks/m340403>
+            double size = 1
+            float3 xformOp:scale = (0.0022, 0.00008, 0.01)
+            double3 xformOp:translate = (0.05, 0.0015400000000000001, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Rib14" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Puller/Looks/m340403>
+            double size = 1
+            float3 xformOp:scale = (0.0022, 0.00008, 0.01)
+            double3 xformOp:translate = (0.05500000000000001, 0.0015400000000000001, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Mesh "Jaw15" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.072, -0.0035, 0), (0.1, -0.0015, 0.012)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 5, 6, 7, 0, 3, 2, 5, 7, 8, 0, 4, 3, 5, 8, 9, 0, 1, 6, 0, 6, 5, 1, 2, 7, 1, 7, 6, 2, 3, 8, 2, 8, 7, 3, 4, 9, 3, 9, 8, 4, 0, 5, 4, 5, 9]
+            rel material:binding = </Puller/Looks/m777880>
+            rel material:binding:physics = </Puller/Looks/Phys_jaw> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(0.072, -0.0035, 0), (0.096, -0.0035, 0), (0.1, -0.003, 0), (0.1, -0.0015, 0), (0.072, -0.0015, 0), (0.072, -0.0035, 0.012), (0.096, -0.0035, 0.012), (0.1, -0.003, 0.012), (0.1, -0.0015, 0.012), (0.072, -0.0015, 0.012)]
+            uniform token subdivisionScheme = "none"
+        }
+    }
+
+    def Scope "Joints"
+    {
+        def PhysicsRevoluteJoint "ArmP" (
+            prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysxJointAPI"]
+        )
+        {
+            float drive:angular:physics:damping = 0.000034906585
+            float drive:angular:physics:stiffness = 0.05235988
+            float drive:angular:physics:targetPosition = 6
+            uniform token drive:angular:physics:type = "force"
+            uniform token physics:axis = "Z"
+            rel physics:body0 = </Puller>
+            rel physics:body1 = </Puller/ArmP>
+            point3f physics:localPos0 = (0.002, 0.0105, 0)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = -5
+            float physics:upperLimit = 0
+            custom float physxJoint:armature = 0.000002
+        }
+
+        def PhysicsRevoluteJoint "ArmM" (
+            prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysxJointAPI"]
+        )
+        {
+            float drive:angular:physics:damping = 0.000034906585
+            float drive:angular:physics:stiffness = 0.05235988
+            float drive:angular:physics:targetPosition = -6
+            uniform token drive:angular:physics:type = "force"
+            uniform token physics:axis = "Z"
+            rel physics:body0 = </Puller>
+            rel physics:body1 = </Puller/ArmM>
+            point3f physics:localPos0 = (0.002, -0.0105, 0)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 5
+            custom float physxJoint:armature = 0.000002
+        }
+    }
+
+    def Xform "ArmM" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0.05, 0, 0.006)
+        float3 physics:diagonalInertia = (2e-7, 0.000002, 0.000002)
+        float physics:mass = 0.006
+        double3 xformOp:translate = (0.002, -0.0105, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "Arm16" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding:physics = </Puller/Looks/Phys_puller> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            uniform token purpose = "guide"
+            double size = 1
+            float3 xformOp:scale = (0.1, 0.003, 0.012)
+            double3 xformOp:translate = (0.05, 0, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "ArmLook17" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Puller/Looks/m811107>
+            double size = 1
+            float3 xformOp:scale = (0.1, 0.003, 0.012)
+            double3 xformOp:translate = (0.05, 0, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Rib18" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Puller/Looks/m340403>
+            double size = 1
+            float3 xformOp:scale = (0.0022, 0.00008, 0.01)
+            double3 xformOp:translate = (0.02, -0.0015400000000000001, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Rib19" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Puller/Looks/m340403>
+            double size = 1
+            float3 xformOp:scale = (0.0022, 0.00008, 0.01)
+            double3 xformOp:translate = (0.025, -0.0015400000000000001, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Rib20" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Puller/Looks/m340403>
+            double size = 1
+            float3 xformOp:scale = (0.0022, 0.00008, 0.01)
+            double3 xformOp:translate = (0.03, -0.0015400000000000001, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Rib21" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Puller/Looks/m340403>
+            double size = 1
+            float3 xformOp:scale = (0.0022, 0.00008, 0.01)
+            double3 xformOp:translate = (0.035, -0.0015400000000000001, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Rib22" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Puller/Looks/m340403>
+            double size = 1
+            float3 xformOp:scale = (0.0022, 0.00008, 0.01)
+            double3 xformOp:translate = (0.04, -0.0015400000000000001, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Rib23" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Puller/Looks/m340403>
+            double size = 1
+            float3 xformOp:scale = (0.0022, 0.00008, 0.01)
+            double3 xformOp:translate = (0.045, -0.0015400000000000001, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Rib24" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Puller/Looks/m340403>
+            double size = 1
+            float3 xformOp:scale = (0.0022, 0.00008, 0.01)
+            double3 xformOp:translate = (0.05, -0.0015400000000000001, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Rib25" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Puller/Looks/m340403>
+            double size = 1
+            float3 xformOp:scale = (0.0022, 0.00008, 0.01)
+            double3 xformOp:translate = (0.05500000000000001, -0.0015400000000000001, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Mesh "Jaw26" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(0.072, 0.0015, 0), (0.1, 0.0035, 0.012)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 5, 6, 7, 0, 3, 2, 5, 7, 8, 0, 4, 3, 5, 8, 9, 0, 1, 6, 0, 6, 5, 1, 2, 7, 1, 7, 6, 2, 3, 8, 2, 8, 7, 3, 4, 9, 3, 9, 8, 4, 0, 5, 4, 5, 9]
+            rel material:binding = </Puller/Looks/m777880>
+            rel material:binding:physics = </Puller/Looks/Phys_jaw> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            uniform token physics:approximation = "convexHull"
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            point3f[] points = [(0.072, 0.0015, 0), (0.1, 0.0015, 0), (0.1, 0.003, 0), (0.096, 0.0035, 0), (0.072, 0.0035, 0), (0.072, 0.0015, 0.012), (0.1, 0.0015, 0.012), (0.1, 0.003, 0.012), (0.096, 0.0035, 0.012), (0.072, 0.0035, 0.012)]
+            uniform token subdivisionScheme = "none"
+        }
+    }
+}
+

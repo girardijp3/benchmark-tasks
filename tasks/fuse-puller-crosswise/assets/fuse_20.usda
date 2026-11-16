@@ -1,0 +1,247 @@
+#usda 1.0
+(
+    defaultPrim = "Fuse"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Fuse" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A MAXI blade fuse, 29.2 x 8.5 mm, 34 mm tall (its lower 12 mm sits in the pocket), 8 g. Origin: the middle of its underside."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0.017)
+    float3 physics:diagonalInertia = (8.188333e-7, 0.0000013390934, 6.1659335e-7)
+    float physics:mass = 0.008
+
+    def Scope "Looks"
+    {
+        def Material "Phys_fuse" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.45
+            float physics:restitution = 0
+            float physics:staticFriction = 0.5
+        }
+
+        def Material "m957707"
+        {
+            token outputs:surface.connect = </Fuse/Looks/m957707/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.96, 0.78, 0.08)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Tex_fuse_20"
+        {
+            token outputs:surface.connect = </Fuse/Looks/Tex_fuse_20/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor.connect = </Fuse/Looks/Tex_fuse_20/Tex.outputs:rgb>
+                float inputs:roughness = 0.4
+                token outputs:surface
+            }
+
+            def Shader "Tex"
+            {
+                uniform token info:id = "UsdUVTexture"
+                asset inputs:file = @./textures/fuse_20.png@
+                float2 inputs:st.connect = </Fuse/Looks/Tex_fuse_20/Reader.outputs:result>
+                float3 outputs:rgb
+            }
+
+            def Shader "Reader"
+            {
+                uniform token info:id = "UsdPrimvarReader_float2"
+                string inputs:varname = "st"
+                float2 outputs:result
+            }
+        }
+
+        def Material "m919187"
+        {
+            token outputs:surface.connect = </Fuse/Looks/m919187/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.92, 0.92, 0.88)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m777880"
+        {
+            token outputs:surface.connect = </Fuse/Looks/m777880/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.78, 0.79, 0.81)
+                float inputs:metallic = 0.9
+                float inputs:roughness = 0.3
+                token outputs:surface
+            }
+        }
+
+        def Material "m574604"
+        {
+            token outputs:surface.connect = </Fuse/Looks/m574604/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.576, 0.468, 0.048)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Body1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding:physics = </Fuse/Looks/Phys_fuse> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        uniform token purpose = "guide"
+        double size = 1
+        float3 xformOp:scale = (0.0292, 0.0085, 0.034)
+        double3 xformOp:translate = (0, 0, 0.017)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Mesh "FuseHousing2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.0146, -0.00425, 0), (0.0146, 0.00425, 0.034)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 2, 6, 8, 7, 0, 2, 3, 6, 9, 8, 0, 3, 4, 6, 10, 9, 0, 4, 5, 6, 11, 10, 0, 7, 1, 0, 6, 7, 1, 8, 2, 1, 7, 8, 2, 9, 3, 2, 8, 9, 3, 10, 4, 3, 9, 10, 4, 11, 5, 4, 10, 11, 5, 6, 0, 5, 11, 6]
+        rel material:binding = </Fuse/Looks/m957707>
+        point3f[] points = [(-0.0146, -0.00425, 0), (0.0146, -0.00425, 0), (0.0146, -0.00425, 0.03), (0.0126, -0.00425, 0.034), (-0.0126, -0.00425, 0.034), (-0.0146, -0.00425, 0.03), (-0.0146, 0.00425, 0), (0.0146, 0.00425, 0), (0.0146, 0.00425, 0.03), (0.0126, 0.00425, 0.034), (-0.0126, 0.00425, 0.034), (-0.0146, 0.00425, 0.03)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "FuseRating3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        int[] faceVertexCounts = [4]
+        int[] faceVertexIndices = [0, 1, 2, 3]
+        rel material:binding = </Fuse/Looks/Tex_fuse_20>
+        point3f[] points = [(-0.009, -0.00431, 0.019), (0.009, -0.00431, 0.019), (0.009, -0.00431, 0.028), (-0.009, -0.00431, 0.028)]
+        texCoord2f[] primvars:st = [(0, 0), (1, 0), (1, 1), (0, 1)] (
+            interpolation = "vertex"
+        )
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Cube "FuseWindow4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fuse/Looks/m919187>
+        double size = 1
+        float3 xformOp:scale = (0.017, 0.00008, 0.006)
+        double3 xformOp:translate = (0, -0.00429, 0.010500000000000002)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "FuseLink5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fuse/Looks/m777880>
+        double size = 1
+        float3 xformOp:scale = (0.014, 0.00008, 0.0012)
+        double3 xformOp:translate = (0, -0.0043300000000000005, 0.010500000000000002)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Mesh "FuseRating6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        int[] faceVertexCounts = [4]
+        int[] faceVertexIndices = [0, 3, 2, 1]
+        rel material:binding = </Fuse/Looks/Tex_fuse_20>
+        point3f[] points = [(-0.009, 0.00431, 0.019), (0.009, 0.00431, 0.019), (0.009, 0.00431, 0.028), (-0.009, 0.00431, 0.028)]
+        texCoord2f[] primvars:st = [(1, 0), (0, 0), (0, 1), (1, 1)] (
+            interpolation = "vertex"
+        )
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Cube "FuseWindow7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fuse/Looks/m919187>
+        double size = 1
+        float3 xformOp:scale = (0.017, 0.00008, 0.006)
+        double3 xformOp:translate = (0, 0.00429, 0.010500000000000002)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "FuseLink8" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fuse/Looks/m777880>
+        double size = 1
+        float3 xformOp:scale = (0.014, 0.00008, 0.0012)
+        double3 xformOp:translate = (0, 0.0043300000000000005, 0.010500000000000002)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "FuseTop9" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fuse/Looks/m574604>
+        double size = 1
+        float3 xformOp:scale = (0.02, 0.0051, 0.0006)
+        double3 xformOp:translate = (0, 0, 0.034300000000000004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Blade10" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fuse/Looks/m777880>
+        double size = 1
+        float3 xformOp:scale = (0.0065, 0.0008, 0.001)
+        double3 xformOp:translate = (-0.0085, 0, -0.0005)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Blade11" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fuse/Looks/m777880>
+        double size = 1
+        float3 xformOp:scale = (0.0065, 0.0008, 0.001)
+        double3 xformOp:translate = (0.0085, 0, -0.0005)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+
