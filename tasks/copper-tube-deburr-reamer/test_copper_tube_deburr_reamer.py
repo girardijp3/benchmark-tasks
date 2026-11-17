@@ -1,6 +1,6 @@
 """Offline checks (no GPU, no network): the task file loads, the declared cutting effect (two blades, 12 sectors, clockwise only,
-needs the cone seated, the tube lifted and held), the step ladder, the 1 s full-success timing, the latches (an over-reamed rim, a
-dropped tube, a part off the table) and the demo's reach.
+needs the blade engaged in the burr, the tube lifted and held), the step ladder, the 1 s full-success timing, the latches (an
+over-reamed rim, a dropped tube, a part off the table) and the demo's reach.
 Run in the yam_arena environment:  python -m pytest -q test_copper_tube_deburr_reamer.py"""
 
 import math
@@ -210,13 +210,13 @@ def fresh_cut():
 class Episode(Episode):  # noqa: F811
     def __init__(self, poses=None):
         super().__init__(poses)
-        if poses is SOLVED:  # the burr is gone, the reamer was seated in the lifted tube earlier
+        if poses is SOLVED:  # the burr is gone, the blade was engaged in the lifted tube earlier
             T._CUT.passes[:] = 2
-            T._PROGRESS.mem["seated_up"] = True
+            T._PROGRESS.mem["engaged_up"] = True
 
 
 def _held_session(e):
-    """The tube held 30 mm up by the left gripper with the reamer seated: returns the episode ready to turn."""
+    """The tube held 30 mm up by the left gripper with the blade engaged: returns the episode ready to turn."""
     e.step(0.05, tube=(TUBE_UP, IDENT), tool=_tool_in_bore(0.0), left=_gripper(HOLD_TCP, contact=15.0, opening=0.02))
     return e
 
@@ -229,7 +229,7 @@ def _turn(e, start_deg, end_deg, seconds=2.0, **kw):
         e.step(0.05, tool=_tool_in_bore(phi, **kw))
 
 
-def test_a_clockwise_half_turn_while_seated_and_held_gives_every_sector_one_pass():
+def test_a_clockwise_half_turn_while_engaged_and_held_gives_every_sector_one_pass():
     e = _held_session(Episode())
     _turn(e, 0.0, -190.0)
     assert int(T._CUT.passes.min()) == 1 and int(T._CUT.passes.max()) == 1
@@ -274,7 +274,7 @@ def test_the_tube_need_not_be_lifted_out_of_its_rack_but_a_hand_must_hold_it():
     assert int(T._CUT.passes.max()) >= 1
 
 
-def test_the_blade_torque_acts_only_while_seated_and_turning_clockwise():
+def test_the_blade_torque_acts_only_while_engaged_and_turning_clockwise():
     e = Episode()
     e.step(0.05, tube=(TUBE_UP, IDENT), tool=_tool_in_bore(0.0), left=_gripper(HOLD_TCP, contact=15.0, opening=0.02))
     for i in range(1, 6):
@@ -283,12 +283,49 @@ def test_the_blade_torque_acts_only_while_seated_and_turning_clockwise():
     for i in range(1, 6):
         e.step(0.05, tool=_tool_in_bore(math.radians(-25.0 + 5.0 * i)))  # turning back
     assert not T._CUT.drag
-    e.step(0.05, tool=_tool_in_bore(math.radians(-10.0), depth=0.003))
+    for depth in (0.003, 0.006):  # inside the bore but not touching the burr
+        e.step(0.05, tool=_tool_in_bore(math.radians(-10.0), depth=depth))
+        assert not T._CUT.drag
+
+
+def test_a_centered_cone_at_six_mm_has_no_blade_contact_and_cuts_nothing():
+    """The reviewer's case: a 6 mm seat leaves the cone's 7.86 mm edge 1.84 mm clear of the 9.70 mm burr, so turning earns nothing."""
+    e = Episode()
+    e.step(0.05, tube=(TUBE_UP, IDENT), tool=_tool_in_bore(0.0, depth=0.006), left=_gripper(HOLD_TCP, contact=15.0, opening=0.02))
+    edge_r, bite, force = T.blade_contact(e.objects())
+    assert edge_r == pytest.approx(0.007857, abs=1e-6)
+    assert bite == pytest.approx(-0.001843, abs=1e-6)
+    assert force == 0.0
+    assert T.engaged(e.objects()) is False
+    _turn(e, 0.0, -370.0, seconds=4.0, depth=0.006)
+    assert int(T._CUT.passes.max()) == 0
+    assert float(T._CUT.burr().max()) == pytest.approx(0.4 * T.MM)
+    assert e.done()[0] is False and e.done()[1] is False
     assert not T._CUT.drag
 
 
-def test_the_cone_must_be_seated():
-    for kw in ({"depth": 0.003}, {"off": 0.006}, {"tilt": 12.0}):
+def test_the_blade_is_engaged_at_the_natural_seat():
+    e = _held_session(Episode())
+    edge_r, bite, force = T.blade_contact(e.objects())
+    assert edge_r == pytest.approx(T.TUBE_RI, abs=1e-6)  # 10.100 mm: the cone's edge circle exactly on the bore wall
+    assert bite == pytest.approx(0.400 * T.MM, abs=1e-6)
+    assert force >= T.CUT_FORCE
+    assert T.engaged(e.objects())
+
+
+def test_a_jammed_cone_past_the_wall_does_not_count():
+    e = Episode()
+    e.step(0.05, tube=(TUBE_UP, IDENT), tool=_tool_in_bore(0.0, depth=0.0105), left=_gripper(HOLD_TCP, contact=15.0, opening=0.02))
+    edge_r, bite, force = T.blade_contact(e.objects())
+    assert bite > T.ENGAGE_MAX
+    assert T.engaged(e.objects()) is False
+    _turn(e, 0.0, -370.0, seconds=4.0, depth=0.0105)
+    assert int(T._CUT.passes.max()) == 0
+    assert e.done()[0] is False
+
+
+def test_the_blade_must_be_engaged():
+    for kw in ({"depth": 0.003}, {"depth": 0.006}, {"depth": 0.008}, {"off": 0.006}, {"tilt": 12.0}):
         T._CUT.__init__()
         T._PROGRESS.__init__()
         e = Episode()

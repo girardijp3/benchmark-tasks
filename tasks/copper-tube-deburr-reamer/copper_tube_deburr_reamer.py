@@ -8,11 +8,14 @@ lets go, turns back and takes a fresh grip between strokes), stop once the burr 
 thin wall), lift the reamer out and stand it back in its rest, and stand the tube back in the rack.
 
 The burr and the chamfer are a declared effect, not simulated material. Every control step the task reads where the reamer's
-cone is in the tube's bore and how far the reamer has turned. While the cone is seated (its tip well inside the bore, the axis
-within a few degrees of the tube's, a hand holding the tube against the torque) and the reamer turns clockwise, its two blades
-pass the 12 sectors of the bore; each pass takes 0.2 mm off the burr of the sector it crosses (two passes clear it), and a pass
-over a sector that is already clear chamfers its rim by 0.2 mm. Turning back, or turning while the cone is not seated, cuts
-nothing. The burr layers and the rim chamfer are drawn as marker links on the tube (an articulation) that slide away.
+cone is in the tube's bore and how far the reamer has turned. A blade pass counts only while the cone's cutting edge is actually
+engaged in the burr: the real 4-13 mm cone's edge (slope 9/14) must have bitten at least 0.05 mm into the 0.4 mm burr ring, which
+puts its tip 8.94-9.80 mm below the rim and gives a 5 N or more contact per blade (13.2 N at the cut's 0.08 N m torque). A cone
+merely inside the bore, such as 6 mm down where its 7.86 mm edge is 1.84 mm clear of the burr, cuts nothing. While the blade is
+engaged and the reamer turns clockwise, its two blades pass the 12 sectors of the bore; each pass takes 0.2 mm off the burr of the
+sector it crosses (two passes clear it), and a pass over a sector that is already clear chamfers its rim by 0.2 mm. Turning back, or
+turning while the blade is not engaged, cuts nothing. The burr layers and the rim chamfer are drawn as marker links on the tube (an
+articulation) that slide away.
 
 Run it:  inspect-robots run --embodiment yam_arena -E task=copper_tube_deburr_reamer.py --scorer task_score ...
 
@@ -260,10 +263,27 @@ BURR = 0.4 * MM  # the inner burr (a lip of about 0.4 mm: typical of a wheel cut
 BITE = 0.2 * MM  # what one blade pass takes off a sector's burr (two passes clear it)
 CHAMFER_PASS = 0.2 * MM  # what a blade pass over a clear sector takes off its rim
 THIN = 0.5 * MM  # a rim chamfered past this has thinned the 0.9 mm wall too far
-SEAT_MIN = 6.0 * MM  # seated: the cone's tip at least this far below the rim (rest: 9.5 mm) ...
-SEAT_OFF = 3.0 * MM  # ... its axis within this of the tube's at the tip ...
-SEAT_TILT = math.radians(8.0)  # ... and within this angle of the tube axis
+BURR_IN = TUBE_RI - BURR  # 9.70 mm: the burr lip's inner edge (the bore wall is at 10.10 mm)
+# The cone's cutting edge (4 mm tip radius, 13 mm at 14 mm up; slope 9/14) touches the burr only when its radius at the cut end
+# lies in the burr ring, 9.70-10.10 mm.  That is a tip 8.94 mm below the rim at first contact and 9.49 mm at the natural seat
+# (the cone's 10.10 mm circle on the rim).  A centered cone at 6 mm has a 7.86 mm edge, 1.84 mm clear of the burr: no contact, no cut.
+ENGAGE_BITE = 0.05 * MM  # radial bite past the burr's inner edge that counts as contact (an eighth of the 0.4 mm burr)
+ENGAGE_MAX = 0.60 * MM  # deepest counted bite: past this the edge is 0.2 mm into the 0.9 mm wall, a jammed cone, not a cut
+SEAT_MIN = (BURR_IN + ENGAGE_BITE - CONE_TIP_R) / SLOPE  # 8.944 mm below the rim
+SEAT_MAX = (BURR_IN + ENGAGE_MAX - CONE_TIP_R) / SLOPE  # 9.800 mm below the rim
+SEAT_OFF = 3.0 * MM  # the cone tip within this of the tube's axis ...
+SEAT_TILT = math.radians(8.0)  # ... and the tool axis within this angle of the tube axis
 COMMIT = math.radians(2.0)  # turning less than this is not counted (sensor jitter, a hand easing back)
+DRAG_TORQUE = 0.08  # N m: the resisting torque of the cut: +0.08 on the reamer (against its turning) and -0.08 on the tube (dragged round).
+# The cut torque is an estimate from the burr's shear, not a measurement: shear strength of annealed to half-hard copper 150-230 MPa
+# (taken as 200 MPa), chip section per blade = 0.2 mm bite x 0.1 mm of ragged lip engaged at a time = 2e-8 m2, so 4 N per blade at
+# the 10 mm bore radius; two blades cut at once: 2 x 4 N x 0.010 m = 0.08 N m. It is about half of what the demo's two-pad side grip
+# can hold (2 pads x 0.5 friction x 15 N x 11 mm = 0.17 N m) and several times what the tube's own friction on the rack plate can
+# hold (0.017 N m), so an unheld tube turns with the reamer.
+CUT_MU = 0.30  # copper on steel: the friction coefficient that turns the cut torque into a blade contact force
+BLADE_N = DRAG_TORQUE / (2 * CUT_MU * TUBE_RI)  # 13.2 N per blade: T = 2 * mu * F_n * r at the 10.1 mm bore radius
+CUT_FORCE = 5.0  # N: least per-blade normal contact force that counts as cutting
+DRAG_RATE = 0.2  # rad/s: slower turning than this is not cutting (no drag)
 JOINT_NAMES = tuple(f"{k}{i}" for i in range(N_SECT) for k in ("BurrA", "BurrB", "Bevel"))
 
 
@@ -277,9 +297,27 @@ def _tool_in_tube(objects):
             math.atan2(float(rel[1, 0]), float(rel[0, 0])))
 
 
-def seated(objects) -> bool:
+def blade_contact(objects):
+    """The cone's cutting edge at the tube's rim: its radius, its radial bite into the burr ring (negative when clear of it) and
+    the per-blade normal contact force (N).  The edge radius is the cone's real 4 + (9/14) * depth mm; the force comes from the
+    declared 0.08 N m cut torque: 13.2 N per blade at mu 0.30 and the 10.1 mm bore radius, and 0 N while the edge is still inside
+    the 9.70 mm burr's inner edge."""
+    depth, _, _, _ = _tool_in_tube(objects)
+    edge_r = CONE_TIP_R + SLOPE * depth
+    bite = edge_r - BURR_IN
+    in_window = 0.0 <= depth <= SEAT_MAX  # a tool above the tube or jammed past the wall is not in contact with the burr
+    force = BLADE_N if (in_window and bite >= ENGAGE_BITE) else 0.0
+    return float(edge_r), float(bite), float(force)
+
+
+def engaged(objects) -> bool:
+    """Cutting contact: the cone's edge has bitten into the burr (5 N or more per blade), the tip is not past the wall, and the
+    cone is square to the bore.  This is stricter than "the cone is somewhere in the bore": at 6 mm the edge is 1.84 mm clear of
+    the burr and this is false."""
     depth, off, tilt, _ = _tool_in_tube(objects)
-    return bool(depth >= SEAT_MIN and off <= SEAT_OFF and tilt <= SEAT_TILT)
+    _, bite, force = blade_contact(objects)
+    return bool(SEAT_MIN <= depth <= SEAT_MAX and off <= SEAT_OFF and tilt <= SEAT_TILT
+                and bite >= ENGAGE_BITE and force >= CUT_FORCE)
 
 
 def tube_held(objects) -> bool:
@@ -300,7 +338,7 @@ class _Cut:
         self.cutting = False
         self.shown = None
         self.last_rate = 0.0  # the reamer's turn rate about the tube's axis (rad/s, clockwise negative)
-        self.drag = False  # the cone is seated and turning clockwise: the blade's torque acts on the tube
+        self.drag = False  # the blade is engaged and turning clockwise: the blade's torque acts on the tube
 
     def update(self, objects) -> None:
         t = objects.get("episode_time")
@@ -323,8 +361,8 @@ class _Cut:
         else:
             self.u = phi
         self.last = phi
-        ok = seated(objects) and tube_held(objects)
-        self.drag = bool(seated(objects) and self.last_rate < -DRAG_RATE)
+        ok = engaged(objects) and tube_held(objects)
+        self.drag = bool(engaged(objects) and self.last_rate < -DRAG_RATE)
         if not ok or self.commit is None or not self.cutting:
             self.commit = self.u
         else:
@@ -385,7 +423,7 @@ _DRAG = {"tube": None, "tool": None}
 
 
 def _apply_drag(art, on: bool, key: str = "tube") -> None:
-    """The cut's resisting torque: a steady torque about the world's vertical on the tube while the cone is seated and the reamer
+    """The cut's resisting torque: a steady torque about the world's vertical on the tube while the blade is engaged and the reamer
     turns clockwise (the blade drags the tube round). The hand holding the tube has to react it; an unheld tube turns."""
     if _DRAG[key] is on or not hasattr(art, "permanent_wrench_composer"):  # (the MuJoCo stand-in has no torque)
         return
@@ -472,7 +510,7 @@ _START_ROT = {side: yam_demo.ArmPlan([], BASES[side]).start_rot for side in ("le
 RACK_OFF, RACK_TILT, RACK_Z = 0.004, math.radians(20.0), 0.004  # tube back in the rack: lower end within 4 mm of the bore axis and 4 mm of its seat, leaning under 20 degrees (it stands loose in a 27 mm bore)
 KNOCKED = math.radians(60.0)  # a tube tipped more than this has been dropped or knocked over
 CLEAR = 0.03
-STEPS = ("the reamer's cone seated in the bore of the held tube", "burr at least half removed all round",
+STEPS = ("the reamer's blade engaged in the burr of the held tube", "burr at least half removed all round",
          "burr removed all round, rim not chamfered past 0.5 mm",
          "tube back upright in its rack, reamer out of the bore and let go, grippers clear")
 
@@ -506,7 +544,7 @@ def thin(objects) -> bool:
 
 def _steps(objects) -> list[bool]:
     _CUT.update(objects)
-    s1 = bool(_PROGRESS.mem.get("seated_up"))
+    s1 = bool(_PROGRESS.mem.get("engaged_up"))
     s2 = bool(s1 and np.all(_CUT.passes >= 1))
     s3 = bool(s2 and np.all(_CUT.passes >= 2) and not thin(objects))
     s4 = bool(s3 and tube_in_rack(objects) and tool_out_of_bore(objects) and parts_free(objects))
@@ -514,11 +552,11 @@ def _steps(objects) -> list[bool]:
 
 
 def events_now(objects, p) -> list[str]:
-    """Rule events as things stand. Also remembers (``p.mem``) that the cone was seated in the lifted tube."""
+    """Rule events as things stand. Also remembers (``p.mem``) that the blade was engaged in the lifted tube."""
     _CUT.update(objects)
     out = []
-    if seated(objects) and tube_held(objects):
-        p.mem["seated_up"] = True
+    if engaged(objects) and tube_held(objects):
+        p.mem["engaged_up"] = True
     for n in MOVERS:
         if objects[n].pos[2] < TOP - 0.03:
             out.append(f"the {n} fell off the table")
@@ -534,21 +572,16 @@ def _yaw_deg(objects, name) -> float:
 
 def trace_line(objects) -> str:
     depth, off, tilt, phi = _tool_in_tube(objects)
+    edge_r, bite, force = blade_contact(objects)
     tp = np.asarray(objects["tube"].pos, float)
     return (f"tube {(tp[2] - TOP - TUBE_Z0) * 1000:.0f} mm up{'*' if tube_held(objects) else ''} (lean {math.degrees(_tilt_of(objects, 'tube')):.1f} deg, "
             f"{(tp[0] - TUBE_XY[0]) * 1000:+.1f}, {(tp[1] - TUBE_XY[1]) * 1000:+.1f} mm x, y off the rack axis, yaw {_yaw_deg(objects, 'tube'):.0f} deg), cone {depth * 1000:.1f} mm below the rim "
-            f"off {off * 1000:.1f} mm tilt {math.degrees(tilt):.1f} deg turn {math.degrees(_CUT.u):.0f} deg, passes {int(_CUT.passes.min())}-{int(_CUT.passes.max())}, "
-            f"burr {_CUT.burr().max() * 1000:.2f} mm, chamfer {_CUT.chamfer().max() * 1000:.2f} mm, seated {seated(objects)}, in rack {tube_in_rack(objects)}")
+            f"off {off * 1000:.1f} mm tilt {math.degrees(tilt):.1f} deg turn {math.degrees(_CUT.u):.0f} deg, edge r {edge_r * 1000:.2f} mm bite {bite * 1000:+.2f} mm contact {force:.1f} N, "
+            f"passes {int(_CUT.passes.min())}-{int(_CUT.passes.max())}, burr {_CUT.burr().max() * 1000:.2f} mm, chamfer {_CUT.chamfer().max() * 1000:.2f} mm, "
+            f"engaged {engaged(objects)}, in rack {tube_in_rack(objects)}")
 
 
 # -- scoring (shared machinery) ---------------------------------------------------------------------------------------
-DRAG_TORQUE = 0.08  # N m: the resisting torque of the cut: +0.08 on the reamer (against its turning) and -0.08 on the tube (dragged round).
-# An estimate from the burr's shear, not a measurement: shear strength of annealed to half-hard copper 150-230 MPa (taken as 200 MPa),
-# chip section per blade = 0.2 mm bite x 0.1 mm of ragged lip engaged at a time = 2e-8 m2, so 4 N per blade at the 10 mm bore radius;
-# two blades cut at once: 2 x 4 N x 0.010 m = 0.08 N m. It is about half of what the demo's two-pad side grip can hold
-# (2 pads x 0.5 friction x 15 N x 11 mm = 0.17 N m) and several times what the tube's own friction on the rack plate can hold
-# (0.017 N m), so an unheld tube turns with the reamer.
-DRAG_RATE = 0.2  # rad/s: slower turning than this is not cutting (no drag)
 STILL_S, STILL_TURN, STILL_MOVE = 1.0, math.radians(2.0), 0.002  # success: all held 1 s, within 2 degrees and 2 mm
 TRACE_S = 1.0  # s between trace lines in a run
 POINTS = 0.2  # per step; only success scores 1.0
@@ -740,7 +773,7 @@ LEFT_AIM = (0.0, 0.0, 0.0)
 LIFT_CMD = TUBE_LIFT + 0.009  # the left arm sags about 9 mm more when raised: command this much more lift
 
 
-LOWER_AIM = (0.0023, 0.0025)  # the held tube hangs about 4 mm toward -x of the grip command: lower it this far over
+LOWER_AIM = (0.0023, 0.0015)  # the held tube hangs about 4 mm toward -x of the grip command: lower it this far over; 1.5 mm in y keeps the 2.7 mm MuJoCo offset inside the rack's 7 mm lead-in
 
 
 def _tube_tcp(lift: float = 0.0, back: float = 0.0, aim=(0.0, 0.0)):
