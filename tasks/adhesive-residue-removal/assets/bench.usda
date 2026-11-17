@@ -1,0 +1,763 @@
+#usda 1.0
+(
+    defaultPrim = "Bench"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Bench" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "The returns bench fixtures: a 350 x 350 x 3 mm high-friction silicone mat, a 300 x 200 x 20 mm tool/pad tray, a 150 x 100 x 20 mm waste tray with the peeled Avery label, three opened Chempad foil packets, a 5 mm grid overlay, a 10x loupe and a 30-degree raking LED.  Origin: table top, x/y world."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0.02)
+    float3 physics:diagonalInertia = (1, 1, 1)
+    float physics:mass = 1
+
+    def Scope "Looks"
+    {
+        def Material "Phys_mat" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 1
+            float physics:restitution = 0
+            float physics:staticFriction = 1.2
+        }
+
+        def Material "Phys_tray" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.6
+            float physics:restitution = 0
+            float physics:staticFriction = 0.7
+        }
+
+        def Material "mc080910"
+        {
+            token outputs:surface.connect = </Bench/Looks/mc080910/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.09, 0.095, 0.105)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "mc556167"
+        {
+            token outputs:surface.connect = </Bench/Looks/mc556167/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.56, 0.62, 0.68)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "mc677277"
+        {
+            token outputs:surface.connect = </Bench/Looks/mc677277/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.68, 0.73, 0.78)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "mc777880"
+        {
+            token outputs:surface.connect = </Bench/Looks/mc777880/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.78, 0.79, 0.81)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "mc919189"
+        {
+            token outputs:surface.connect = </Bench/Looks/mc919189/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.92, 0.92, 0.9)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "mc959593"
+        {
+            token outputs:surface.connect = </Bench/Looks/mc959593/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.965, 0.962, 0.945)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "mc194677"
+        {
+            token outputs:surface.connect = </Bench/Looks/mc194677/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.2, 0.47, 0.78)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "mc717985"
+        {
+            token outputs:surface.connect = </Bench/Looks/mc717985/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.72, 0.8, 0.86)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "mc111111"
+        {
+            token outputs:surface.connect = </Bench/Looks/mc111111/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.12, 0.12, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "mc192022"
+        {
+            token outputs:surface.connect = </Bench/Looks/mc192022/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.2, 0.21, 0.23)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "mc546779"
+        {
+            token outputs:surface.connect = </Bench/Looks/mc546779/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.55, 0.68, 0.8)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_lamp" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.6
+            float physics:restitution = 0
+            float physics:staticFriction = 0.7
+        }
+
+        def Material "mc979381"
+        {
+            token outputs:surface.connect = </Bench/Looks/mc979381/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.98, 0.94, 0.82)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Mat1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc080910>
+        rel material:binding:physics = </Bench/Looks/Phys_mat> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.31, 0.31, 0.003)
+        double3 xformOp:translate = (0.27, 0, 0.0015)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "ToolTray2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc556167>
+        rel material:binding:physics = </Bench/Looks/Phys_tray> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.26, 0.22, 0.02)
+        double3 xformOp:translate = (0.28, -0.29, 0.01)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "ToolTrayFloor3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc677277>
+        double size = 1
+        float3 xformOp:scale = (0.252, 0.212, 0.0004)
+        double3 xformOp:translate = (0.28, -0.29, 0.0202)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Foil04" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc777880>
+        double size = 1
+        float3 xformOp:scale = (0.09, 0.116, 0.0005)
+        double3 xformOp:translate = (0.18, -0.3, 0.02055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "FoilInner05" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc919189>
+        double size = 1
+        float3 xformOp:scale = (0.082, 0.108, 0.0002)
+        double3 xformOp:translate = (0.18, -0.3, 0.020849999999999997)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Foil16" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc777880>
+        double size = 1
+        float3 xformOp:scale = (0.09, 0.116, 0.0005)
+        double3 xformOp:translate = (0.26, -0.3, 0.02055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "FoilInner17" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc919189>
+        double size = 1
+        float3 xformOp:scale = (0.082, 0.108, 0.0002)
+        double3 xformOp:translate = (0.26, -0.3, 0.020849999999999997)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Foil28" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc777880>
+        double size = 1
+        float3 xformOp:scale = (0.09, 0.116, 0.0005)
+        double3 xformOp:translate = (0.34, -0.3, 0.02055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "FoilInner29" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc919189>
+        double size = 1
+        float3 xformOp:scale = (0.082, 0.108, 0.0002)
+        double3 xformOp:translate = (0.34, -0.3, 0.020849999999999997)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "WasteTray10" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc556167>
+        rel material:binding:physics = </Bench/Looks/Phys_tray> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.14, 0.12, 0.02)
+        double3 xformOp:translate = (0.48, -0.22, 0.01)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "WasteTrayFloor11" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc677277>
+        double size = 1
+        float3 xformOp:scale = (0.132, 0.112, 0.0004)
+        double3 xformOp:translate = (0.48, -0.22, 0.0202)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "PeeledLabel12" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc959593>
+        double size = 1
+        float3 xformOp:scale = (0.08, 0.04, 0.0004)
+        double3 xformOp:translate = (0.46, -0.18, 0.0207)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "LabelBlock13" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc194677>
+        double size = 1
+        float3 xformOp:scale = (0.08, 0.006, 0.0002)
+        double3 xformOp:translate = (0.46, -0.18, 0.02092)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "LabelCurl14" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc959593>
+        double size = 1
+        float3 xformOp:scale = (0.008, 0.01, 0.0012)
+        double3 xformOp:translate = (0.498, -0.162, 0.0211)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridPlate15" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc717985>
+        double size = 1
+        float3 xformOp:scale = (0.12, 0.12, 0.002)
+        double3 xformOp:translate = (0.47, 0.33, 0.001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridX16" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.0004, 0.12, 0.0002)
+        double3 xformOp:translate = (0.415, 0.33, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridY17" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.12, 0.0004, 0.0002)
+        double3 xformOp:translate = (0.47, 0.275, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridX18" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.0004, 0.12, 0.0002)
+        double3 xformOp:translate = (0.425, 0.33, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridY19" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.12, 0.0004, 0.0002)
+        double3 xformOp:translate = (0.47, 0.28500000000000003, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridX20" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.0004, 0.12, 0.0002)
+        double3 xformOp:translate = (0.43499999999999994, 0.33, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridY21" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.12, 0.0004, 0.0002)
+        double3 xformOp:translate = (0.47, 0.29500000000000004, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridX22" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.0004, 0.12, 0.0002)
+        double3 xformOp:translate = (0.44499999999999995, 0.33, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridY23" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.12, 0.0004, 0.0002)
+        double3 xformOp:translate = (0.47, 0.305, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridX24" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.0004, 0.12, 0.0002)
+        double3 xformOp:translate = (0.45499999999999996, 0.33, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridY25" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.12, 0.0004, 0.0002)
+        double3 xformOp:translate = (0.47, 0.315, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridX26" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.0004, 0.12, 0.0002)
+        double3 xformOp:translate = (0.46499999999999997, 0.33, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridY27" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.12, 0.0004, 0.0002)
+        double3 xformOp:translate = (0.47, 0.325, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridX28" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.0004, 0.12, 0.0002)
+        double3 xformOp:translate = (0.475, 0.33, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridY29" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.12, 0.0004, 0.0002)
+        double3 xformOp:translate = (0.47, 0.335, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridX30" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.0004, 0.12, 0.0002)
+        double3 xformOp:translate = (0.485, 0.33, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridY31" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.12, 0.0004, 0.0002)
+        double3 xformOp:translate = (0.47, 0.34500000000000003, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridX32" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.0004, 0.12, 0.0002)
+        double3 xformOp:translate = (0.495, 0.33, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridY33" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.12, 0.0004, 0.0002)
+        double3 xformOp:translate = (0.47, 0.35500000000000004, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridX34" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.0004, 0.12, 0.0002)
+        double3 xformOp:translate = (0.505, 0.33, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridY35" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.12, 0.0004, 0.0002)
+        double3 xformOp:translate = (0.47, 0.365, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridX36" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.0004, 0.12, 0.0002)
+        double3 xformOp:translate = (0.515, 0.33, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridY37" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.12, 0.0004, 0.0002)
+        double3 xformOp:translate = (0.47, 0.375, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridX38" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.0004, 0.12, 0.0002)
+        double3 xformOp:translate = (0.525, 0.33, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GridY39" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc111111>
+        double size = 1
+        float3 xformOp:scale = (0.12, 0.0004, 0.0002)
+        double3 xformOp:translate = (0.47, 0.385, 0.0021)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "LoupeBody40" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.03
+        rel material:binding = </Bench/Looks/mc192022>
+        double radius = 0.018
+        double3 xformOp:translate = (0.52, 0.27, 0.018)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "LoupeLens41" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.001
+        rel material:binding = </Bench/Looks/mc546779>
+        double radius = 0.014
+        double3 xformOp:translate = (0.52, 0.27, 0.0331)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "LoupeEye42" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.005
+        rel material:binding = </Bench/Looks/mc192022>
+        double radius = 0.01
+        double3 xformOp:translate = (0.52, 0.27, 0.036)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "LampBase43" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.01
+        rel material:binding = </Bench/Looks/mc192022>
+        rel material:binding:physics = </Bench/Looks/Phys_lamp> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.05
+        double3 xformOp:translate = (0.52, -0.06, 0.005)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "LampPole44" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.35
+        rel material:binding = </Bench/Looks/mc192022>
+        rel material:binding:physics = </Bench/Looks/Phys_lamp> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.008
+        double3 xformOp:translate = (0.52, -0.06, 0.18)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "LampArm45" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc192022>
+        double size = 1
+        float3 xformOp:scale = (0.07, 0.016, 0.012)
+        double3 xformOp:translate = (0.492, -0.045, 0.36)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "LampHead46" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc192022>
+        double size = 1
+        float3 xformOp:scale = (0.13, 0.07, 0.03)
+        double3 xformOp:translate = (0.455, -0.03, 1)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "LedFace47" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bench/Looks/mc979381>
+        double size = 1
+        float3 xformOp:scale = (0.008, 0.06, 0.02)
+        double3 xformOp:translate = (0.398, -0.03, 0.995)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

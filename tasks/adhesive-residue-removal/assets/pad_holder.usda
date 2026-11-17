@@ -1,0 +1,206 @@
+#usda 1.0
+(
+    defaultPrim = "PadHolder"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "PadHolder" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "Bench pad applicator: a 76 x 102 x 3 mm Chemtronics Chempad on an 80 x 106 x 4 mm backing foot with a 30 x 18 x 30 mm vertical grip bar.  The white pad is the contact face.  Origin: the middle of the pad's contact face."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0.012)
+    float3 physics:diagonalInertia = (0.000052, 0.000042, 0.000031)
+    float physics:mass = 0.045
+
+    def Scope "Looks"
+    {
+        def Material "Phys_felt" (
+            prepend apiSchemas = ["PhysicsMaterialAPI", "PhysxMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.45
+            float physics:restitution = 0
+            float physics:staticFriction = 0.55
+            custom float physxMaterial:compliantContactDamping = 30
+            custom float physxMaterial:compliantContactStiffness = 900
+        }
+
+        def Material "Phys_plastic" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.5
+            float physics:restitution = 0
+            float physics:staticFriction = 0.6
+        }
+
+        def Material "mc949492"
+        {
+            token outputs:surface.connect = </PadHolder/Looks/mc949492/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.955, 0.95, 0.93)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "mc194677"
+        {
+            token outputs:surface.connect = </PadHolder/Looks/mc194677/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.2, 0.47, 0.78)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "mc556167"
+        {
+            token outputs:surface.connect = </PadHolder/Looks/mc556167/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.56, 0.62, 0.68)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "mc677277"
+        {
+            token outputs:surface.connect = </PadHolder/Looks/mc677277/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.68, 0.73, 0.78)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Mesh "Chempad1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.038, -0.051, 0), (0.038, 0.051, 0.003)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 2, 1, 20, 21, 22, 0, 3, 2, 20, 22, 23, 0, 4, 3, 20, 23, 24, 0, 5, 4, 20, 24, 25, 0, 6, 5, 20, 25, 26, 0, 7, 6, 20, 26, 27, 0, 8, 7, 20, 27, 28, 0, 9, 8, 20, 28, 29, 0, 10, 9, 20, 29, 30, 0, 11, 10, 20, 30, 31, 0, 12, 11, 20, 31, 32, 0, 13, 12, 20, 32, 33, 0, 14, 13, 20, 33, 34, 0, 15, 14, 20, 34, 35, 0, 16, 15, 20, 35, 36, 0, 17, 16, 20, 36, 37, 0, 18, 17, 20, 37, 38, 0, 19, 18, 20, 38, 39, 0, 1, 21, 0, 21, 20, 1, 2, 22, 1, 22, 21, 2, 3, 23, 2, 23, 22, 3, 4, 24, 3, 24, 23, 4, 5, 25, 4, 25, 24, 5, 6, 26, 5, 26, 25, 6, 7, 27, 6, 27, 26, 7, 8, 28, 7, 28, 27, 8, 9, 29, 8, 29, 28, 9, 10, 30, 9, 30, 29, 10, 11, 31, 10, 31, 30, 11, 12, 32, 11, 32, 31, 12, 13, 33, 12, 33, 32, 13, 14, 34, 13, 34, 33, 14, 15, 35, 14, 35, 34, 15, 16, 36, 15, 36, 35, 16, 17, 37, 16, 37, 36, 17, 18, 38, 17, 38, 37, 18, 19, 39, 18, 39, 38, 19, 0, 20, 19, 20, 39]
+        rel material:binding = </PadHolder/Looks/mc949492>
+        rel material:binding:physics = </PadHolder/Looks/Phys_felt> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token physics:approximation = "convexHull"
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        point3f[] points = [(0.038, 0.047, 0), (0.03769552, 0.048530735, 0), (0.03682843, 0.04982843, 0), (0.035530735, 0.05069552, 0), (0.034, 0.051, 0), (-0.034, 0.051, 0), (-0.035530735, 0.05069552, 0), (-0.03682843, 0.04982843, 0), (-0.03769552, 0.048530735, 0), (-0.038, 0.047, 0), (-0.038, -0.047, 0), (-0.03769552, -0.048530735, 0), (-0.03682843, -0.04982843, 0), (-0.035530735, -0.05069552, 0), (-0.034, -0.051, 0), (0.034, -0.051, 0), (0.035530735, -0.05069552, 0), (0.03682843, -0.04982843, 0), (0.03769552, -0.048530735, 0), (0.038, -0.047, 0), (0.038, 0.047, 0.003), (0.03769552, 0.048530735, 0.003), (0.03682843, 0.04982843, 0.003), (0.035530735, 0.05069552, 0.003), (0.034, 0.051, 0.003), (-0.034, 0.051, 0.003), (-0.035530735, 0.05069552, 0.003), (-0.03682843, 0.04982843, 0.003), (-0.03769552, 0.048530735, 0.003), (-0.038, 0.047, 0.003), (-0.038, -0.047, 0.003), (-0.03769552, -0.048530735, 0.003), (-0.03682843, -0.04982843, 0.003), (-0.035530735, -0.05069552, 0.003), (-0.034, -0.051, 0.003), (0.034, -0.051, 0.003), (0.035530735, -0.05069552, 0.003), (0.03682843, -0.04982843, 0.003), (0.03769552, -0.048530735, 0.003), (0.038, -0.047, 0.003)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "PadBand2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.0388, -0.0518, 0.0002), (0.0388, 0.0518, 0.0009)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 2, 1, 20, 21, 22, 0, 3, 2, 20, 22, 23, 0, 4, 3, 20, 23, 24, 0, 5, 4, 20, 24, 25, 0, 6, 5, 20, 25, 26, 0, 7, 6, 20, 26, 27, 0, 8, 7, 20, 27, 28, 0, 9, 8, 20, 28, 29, 0, 10, 9, 20, 29, 30, 0, 11, 10, 20, 30, 31, 0, 12, 11, 20, 31, 32, 0, 13, 12, 20, 32, 33, 0, 14, 13, 20, 33, 34, 0, 15, 14, 20, 34, 35, 0, 16, 15, 20, 35, 36, 0, 17, 16, 20, 36, 37, 0, 18, 17, 20, 37, 38, 0, 19, 18, 20, 38, 39, 0, 1, 21, 0, 21, 20, 1, 2, 22, 1, 22, 21, 2, 3, 23, 2, 23, 22, 3, 4, 24, 3, 24, 23, 4, 5, 25, 4, 25, 24, 5, 6, 26, 5, 26, 25, 6, 7, 27, 6, 27, 26, 7, 8, 28, 7, 28, 27, 8, 9, 29, 8, 29, 28, 9, 10, 30, 9, 30, 29, 10, 11, 31, 10, 31, 30, 11, 12, 32, 11, 32, 31, 12, 13, 33, 12, 33, 32, 13, 14, 34, 13, 34, 33, 14, 15, 35, 14, 35, 34, 15, 16, 36, 15, 36, 35, 16, 17, 37, 16, 37, 36, 17, 18, 38, 17, 38, 37, 18, 19, 39, 18, 39, 38, 19, 0, 20, 19, 20, 39]
+        rel material:binding = </PadHolder/Looks/mc194677>
+        point3f[] points = [(0.0388, 0.047, 0.0002), (0.03843462, 0.04883688, 0.0002), (0.037394114, 0.050394114, 0.0002), (0.03583688, 0.05143462, 0.0002), (0.034, 0.0518, 0.0002), (-0.034, 0.0518, 0.0002), (-0.03583688, 0.05143462, 0.0002), (-0.037394114, 0.050394114, 0.0002), (-0.03843462, 0.04883688, 0.0002), (-0.0388, 0.047, 0.0002), (-0.0388, -0.047, 0.0002), (-0.03843462, -0.04883688, 0.0002), (-0.037394114, -0.050394114, 0.0002), (-0.03583688, -0.05143462, 0.0002), (-0.034, -0.0518, 0.0002), (0.034, -0.0518, 0.0002), (0.03583688, -0.05143462, 0.0002), (0.037394114, -0.050394114, 0.0002), (0.03843462, -0.04883688, 0.0002), (0.0388, -0.047, 0.0002), (0.0388, 0.047, 0.0009), (0.03843462, 0.04883688, 0.0009), (0.037394114, 0.050394114, 0.0009), (0.03583688, 0.05143462, 0.0009), (0.034, 0.0518, 0.0009), (-0.034, 0.0518, 0.0009), (-0.03583688, 0.05143462, 0.0009), (-0.037394114, 0.050394114, 0.0009), (-0.03843462, 0.04883688, 0.0009), (-0.0388, 0.047, 0.0009), (-0.0388, -0.047, 0.0009), (-0.03843462, -0.04883688, 0.0009), (-0.037394114, -0.050394114, 0.0009), (-0.03583688, -0.05143462, 0.0009), (-0.034, -0.0518, 0.0009), (0.034, -0.0518, 0.0009), (0.03583688, -0.05143462, 0.0009), (0.037394114, -0.050394114, 0.0009), (0.03843462, -0.04883688, 0.0009), (0.0388, -0.047, 0.0009)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Mesh "Foot3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(-0.04, -0.053, 0.003), (0.04, 0.053, 0.007)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [0, 2, 1, 20, 21, 22, 0, 3, 2, 20, 22, 23, 0, 4, 3, 20, 23, 24, 0, 5, 4, 20, 24, 25, 0, 6, 5, 20, 25, 26, 0, 7, 6, 20, 26, 27, 0, 8, 7, 20, 27, 28, 0, 9, 8, 20, 28, 29, 0, 10, 9, 20, 29, 30, 0, 11, 10, 20, 30, 31, 0, 12, 11, 20, 31, 32, 0, 13, 12, 20, 32, 33, 0, 14, 13, 20, 33, 34, 0, 15, 14, 20, 34, 35, 0, 16, 15, 20, 35, 36, 0, 17, 16, 20, 36, 37, 0, 18, 17, 20, 37, 38, 0, 19, 18, 20, 38, 39, 0, 1, 21, 0, 21, 20, 1, 2, 22, 1, 22, 21, 2, 3, 23, 2, 23, 22, 3, 4, 24, 3, 24, 23, 4, 5, 25, 4, 25, 24, 5, 6, 26, 5, 26, 25, 6, 7, 27, 6, 27, 26, 7, 8, 28, 7, 28, 27, 8, 9, 29, 8, 29, 28, 9, 10, 30, 9, 30, 29, 10, 11, 31, 10, 31, 30, 11, 12, 32, 11, 32, 31, 12, 13, 33, 12, 33, 32, 13, 14, 34, 13, 34, 33, 14, 15, 35, 14, 35, 34, 15, 16, 36, 15, 36, 35, 16, 17, 37, 16, 37, 36, 17, 18, 38, 17, 38, 37, 18, 19, 39, 18, 39, 38, 19, 0, 20, 19, 20, 39]
+        rel material:binding = </PadHolder/Looks/mc556167>
+        rel material:binding:physics = </PadHolder/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        uniform token physics:approximation = "convexHull"
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        point3f[] points = [(0.04, 0.047, 0.003), (0.03954328, 0.0492961, 0.003), (0.03824264, 0.051242642, 0.003), (0.0362961, 0.05254328, 0.003), (0.034, 0.053, 0.003), (-0.034, 0.053, 0.003), (-0.0362961, 0.05254328, 0.003), (-0.03824264, 0.051242642, 0.003), (-0.03954328, 0.0492961, 0.003), (-0.04, 0.047, 0.003), (-0.04, -0.047, 0.003), (-0.03954328, -0.0492961, 0.003), (-0.03824264, -0.051242642, 0.003), (-0.0362961, -0.05254328, 0.003), (-0.034, -0.053, 0.003), (0.034, -0.053, 0.003), (0.0362961, -0.05254328, 0.003), (0.03824264, -0.051242642, 0.003), (0.03954328, -0.0492961, 0.003), (0.04, -0.047, 0.003), (0.04, 0.047, 0.007), (0.03954328, 0.0492961, 0.007), (0.03824264, 0.051242642, 0.007), (0.0362961, 0.05254328, 0.007), (0.034, 0.053, 0.007), (-0.034, 0.053, 0.007), (-0.0362961, 0.05254328, 0.007), (-0.03824264, 0.051242642, 0.007), (-0.03954328, 0.0492961, 0.007), (-0.04, 0.047, 0.007), (-0.04, -0.047, 0.007), (-0.03954328, -0.0492961, 0.007), (-0.03824264, -0.051242642, 0.007), (-0.0362961, -0.05254328, 0.007), (-0.034, -0.053, 0.007), (0.034, -0.053, 0.007), (0.0362961, -0.05254328, 0.007), (0.03824264, -0.051242642, 0.007), (0.03954328, -0.0492961, 0.007), (0.04, -0.047, 0.007)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Cube "FootTop4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </PadHolder/Looks/mc677277>
+        double size = 1
+        float3 xformOp:scale = (0.076, 0.102, 0.0004)
+        double3 xformOp:translate = (0, 0, 0.0052)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "GripBar5" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.03
+        rel material:binding = </PadHolder/Looks/mc556167>
+        rel material:binding:physics = </PadHolder/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.015
+        double3 xformOp:translate = (0, 0, 0.022)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "GripRib6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </PadHolder/Looks/mc677277>
+        double size = 1
+        float3 xformOp:scale = (0.031, 0.031, 0.0012)
+        double3 xformOp:translate = (0, 0, 0.018)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GripRib7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </PadHolder/Looks/mc677277>
+        double size = 1
+        float3 xformOp:scale = (0.031, 0.031, 0.0012)
+        double3 xformOp:translate = (0, 0, 0.022)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GripRib8" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </PadHolder/Looks/mc677277>
+        double size = 1
+        float3 xformOp:scale = (0.031, 0.031, 0.0012)
+        double3 xformOp:translate = (0, 0, 0.026)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+
