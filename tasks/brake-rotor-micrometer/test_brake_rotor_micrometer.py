@@ -1,7 +1,9 @@
-"""Offline checks (no GPU, no network): the task file loads, the on-rotor test (faces square on the friction band), the declared thread,
-ratchet, the step ladder, the 1 s full-success timing, the drop latch and the demo's reach.
+"""Offline checks (no GPU, no network): the task file loads, the new 22.00 mm rotor and its marked reference spot, the on-rotor test
+(faces square on the friction band at the dot), the declared thread, ratchet, the step ladder, the 1 s full-success timing, the drop
+latch and the demo's reach.
 Run in the yam_arena environment:  python -m pytest -q test_brake_rotor_micrometer.py"""
 
+import json
 import math
 import os
 import pathlib
@@ -16,7 +18,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 TASK = load(HERE / "brake_rotor_micrometer.py")
 T = TASK.module
 IDENT = np.array([0.0, 0.0, 0.0, 1.0])
-ON = np.array([T.XM, T.YA - 0.0015, T.TOP + T.ZA])  # anvil face on the rotor's face
+ON = np.array([T.XM, T.YA - 0.0015, T.DOT_Z])  # anvil face on the rotor's face at the marked spot
 START = {"mic": (np.array(T.MIC_START, float), IDENT)}
 SOLVED = {"mic": (np.array(T.MIC_START, float), IDENT)}  # reading kept, back on its rest
 CLAMPED = {"mic": (ON, IDENT)}
@@ -302,6 +304,44 @@ def test_lifted_off_with_the_wrong_reading_does_not_give_step_three():
 
 def test_the_band_is_two_hundredths_of_a_millimetre():
     assert T.READ_LO == pytest.approx(-0.00002) and T.READ_HI == pytest.approx(0.00002)
+    assert T.REFERENCE_TOL_MM == pytest.approx(0.02)
+
+
+def test_the_rotor_is_the_new_22_mm_part():
+    assert T.REFERENCE_MM == pytest.approx(22.00)
+    assert T.THICK == pytest.approx(0.022)
+    assert T.ROTOR.mass == pytest.approx(5.86)
+    assert T.REFERENCE_REPEAT_MM == pytest.approx(0.005)
+
+
+def test_the_old_worn_reading_is_out_of_band():
+    worn = T.G_OPEN - 21.78 * T.MM
+    assert not (T.READ_LO <= worn - T.THICK <= T.READ_HI)
+
+
+def test_the_dot_is_inside_the_scored_band():
+    radius = math.hypot(T.DOT_X - T.XC, T.DOT_Z - (T.TOP + T.ZA))
+    assert T.BAND_LO <= radius <= T.BAND_HI
+    assert T.DOT_TOL == pytest.approx(0.005)
+
+
+def test_micrometer_off_the_marked_spot_is_not_gauged():
+    p = ON + np.array([0.010, 0.0, 0.0])  # 10 mm from the dot, still inside the 100-136 mm band
+    assert T.BAND_LO <= math.hypot(p[0] - T.XC, p[2] - (T.TOP + T.ZA)) <= T.BAND_HI
+    e = Episode({"mic": (p, IDENT)}, q=Q_ON)
+    e.step(0.1)
+    assert e.done()[0] is False
+
+
+def test_the_reference_procedure_and_fixture_materials_are_documented():
+    readme = (HERE / "README.md").read_text()
+    task = json.loads((HERE / "task.json").read_text())
+    text = readme + "\n" + task["setup"] + "\n" + task["scoring"] + "\n" + task["fidelity"]
+    assert "Brembo 09.7012.11" in text and "280" in text and "22.0" in text
+    assert "5.86" in text and "6061-T6" in text and "EPDM" in text
+    assert "22.00 mm" in text
+    for word in ("median", "five", "0.005"):
+        assert word in readme.lower(), word
 
 
 def test_off_the_rotor_the_thimble_holds_its_reading():

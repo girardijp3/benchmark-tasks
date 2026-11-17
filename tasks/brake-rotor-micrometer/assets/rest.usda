@@ -8,12 +8,12 @@
 
 def Xform "Rest" (
     prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
-    doc = "The micrometer's bench rest (fixed): two upright ribs the frame's arms lie across, a base, and a 32 mm slot between the ribs, open toward -x, for the lower finger pad. Origin: on the table under the anvil face's centre."
+    doc = "The micrometer's bench rest (fixed), 6061-T6 aluminium, blue anodised: an 80 x 80 x 30 mm base, two 46 x 6 x 146 mm uprights the frame's arms lie across, and a 36 mm clear gap between them, open toward -x, for the lower finger pad; 0.8 mm EPDM caps on top. Origin: on the table under the anvil face's centre."
 )
 {
     point3f physics:centerOfMass = (-0.015, -0.011, 0.07)
     float3 physics:diagonalInertia = (0.01, 0.01, 0.01)
-    float physics:mass = 1
+    float physics:mass = 0.75
 
     def Scope "Looks"
     {

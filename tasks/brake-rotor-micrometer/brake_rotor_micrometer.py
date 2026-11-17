@@ -1,12 +1,17 @@
-"""On the bench: a vented 280 mm brake rotor (21.78 mm thick, worn from 22.0) stands on a hub stand with its axis horizontal, and to
-its left, lying across a bench rest, is a 0-25 mm outside micrometer (Mitutoyo 103-137 class: 175 g, ratchet stop, lock lever) with its
-spindle run out to the full 25 mm.
+"""On the bench: a new Brembo 09.7012.11 280 x 22 mm vented brake rotor (37 mm overall height, 5.86 kg) stands on a hub stand with its
+axis horizontal, a 2 mm paint dot marking the scored spot on its outboard face at 135 mm from the hub axis, 10 deg above the 9 o'clock
+line. To its left, lying across a bench rest, is a 0-25 mm outside micrometer (Mitutoyo 103-137 class: 175 g, ratchet stop, lock lever)
+with its spindle run out to the full 25 mm.
 
 The robot has to measure the rotor the way a mechanic does: one hand holds the micrometer by its frame and slips it over the rotor's
 outer edge so the two measuring faces sit square on the friction band and rocks the frame slightly across the face, the other hand turns
 the ratchet knob until it clicks (the ratchet slips at the measuring force: 5-10 N on the real tool, 6 N here with the drive capped at
 10 N), then the micrometer is taken off with the reading kept on the thimble and put back on its rest. The lock lever works but is not
 scored and the instruction does not ask for it.
+
+The rotor is a new, readily available part, not a worn one: its nominal thickness is 22.00 mm, and a real trial scores the robot's
+reading against the rotor's actual thickness measured at the marked spot with a calibrated micrometer (README: five readings, median,
+repeatability <= 0.005 mm, +-0.02 mm band). The simulator's reference is the same 22.00 mm.
 
 The micrometer is a real articulation: the frame is a free root; the spindle slides along the measuring axis on a prismatic joint whose
 drive is limited to 10 N (the top of the real 5-10 N measuring force); the thimble and the ratchet knob turn about that axis on revolute joints; the lock lever turns
@@ -215,19 +220,24 @@ elif not any(isinstance(f, _AfterSceneImport) for f in sys.meta_path):
 # -- layout (m; x forward, y to the robot's left, from the midpoint between the arm bases) ----------------------------
 XM, YA, ZA = 0.375, 0.1325, 0.152  # the measuring pose: anvil face centre (the micrometer's origin); axis along y, z above the table
 XS, YS = 0.330, 0.165  # on the rest: the anvil face centre; the frame lies across the ribs
-THICK = 21.78 * MM  # the rotor's measured thickness
+REFERENCE_MM = 22.00  # the new Brembo 09.7012.11 rotor's nominal thickness; a real trial measures the actual value at the dot
+REFERENCE_TOL_MM = 0.02  # the simulator's reading band; a real trial uses it when its reference is measured to 0.001 mm (README)
+REFERENCE_REPEAT_MM = 0.005  # the real reference's five-reading spread must stay within this
+THICK = REFERENCE_MM * MM  # the simulator's reference thickness (the real rotor's is measured per trial; README)
 G_OPEN = 25.0 * MM
 PITCH = 0.5 * MM
 ROT_R = 0.140
 XC, YR = XM + 0.133, YA - 1.5 * MM - THICK / 2  # rotor centre (hub axis along y at height ZA): the micrometer's faces sit 7 mm inside the rim
 BAND_LO, BAND_HI = 0.100, 0.136  # the faces' centre lies on the friction band between these radii (m from the hub axis)
-READ_LO, READ_HI = -0.02 * MM, 0.02 * MM  # a reading counts when it is within this of the rotor's thickness (the high side covers MuJoCo's soft contact: the two faces sink 0.25-0.4 mm at 6 N; PhysX rigid contacts sink almost nothing)
+DOT_X, DOT_Z = XM, TOP + ZA + 0.0235  # the reference paint dot on the outboard face: 135 mm from the hub axis, 10 deg above 9 o'clock
+DOT_TOL = 0.005  # the anvil face centre must be this close to the dot (m), so the reference and the reading are the same spot
+READ_LO, READ_HI = -REFERENCE_TOL_MM * MM, REFERENCE_TOL_MM * MM  # a reading counts when it is within this of the measured thickness (MuJoCo's soft contact sinks the faces a few hundredths of a mm at 6 N; PhysX sinks almost nothing)
 MIC_START = np.array([XS, YS, TOP + ZA + 0.0003])
 MIC = UsdPart("mic", asset="micrometer", xy=(XS, YS), extent=0.06, mass=0.176, usd_path=str(ASSETS / "micrometer.usda"),
               pos=tuple(float(v) for v in MIC_START), articulation=True)
-ROTOR = UsdPart("rotor", asset="rotor", xy=(XC, YR), extent=0.15, mass=8.0, usd_path=str(ASSETS / "rotor.usda"),
+ROTOR = UsdPart("rotor", asset="rotor", xy=(XC, YR), extent=0.15, mass=5.86, usd_path=str(ASSETS / "rotor.usda"),
                 pos=(XC, YR, TOP + ZA), kinematic=True)
-REST = UsdPart("rest", asset="rest", xy=(XS, YS), extent=0.05, mass=1.0, usd_path=str(ASSETS / "rest.usda"),
+REST = UsdPart("rest", asset="rest", xy=(XS, YS), extent=0.05, mass=0.75, usd_path=str(ASSETS / "rest.usda"),
                pos=(XS, YS, TOP), kinematic=True)
 OBJECTS = [ROTOR, REST, MIC]
 MOVERS = ("mic",)
@@ -282,17 +292,20 @@ def reading_ok(objects) -> bool:
 
 
 def on_rotor(objects) -> bool:
-    """Both faces sit on the rotor's friction band, square: the anvil face centre on the band (BAND_LO .. BAND_HI from the hub axis), the
-    anvil face on the rotor's +y face (within 1 mm), the measuring axis within 5 degrees of the hub axis."""
+    """Both faces sit on the rotor's friction band, square: the anvil face centre on the band (BAND_LO .. BAND_HI from the hub axis) and
+    within DOT_TOL of the reference dot (135 mm from the hub axis, 10 deg above 9 o'clock), the anvil face on the rotor's +y face (within
+    1 mm), the measuring axis within 5 degrees of the hub axis."""
     s = objects["mic"]
     p = np.asarray(s.pos, float)
     r = math.hypot(p[0] - XC, p[2] - (TOP + ZA))
+    at_dot = math.hypot(p[0] - DOT_X, p[2] - DOT_Z) <= DOT_TOL
     ay = _rot(s)[:, 1]
-    return bool(BAND_LO <= r <= BAND_HI and abs(p[1] - (YR + THICK / 2)) <= 0.001 and ay[1] >= math.cos(math.radians(5.0)))
+    return bool(BAND_LO <= r <= BAND_HI and at_dot and abs(p[1] - (YR + THICK / 2)) <= 0.001
+                and ay[1] >= math.cos(math.radians(5.0)))
 
 
 def gauged_now(objects) -> bool:
-    """The micrometer is on the rotor, the spindle is held against it (the ratchet's measuring force) and the reading is the rotor's thickness."""
+    """The micrometer is on the rotor, the spindle is held against it (the ratchet's measuring force) and the reading is its measured thickness."""
     return bool(on_rotor(objects) and reading_ok(objects))
 
 
@@ -474,9 +487,9 @@ _START_ROT = {side: yam_demo.ArmPlan([], BASES[side]).start_rot for side in ("le
 CLEAR = 0.03
 DROP_VZ = -0.6  # a micrometer that nothing holds falling faster than this (m/s: about 18 mm of free fall) has been dropped
 MIN_CLICKS = 2  # clicks of the ratchet at the measuring force
-STEPS = ("the micrometer closed square on the rotor's friction band, its spindle held against the rotor (reading = its thickness)",
+STEPS = ("the micrometer closed square on the rotor's friction band, its spindle held against the rotor (reading = its measured thickness)",
          "the ratchet clicked at the measuring force (at least two clicks)",
-         "the micrometer lifted off the rotor with its reading kept at the rotor's thickness",
+         "the micrometer lifted off the rotor with its reading kept at the measured thickness",
          "the micrometer back on its rest still showing that reading, let go, grippers clear")
 
 

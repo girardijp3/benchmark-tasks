@@ -416,17 +416,17 @@ def lathe_y(profile, n=96):
 #                     joint along y (drive-limited to the 10 N measuring force), the thimble and the ratchet knob on revolute joints
 #                     about y, the lock lever on a revolute joint about x. Origin: the anvil face's centre; the measuring axis is y
 #                     (the anvil at +y, the thimble end toward -y), the frame's throat opens toward +x, z up.
-#   rotor.usda      : a vented 280 x 22 mm front brake rotor (21.78 mm worn) on a bench hub stand, axis along y (fixed).
-#                     Origin: the middle of the rotor's thickness, on its axis.
-#   rest.usda       : the micrometer's bench rest (fixed): two ribs the frame lies across and a slot for the lower finger pad.
-#                     Origin: on the table under the anvil face's centre.
+#   rotor.usda      : a new Brembo 09.7012.11 280 x 22 mm front brake rotor (37 mm overall height, 5.86 kg) on a bench hub
+#                     stand, axis along y (fixed). Origin: the middle of the rotor's thickness, on its axis.
+#   rest.usda       : the micrometer's bench rest (fixed): a 6061-T6 base and two 46 x 6 x 146 mm uprights the frame lies
+#                     across, with a 36 mm clear gap for the lower finger pad. Origin: on the table under the anvil face's centre.
 # ======================================================================================================================
 G_OPEN = 25.0 * MM  # spindle face to anvil face with the spindle fully open (0-25 mm range)
-THICK = 21.78 * MM  # the rotor's measured thickness (new 22.0, discard 20.0)
+THICK = 22.0 * MM  # the new rotor's nominal thickness (Brembo 09.7012.11: 22 mm, minimum 19 mm)
 ROT_R = 0.140
-HUB_R = 0.0625  # hat outer radius (125 mm)
-BORE_R = 0.0325
-HAT_D = 0.040
+HUB_R = 0.0625  # hat outer radius (125 mm, a visual approximation of the real hat)
+BORE_R = 0.0325  # 65 mm centre bore
+HAT_D = 0.015  # hat depth behind the inboard friction face: 15 + 22 = 37 mm overall height
 PLATE_T = 6.0 * MM
 CHAM = 1.0 * MM
 Z_AX = 0.152  # the measuring axis' height above the table (= the rotor's hub height)
@@ -535,8 +535,10 @@ def micrometer(fname):
 
 
 def rotor(fname):
-    a = Asset(fname, "Rotor", "A vented 280 mm brake rotor, 21.78 mm thick (a worn 22.0 mm part: discard thickness 20.0 mm), hat 40 mm deep, on a bench hub stand. Axis along y "
-              "(the hat toward -y); fixed. Origin: the middle of the rotor's thickness, on its axis.", 8.0, com=(0, 0, 0), inertia=(0.1, 0.1, 0.1))
+    a = Asset(fname, "Rotor", "A new Brembo 09.7012.11 280 x 22 mm internally vented front brake rotor (37 mm overall height, 65 mm centre bore, "
+              "5 x 100 mm stud holes, 5.86 kg grey cast iron, minimum thickness 19 mm) on a 6061-T6 aluminium bench hub stand. Axis along y "
+              "(the hat toward -y); fixed. Origin: the middle of the rotor's thickness, on its axis. The hat outer diameter and the 36 visual "
+              "vanes are approximations; the 280 x 22 mm friction ring, the 37 mm height and the mass are the real part's.", 5.86, com=(0, 0, 0), inertia=(0.029, 0.029, 0.057))
     f = (0.40, 0.30)
     h = THICK / 2
     # the outboard plate (+y): an annulus 95 .. 140 mm with 1 mm chamfers, flat friction face at y = +h
@@ -548,6 +550,9 @@ def rotor(fname):
             (ROT_R, -h + PLATE_T - CHAM), (ROT_R - CHAM, -h + PLATE_T), (HUB_R, -h + PLATE_T)]
     pts, tris = lathe_y(prof)
     a.vmesh("PlateIn", pts, tris, IRON_FACE)
+    # the reference paint dot on the outboard face at 135 mm from the hub axis, 10 deg above the 9 o'clock line: the scored spot
+    pts, tris = disc(1.5 * MM, 0.0, 0.00005, 96, "Y")
+    a.vmesh("RefDot", pts, tris, (0.04, 0.04, 0.04), center=(-0.133, h, 0.0235))
     hat = [(BORE_R, -h - HAT_D), (HUB_R, -h - HAT_D), (HUB_R, -h + PLATE_T), (BORE_R, -h + PLATE_T)]
     pts, tris = lathe_y(hat)
     a.vmesh("Hat", pts, tris, IRON_HAT)
@@ -564,10 +569,11 @@ def rotor(fname):
         rc = 0.5 * (0.097 + 0.1385)
         c = (rc * math.cos(math.radians(ph)), 0.0, rc * math.sin(math.radians(ph)))
         a.box(c, (0.0415, THICK - 2 * PLATE_T + 0.0004, 0.004), IRON, None, name="Vane", rot=(0, -ph, 0))
-    # colliders: one solid cylinder 280 x 21.78 mm and the hat
+    # colliders: one solid cylinder 280 x 22.0 mm and the hat (the vented core is not modelled: the micrometer only touches the faces)
     a.cyl((0, 0, 0), ROT_R, THICK, "Y", None, f, key="iron", name="RotorCol")
     a.cyl((0, -h - HAT_D / 2, 0), HUB_R, HAT_D, "Y", None, f, key="iron", name="HatCol")
-    # the hub stand: a flange the hat sits on, a column and a base plate (visual + collider)
+    # the hub stand (6061-T6 aluminium, blue anodised): a 90 mm dia x 12 mm flange the hat sits on, a 70 x 16 x 140 mm column and a
+    # 200 x 200 x 12 mm base plate (visual + collider)
     y_f0 = -h - HAT_D - 0.012
     pts, tris = disc(0.045, y_f0, -h - HAT_D, 96, "Y")
     a.vmesh("Flange", pts, tris, STAND)
@@ -580,8 +586,9 @@ def rotor(fname):
 
 def rest(fname):
     """The micrometer's bench rest. Frame axis at Z_AX, so the frame's underside is at Z_AX - 6 mm."""
-    a = Asset(fname, "Rest", "The micrometer's bench rest (fixed): two upright ribs the frame's arms lie across, a base, and a 32 mm slot between the ribs, open toward -x, "
-              "for the lower finger pad. Origin: on the table under the anvil face's centre.", 1.0, com=(-0.015, -0.011, 0.07), inertia=(1e-2, 1e-2, 1e-2))
+    a = Asset(fname, "Rest", "The micrometer's bench rest (fixed), 6061-T6 aluminium, blue anodised: an 80 x 80 x 30 mm base, two 46 x 6 x 146 mm uprights "
+              "the frame's arms lie across, and a 36 mm clear gap between them, open toward -x, for the lower finger pad; 0.8 mm EPDM caps on top. "
+              "Origin: on the table under the anvil face's centre.", 0.75, com=(-0.015, -0.011, 0.07), inertia=(1e-2, 1e-2, 1e-2))
     f = (0.45, 0.40)
     top = Z_AX - FRAME_H / 2
     for (y0, y1), nm in (((7.0 * MM, 13.0 * MM), "RibAnvil"), ((-35.0 * MM, -29.0 * MM), "RibSpindle")):
