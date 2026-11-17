@@ -324,6 +324,16 @@ def test_a_jammed_cone_past_the_wall_does_not_count():
     assert e.done()[0] is False
 
 
+def test_the_engagement_band_ends_at_the_bore_wall():
+    for depth, want in ((T.SEAT_MAX - 1e-6, True), (T.SEAT_MAX + 0.001, False)):
+        T._CUT.__init__()
+        T._PROGRESS.__init__()
+        e = Episode()
+        e.step(0.05, tube=(TUBE_UP, IDENT), tool=_tool_in_bore(0.0, depth=depth),
+               left=_gripper(HOLD_TCP, contact=15.0, opening=0.02))
+        assert T.engaged(e.objects()) is want, depth
+
+
 def test_the_blade_must_be_engaged():
     for kw in ({"depth": 0.003}, {"depth": 0.006}, {"depth": 0.008}, {"off": 0.006}, {"tilt": 12.0}):
         T._CUT.__init__()

@@ -10,7 +10,7 @@ thin wall), lift the reamer out and stand it back in its rest, and stand the tub
 The burr and the chamfer are a declared effect, not simulated material. Every control step the task reads where the reamer's
 cone is in the tube's bore and how far the reamer has turned. A blade pass counts only while the cone's cutting edge is actually
 engaged in the burr: the real 4-13 mm cone's edge (slope 9/14) must have bitten at least 0.05 mm into the 0.4 mm burr ring, which
-puts its tip 8.94-9.80 mm below the rim and gives a 5 N or more contact per blade (13.2 N at the cut's 0.08 N m torque). A cone
+puts its tip 8.94-9.64 mm below the rim and gives a 5 N or more contact per blade (13.2 N at the cut's 0.08 N m torque). A cone
 merely inside the bore, such as 6 mm down where its 7.86 mm edge is 1.84 mm clear of the burr, cuts nothing. While the blade is
 engaged and the reamer turns clockwise, its two blades pass the 12 sectors of the bore; each pass takes 0.2 mm off the burr of the
 sector it crosses (two passes clear it), and a pass over a sector that is already clear chamfers its rim by 0.2 mm. Turning back, or
@@ -268,9 +268,9 @@ BURR_IN = TUBE_RI - BURR  # 9.70 mm: the burr lip's inner edge (the bore wall is
 # lies in the burr ring, 9.70-10.10 mm.  That is a tip 8.94 mm below the rim at first contact and 9.49 mm at the natural seat
 # (the cone's 10.10 mm circle on the rim).  A centered cone at 6 mm has a 7.86 mm edge, 1.84 mm clear of the burr: no contact, no cut.
 ENGAGE_BITE = 0.05 * MM  # radial bite past the burr's inner edge that counts as contact (an eighth of the 0.4 mm burr)
-ENGAGE_MAX = 0.60 * MM  # deepest counted bite: past this the edge is 0.2 mm into the 0.9 mm wall, a jammed cone, not a cut
+ENGAGE_MAX = 0.50 * MM  # deepest counted bite: 0.10 mm past the bore wall, the most a hand reamer wedges before it jams
 SEAT_MIN = (BURR_IN + ENGAGE_BITE - CONE_TIP_R) / SLOPE  # 8.944 mm below the rim
-SEAT_MAX = (BURR_IN + ENGAGE_MAX - CONE_TIP_R) / SLOPE  # 9.800 mm below the rim
+SEAT_MAX = (BURR_IN + ENGAGE_MAX - CONE_TIP_R) / SLOPE  # 9.644 mm below the rim
 SEAT_OFF = 3.0 * MM  # the cone tip within this of the tube's axis ...
 SEAT_TILT = math.radians(8.0)  # ... and the tool axis within this angle of the tube axis
 COMMIT = math.radians(2.0)  # turning less than this is not counted (sensor jitter, a hand easing back)
