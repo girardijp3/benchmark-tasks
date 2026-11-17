@@ -413,7 +413,7 @@ def box_inertia(m, sx, sy, sz):
 # Match-light-candle assets. Metres, kilograms, Z up.  (the base class and mesh helpers above are shared with the other tasks)
 #   matchbox.usda   : Swan Vestas class safety-match box, 52 x 36 x 16 mm (L x W x T), 12 g with its matches (box 6 g + about 50 matches at 0.12 g, estimate).
 #                     An articulation with a free root: the box, plus the -y striker panel (48 x 12 x 0.5 mm) on a 2 mm prismatic joint
-#                     held out by a spring: its deflection is the press force gauge (F = k x). Origin: the box's middle, long side along x.
+#                     held out by a spring: its deflection tells the task the head is pressed on it. Origin: the box's middle, long side along x.
 #   match.usda      : one safety match, 47 mm long, 2.1 mm square splint, 3.2 mm head, 0.12 g (estimate). Origin: the base end's middle, z along the stick.
 #   flame_match.usda, flame_candle.usda : the flames (visual only, kinematic; the task moves them): origin at the flame's base, z up.
 #   candle.usda     : a 22 x 250 mm dinner (taper) candle, 80 g (estimate), wick 8 mm proud. Origin: the base end's middle, z up.
@@ -488,14 +488,14 @@ def speckles(a, name, cx, cy, cz, sx, sz, count, seed, rgb, axis_normal="y"):
 # ---- the match box ----
 BX, BY, BZ = 0.052, 0.036, 0.016
 PANEL_X, PANEL_Z, PANEL_T = 0.048, 0.012, 0.0005
-PANEL_K = 4000.0  # N/m: the striker panel's spring (a stated force gauge: 2 N = 0.5 mm, 4 N = 1.0 mm)
+PANEL_K = 4000.0  # N/m: the striker panel's spring (a compliant contact sensor: the sim needs 0.1 mm of push, not a force threshold)
 PANEL_TRAVEL = 0.002
 
 
 def matchbox(fname):
     m = 0.012
     a = Asset(fname, "Matchbox", "A Swan Vestas class safety-match box, 52 x 36 x 16 mm, 12 g with its matches, lying flat (long side along x). Its -y long side carries "
-              "a striker strip (48 x 12 x 0.5 mm, feathered ends) on a 2 mm spring panel (4000 N/m): the panel's push-in is the press-force gauge. Origin: the box's middle.", m - 0.001,
+              "a striker strip (48 x 12 x 0.5 mm, feathered ends) on a 2 mm spring panel (4000 N/m): the panel's push-in tells the task the head is pressed on the strip. Origin: the box's middle.", m - 0.001,
               com=(0, 0, 0), inertia=box_inertia(m - 0.001, BX, BY, BZ))
     a.articulation_root()
     f = (0.50, 0.45)
@@ -548,7 +548,7 @@ def match(fname):
     m = M_MASS
     a = Asset(fname, "Match", "A safety match: 47 mm long, 2.1 mm square splint, 3.2 mm head, 0.12 g (estimate: 0.45 g/cm3 splint plus head). Origin: the base end's middle, z along the stick, head up.",
               m, com=(0, 0, 0.023), inertia=(m * M_L**2 / 12, m * M_L**2 / 12, m * M_S**2 / 6))
-    f = (1.2, 1.1)  # the splint's friction against the finger pads: raised for the weak 2 N pinch on a 2 mm stick (a rubber pad on dry wood is 0.8-1.2)
+    f = (1.2, 1.1)  # the splint's friction against the finger pads: raised for the weak pinch on a 2 mm stick (a rubber pad on dry wood is 0.8-1.2)
     fh = (0.20, 0.18)  # the head against the striker strip (real about 0.4; the strip has the same value so PhysX averages to 0.2; 0.4 was tried on Isaac: see the README)
     hz = M_L - M_HR  # the head sphere's centre
     a.box((0, 0, (hz) / 2), (M_S, M_S, hz), None, f, key="match", name="Stick")  # collider (invisible)

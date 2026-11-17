@@ -1,7 +1,8 @@
-"""Offline checks (no GPU, no network): the task file loads, the declared strike / flame / burn-down rules do what the instruction says
-(a strike needs >= 2 N, >= 0.3 m/s and >= 15 mm of the strip; the wick lights after 2 s in the flame; a flame that reaches a held pinch caps the score at 0.5;
-a lit match on the table outside the ashtray or a knocked-over candle scores 0), the scorer covers each outcome (idle 0, 1.0 only with every condition for 1 s)
-and the demo's reach.
+"""Offline checks (no GPU, no network): the task file loads, the declared strike / flame / burn-down / contact rules
+do what the instruction says (a strike needs contact with the strip, >= 0.3 m/s and >= 15 mm of it -- no force threshold;
+the wick lights after 2 s in the flame; a flame that reaches a held pinch, a pad within 4 mm of the flame, or a touch of
+the candle body caps the score at 0.5; a lit match on the table outside the ashtray or a knocked-over candle scores 0),
+the scorer covers each outcome (idle 0, 1.0 only with every condition for 1 s) and the demo's reach.
 Run in the yam_arena environment:  python -m pytest -q test_match_light_candle.py"""
 
 import math
@@ -78,10 +79,10 @@ def _place_head(e, q_local, push=0.0):
     e.push = push
 
 
-def _strike(e, speed, force, steps=3, length=None):
-    """Draw the strip under a pressed head: ``steps`` control steps at ``speed`` (m/s) along the strip's long axis with press ``force`` (N)."""
+def _strike(e, speed, push, steps=3):
+    """Draw the strip under a pressed head: ``steps`` control steps at ``speed`` (m/s) along the strip's long axis with
+    the panel pushed in by ``push`` (m)."""
     x0 = 0.022
-    push = force / T.PANEL_K
     face = -(T.BY / 2 + T.PANEL_T) + push
     qy = face - T.M_HR
     dx = speed * e.step_dt
@@ -92,27 +93,31 @@ def _strike(e, speed, force, steps=3, length=None):
     return T.FX["lit"]
 
 
-def test_strike_lights_the_match_only_when_pressed_fast_enough(env):
-    assert _strike(env, 0.40, 3.0, steps=3)
+def test_strike_lights_the_match_only_when_drawn_across_the_strip(env):
+    assert _strike(env, 0.40, 0.0006)
     T._fx_init()
-    assert _strike(env, 0.40, 3.0, steps=1), "one control step at 0.4 m/s is 20 mm of the strip"
+    assert _strike(env, 0.40, 0.0006, steps=1), "one control step at 0.4 m/s is 20 mm of the strip"
     T._fx_init()
-    assert not _strike(env, 0.25, 3.0, steps=3), "too slow"
+    assert not _strike(env, 0.25, 0.0006, steps=3), "too slow"
     T._fx_init()
-    assert not _strike(env, 0.40, 1.0, steps=3), "too light"
+    assert not _strike(env, 0.40, 0.0, steps=3), "in the air / not pressed on the strip"
     T._fx_init()
-    assert not _strike(env, 0.40, 3.0, steps=0), "a single touching sample has no stroke"
+    assert not _strike(env, 0.40, 0.00005, steps=3), "a graze below the 0.1 mm contact gate does nothing"
+    T._fx_init()
+    assert _strike(env, 0.40, 0.00015, steps=3), "a light 0.6 N press is enough: there is no force threshold"
+    T._fx_init()
+    assert not _strike(env, 0.40, 0.0006, steps=0), "a single touching sample has no stroke"
 
 
 def test_stroke_must_be_unbroken(env):
-    """A step in which the head is off the strip (or pressed with less than 2 N) restarts the stroke."""
-    _place_head(env, (0.022, -(T.BY / 2 + T.PANEL_T) - T.M_HR, 0.0), 3.0 / T.PANEL_K)
+    """A step in which the head is off the strip (or not pressed on it) restarts the stroke."""
+    _place_head(env, (0.022, -(T.BY / 2 + T.PANEL_T) - T.M_HR, 0.0), 0.0006)
     env.advance()
     T._fx_step(env, None)
     _place_head(env, (0.0, -(T.BY / 2 + T.PANEL_T) - T.M_HR - 0.02, 0.0), 0.0)  # lifted off
     env.advance()
     T._fx_step(env, None)
-    _place_head(env, (-0.022, -(T.BY / 2 + T.PANEL_T) - T.M_HR, 0.0), 3.0 / T.PANEL_K)
+    _place_head(env, (-0.022, -(T.BY / 2 + T.PANEL_T) - T.M_HR, 0.0), 0.0006)
     env.advance()
     T._fx_step(env, None)
     assert not T.FX["lit"]
@@ -127,7 +132,7 @@ def test_head_in_the_air_does_not_light(env):
 
 
 def test_flame_burns_down_the_stick_and_the_wick_catches_after_two_seconds(env):
-    assert _strike(env, 0.40, 3.0)
+    assert _strike(env, 0.40, 0.0006)
     t_ign = T.FX["t_ign"]
     # hold the burning point 3 mm beside and 1 mm under the wick tip
     wick = T.candle_wick(*env.poses["candle"])
@@ -145,7 +150,7 @@ def test_flame_burns_down_the_stick_and_the_wick_catches_after_two_seconds(env):
 
 
 def test_flame_away_from_the_wick_never_lights_it(env):
-    assert _strike(env, 0.40, 3.0)
+    assert _strike(env, 0.40, 0.0006)
     for _ in range(60):
         env.poses["match"] = (np.array([0.3, 0.0, T.TOP + 0.2]), QUAT_DOWN)
         env.advance()
@@ -154,7 +159,7 @@ def test_flame_away_from_the_wick_never_lights_it(env):
 
 
 def test_flame_reaching_the_held_pinch_burns_the_fingers(env):
-    assert _strike(env, 0.40, 3.0)
+    assert _strike(env, 0.40, 0.0006)
     pos = np.array([0.3, 0.0, T.TOP + 0.20])
     env.poses["match"] = (pos, QUAT_DOWN)
     # the pads pinch the stick 8 mm from its base end, as the demo does (pads along the pointing axis, here +y, through the stick)
@@ -164,20 +169,20 @@ def test_flame_reaching_the_held_pinch_burns_the_fingers(env):
     for _ in range(int(14 / 0.05)):
         env.advance()
         T._fx_step(env, None)
-        if T.FX["events"]:
+        if any(k == "burn" for k, _ in T.FX["events"]):
             break
     assert any(k == "burn" for k, _ in T.FX["events"])
     assert T._cap(T.FX["events"]) == 0.5
 
 
 def test_lit_match_on_the_table_is_a_fire_but_in_the_ashtray_it_is_fine(env):
-    assert _strike(env, 0.40, 3.0)
+    assert _strike(env, 0.40, 0.0006)
     env.poses["match"] = (np.array([0.2, -0.1, T.TOP + 0.001]), T._QX90N)
     env.advance()
     T._fx_step(env, None)
     assert any(k == "fire" for k, _ in T.FX["events"])
     T._fx_init()
-    assert _strike(env, 0.40, 3.0)
+    assert _strike(env, 0.40, 0.0006)
     env.poses["match"] = (np.array([T.ASH_XY[0], T.ASH_XY[1], T.TOP + 0.007]), T._QX90N)
     env.advance()
     T._fx_step(env, None)
@@ -192,9 +197,34 @@ def test_a_knocked_over_candle_is_a_fire(env):
     assert any(k == "fire" for k, _ in T.FX["events"])
 
 
+def test_touching_the_candle_body_caps_at_half(env):
+    """The match stick must not touch the wax body; only its flame may come near the wick."""
+    assert _strike(env, 0.40, 0.0006)
+    env.poses["match"] = (np.array([T.HOLDER_XY[0], T.HOLDER_XY[1], T.TOP + T.FLOOR_Z + 0.12]), IDENT)
+    env.advance()
+    T._fx_step(env, None)
+    assert any(k == "touch" for k, _ in T.FX["events"])
+    assert T._cap(T.FX["events"]) == 0.5
+
+
+def test_a_pad_within_four_mm_of_the_match_flame_caps_at_half(env):
+    """The real-trial heat shield stands in this gap; the pad itself must stay clear of the flame."""
+    assert _strike(env, 0.40, 0.0006)
+    pos = np.array([0.30, 0.0, T.TOP + 0.20])
+    env.poses["match"] = (pos, QUAT_DOWN)
+    head = T.match_geo(pos, QUAT_DOWN)[0]
+    env.grippers["right"] = T.GripperState(back=head + np.array([0.0, 0.0, 0.030]), tips=head + np.array([0.0, 0.0, 0.002]),
+                                           opening=0.05, contact=0.0)
+    for _ in range(2):
+        env.advance()
+        T._fx_step(env, None)
+    assert any(k == "scorch" for k, _ in T.FX["events"])
+    assert T._cap(T.FX["events"]) == 0.5
+
+
 # -- scoring --------------------------------------------------------------------------------------------------------------
 def _fx(**kw):
-    d = {"lit": False, "lit_ever": False, "spent": False, "wick": False, "near_ever": False, "near_s": 0.0, "events": [], "front": 0.0, "press": 0.0, "speed": 0.0,
+    d = {"lit": False, "lit_ever": False, "spent": False, "wick": False, "near_ever": False, "near_s": 0.0, "events": [], "front": 0.0, "push": 0.0, "speed": 0.0,
          "stroke": 0.0, "dist": 9.9}
     d.update(kw)
     return d
@@ -302,9 +332,9 @@ def test_match_on_the_bare_table_never_scores_even_if_the_free_ashtray_is_moved(
     assert all(T.score(objects(t, _fx(**FULL), **on_table)) < 1.0 for t in np.arange(0.0, 4.0, 0.5))
 
 
-def test_press_must_hold_over_two_samples(env):
-    """A single pressed sample (one 50 ms step) is not a strike: the press must be there on the step before too."""
-    x0, push = 0.022, 3.0 / T.PANEL_K
+def test_contact_must_hold_over_two_samples(env):
+    """A single pressed sample (one 50 ms step) is not a strike: contact must be there on the step before too."""
+    x0, push = 0.022, 0.0006
     qy = -(T.BY / 2 + T.PANEL_T) + push - T.M_HR
     _place_head(env, (x0, qy, 0.0), 0.0)  # touching but not pressed
     env.advance()

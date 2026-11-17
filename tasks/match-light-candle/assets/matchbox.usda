@@ -8,7 +8,7 @@
 
 def Xform "Matchbox" (
     prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysicsArticulationRootAPI"]
-    doc = "A Swan Vestas class safety-match box, 52 x 36 x 16 mm, 12 g with its matches, lying flat (long side along x). Its -y long side carries a striker strip (48 x 12 x 0.5 mm, feathered ends) on a 2 mm spring panel (4000 N/m): the panel's push-in is the press-force gauge. Origin: the box's middle."
+    doc = "A Swan Vestas class safety-match box, 52 x 36 x 16 mm, 12 g with its matches, lying flat (long side along x). Its -y long side carries a striker strip (48 x 12 x 0.5 mm, feathered ends) on a 2 mm spring panel (4000 N/m): the panel's push-in tells the task the head is pressed on the strip. Origin: the box's middle."
 )
 {
     point3f physics:centerOfMass = (0, 0, 0)

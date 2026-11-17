@@ -3,8 +3,9 @@ the right, a low brass chamberstick with a 250 mm dinner candle standing in it (
 
 The task is to light the candle with the match: strike the match on the box's striker strip, bring its flame to the wick (the wick lights after 2 s in the flame), and put the
 used match in the ashtray before the flame reaches the fingers, leaving the box down and the hands clear. Ignition, the match flame and the wick flame are declared effects gated on
-the robot's strike: the match head must press the striker strip with at least 2 N (the strip's spring panel is the force gauge) and slide over at least 15 mm of it at 0.3 m/s or
-more. The match burns 3.2 mm/s down the stick from the head: a flame front that reaches a held pinch burns the fingers (score capped at 0.5). Nothing else is scripted.
+the robot's strike: the match head must be pressed on the striker strip (any real contact) and slide over at least 15 mm of it at 0.3 m/s or more; no force reading is scored. A
+real trial scores the visible flame instead, and fits the gripper pads with clip-on stainless/ceramic heat shields (see the README). The match burns 2 mm/s down the stick from the
+head: a flame front that reaches a held pinch, or a pad within 4 mm of it, caps the score at 0.5. Nothing else is scripted.
 
 Run it:  inspect-robots run --embodiment yam_arena -E task=match_light_candle.py --scorer task_score ...
 
@@ -205,7 +206,7 @@ elif not any(isinstance(f, _AfterSceneImport) for f in sys.meta_path):
     sys.meta_path.insert(0, _AfterSceneImport())
 # -- layout (m; x forward, y to the robot's left, from the midpoint between the arm bases) ----------------------------
 BX, BY, BZ = 0.052, 0.036, 0.016  # the match box
-PANEL_T, PANEL_X, PANEL_Z, PANEL_K = 0.0005, 0.048, 0.012, 4000.0  # the striker panel (0.8 mm), its strip, and its spring (N/m): the force gauge
+PANEL_T, PANEL_X, PANEL_Z, PANEL_K = 0.0005, 0.048, 0.012, 4000.0  # the striker panel (0.8 mm), its strip, and its spring (N/m): a contact sensor
 M_L, M_S, M_HR = 0.047, 0.0021, 0.0016  # the match: length, square splint, head radius
 HZ = M_L - M_HR  # the head's centre along the stick from its base end
 C_H, WICK_UP = 0.250, 0.008  # the candle and its wick above the top
@@ -235,18 +236,21 @@ MOVERS = ("box", "match", "candle", "holder", "ashtray")
 PANEL_JOINT = "PanelJoint"
 
 # -- the declared effects (strike, flames, burn-down), run every control step ----------------------------------------------
-STRIKE_F, STRIKE_V, STRIKE_LEN = 2.0, 0.30, 0.015  # N, m/s, m: a strike needs this press, this speed over this much of the strip
+STRIKE_PUSH, STRIKE_V, STRIKE_LEN = 0.0001, 0.30, 0.015  # m, m/s, m: the head must press the strip (0.1 mm contact) and slide this fast over this much of it
 V_BURN = 0.0020  # m/s: the flame front's speed down the stick from the head (estimate; the whole stick burns in about 23 s and the front reaches the pad edge of a grip 8 mm from the base end in 12 s)
-PAD_HALF = 0.0137  # m: the gripper pads are 27.4 mm wide along the stick: the flame burns the fingers when it reaches their near edge
+PAD_HALF = 0.0137  # m: the flame body's upward reach plus a margin: the flame is treated as reaching the fingers when the front is this far from their near edge
 WICK_NEAR, WICK_S = 0.005, 2.0  # the flame within 5 mm of the wick tip for 2 s lights it
 FLAME_LO, FLAME_HI = -0.003, 0.012  # m: the flame's body runs from 3 mm below the burning point to 12 mm above it (it rises)
+CANDLE_R = 0.0106  # m: the candle's collider radius near its foot (0.0103 above 25 mm); the visible taper is 11 to 9.9 mm
+TOUCH_CLEAR = 0.0015  # m: the match or a pad this close to the candle body counts as touching the hot wax
+PAD_FLAME_CLEAR = 0.004  # m: a pad this close to the match flame would touch the real-trial heat shield
 FX: dict = {}
 
 
 def _fx_init() -> None:
     FX.clear()
-    FX.update(t=-1.0, lit=False, lit_ever=False, spent=False, t_ign=0.0, front=0.0, stroke=0.0, prev=None, near_s=0.0, near_ever=False, wick=False,
-              best_f=0.0, prev_f=0.0, best_v=0.0, q=(0.0, 0.0, 0.0, 0.0), events=[], hidden=(True, True), press=0.0, speed=0.0, dist=9.9)
+    FX.update(t=-1.0, lit=False, lit_ever=False, spent=False, t_ign=0.0, front=0.0, stroke=0.0, prev=None, prev_push=0.0, near_s=0.0, near_ever=False, wick=False,
+              best_v=0.0, q=(0.0, 0.0, 0.0, 0.0), events=[], hidden=(True, True), push=0.0, speed=0.0, dist=9.9)
 
 
 _fx_init()
@@ -303,8 +307,30 @@ def _seg_dist(p, a, b) -> float:
     return float(np.linalg.norm(p - (a + s * ab)))
 
 
+def _touches_candle(pm, qm, pc, qc, g) -> bool:
+    """True if the match's stick or either gripper's pads touch the candle's wax body below its top. The candle body
+    is the hot part a real trial must keep the match, the pads and their heat shields clear of; only the match flame
+    may come near the wick."""
+    base = np.asarray(pm, float)
+    head, a, _ = match_geo(pm, qm)
+    tip = head + a * M_HR
+    Rc = quat_xyzw_to_matrix(np.asarray(qc, float))
+    pc = np.asarray(pc, float)
+    for s in np.linspace(0.0, 1.0, 25):
+        q = Rc.T @ (base + s * (tip - base) - pc)
+        if 0.002 <= q[2] <= C_H - 0.002 and math.hypot(q[0], q[1]) <= CANDLE_R + M_S / 2 + TOUCH_CLEAR:
+            return True
+    for side in ("left", "right"):
+        for p in _pads(g[f"{side}_gripper"]):
+            q = Rc.T @ (p - pc)
+            if 0.0 <= q[2] <= C_H - 0.002 and math.hypot(q[0], q[1]) <= CANDLE_R + TOUCH_CLEAR:
+                return True
+    return False
+
+
 def _fx_step(env, env_ids, asset_cfg=None) -> None:
-    """Every control step: the strike (press, speed, length), the match flame and its burn-down, the wick, the flames' poses and the rule events."""
+    """Every control step: the strike (contact, speed, length), the match flame and its burn-down, the wick, the
+    flames' poses and the rule events (a burn, a scorch, a touch of the candle body, a fire)."""
     t = float(env.episode_length_buf[0]) * float(env.step_dt)
     if t < FX["t"]:
         _fx_init()
@@ -318,6 +344,7 @@ def _fx_step(env, env_ids, asset_cfg=None) -> None:
     ph, qh = _root(env, "holder")
     pa, qa = _root(env, "ashtray")
     head, a, Rm = match_geo(pm, qm)
+    g = _gripper_states(env)
     # ---- the strike ----
     if not FX["lit"] and not FX["spent"]:
         d = _panel_push(env)
@@ -325,28 +352,27 @@ def _fx_step(env, env_ids, asset_cfg=None) -> None:
         q = Rb.T @ (head - pb)
         face = -(BY / 2 + PANEL_T) + d
         touching = bool(-0.001 <= (q[1] + M_HR) - face <= 0.003 and abs(q[0]) <= PANEL_X / 2 + 0.001 and abs(q[2]) <= PANEL_Z / 2 + 0.0015 and q[1] < -BY / 2)
-        force = PANEL_K * d
+        contact = touching and d >= STRIKE_PUSH
         prev = FX["prev"]
         FX["prev"] = (q[0], q[2]) if touching else None
-        prev_f_now = FX["prev_f"]
-        FX["prev_f"] = force if touching else 0.0
+        prev_push = FX["prev_push"]
+        FX["prev_push"] = d if touching else 0.0
         speed = 0.0
-        if touching and prev is not None:
+        if contact and prev is not None:
             step_len = math.hypot(q[0] - prev[0], q[2] - prev[1])
             speed = step_len / max(dt, 1e-6)
-            if force >= STRIKE_F and prev_f_now >= STRIKE_F and speed >= STRIKE_V:
+            if prev_push >= STRIKE_PUSH and speed >= STRIKE_V:
                 FX["stroke"] += step_len
             else:
                 FX["stroke"] = 0.0
-        elif not touching:
+        elif not contact:
             FX["stroke"] = 0.0
-        FX["press"], FX["speed"] = force, speed
+        FX["push"], FX["speed"] = d, speed
         FX["q"] = (float(q[0]), float(q[1]), float(q[2]), float(d))
-        FX["best_f"] = max(FX["best_f"], force if touching else 0.0)
         FX["best_v"] = max(FX["best_v"], speed)
         if FX["stroke"] >= STRIKE_LEN:
             FX.update(lit=True, lit_ever=True, t_ign=t, front=0.0)
-            print(f"[{TAG}] t={t:.2f}s  STRUCK: press {force:.1f} N, speed {speed:.2f} m/s, {FX['stroke'] * 1000:.0f} mm of the strip: the match is lit", flush=True)
+            print(f"[{TAG}] t={t:.2f}s  STRUCK: strip push {d * 1000:.2f} mm, speed {speed:.2f} m/s, {FX['stroke'] * 1000:.0f} mm of the strip: the match is lit", flush=True)
     # ---- the burning match ----
     wick_tip = candle_wick(pc, qc)
     if FX["lit"]:
@@ -367,8 +393,7 @@ def _fx_step(env, env_ids, asset_cfg=None) -> None:
                 print(f"[{TAG}] t={t:.2f}s  the wick has caught after {FX['near_s']:.1f} s in the flame", flush=True)
         else:
             FX["near_s"] = 0.0
-        # events: the flame reaching a held pinch, a lit match on the table outside the ashtray
-        g = _gripper_states(env)
+        # events: the flame reaching a held pinch, a pad close to the flame, a lit match on the table outside the ashtray
         objs = {"left_gripper": g["left_gripper"], "right_gripper": g["right_gripper"], "match": _state_of(pm, qm)}
         lo, hi = np.array([-M_S / 2, -M_S / 2, 0.0]), np.array([M_S / 2, M_S / 2, M_L])
         for side in ("left", "right"):
@@ -379,6 +404,9 @@ def _fx_step(env, env_ids, asset_cfg=None) -> None:
                 dgrip = HZ - (float(P[near, 2].max()) + PAD_HALF)
                 if FX["front"] >= max(dgrip, 0.0) - 0.001:
                     _event(t, "burn", "the match's flame reached the fingers holding it")
+            flame_lo, flame_hi = bp + np.array([0.0, 0.0, FLAME_LO]), bp + np.array([0.0, 0.0, FLAME_HI])
+            if any(_seg_dist(p, flame_lo, flame_hi) <= PAD_FLAME_CLEAR for p in _pads(gs)):
+                _event(t, "scorch", "the match flame came within 4 mm of a gripper pad")
         far_ash = float(np.hypot(pm[0] - pa[0], pm[1] - pa[1])) > A_R + 0.002 or float(np.hypot(head[0] - pa[0], head[1] - pa[1])) > A_R + 0.002
         if far_ash and min(pm[2], head[2]) <= TOP + 0.004:
             _event(t, "fire", "a lit match fell on the table outside the ashtray")
@@ -388,6 +416,8 @@ def _fx_step(env, env_ids, asset_cfg=None) -> None:
     htilt = math.acos(max(-1.0, min(1.0, float(quat_xyzw_to_matrix(qh)[2, 2]))))
     if ctilt > math.radians(15.0) or htilt > math.radians(15.0) or pc[2] < TOP - 0.03:
         _event(t, "fire", "the candle was knocked over")
+    if _touches_candle(pm, qm, pc, qc, g):
+        _event(t, "touch", "the match, a gripper pad or a heat shield touched the candle body")
     # ---- the flames ----
     if FX["lit"]:
         bp = burn_point(pm, qm, FX["front"])
@@ -404,7 +434,7 @@ def _fx_step(env, env_ids, asset_cfg=None) -> None:
 def _event(t, kind, what) -> None:
     if (kind, what) not in [tuple(e) for e in FX["events"]]:
         FX["events"].append((kind, what))
-        print(f"[{TAG}] t={t:.2f}s  RULE BROKEN: {what} (score {'capped at 0.5' if kind == 'burn' else 'is 0'} from here on)", flush=True)
+        print(f"[{TAG}] t={t:.2f}s  RULE BROKEN: {what} (score {'is 0' if kind == 'fire' else 'capped at 0.5'} from here on)", flush=True)
 
 
 def _fx_reset(env, env_ids, asset_cfg=None) -> None:
@@ -458,8 +488,8 @@ _START_ROT = {side: yam_demo.ArmPlan([], BASES[side]).start_rot for side in ("le
 # -- the rule and what is scored ----------------------------------------------------------------------------------------
 CLEAR = 0.03
 ASH_MATCH_R = A_IN + 0.001  # both ends of the match inside the bowl (its wall is at 42 mm)
-STEPS = ("the match struck alight on the box's striker", "the flame held at the wick", "the wick lit",
-         "the used match in the ashtray, the candle lit and upright, the box down, hands clear")
+STEPS = ("the match struck alight on the box's striker", "the flame held at the wick", "the candle flame established",
+         "the used match in the ashtray, the candle upright, the box down, hands clear, no contact")
 MATCH_LO = np.array([-M_S / 2, -M_S / 2, 0.0])
 MATCH_HI = np.array([M_S / 2, M_S / 2, M_L])
 BOX_LO = np.array([-BX / 2, -BY / 2, -BZ / 2])
@@ -504,7 +534,8 @@ def clear_of_things(objects) -> bool:
 
 def _steps(objects) -> list[bool]:
     fx = objects["fx"]
-    last = bool(match_in_ashtray(objects) and candle_lit_upright(objects) and box_down(objects) and not held_any(objects) and clear_of_things(objects))
+    last = bool(match_in_ashtray(objects) and candle_lit_upright(objects) and box_down(objects) and not held_any(objects) and clear_of_things(objects)
+                and not fx["events"])
     return [bool(fx["lit_ever"]), bool(fx["near_ever"]), bool(fx["wick"]), last]
 
 
@@ -515,7 +546,7 @@ def events_now(objects, p) -> list:
 def trace_line(objects) -> str:
     fx = objects["fx"]
     m = objects["match"]
-    return (f"match {'LIT front %.0f mm' % (fx['front'] * 1000) if fx['lit'] else ('spent' if fx['spent'] else 'unlit')}, press {fx['press']:.1f} N, slide {fx['speed']:.2f} m/s, "
+    return (f"match {'LIT front %.0f mm' % (fx['front'] * 1000) if fx['lit'] else ('spent' if fx['spent'] else 'unlit')}, strip push {fx['push'] * 1000:.2f} mm, slide {fx['speed']:.2f} m/s, "
             f"stroke {fx['stroke'] * 1000:.0f} mm, flame to wick {fx['dist'] * 1000:.1f} mm for {fx['near_s']:.1f} s, wick {'LIT' if fx['wick'] else 'out'}, "
             f"match at {(m.pos[0]) * 1000:.0f},{m.pos[1] * 1000:.0f},{(m.pos[2] - TOP) * 1000:.0f} mm")
 
@@ -637,10 +668,11 @@ def steps_done(objects) -> list[bool]:
 
 
 def _cap(events) -> float:
-    """1.0 with no rule event; 0.5 once the flame has burnt the fingers; 0 for a lit match on the table or a knocked-over candle."""
+    """1.0 with no rule event; 0.5 after a burn, a scorch or a touch of the candle body; 0 for a fire (a lit match on
+    the table outside the ashtray or a knocked-over candle)."""
     cap = 1.0
     for kind, _ in events:
-        cap = min(cap, 0.5 if kind == "burn" else 0.0)
+        cap = min(cap, 0.0 if kind == "fire" else 0.5)
     return cap
 
 
@@ -661,7 +693,7 @@ def violation(objects) -> bool:
 
 def success(objects) -> bool:
     """Every full-success condition has held without a break for STILL_S, counted from the first control step they all
-    held: all steps done, no rule event so far (a burn is one), and the parts within STILL_MOVE and STILL_TURN of where they were when
+    held: all steps done, no rule event so far (a burn, scorch or touch is one), and the parts within STILL_MOVE and STILL_TURN of where they were when
     that second began. The arms' return is not scored."""
     p = _PROGRESS
     p.update(objects)
@@ -670,7 +702,7 @@ def success(objects) -> bool:
 
 def score(objects) -> float:
     """1.0 on success (every full-success condition held for STILL_S); otherwise POINTS per step done (the first three,
-    at most 0.75, also while the second is being timed), capped at 0.5 once the flame has burnt the fingers; 0 after a fire."""
+    at most 0.75, also while the second is being timed), capped at 0.5 after a burn, scorch or touch; 0 after a fire."""
     done = steps_done(objects)
     if violation(objects):
         return 0.0
@@ -755,7 +787,7 @@ T_SWEEP = 0.075  # s: the draw (one control step: the arm trails its command and
 T_PRESS = 2.6  # s: the right arm's press builds as it lowers its command below the strip
 T_L_AFTER = 3.2  # the left arm keeps the box where it is until the right arm has carried the match clear
 T_L_WAIT = 4.6
-PRESS_DEPTH = 0.027  # commanded depth beyond the touching position (the arm is soft in a vertical press: about 50-100 N/m)
+PRESS_DEPTH = 0.027  # commanded depth beyond the touching position (the arm is soft in a vertical press; only the panel's contact is checked)
 GAP = 0.002
 LEAN = math.radians(45.0)  # at the wick the match is turned 45 degrees about the pointing axis: the burnt end hangs clear of the candle
 BP_LATERAL = 0.002  # the burning point beside the wick (m)
