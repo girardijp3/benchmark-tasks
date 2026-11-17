@@ -36,6 +36,7 @@ lowest and highest positions. A real curtain's own manual governs a real check.
 | `assets/lamp_green.usda`, `assets/lamp_red.usda` | The receiver's lamp discs: visual only, no collider, no gravity |
 | `test_light_curtain_test.py` | Offline checks: the file loads, the lamp rule, every scoring outcome, the 50 mm/s / 3 s lane gate, the 1 s full-success timing, both arms' reach (no GPU, no network) |
 | `task.json` | The task's details for the board |
+| `REAL_FIXTURE.md` | The buildable bench fixture: BOM with part numbers and substitutes, wiring schematic, assembly, link/fault logic, draw/reset procedure, trial checklist and safety |
 
 ## Assets and sizes
 
@@ -160,6 +161,13 @@ simulated curtains and guard nothing (no machine behind them can move):
   pitch behind 10 mm lenses, 57 to 197 mm above the table (30 mm resolution, 150 mm protected height). The receiver board
   ORs the 8 channels into a red/green lamp: red while any enabled channel is interrupted, green while all are clear (a
   real curtain's OFF/ON state). Each channel reaches the OR through its own labelled two-pin link on the board.
+- **Build.** `REAL_FIXTURE.md` has the BOM (part numbers, quantities, low-cost sources and substitutes), the wiring
+  schematic, the assembly steps, the link/fault logic, the coin-and-die draw and the real-trial checklist. In short:
+  eight Vishay TSAL6200 emitters driven at 38 kHz by a 555, eight Vishay TSSP4038 light-barrier receivers behind 10 mm
+  lenses, one 2-pin link per channel into an 8-channel LM339 comparator board, a 74HC14 red/green lamp driver and a
+  5 V 2 A supply. The comparator outputs are wired-OR: a removed link pulls that input low, so the channel cannot make
+  the lamp red; the other seven still can. The low-cost off-the-shelf alternative is eight Adafruit 2168 (or generic
+  5 mm) IR break-beam pairs per fixture, wired to the same links and comparator board.
 - **Documented fault: an open channel.** One channel (any of the 8) has its link removed; its emitter and receiver still
   work, but its output never reaches the lamp, so that beam can no longer trip it. A fitted link is the sound state. It is
   reproducible (a link in or out), safe (no hazard, no cover over any lens) and gives exactly the simulated behaviour:
@@ -176,7 +184,8 @@ simulated curtains and guard nothing (no machine behind them can move):
   applies the same 3 s / 50 mm/s gate). The task tests the manipulation and the decision; a real curtain's manual governs the
   real procedure.
 - **Reset.** Before each trial a coin flip chooses which fixture has a link out and the roll of an eight-sided die
-  chooses which channel; the other fixture has all eight links in (note the draw). The person checks each
+  chooses which channel; the other fixture has all eight links in (note the draw). The link map is CH0 = 57 mm,
+  CH1 = 77 mm, ..., CH7 = 197 mm; the full reset and checklist are in `REAL_FIXTURE.md`. The person checks each
   fixture by hand with the rod: the sound one stays red all the way up, the faulty one goes green only with the rod near
   that channel's height. Rods back on their saddles, the tag in the rack, the holders empty.
 - **Review.** Each rod covers its field's three lanes over the full height, tip first, the hand outside the field and the
