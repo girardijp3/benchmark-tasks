@@ -1,0 +1,503 @@
+#usda 1.0
+(
+    defaultPrim = "Switch"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Switch" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI"]
+    doc = "short rack switch on a bench riser, two DAC/SFP port cages, cable comb and a plug staging cradle"
+)
+{
+    bool physics:kinematicEnabled = 1
+
+    def Scope "Looks"
+    {
+        def Material "m576064_35"
+        {
+            token outputs:surface.connect = </Switch/Looks/m576064_35/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.58, 0.61, 0.65)
+                float inputs:metallic = 0.4
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_55"
+        {
+            token outputs:surface.connect = </Switch/Looks/m697174_55/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.6
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_63"
+        {
+            token outputs:surface.connect = </Switch/Looks/m697174_63/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.7
+                float inputs:roughness = 0.35
+                token outputs:surface
+            }
+        }
+
+        def Material "m091011_25"
+        {
+            token outputs:surface.connect = </Switch/Looks/m091011_25/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.12)
+                float inputs:metallic = 0.3
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m093119_05"
+        {
+            token outputs:surface.connect = </Switch/Looks/m093119_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.32, 0.2)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m945909_05"
+        {
+            token outputs:surface.connect = </Switch/Looks/m945909_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.6, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m116123_05"
+        {
+            token outputs:surface.connect = </Switch/Looks/m116123_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.12, 0.62, 0.24)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m091011_05"
+        {
+            token outputs:surface.connect = </Switch/Looks/m091011_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_65"
+        {
+            token outputs:surface.connect = </Switch/Looks/m697174_65/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.7
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m846719_05"
+        {
+            token outputs:surface.connect = </Switch/Looks/m846719_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.85, 0.68, 0.2)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_45"
+        {
+            token outputs:surface.connect = </Switch/Looks/m697174_45/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.5
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "BasePlate1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m576064_35>
+        double size = 1
+        float3 xformOp:scale = (0.14, 0.17, 0.008)
+        double3 xformOp:translate = (0, 0, 0.004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "RiserPost2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m697174_55>
+        double size = 1
+        float3 xformOp:scale = (0.01, 0.01, 0.06)
+        double3 xformOp:translate = (0.03, -0.07, 0.032)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "RiserPost3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m697174_55>
+        double size = 1
+        float3 xformOp:scale = (0.01, 0.01, 0.06)
+        double3 xformOp:translate = (0.03, 0.07, 0.032)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "RiserTop4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m697174_55>
+        double size = 1
+        float3 xformOp:scale = (0.08, 0.15, 0.006)
+        double3 xformOp:translate = (0, 0, 0.063)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Chassis5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m697174_63>
+        double size = 1
+        float3 xformOp:scale = (0.08, 0.12, 0.068)
+        double3 xformOp:translate = (0, 0, 0.1)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "FacePlate6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m091011_25>
+        double size = 1
+        float3 xformOp:scale = (0.002, 0.12, 0.068)
+        double3 xformOp:translate = (-0.039, 0, 0.1)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Board7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m093119_05>
+        double size = 1
+        float3 xformOp:scale = (0.07, 0.11, 0.002)
+        double3 xformOp:translate = (0, 0, 0.135)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Led08" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m945909_05>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.006, 0.003)
+        double3 xformOp:translate = (-0.0395, -0.04, 0.124)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Led19" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m116123_05>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.006, 0.003)
+        double3 xformOp:translate = (-0.0395, -0.026, 0.124)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Led210" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m945909_05>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.006, 0.003)
+        double3 xformOp:translate = (-0.0395, 0.04, 0.124)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Led311" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m116123_05>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.006, 0.003)
+        double3 xformOp:translate = (-0.0395, 0.052, 0.124)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TargetSocket12" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.045, 0.0145, 0.0095)
+        double3 xformOp:translate = (-0.0175, 0.015, 0.1)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TargetCageLow13" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m697174_65>
+        double size = 1
+        float3 xformOp:scale = (0.045, 0.0016, 0.0115)
+        double3 xformOp:translate = (-0.0175, 0.006949999999999999, 0.1)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TargetCageHigh14" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m697174_65>
+        double size = 1
+        float3 xformOp:scale = (0.045, 0.0016, 0.0115)
+        double3 xformOp:translate = (-0.0175, 0.023049999999999998, 0.1)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TargetCageTop15" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m697174_65>
+        double size = 1
+        float3 xformOp:scale = (0.045, 0.0175, 0.0016)
+        double3 xformOp:translate = (-0.0175, 0.015, 0.10555)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TargetCageBot16" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m697174_65>
+        double size = 1
+        float3 xformOp:scale = (0.045, 0.0175, 0.0016)
+        double3 xformOp:translate = (-0.0175, 0.015, 0.09445)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TargetLatchNotch17" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m846719_05>
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.004, 0.001)
+        double3 xformOp:translate = (-0.0049999999999999975, 0.015, 0.10575000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "DecoySocket18" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.045, 0.0145, 0.0095)
+        double3 xformOp:translate = (-0.0175, -0.015, 0.1)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "DecoyCageLow19" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m697174_65>
+        double size = 1
+        float3 xformOp:scale = (0.045, 0.0016, 0.0115)
+        double3 xformOp:translate = (-0.0175, -0.023049999999999998, 0.1)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "DecoyCageHigh20" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m697174_65>
+        double size = 1
+        float3 xformOp:scale = (0.045, 0.0016, 0.0115)
+        double3 xformOp:translate = (-0.0175, -0.006949999999999999, 0.1)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "DecoyCageTop21" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m697174_65>
+        double size = 1
+        float3 xformOp:scale = (0.045, 0.0175, 0.0016)
+        double3 xformOp:translate = (-0.0175, -0.015, 0.10555)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "DecoyCageBot22" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m697174_65>
+        double size = 1
+        float3 xformOp:scale = (0.045, 0.0175, 0.0016)
+        double3 xformOp:translate = (-0.0175, -0.015, 0.09445)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "DecoyLatchNotch23" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.004, 0.001)
+        double3 xformOp:translate = (-0.0049999999999999975, -0.015, 0.10575000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CombTooth024" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m697174_55>
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.002, 0.04)
+        double3 xformOp:translate = (-0.038, 0.006999999999999999, 0.10200000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CombTooth125" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m697174_55>
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.002, 0.04)
+        double3 xformOp:translate = (-0.038, 0.023, 0.10200000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CombBridge26" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m697174_55>
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.018, 0.003)
+        double3 xformOp:translate = (-0.038, 0.015, 0.123)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CradlePost27" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m697174_45>
+        double size = 1
+        float3 xformOp:scale = (0.01, 0.01, 0.1)
+        double3 xformOp:translate = (-0.1, 0.06, 0.05)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CradlePlate28" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m576064_35>
+        double size = 1
+        float3 xformOp:scale = (0.05, 0.022, 0.01)
+        double3 xformOp:translate = (-0.1, 0.06, 0.094)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CradleWallA29" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.05, 0.003, 0.014)
+        double3 xformOp:translate = (-0.1, 0.048, 0.1)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CradleWallB30" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Switch/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.05, 0.003, 0.014)
+        double3 xformOp:translate = (-0.1, 0.072, 0.1)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

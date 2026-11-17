@@ -1,0 +1,185 @@
+#usda 1.0
+(
+    defaultPrim = "Plug"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Plug" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "40 mm DAC/SFP-style copper plug with latch tab and strain-relief boot"
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.000001, 0.000001, 0.000001)
+    float physics:mass = 0.02
+    custom bool physxRigidBody:disableGravity = 1
+
+    def Scope "Looks"
+    {
+        def Material "m697174_62"
+        {
+            token outputs:surface.connect = </Plug/Looks/m697174_62/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.75
+                float inputs:roughness = 0.3
+                token outputs:surface
+            }
+        }
+
+        def Material "m846719_72"
+        {
+            token outputs:surface.connect = </Plug/Looks/m846719_72/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.85, 0.68, 0.2)
+                float inputs:metallic = 0.85
+                float inputs:roughness = 0.25
+                token outputs:surface
+            }
+        }
+
+        def Material "m091011_05"
+        {
+            token outputs:surface.connect = </Plug/Looks/m091011_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_55"
+        {
+            token outputs:surface.connect = </Plug/Looks/m697174_55/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.6
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m945909_05"
+        {
+            token outputs:surface.connect = </Plug/Looks/m945909_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.6, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m050506_08"
+        {
+            token outputs:surface.connect = </Plug/Looks/m050506_08/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.06, 0.06, 0.07)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.95
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Body1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Plug/Looks/m697174_62>
+        custom float physxCollision:contactOffset = 0.0005
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.0135, 0.0086)
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Contacts2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Plug/Looks/m846719_72>
+        double size = 1
+        float3 xformOp:scale = (0.012, 0.01, 0.003)
+        double3 xformOp:translate = (0.014, 0, -0.0005)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "KeyRib3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Plug/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.024, 0.0015, 0.006)
+        double3 xformOp:translate = (0.004, -0.005, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "LatchTab4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Plug/Looks/m697174_55>
+        double size = 1
+        float3 xformOp:scale = (0.008, 0.004, 0.002)
+        double3 xformOp:translate = (0.01, 0, 0.0052)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "LatchMark5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Plug/Looks/m945909_05>
+        double size = 1
+        float3 xformOp:scale = (0.006, 0.003, 0.0008)
+        double3 xformOp:translate = (0.01, 0, 0.0064)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "BootFlange6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Plug/Looks/m050506_08>
+        double size = 1
+        float3 xformOp:scale = (0.01, 0.012, 0.011)
+        double3 xformOp:translate = (-0.018, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "BootTail7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Plug/Looks/m050506_08>
+        double size = 1
+        float3 xformOp:scale = (0.01, 0.008, 0.007)
+        double3 xformOp:translate = (-0.025, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

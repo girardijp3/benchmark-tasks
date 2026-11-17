@@ -1,0 +1,25 @@
+{
+  "title": "Plug a 40 mm DAC plug into a switch cage: push until the latch clicks, seat the boot, tug-test it",
+  "category": "Impact on AI timelines",
+  "keywords": [
+    "DAC cable plug",
+    "switch port cage",
+    "latch click",
+    "strain-relief boot",
+    "cable comb",
+    "SFP transceiver",
+    "data centre",
+    "insertion",
+    "retention tug",
+    "4-7 N"
+  ],
+  "instruction": "Pick up the 40 mm DAC plug, align it tip-first with the near switch port cage, push until the latch clicks, seat the boot in the comb, then tug to prove it holds.",
+  "context": "Data-centre and AI-cluster technicians patch short DAC (direct-attach copper) cables into switch ports every day. The plug is keyed and goes tip-first into a spring-latched metal cage; it takes a firm 4-7 N straight push to click the latch home, the rear strain-relief boot must sit between the port's comb teeth so the cable is not left hanging, and a short tug confirms the latch holds before the technician lets go. A plug driven into the neighbouring port, forced in off-axis, left with the latch unclicked, with the boot out of the comb, or that pulls back under a tug is a real link fault or a cable that will work loose. Network and computer systems technicians (BLS OEWS SOC 15-1232 and 15-1244) do this work. The real trial uses a 40 mm DAC/SFP-style plug, a two-port switch cage with a latch notch and a comb, and checks the push force (4-7 N) and the retention tug.",
+  "setup": "Positions are in metres from the midpoint between the arm bases, x forward, y to the robot's left, table top z 0 (world z 0.7475). A short 1U-style switch sits on a steel riser with its face toward the robot at x 0.310; two port cages are side by side at y +0.015 (target, near) and y -0.015 (decoy), their centres at z 0.100. Each cage mouth is 14.5 mm wide (y) x 9.5 mm tall (z) and 45 mm deep, with steel walls and a small latch notch on the top wall of the target port. A two-tooth cable comb stands at x 0.312 above the target port, forming a 14 mm slot for the plug's 12 mm boot. The 40 mm DAC plug (13.5 x 8.6 mm keyed steel body, gold contact tongue, top spring latch tab, rubber boot flange) starts tip-first in a cradle at x 0.250, y 0.060, its centre at z 0.100. The switch and cradle are fixed; both arms start at READY. Every grasp point is 0.07-0.12 m above the table and within 0.40 m of an arm base.",
+  "scoring": "Four steps, 0.25 each, as things stand. (1) The plug is aligned tip-first at the target cage mouth, within tolerance and keyed. (2) With that, it is pushed to latch depth so the spring latch clicks. (3) With that, the boot flange is seated between the comb teeth with the plug square in the cage. (4) With that, a 4 mm tug on the boot leaves the plug held by the latch. Full score 1.0 only when all four steps hold for 1 s, the plug is intact, and both grippers are clear and home; any lapse restarts the hold. Idle scores 0. A wrong port, a forced off-axis plug, a missed latch, a boot left out of the comb, or a plug that pulls out under a tug caps the score at 0.5 for the rest of the run. The real trial reads insertion depth with a feeler gauge, push force with a 4-7 N gauge, latch click by feel, boot seating by eye and retention by a 4 mm tug; a stopwatch times only the 1 s hold.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz)",
+  "reset_notes": "Lay the plug back in its cradle at x 0.250, y 0.060, centre z 0.100, tip pointing +x and latch tab up. Clear both port cages and the comb, set both arms at READY. The plug settles on reset.",
+  "fidelity": "Real 40 mm DAC/SFP plug: 40 x 13.5 x 8.6 mm keyed body, 12 mm boot, top spring latch; 14.5 x 9.5 mm cage with notch and 14 mm comb slot; 4-7 N push, retention tug. Rigid body, 240 Hz physics, 20 Hz control, 20 g. The plug is gravity-free, carried by a closed gripper (declared carry); the latch pins it once the boot is seated so a tug cannot back it out. Cage, notch, comb and boot are real geometry; spring and click are declared states, not simulated; no electrical signal. Both ports modelled.",
+  "scores": "Dream-1: 0.0 (2,400 steps, 2,401 action rows); demo: 1.0 at step 477 on Isaac/MuJoCo. Plug seated in the correct target port to 39.5 mm depth, boot between the comb teeth, latch held the pull test, grippers clear, 1 s still; no wrong port, forced or drop fault; pytest 20.",
+  "media": "M-6GNTSP"
+}
