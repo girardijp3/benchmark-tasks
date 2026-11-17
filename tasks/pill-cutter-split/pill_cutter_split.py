@@ -6,10 +6,13 @@ The task is to split the tablet and put one half in each cup: the tablet goes in
 at the blade), the lid is pulled shut by its fin, which cuts the tablet, the lid is opened again by the fin, and one of the
 two halves goes into each cup.
 
-The cut is declared task code: when the lid reaches shut (within 3 degrees) with the tablet in the cradle, within 2.5 mm of the
-blade, the whole tablet is swapped for two half tablets lying in the cradle, 5 mm apart (the blade wedges them apart). The
-cutter's lid hinge is a real articulated joint (0.6 N m s/rad of friction, stop at 95 degrees open, past upright, so the lid
-stays open on its own and must be pulled shut); nothing else is scripted.
+The cut is force-gated and geometric. While the blade is in the tablet (lid 14.7 to 4.3 degrees before shut) the hinge
+drive is a constant 0.56 N m brake: 14.0 N at the blade at the real 1.7:1 lever, or 8.2 N at the fin, so a closing force
+below that stalls the lid on the tablet instead of cutting it. The cut is declared when the blade's cutting edge, computed
+from the actual lid pose, has passed the tablet's underside; the blade plane and the tablet pose give the actual cut
+position, so a tablet 2.5 mm along the cradle makes 7.5 and 12.5 mm halves (0.675 / 1.125 g), not equal halves. The
+cutter's lid hinge is a real articulated joint (20 N m/rad spring, 0.6 N m s/rad of friction, stop at 95 degrees open,
+past upright, so the lid stays open on its own and must be pulled shut); the rest is physical.
 
 Run it:  inspect-robots run --embodiment yam_arena -E task=pill_cutter_split.py --scorer task_score ...
 
@@ -221,6 +224,7 @@ SP_POS = np.array([*SP_XY, TOP])
 HINGE_REL = np.array([-0.040, 0.0, 0.011])  # the lid hinge axis, from the splitter's origin
 OPEN_DEG = 95.0  # the lid's stop
 TAB_W, TAB_L, TAB_T = 0.009, 0.020, 0.0075
+TAB_MASS = 0.0018
 V_DEPTH, V_SLOPE = 0.0055, 0.55  # the cradle: 5.5 mm deep, walls rising 0.55 mm per mm
 SEAT_Z = V_DEPTH + V_SLOPE * (TAB_W / 2) + TAB_T / 2  # a tablet's centre above the table when it lies in the cradle
 HALF_L = TAB_L / 2
@@ -228,9 +232,33 @@ HALF_GAP = 0.005  # the cut halves lie this far apart
 CUP_R_IN, CUP_H, TRAY_T = 0.019, 0.030, 0.004
 CUP_DY = 0.030
 CUPS = {"orange": (TRAY_XY[0], TRAY_XY[1] - CUP_DY), "blue": (TRAY_XY[0], TRAY_XY[1] + CUP_DY)}
-PARK = (0.30, 0.0, 0.06)  # the halves wait here, on the floor under the table, until the cut
+PARK = (0.30, 0.0, 0.06)  # the half bodies wait here, on the floor under the table, until they are needed
 POCKET_FLOOR = 0.001  # the dish pocket's floor above the table
 TABLET_Z = TOP + POCKET_FLOOR + TAB_T / 2 + 0.0004
+
+# The hinge's blade resistance: the UW-Madison BME / RERC Table 1 range is 5.6-22.2 N at the handle and 12-48 N at the
+# pill (average 32.8 N at the pill). The task models 14.0 N at the blade, the low end of that measured range, which at the
+# real 40 mm blade / 68 mm fin lever is 8.2 N at the fin. This is not below the measured range: the surrogate tablet's
+# batch acceptance is 14.0 +/- 1.5 N at the blade (12.5-15.5 N), inside 12-48 N. The demo's 14-15 N a finger fin grip
+# carries it through the fin's 1.2/1.0 rubber grip faces; the log's blade F is the hinge's reaction at the fin, not the pinch.
+F_PILL_CUT = 14.0  # N at the blade (the 1.7:1 lever's pill force)
+BLADE_LEVER, FIN_LEVER = 0.040, 0.068  # m from the hinge axis: blade cutting edge, fin grip
+F_FIN_CUT = F_PILL_CUT * BLADE_LEVER / FIN_LEVER  # 8.24 N at the fin
+TAU_CUT = F_PILL_CUT * BLADE_LEVER  # 0.56 N m about the hinge
+K_RESIST = 20.0  # N m/rad, authored in pill_cutter.usda (build_assets.py K_RESIST)
+BLADE_X, BLADE_EDGE_Z = 0.040, -0.007  # the cutting edge in the lid frame (x from the hinge, z from the lid plane)
+ENGAGE_DEG = 16.5  # the blade edge reaches the tablet's top (z 15.475 mm) at this lid opening
+CUT_EDGE_DEG = 5.5  # ... and its underside (z 8 mm) here: the cut is complete at this blade position
+
+# The half bodies used for the actual cut: 7.5, 8.75, 10, 11.25 and 12.5 mm long (0.675 to 1.125 g), so a 2.5 mm
+# offset's 7.5/12.5 mm halves are real bodies, not two 10 mm stand-ins.
+HALF_LENGTHS = (0.0075, 0.00875, 0.010, 0.01125, 0.0125)
+HALF_NAMES = {0.0075: "half_75", 0.00875: "half_875", 0.010: "half_10", 0.01125: "half_1125", 0.0125: "half_125"}
+HALF_NAMES_B = dict(HALF_NAMES)
+HALF_NAMES_B[0.010] = "half_10b"  # the equal cut needs two real 10 mm bodies, not one reused
+HALF_FILES = {0.0075: "half_tablet_7p5.usda", 0.00875: "half_tablet_8p75.usda", 0.010: "half_tablet_10.usda",
+              0.01125: "half_tablet_11p25.usda", 0.0125: "half_tablet_12p5.usda"}
+HALF_MASS = {L: TAB_MASS * L / TAB_L for L in HALF_LENGTHS}
 
 SPLITTER = UsdPart("cutter", asset="cutter", xy=SP_XY, extent=0.12, mass=None, usd_path=str(ASSETS / "pill_cutter.usda"),
                    pos=tuple(float(v) for v in SP_POS), articulation=True, fixed=True)
@@ -240,16 +268,24 @@ DISH = UsdPart("dish", asset="dish", xy=TB_XY, extent=0.04, mass=None, usd_path=
                pos=(*TB_XY, TOP), kinematic=True)
 TABLET = UsdPart("tablet", asset="tablet", xy=TB_XY, extent=0.03, mass=0.0018, usd_path=str(ASSETS / "tablet.usda"),
                  pos=(*TB_XY, TABLET_Z))
-HALF_A = UsdPart("half_a", asset="half_a", xy=PARK[:2], extent=0.02, mass=0.0009, usd_path=str(ASSETS / "half_tablet.usda"),
-                 pos=PARK)
-HALF_B = UsdPart("half_b", asset="half_b", xy=PARK[:2], extent=0.02, mass=0.0009, usd_path=str(ASSETS / "half_tablet.usda"),
-                 pos=(PARK[0] + 0.05, PARK[1], PARK[2]))
-OBJECTS = [SPLITTER, TRAY, DISH, TABLET, HALF_A, HALF_B]
-MOVERS = ("tablet", "half_a", "half_b")
+HALF_PARTS = []
+for _i, _L in enumerate(HALF_LENGTHS):
+    HALF_PARTS.append(UsdPart(HALF_NAMES[_L], asset=HALF_NAMES[_L], xy=(-0.30 - 0.03 * _i, -0.20),
+                              extent=0.02, mass=HALF_MASS[_L], usd_path=str(ASSETS / HALF_FILES[_L]),
+                              pos=(-0.30 - 0.03 * _i, -0.20, 0.06)))
+HALF_PARTS.append(UsdPart("half_10b", asset="half_10b", xy=(-0.30 - 0.03 * len(HALF_LENGTHS), -0.20),
+                          extent=0.02, mass=HALF_MASS[0.010], usd_path=str(ASSETS / HALF_FILES[0.010]),
+                          pos=(-0.30 - 0.03 * len(HALF_LENGTHS), -0.20, 0.06)))
+OBJECTS = [SPLITTER, TRAY, DISH, TABLET, *HALF_PARTS]
+MOVERS = ("tablet", "half_10", "half_10b")  # the equal pair's names; the tests and the default episode use them
 LID_JOINT = "Hinge"
 _SPLIT = {"done": False}
+_ACTIVE = ("half_10", "half_10b")  # the two half bodies this cut left (changed by the cut event; reset puts them back)
+_ACTIVE_MASS = {"half_10": 0.0009, "half_10b": 0.0009}
 CUT_DEG = 3.0  # the lid counts as shut within this
 CUT_CENTRE = 0.0025  # the tablet's middle within this of the blade (along y) and the cradle's line (along x)
+CUT_LINE_TOL = 0.001  # the cut within 1 mm of the score line (the tablet's mid-length) for step 4
+DOSE_LO, DOSE_HI = 0.40, 0.60  # each half's share of the pre-cut tablet mass for step 4
 
 
 def _quat_xyzw_id():
@@ -277,11 +313,75 @@ def _lid_state(env):
     return art, ids
 
 
+def _set_lid_target(art, q_rad: float) -> None:
+    """Writes the hinge drive's position target (rad) through the PhysX tensor view (Arena gives the cutter no actuator)."""
+    import torch
+
+    view = art.root_view
+    cur = view.get_dof_position_targets()
+    try:
+        import warp as wp
+
+        warp_data = isinstance(cur, wp.array)
+    except ImportError:
+        wp, warp_data = None, False
+    if warp_data:
+        t = wp.to_torch(cur).clone()
+    elif isinstance(cur, torch.Tensor):
+        t = cur.clone()
+    else:
+        t = torch.as_tensor(cur)
+    t[:, 0] = float(q_rad)
+    view.set_dof_position_targets(wp.from_torch(t) if warp_data else t, art._ALL_INDICES)
+
+
+def blade_edge(lid_deg: float) -> np.ndarray:
+    """The blade's cutting edge (its lowest line, along y) in the table frame, from the lid's actual opening."""
+    a = math.radians(lid_deg)
+    x, z = BLADE_X, BLADE_EDGE_Z
+    p = HINGE_REL + np.array([x * math.cos(a) - z * math.sin(a), 0.0, x * math.sin(a) + z * math.cos(a)])
+    return SP_POS + p
+
+
+def _lid_target_rad(art) -> float:
+    """The hinge drive's current position target (rad), from a torch or warp tensor (CPU copy before numpy)."""
+    import torch
+
+    cur = art.root_view.get_dof_position_targets()
+    try:
+        import warp as wp
+
+        if isinstance(cur, wp.array):
+            cur = wp.to_torch(cur)
+    except ImportError:
+        pass
+    if isinstance(cur, torch.Tensor):
+        return float(cur.detach().cpu().numpy().reshape(-1)[0])
+    return float(np.asarray(getattr(cur, "torch", cur)).reshape(-1)[0])
+
+
+def _lid_force_and_edge(art, ids, lid_deg: float) -> tuple[float, float]:
+    """The blade's reaction at the fin (N) and the cutting edge's height above the table (mm). The force is the hinge
+    drive's own reaction: K (target - q) + damping (0 - qdot), divided by the 68 mm fin lever. It is the resistance the
+    arm is pushing against, not the finger pinch."""
+    q = float(art.data.joint_pos.torch[0, ids].detach().cpu().numpy()[0])
+    qd = float(art.data.joint_vel.torch[0, ids].detach().cpu().numpy()[0])
+    tau = K_RESIST * (_lid_target_rad(art) - q) - 0.6 * qd
+    engaged = 0.0 < lid_deg < ENGAGE_DEG and not _SPLIT["done"]
+    return (abs(tau) / FIN_LEVER if engaged else 0.0), (float(blade_edge(lid_deg)[2] - SP_POS[2]) * 1000.0)
+
+
 def extra_states(base, out, origin) -> None:
-    """The lid's opening (degrees) and whether the tablet has been cut."""
+    """The lid's opening (degrees), whether the tablet has been cut, the blade's force at the fin and edge, and the cut's
+    distance from the score line (mm; 99 until the cut)."""
     art, ids = _lid_state(base)
-    out["lid_deg"] = float(-math.degrees(float(art.data.joint_pos.torch[0, ids].detach().cpu().numpy()[0])))
+    lid = float(-math.degrees(float(art.data.joint_pos.torch[0, ids].detach().cpu().numpy()[0])))
+    force, edge_mm = _lid_force_and_edge(art, ids, lid)
+    out["lid_deg"] = lid
     out["split"] = bool(_SPLIT["done"])
+    out["blade_force"] = force
+    out["blade_edge_mm"] = edge_mm
+    out["cut_off_mm"] = float(_SPLIT.get("cut_off_mm", 99.0))
 
 
 def _write_pose(env, env_ids, name, pos, quat=None):
@@ -297,43 +397,191 @@ def _write_pose(env, env_ids, name, pos, quat=None):
 
 
 def _reset_cutter(env, env_ids, asset_cfg=None) -> None:
-    """Reset event: the lid open on its stop, the cut undone."""
+    """Reset event: the lid open on its stop, the cut undone, the hinge target at the open angle (so the 20 N m/rad
+    resistance spring does not pull the lid shut before the first action)."""
     import torch
 
     if env_ids is None:
         return
     _SPLIT["done"] = False
+    _SPLIT["engaged"] = False
+    _SPLIT.pop("cut_off_mm", None)
+    global _ACTIVE, _ACTIVE_MASS
+    _ACTIVE = ("half_10", "half_10b")
+    _ACTIVE_MASS = {"half_10": HALF_MASS[0.010], "half_10b": HALF_MASS[0.010]}
     art, ids = _lid_state(env)
     q = torch.tensor([[-math.radians(OPEN_DEG)]], device=art.device, dtype=torch.float32)
     art.write_joint_position_to_sim_index(position=q, joint_ids=ids, env_ids=env_ids)
     art.write_joint_velocity_to_sim_index(velocity=torch.zeros_like(q), joint_ids=ids, env_ids=env_ids)
+    _set_lid_target(art, -math.radians(OPEN_DEG))
+
+
+def blade_resistance_n(lid_deg: float) -> float:
+    """The modelled cutting force at the fin (N) for a lid opening in the engagement. A scored tablet's force rises to a
+    peak when the blade meets it and falls as the score cracks: the peak is TAU_CUT/FIN_LEVER = 8.24 N at the fin
+    (14.0 N at the blade, the measured range's low end); it falls to 30% of the peak (2.47 N at the fin, 4.2 N at the
+    blade) by the time the cutting edge passes the tablet's underside."""
+    f = min(1.0, max(0.0, (ENGAGE_DEG - lid_deg) / (ENGAGE_DEG - CUT_EDGE_DEG)))
+    return F_FIN_CUT * (1.0 - 0.7 * f)
+
+
+def _blade_resistance(env, env_ids, asset_cfg=None) -> None:
+    """Every control step: while the blade is in the tablet (below ENGAGE_DEG and not yet cut) the hinge drive is a
+    brake whose target is set ``blade_resistance_n(lid)/K_RESIST`` open of the current angle, so the drive reacts with
+    the peak 0.56 N m (8.24 N at the fin, 14.0 N at the blade) at engagement and 30% of that at the cut. The arm has to
+    overcome the peak; a weaker push stalls the lid on the tablet and no cut is declared. Outside the engagement the
+    target follows the lid (no torque)."""
+    art, ids = _lid_state(env)
+    q = float(art.data.joint_pos.torch[0, ids].detach().cpu().numpy()[0])
+    lid = -math.degrees(q)
+    if not _SPLIT["done"] and 0.0 < lid < ENGAGE_DEG:
+        if not _SPLIT.get("engaged"):
+            _SPLIT["engaged"] = True
+            t = float(env.episode_length_buf[0]) * float(env.step_dt)
+            print(f"[{TAG}] t={t:.2f}s  blade engaged at lid {lid:.1f} deg: the arm must apply "
+                  f"{F_FIN_CUT:.2f} N at the fin ({F_PILL_CUT:.1f} N at the blade) to keep the lid moving",
+                  flush=True)
+        _set_lid_target(art, q - (blade_resistance_n(lid) * FIN_LEVER) / K_RESIST)
+    else:
+        _set_lid_target(art, q)
+
+
+def clip_volume_fraction(pos, rot: np.ndarray, half, plane_point, normal) -> float:
+    """The fraction of an axis-aligned box (half extents ``half``, world pose ``pos``, ``rot``) on the + side of a plane.
+    Exact for a box: the six faces are clipped by the plane, the cut cap is added, and the convex polyhedron is summed as
+    tetrahedra from its vertex centroid. The blade plane is what the cut actually follows, so an off-centre placement
+    gives the real split lengths, not two equal halves."""
+    n = np.asarray(normal, float)
+    n = n / np.linalg.norm(n)
+    d = float(np.dot(n, np.asarray(plane_point, float)))
+    # the plane in the box's frame
+    nl = rot.T @ n
+    dl = d - float(np.dot(n, np.asarray(pos, float)))
+    a, b, c = half
+    lo, hi = np.array([-a, -b, -c]), np.array([a, b, c])
+    # the box corners in the box frame
+    box = [np.array([x, y, z]) for x in (-a, a) for y in (-b, b) for z in (-c, c)]
+    if all(float(np.dot(nl, v)) >= dl for v in box):
+        return 1.0
+    if all(float(np.dot(nl, v)) <= dl for v in box):
+        return 0.0
+    faces = [
+        [0, 1, 3, 2], [4, 6, 7, 5],  # x = -a, x = +a
+        [0, 4, 5, 1], [2, 3, 7, 6],  # y = -b, y = +b
+        [0, 2, 6, 4], [1, 5, 7, 3],  # z = -c, z = +c
+    ]
+
+    def clip(poly):
+        out = []
+        for i in range(len(poly)):
+            p, q = np.asarray(poly[i], float), np.asarray(poly[(i + 1) % len(poly)], float)
+            dp, dq = float(np.dot(nl, p)) - dl, float(np.dot(nl, q)) - dl
+            if dp >= 0.0:
+                out.append(p)
+            if (dp >= 0.0) != (dq >= 0.0):
+                out.append(p + (q - p) * (dp / (dp - dq)))
+        return out
+
+    kept = [clip([box[i] for i in f]) for f in faces]
+    # the cap: where the plane crosses the box's 12 edges, ordered around its centroid in the plane
+    cap = []
+    for i in range(8):
+        for j in range(i + 1, 8):
+            if bin(i ^ j).count("1") != 1:
+                continue
+            p, q = box[i], box[j]
+            dp, dq = float(np.dot(nl, p)) - dl, float(np.dot(nl, q)) - dl
+            if (dp > 0.0) != (dq > 0.0):
+                cap.append(p + (q - p) * (dp / (dp - dq)))
+    if len(cap) >= 3:
+        cc = np.mean(cap, axis=0)
+        u = cap[0] - cc
+        u /= np.linalg.norm(u) + 1e-12
+        v = np.cross(nl, u)
+        cap.sort(key=lambda p: math.atan2(float(np.dot(p - cc, v)), float(np.dot(p - cc, u))))
+        kept.append(cap)
+    # every boundary face, triangulated; the vertex centroid is inside the clipped convex box
+    boundary = [p for poly in kept if len(poly) >= 3 for p in poly]
+    ref = np.mean(boundary, axis=0)
+    vol = 0.0
+    for poly in kept:
+        if len(poly) < 3:
+            continue
+        for i in range(1, len(poly) - 1):
+            x, y, z = poly[0] - ref, poly[i] - ref, poly[i + 1] - ref
+            vol += abs(float(np.dot(x, np.cross(y, z)))) / 6.0
+    return float(min(1.0, max(0.0, vol / (8.0 * a * b * c))))
+
+
+def _half_geom(name: str):
+    """The visible half body's bounds in its own frame: (lo, hi)."""
+    L = next((L for L, n in HALF_NAMES.items() if n == name), HALF_L)
+    return (np.array([-TAB_W / 2, -L / 2, -TAB_T / 2]), np.array([TAB_W / 2, L / 2, TAB_T / 2]))
 
 
 def _cut_step(env, env_ids, asset_cfg=None) -> None:
-    """Every control step: when the lid is shut with the whole tablet in the cradle at the blade, the tablet is swapped for
-    its two halves (declared: the blade is not simulated)."""
+    """Every control step: when the blade's actual cutting edge has passed the tablet's underside, with the whole tablet
+    in the cradle at the blade, the tablet is replaced by two halves whose lengths and masses are the real split at the
+    blade plane (the blade is still a declared cut: its edge is a line, not a fracture model)."""
     from yam_arena.urdf import quat_xyzw_to_matrix
 
+    global _ACTIVE, _ACTIVE_MASS
     if _SPLIT["done"]:
         return
     art, ids = _lid_state(env)
     lid = -math.degrees(float(art.data.joint_pos.torch[0, ids].detach().cpu().numpy()[0]))
-    if lid > CUT_DEG:
+    if lid > ENGAGE_DEG or lid < -1.0:
         return
     origin = env.scene.env_origins[0].detach().cpu().numpy()
     pose = env.scene["tablet"].data.root_link_pose_w.torch[0].detach().cpu().numpy().astype(np.float64)
     pos, rot = pose[:3] - origin, quat_xyzw_to_matrix(pose[3:])
     if not tablet_in_cradle(pos, rot):
         return
+    edge = blade_edge(lid)  # table frame
+    if edge[2] > pos[2] - TAB_T / 2 + 0.0001:  # the cutting edge has not passed the tablet's underside (0.1 mm tolerance)
+        return
+    if abs(edge[0] - pos[0]) > TAB_W / 2 + 0.001 or abs(edge[1] - pos[1]) > TAB_L / 2 + 0.001:
+        return  # the blade misses the tablet
+    # the blade plane is x-z at the splitter's y = 0; the tablet pose gives the actual cut fraction
+    normal = np.array([0.0, 1.0, 0.0])
+    plane = np.array([SP_POS[0], SP_POS[1], SP_POS[2]])
+    frac_far = clip_volume_fraction(pos, rot, (TAB_W / 2, TAB_L / 2, TAB_T / 2), plane, normal)
+    frac_near = 1.0 - frac_far
+    near_m = TAB_MASS * frac_near
+    far_m = TAB_MASS * frac_far
+    near_L_raw = TAB_L * frac_near
+    near_L = min(HALF_LENGTHS, key=lambda L: abs(L - near_L_raw))
+    far_L = round(TAB_L - near_L, 5)
+    near_name, far_name = HALF_NAMES[near_L], HALF_NAMES_B[far_L]
+    force, _ = _lid_force_and_edge(art, ids, lid)
     _SPLIT["done"] = True
-    z = SEAT_Z + 0.0004
+    _SPLIT["cut_off_mm"] = abs(frac_near - 0.5) * TAB_L * 1000.0
+    _ACTIVE = (near_name, far_name)
+    # the actual body masses (the assets' masses are proportional to length; adjust to the exact clipped share)
+    _ACTIVE_MASS = {near_name: near_m, far_name: far_m}
+    for name, m in _ACTIVE_MASS.items():
+        try:
+            import torch
+
+            env.scene[name].set_masses_index(masses=torch.tensor([[m]], device=env.scene[name].device))
+        except Exception:
+            pass
+    # place the two bodies where the split left them, 5 mm apart around the blade plane, keeping the tablet's yaw
     c = SP_POS
-    off = HALF_L / 2 + HALF_GAP / 2
-    _write_pose(env, env_ids, "half_a", (c[0], c[1] - off, c[2] + z))
-    _write_pose(env, env_ids, "half_b", (c[0], c[1] + off, c[2] + z))
+    ey = rot[:, 1]
+    t_cut = -(pos[1] - c[1]) / ey[1] if abs(ey[1]) > 1e-6 else 0.0  # where the blade plane crosses the tablet's axis
+    near_c = pos + ey * ((-TAB_L / 2 + t_cut) / 2.0) - np.array([0.0, HALF_GAP / 2.0, 0.0])
+    far_c = pos + ey * ((t_cut + TAB_L / 2) / 2.0) + np.array([0.0, HALF_GAP / 2.0, 0.0])
+    near_c[2] = far_c[2] = c[2] + SEAT_Z + 0.0004
+    _write_pose(env, env_ids, near_name, near_c, pose[3:])
+    _write_pose(env, env_ids, far_name, far_c, pose[3:])
     _write_pose(env, env_ids, "tablet", (PARK[0] - 0.05, PARK[1], PARK[2]))
     t = float(env.episode_length_buf[0]) * float(env.step_dt)
-    print(f"[{TAG}] t={t:.2f}s  the lid shut on the tablet in the cradle: cut into two halves", flush=True)
+    print(f"[{TAG}] t={t:.2f}s  blade edge passed the tablet underside at lid {lid:.1f} deg; peak F_fin "
+          f"{F_FIN_CUT:.2f} N at engagement ({F_PILL_CUT:.1f} N at the blade), F_fin {force:.1f} N at the cut: "
+          f"cut into {near_L * 1000:.1f}/{far_L * 1000:.1f} mm halves, {near_m * 1000:.3f}/{far_m * 1000:.3f} g, "
+          f"cut {_SPLIT['cut_off_mm']:.1f} mm off the score line (yaw {math.degrees(math.atan2(rot[1, 0], rot[0, 0])):.1f} deg)",
+          flush=True)
 
 
 def reset_events() -> list:
@@ -341,7 +589,7 @@ def reset_events() -> list:
 
 
 def step_events() -> list:
-    return [("cutter_step", _cut_step, {})]
+    return [("blade_resistance", _blade_resistance, {}), ("cutter_step", _cut_step, {})]
 
 
 @dataclass
@@ -377,11 +625,11 @@ _START_ROT = {side: yam_demo.ArmPlan([], BASES[side]).start_rot for side in ("le
 LID_OPEN_DEG = 80.0  # the lid counts as opened again past this
 IN_CUP_MARGIN = 0.004  # a half is in a cup: its middle within the cup's inside radius less this
 CLEAR = 0.03  # m: let go = no pad within this of a half or of the lid's fin
-FIN_REL = np.array([0.068, 0.0, 0.027])  # the fin's middle, from the hinge axis, with the lid shut
+FIN_REL = np.array([0.068, 0.0, 0.027])  # the fin's middle, from the hinge axis, with the lid shut (24 mm tall)
 TAB_LO, TAB_HI = np.array([-TAB_W / 2, -TAB_L / 2, -TAB_T / 2]), np.array([TAB_W / 2, TAB_L / 2, TAB_T / 2])
 HALF_LO, HALF_HI = np.array([-TAB_W / 2, -HALF_L / 2, -TAB_T / 2]), np.array([TAB_W / 2, HALF_L / 2, TAB_T / 2])
 STEPS = ("tablet lying in the cradle at the blade", "lid shut on it: tablet cut in two", "lid opened again",
-         "one half in each cup, grippers clear")
+         "one half in each cup, balanced halves, grippers clear")
 
 
 def fin_point(lid_deg: float) -> np.ndarray:
@@ -410,12 +658,22 @@ def half_cup(objects, name: str):
 
 
 def one_each(objects) -> bool:
-    a, b = half_cup(objects, "half_a"), half_cup(objects, "half_b")
+    a, b = half_cup(objects, _ACTIVE[0]), half_cup(objects, _ACTIVE[1])
     return bool(a is not None and b is not None and a != b)
 
 
 def halves_clear(objects) -> bool:
-    return not any(pads_near(objects, n, HALF_LO, HALF_HI, CLEAR) for n in ("half_a", "half_b"))
+    return not any(pads_near(objects, n, *_half_geom(n), CLEAR) for n in _ACTIVE)
+
+
+def dose_ok() -> bool:
+    """Each half's actual mass within 40-60% of the pre-cut tablet's 1.8 g (0.720-1.080 g)."""
+    return bool(all(DOSE_LO * TAB_MASS <= _ACTIVE_MASS.get(n, 0.0) <= DOSE_HI * TAB_MASS for n in _ACTIVE))
+
+
+def cut_line_ok(objects) -> bool:
+    """The cut within 1 mm of the score line (the tablet's mid-length): the real trial's 10x visual check."""
+    return bool(objects.get("cut_off_mm", 99.0) <= CUT_LINE_TOL * 1000.0 + 1e-6)
 
 
 def _seated_now(objects) -> bool:
@@ -428,7 +686,7 @@ def _steps(objects) -> list[bool]:
     split = bool(objects.get("split"))
     seated = bool(p.mem.get("seated") or _seated_now(objects))
     opened = bool(split and objects.get("lid_deg", 0.0) >= LID_OPEN_DEG)
-    cups = bool(split and one_each(objects) and halves_clear(objects)
+    cups = bool(split and one_each(objects) and halves_clear(objects) and dose_ok() and cut_line_ok(objects)
                 and not _near_point(objects, fin_point(objects.get("lid_deg", 0.0)), CLEAR))
     return [seated, split, opened, cups]
 
@@ -455,26 +713,27 @@ def events_now(objects, p) -> list[str]:
     out = []
     if _seated_now(objects):
         p.mem["seated"] = True
-    active = ("half_a", "half_b") if objects.get("split") else ("tablet",)
+    active = _ACTIVE if objects.get("split") else ("tablet",)
     for n in active:
         if objects[n].pos[2] < TOP - 0.03:
             out.append(f"the {n.replace('_', ' ')} left the table")
-    for n, lo, hi in (("tablet", TAB_LO, TAB_HI), ("half_a", HALF_LO, HALF_HI), ("half_b", HALF_LO, HALF_HI)):
-        if n == "tablet" and objects.get("split"):
-            continue
-        if n != "tablet" and not objects.get("split"):
-            continue
+    parts = [("tablet", TAB_LO, TAB_HI)] if not objects.get("split") else [(n, *_half_geom(n)) for n in _ACTIVE]
+    for n, lo, hi in parts:
         if _pad_inside(objects, n, lo, hi):
             out.append(f"a gripper pad is inside the {n.replace('_', ' ')}")
     return out
 
 
 def trace_line(objects) -> str:
-    cups = {n: half_cup(objects, n) for n in ("half_a", "half_b")}
+    cups = {n: half_cup(objects, n) for n in _ACTIVE}
     t = objects["tablet"]
-    return (f"lid {objects.get('lid_deg', float('nan')):.1f} deg, cut {bool(objects.get('split'))}, tablet at "
-            f"{(np.array(t.pos) - SP_POS)[0] * 1000:.1f},{(np.array(t.pos) - SP_POS)[1] * 1000:.1f},"
-            f"{(np.array(t.pos) - SP_POS)[2] * 1000:.1f} mm from the cradle, halves in {cups['half_a']}/{cups['half_b']}")
+    force = objects.get("blade_force", 0.0)
+    edge = objects.get("blade_edge_mm", 0.0)
+    return (f"lid {objects.get('lid_deg', float('nan')):.1f} deg, cut {bool(objects.get('split'))}, "
+            f"blade F {force:.1f} N, edge {edge:.1f} mm, "
+            f"tablet at {(np.array(t.pos) - SP_POS)[0] * 1000:.1f},{(np.array(t.pos) - SP_POS)[1] * 1000:.1f},"
+            f"{(np.array(t.pos) - SP_POS)[2] * 1000:.1f} mm from the cradle, "
+            f"halves in {cups[_ACTIVE[0]]}/{cups[_ACTIVE[1]]}")
 
 
 # -- scoring (shared machinery) ---------------------------------------------------------------------------------------
@@ -519,7 +778,7 @@ def pads_near(objects, name: str, lo, hi, margin: float) -> bool:
 
 
 def _poses(objects) -> tuple:
-    return tuple((np.array(objects[n].pos, float), np.array(objects[n].quat_xyzw, float)) for n in MOVERS)
+    return tuple((np.array(objects[n].pos, float), np.array(objects[n].quat_xyzw, float)) for n in ("tablet", *_ACTIVE))
 
 
 def still(objects, anchor) -> bool:
@@ -603,7 +862,7 @@ def steps_done(objects) -> list[bool]:
 def _violation(objects) -> bool:
     """Scores 0: any rule event this episode (kept for the whole run), or a state that is not finite. Reads the
     episode's progress without updating it."""
-    values = [v for n in MOVERS for v in objects[n].pos]
+    values = [v for n in ("tablet", *_ACTIVE) for v in objects[n].pos]
     if not np.all(np.isfinite(values)):
         return True
     return bool(_PROGRESS.events)
@@ -639,7 +898,8 @@ def score(objects) -> float:
 _X, _Y, _Z = np.eye(3)
 _grip = yam_demo.grip_rotation
 SQUEEZE = 0.008  # the fin: close the fingers this far inside its 6 mm width (about 15 N a finger; the lid needs it)
-TAB_SQUEEZE = 0.001  # the caplet and halves: about 2.5 N a finger; 20 N ejected the 1.8 g caplet on PhysX
+TAB_SQUEEZE = 0.001  # the caplet: about 2.5 N a finger; 20 N ejected the 1.8 g caplet on PhysX
+HALF_SQUEEZE = 0.0005  # the 0.9 g halves: about 1.25 N a finger, 0.25 mm inside each face (below the 0.5 mm pad latch)
 
 
 def _hold(width: float, squeeze: float = SQUEEZE) -> float:
@@ -685,13 +945,19 @@ def _to_cup(cup: str):
     return np.array([*CUPS[cup], 0.0])
 
 
-def _fin_swing(a0: float, a1: float, tilt: float, step: float, secs: float, label: str):
-    """Waypoints that carry the held fin from lid angle ``a0`` to ``a1`` degrees (a waypoint every ``step`` degrees)."""
+def _fin_swing(a0: float, a1: float, tilt: float, step: float, secs: float, label: str, preload: float = 0.0):
+    """Waypoints that carry the held fin from lid angle ``a0`` to ``a1`` degrees (a waypoint every ``step`` degrees).
+    ``preload`` aims the TCP this far past the fin along the lid's closing tangent, so the arm presses instead of just
+    following; the pads still grip the 24 mm fin."""
     n = max(1, int(round(abs(a1 - a0) / step)))
     out = []
     for i in range(1, n + 1):
         deg = a0 + (a1 - a0) * i / n
         p, r = _lid_pose(deg, tilt)
+        if preload:
+            p_next, _ = _lid_pose(deg - 0.5, tilt)  # a half degree further shut: the closing tangent
+            t = p_next - p
+            p = p + preload * t / (np.linalg.norm(t) + 1e-12)
         out.append(Waypoint(secs, tuple(p), _hold(FIN_W), f"{label} ({deg:.0f} deg)", rot=r))
     return out
 
@@ -700,8 +966,9 @@ HIGH = 0.17  # m: the hand travels over the lid at this height above the table
 APPROACH = 0.035  # m: the gripper comes to the fin from this far back along its pointing axis
 
 
-def _fin_move(a0: float, a1: float, tilt: float, label: str, secs_per_8deg: float = 0.7):
-    """Pinch the fin of a lid at ``a0`` with the grip ``tilt``, carry it to ``a1`` and let go."""
+def _fin_move(a0: float, a1: float, tilt: float, label: str, secs_per_8deg: float = 0.7, preload: float = 0.0):
+    """Pinch the fin of a lid at ``a0`` with the grip ``tilt``, carry it to ``a1`` and let go. ``preload`` presses past
+    the fin along the closing tangent (used for the blade's resistance)."""
     p, r = _lid_pose(a0, tilt)
     back = r[:, 2]
     app = p - APPROACH * back
@@ -712,7 +979,7 @@ def _fin_move(a0: float, a1: float, tilt: float, label: str, secs_per_8deg: floa
         Waypoint(0.8, tuple(p), _hold(FIN_W), "grip the fin", rot=r),
         Waypoint(0.4, tuple(p), _hold(FIN_W), "hold", rot=r),
     ]
-    wps += _fin_swing(a0, a1, tilt, 8.0, secs_per_8deg, label)
+    wps += _fin_swing(a0, a1, tilt, 8.0, secs_per_8deg, label, preload)
     p2, r2 = _lid_pose(a1, tilt)
     wps += [
         Waypoint(1.5 if a1 > 90.0 else 0.6, tuple(p2), _hold(FIN_W), "hold", rot=r2),
@@ -744,7 +1011,9 @@ def left_plan() -> list[Waypoint]:
     wps.append(Waypoint(1.2, tuple(place + (0, 0, HIGH - 0.02)), _open(TAB_W, 0.006), "up over the splitter", rot=rot))
     # 2. the lid shut by its fin (the cut): carried to MID_DEG with one wrist angle, then taken again for the rest
     wps += _fin_move(OPEN_DEG, MID_DEG, 115.0, "pull the lid down")
-    wps += _fin_move(MID_DEG, 0.0, 95.0, "pull the lid shut")
+    # The last 50 degrees cross the blade's 0.56 N m resistance. A slower swing keeps the open-loop fin target within a
+    # few degrees of the lid so the pads stay on the fin while the arm applies 8.24 N.
+    wps += _fin_move(MID_DEG, 0.0, 95.0, "pull the lid shut", secs_per_8deg=2.0)
     # 3. the lid opened again by its fin
     wps += _fin_move(0.0, MID_DEG, 90.0, "swing the lid up")
     wps += _fin_move(MID_DEG, OPEN_DEG + 3.0, 115.0, "swing the lid open")
@@ -760,11 +1029,11 @@ def left_plan() -> list[Waypoint]:
         wps += [
             Waypoint(2.5, pick + (0, 0, HOVER), _open(TAB_W, 0.020), f"over the half ({cup} cup)", rot=rot),
             Waypoint(1.5, pick, _open(TAB_W, 0.020), "pads beside the half", rot=rot),
-            Waypoint(0.8, pick, _hold(TAB_W, TAB_SQUEEZE), "grip the half", rot=rot),
-            Waypoint(0.4, pick, _hold(TAB_W, TAB_SQUEEZE), "hold", rot=rot),
-            Waypoint(1.2, pick + (0, 0, 0.04), _hold(TAB_W, TAB_SQUEEZE), "lift", rot=rot),
-            Waypoint(2.5, drop + (0, 0, 0.06), _hold(TAB_W, TAB_SQUEEZE), "over the cup", rot=rot),
-            Waypoint(1.5, drop, _hold(TAB_W, TAB_SQUEEZE), "down into the cup", rot=rot),
+            Waypoint(0.8, pick, _hold(TAB_W, HALF_SQUEEZE), "grip the half", rot=rot),
+            Waypoint(0.4, pick, _hold(TAB_W, HALF_SQUEEZE), "hold", rot=rot),
+            Waypoint(1.2, pick + (0, 0, 0.04), _hold(TAB_W, HALF_SQUEEZE), "lift", rot=rot),
+            Waypoint(2.5, drop + (0, 0, 0.06), _hold(TAB_W, HALF_SQUEEZE), "over the cup", rot=rot),
+            Waypoint(1.5, drop, _hold(TAB_W, HALF_SQUEEZE), "down into the cup", rot=rot),
             Waypoint(0.6, drop, _open(TAB_W, 0.010), "let go", rot=rot),
             Waypoint(1.0, drop + (0, 0, 0.07), _open(TAB_W, 0.010), "lift away", rot=rot),
         ]

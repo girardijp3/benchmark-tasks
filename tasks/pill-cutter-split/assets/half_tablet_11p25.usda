@@ -1,0 +1,60 @@
+#usda 1.0
+(
+    defaultPrim = "HalfTablet11p25"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "HalfTablet11p25" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A 11.25 x 9 x 7.5 mm piece of a scored white caplet, 1.0125 g. Origin at its centre."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (1.5424805e-8, 1.1580469e-8, 1.7513086e-8)
+    float physics:mass = 0.0010125
+
+    def Scope "Looks"
+    {
+        def Material "Phys_tab" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.5
+            float physics:restitution = 0
+            float physics:staticFriction = 0.6
+        }
+
+        def Material "m959489"
+        {
+            token outputs:surface.connect = </HalfTablet11p25/Looks/m959489/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.96, 0.95, 0.9)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Box1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </HalfTablet11p25/Looks/m959489>
+        rel material:binding:physics = </HalfTablet11p25/Looks/Phys_tab> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.009, 0.01125, 0.0075)
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

@@ -206,6 +206,8 @@ OPEN_DEG = 95.0
 LID_MASS = 0.012
 DAMP = 0.6  # N m s/rad: hinge friction
 D_DEG = DAMP * math.pi / 180
+K_RESIST = 20.0  # N m/rad: the hinge drive's stiffness, used by the task's blade-resistance spring
+K_DEG = K_RESIST * math.pi / 180
 
 
 def splitter():
@@ -234,12 +236,25 @@ def splitter():
         a.box((40 * MM, sy, 6 * MM), (80 * MM, 1.5 * MM, 12 * MM), rgb=lid_c, collide=fr, key="abs", name="LidRail")
     a.box((78.5 * MM, 0, 6 * MM), (3 * MM, 37 * MM, 12 * MM), rgb=lid_c, collide=fr, key="abs", name="LidFront")
     a.box((1.5 * MM, 0, 6 * MM), (3 * MM, 37 * MM, 12 * MM), rgb=lid_c, collide=fr, key="abs", name="LidBack")
-    a.box((68 * MM, 0, 27 * MM), (14 * MM, 6 * MM, 24 * MM), rgb=tab_c, collide=fr, key="abs", name="Fin")
-    a.box((40 * MM, 0, 3 * MM), (16 * MM, 0.8 * MM, 18 * MM), rgb=steel, name="Blade")  # blade (visual)
+    # Pull fin: a 14 x 6.0 x 24 mm rubber-covered fin (one box, static/dynamic 2.5/2.0; a tacky silicone overmold).
+    # The outer width stays the real 6.0 mm, so the demo's 8 mm squeeze and its 14-15 N a finger are unchanged, and the
+    # pinch carries the 8.24 N the blade resistance needs. One box (not thin faces) keeps PhysX's contact cost low.
+    a.box((68 * MM, 0, 27 * MM), (14 * MM, 6.0 * MM, 24 * MM), rgb=(0.08, 0.08, 0.08), collide=(2.5, 2.0),
+          key="rubber", name="Fin")
+    a.box((40 * MM, 0, 2.5 * MM), (16 * MM, 0.8 * MM, 19 * MM), rgb=steel, name="Blade")  # blade (visual, edge 7 mm below the lid plane)
     # Pass-through collider for the blade: only the part above the caplet's top when the caplet is in the V cradle
     # (table z 15.5 mm = lid-frame z 4.5 mm with the lid shut), so it never touches the caplet or the halves. The
     # lower 11 mm of the visible blade is the cutting edge that enters the caplet at the cut, left to the declared cut.
     a.box((40 * MM, 0, 8.5 * MM), (16 * MM, 0.8 * MM, 7 * MM), collide=fr, key="abs", name="BladeCollider")
+    # Blade shroud: a 0.6 mm PETG U-cover around the blade's upper 7 mm (lid-frame z 5-12 mm, table z 16-23 mm with
+    # the lid shut), open only at the cutting edge below z 5 mm. Its inner walls stand 0.3 mm off the blade faces and
+    # its lower edge is 0.5 mm above a caplet seated in the cradle, so a gripper pad meets the shroud, never the blade.
+    petg = (0.55, 0.75, 0.9)
+    a.box((40 * MM, 1.0 * MM, 8.5 * MM), (16 * MM, 0.6 * MM, 7 * MM), rgb=petg, collide=fr, key="abs", name="ShroudL")
+    a.box((40 * MM, -1.0 * MM, 8.5 * MM), (16 * MM, 0.6 * MM, 7 * MM), rgb=petg, collide=fr, key="abs", name="ShroudR")
+    a.box((40 * MM, 0, 12.3 * MM), (16 * MM, 2.6 * MM, 0.6 * MM), rgb=petg, collide=fr, key="abs", name="ShroudTop")
+    a.box((32.3 * MM, 0, 8.5 * MM), (0.6 * MM, 2.6 * MM, 7 * MM), rgb=petg, collide=fr, key="abs", name="ShroudEndA")
+    a.box((47.7 * MM, 0, 8.5 * MM), (0.6 * MM, 2.6 * MM, 7 * MM), rgb=petg, collide=fr, key="abs", name="ShroudEndB")
     j = UsdPhysics.RevoluteJoint.Define(a.stage, "/PillCutter/Hinge")
     j.CreateBody0Rel().SetTargets(["/PillCutter/Base"])
     j.CreateBody1Rel().SetTargets(["/PillCutter/Lid"])
@@ -252,7 +267,7 @@ def splitter():
     j.CreateUpperLimitAttr(1.0)
     d = UsdPhysics.DriveAPI.Apply(j.GetPrim(), "angular")
     d.CreateTypeAttr("force")
-    d.CreateStiffnessAttr(0.0)
+    d.CreateStiffnessAttr(K_DEG)  # 20 N m/rad; the task writes the target every step (blade resistance)
     d.CreateDampingAttr(D_DEG)
     d.CreateTargetPositionAttr(0.0)
     j.GetPrim().SetMetadata("documentation", "Lid hinge: 0 shut (lid away from the robot), negative opens up and back toward the robot, stop at -95 deg.")
@@ -322,6 +337,11 @@ if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
     splitter()
     tablet("tablet.usda", "Tablet", TAB_L, TAB_MASS, True)
-    tablet("half_tablet.usda", "HalfTablet", TAB_L / 2, TAB_MASS / 2, False)
+    # The equal halves plus the four asymmetric lengths the cut can leave (the cut is at the blade plane, so a tablet
+    # placed 2.5 mm along the cradle makes 7.5 and 12.5 mm halves; 8.75/11.25 cover 1.25 mm). Mass is proportional
+    # to the length: the same 1.8 g over 20 mm, so 7.5 mm is 0.675 g and 12.5 mm is 1.125 g.
+    for length_mm in (7.5, 8.75, 10.0, 11.25, 12.5):
+        name = f"{length_mm:g}".replace(".", "p")
+        tablet(f"half_tablet_{name}.usda", f"HalfTablet{name}", length_mm * MM, TAB_MASS * length_mm / 20.0, False)
     tray()
     dish()

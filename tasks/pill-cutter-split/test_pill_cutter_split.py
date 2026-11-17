@@ -19,8 +19,8 @@ T = TASK.module
 SEAT = np.array([*T.SP_XY, T.TOP + T.SEAT_Z + 0.0004])
 START = {
     "tablet": (np.array([*T.TB_XY, T.TABLET_Z]), np.array([0.0, 0.0, 0.0, 1.0])),
-    "half_a": (np.array(T.PARK), np.array([0.0, 0.0, 0.0, 1.0])),
-    "half_b": (np.array([T.PARK[0] + 0.05, T.PARK[1], T.PARK[2]]), np.array([0.0, 0.0, 0.0, 1.0])),
+    "half_10": (np.array(T.PARK), np.array([0.0, 0.0, 0.0, 1.0])),
+    "half_10b": (np.array([T.PARK[0] + 0.05, T.PARK[1], T.PARK[2]]), np.array([0.0, 0.0, 0.0, 1.0])),
 }
 
 
@@ -30,7 +30,7 @@ def _in_cup(cup, dx=0.0):
 
 
 SOLVED = {"tablet": (np.array([T.PARK[0] - 0.05, T.PARK[1], 0.004]), np.array([0.0, 0.0, 0.0, 1.0])),
-          "half_a": _in_cup("orange"), "half_b": _in_cup("blue")}
+          "half_10": _in_cup("orange"), "half_10b": _in_cup("blue")}
 NEAR_TCP = np.array([*T.CUPS["orange"], T.TOP + T.TRAY_T + 0.03])
 IDENT = np.array([0.0, 0.0, 0.0, 1.0])
 
@@ -41,8 +41,8 @@ def _off(name):
 
 
 RULE_CASES = [
-    lambda e: {"half_a": _off("half_a")},  # a half falls off the table
-    lambda e: {"half_b": _off("half_b")},
+    lambda e: {"half_10": _off("half_10")},  # a half falls off the table
+    lambda e: {"half_10b": _off("half_10b")},
 ]
 
 
@@ -55,7 +55,11 @@ IDENT = np.array([0.0, 0.0, 0.0, 1.0])
 @pytest.fixture(autouse=True)
 def fresh_episode():
     T._PROGRESS.__init__()
+    T._ACTIVE = ("half_10", "half_10b")
+    T._ACTIVE_MASS = {"half_10": 0.0009, "half_10b": 0.0009}
     yield
+    T._ACTIVE = ("half_10", "half_10b")
+    T._ACTIVE_MASS = {"half_10": 0.0009, "half_10b": 0.0009}
 
 
 def _gripper(tcp, contact=0.0, opening=0.09, axis=DOWN, closing=None):
@@ -196,7 +200,8 @@ class Episode(Episode):  # noqa: F811
 
     def objects(self):
         out = super().objects()
-        out.update(lid_deg=self.lid, split=self.split)
+        out.update(lid_deg=self.lid, split=self.split, cut_off_mm=getattr(self, 'cut_off_mm', 0.0),
+                   blade_force=getattr(self, 'blade_force', 0.0), blade_edge_mm=getattr(self, 'blade_edge_mm', 0.0))
         return out
 
     def step(self, seconds=0.05, **changes):
@@ -240,7 +245,7 @@ def test_a_tablet_within_tolerance_is_in_the_cradle():
 def test_the_cut_is_step_two_and_the_lid_must_open_for_step_three():
     e = Episode()
     e.step(0.2, tablet=_seat())
-    e.step(0.2, split=True, lid=1.0, tablet=SOLVED["tablet"], half_a=_seat((0, -0.0075, 0)), half_b=_seat((0, 0.0075, 0)))
+    e.step(0.2, split=True, lid=1.0, tablet=SOLVED["tablet"], half_10=_seat((0, -0.0075, 0)), half_10b=_seat((0, 0.0075, 0)))
     assert e.done()[:2] == [True, True] and e.done()[2] is False
     e.step(0.2, lid=60.0)
     assert e.done()[2] is False
@@ -250,20 +255,20 @@ def test_the_cut_is_step_two_and_the_lid_must_open_for_step_three():
 
 def test_both_halves_in_one_cup_is_not_a_step():
     e = Episode(SOLVED)
-    e.step(0.3, half_b=_in_cup("orange", dx=0.006))
+    e.step(0.3, half_10b=_in_cup("orange", dx=0.006))
     assert e.done()[3] is False and e.step(2.0)[0] < 1.0
 
 
 def test_one_half_only_in_a_cup_is_not_a_step():
     e = Episode(SOLVED)
-    e.step(0.3, half_b=(np.array([T.SP_XY[0], T.SP_XY[1], T.TOP + 0.014]), IDENT))
+    e.step(0.3, half_10b=(np.array([T.SP_XY[0], T.SP_XY[1], T.TOP + 0.014]), IDENT))
     assert e.done()[3] is False
 
 
 def test_halves_beside_the_cup_are_not_in_it():
     e = Episode(SOLVED)
     cx, cy = T.CUPS["blue"]
-    e.step(0.3, half_b=(np.array([cx + 0.021, cy, T.TOP + T.TRAY_T + 0.004]), IDENT))
+    e.step(0.3, half_10b=(np.array([cx + 0.021, cy, T.TOP + T.TRAY_T + 0.004]), IDENT))
     assert e.done()[3] is False
 
 
@@ -373,3 +378,83 @@ def test_a_pad_inside_the_caplet_is_a_rule_event():
     e.step(0.2, tablet=_seat())
     e.step(0.1, left=_grip_at_caplet(0.001))  # a 4 mm-deep pad penetration
     assert e.step(0.1)[0] == 0.0
+
+
+# -- the force gate, the blade-position cut and the balanced-halves check (2026-11-16 revision) ------------------------
+def test_the_blade_force_gate_is_within_the_measured_range():
+    """UW-Madison BME / RERC Table 1: 5.6-22.2 N at the handle, 12-48 N at the pill. The task's peak is 14.0 N at the
+    blade / 8.24 N at the fin, inside that range, and not below its 12 N bottom."""
+    assert 12.0 <= T.F_PILL_CUT <= 48.0
+    assert 5.6 <= T.F_FIN_CUT <= 22.2
+    assert abs(T.F_FIN_CUT - T.F_PILL_CUT * T.BLADE_LEVER / T.FIN_LEVER) < 1e-9
+    assert abs(T.TAU_CUT - T.F_PILL_CUT * T.BLADE_LEVER) < 1e-9
+
+
+def test_the_force_profile_peaks_at_engagement_and_drops_at_the_cut():
+    assert T.blade_resistance_n(T.ENGAGE_DEG) == pytest.approx(T.F_FIN_CUT)
+    assert T.blade_resistance_n(T.CUT_EDGE_DEG) == pytest.approx(0.3 * T.F_FIN_CUT)
+    assert T.blade_resistance_n(0.0) == pytest.approx(0.3 * T.F_FIN_CUT)
+
+
+def test_the_blade_cut_edge_crosses_the_tablet_bottom():
+    top = T.blade_edge(T.ENGAGE_DEG)[2] - T.SP_POS[2]
+    bottom = T.blade_edge(T.CUT_EDGE_DEG)[2] - T.SP_POS[2]
+    assert T.SEAT_Z + T.TAB_T / 2 - 0.0003 <= top <= T.SEAT_Z + T.TAB_T / 2 + 0.0005  # the edge reaches the top
+    assert T.SEAT_Z - T.TAB_T / 2 - 0.0002 <= bottom <= T.SEAT_Z - T.TAB_T / 2 + 0.0002  # and the underside at the cut
+    assert T.blade_edge(T.ENGAGE_DEG)[2] > T.blade_edge(T.CUT_EDGE_DEG)[2]
+
+
+def test_a_2p5_mm_offset_makes_7p5_and_12p5_mm_halves():
+    """The blade plane (y = SP_Y) cuts the 20 mm tablet at the actual placement: a 2.5 mm offset leaves 7.5 and 12.5 mm,
+    so the halves are not two equal 10 mm stand-ins."""
+    pos = np.array([T.SP_XY[0], T.SP_XY[1] + 0.0025, T.TOP + T.SEAT_Z + 0.0004])
+    plane = np.array([T.SP_XY[0], T.SP_XY[1], T.TOP])
+    far = T.clip_volume_fraction(pos, np.eye(3), (T.TAB_W / 2, T.TAB_L / 2, T.TAB_T / 2), plane, np.array([0.0, 1.0, 0.0]))
+    near = 1.0 - far
+    assert far == pytest.approx(0.625, abs=0.002)
+    assert near == pytest.approx(0.375, abs=0.002)
+    assert T.HALF_NAMES[0.0075] == "half_75" and T.HALF_NAMES_B[0.0125] == "half_125"
+    assert T.HALF_MASS[0.0075] == pytest.approx(0.000675) and T.HALF_MASS[0.0125] == pytest.approx(0.001125)
+    assert T.TAB_MASS * near == pytest.approx(0.000675, abs=0.00001)
+
+
+def test_a_2p5_mm_cut_fails_the_balanced_halves_step():
+    T._ACTIVE = ("half_75", "half_125")
+    T._ACTIVE_MASS = {"half_75": 0.000675, "half_125": 0.001125}
+    poses = {"tablet": (np.array([T.PARK[0] - 0.05, T.PARK[1], 0.004]), IDENT),
+             "half_75": _in_cup("orange"), "half_125": _in_cup("blue")}
+    e = Episode(poses, split=True)
+    e.cut_off_mm = 2.5
+    assert e.done()[3] is False
+    assert T.dose_ok() is False and T.cut_line_ok(e.objects()) is False
+    assert e.step(1.5)[0] == 0.6  # the three steps before the balanced-halves step
+
+
+def test_a_balanced_cut_passes_the_step():
+    T._ACTIVE = ("half_10", "half_10b")
+    T._ACTIVE_MASS = {"half_10": 0.0009, "half_10b": 0.0009}
+    e = Episode(SOLVED)
+    e.cut_off_mm = 0.9
+    assert e.done()[3] is True and T.dose_ok() is True and T.cut_line_ok(e.objects()) is True
+    e.cut_off_mm = 1.1
+    assert e.done()[3] is False
+
+
+def test_the_shroud_covers_the_blade_above_a_seated_tablet():
+    """The 0.6 mm PETG shroud's lower edge is at lid z 5 mm (table 16 mm with the lid shut), 0.5 mm above the seated
+    tablet's 15.5 mm top; its inner walls are 0.3 mm off the blade faces and it spans x 32-48 mm. A pad meets it, not
+    the blade."""
+    text = (HERE / "assets" / "pill_cutter.usda").read_text()
+    for name in ("ShroudL", "ShroudR", "ShroudTop", "ShroudEndA", "ShroudEndB"):
+        assert f'def Cube "{name}' in text
+    assert "float3 xformOp:scale = (0.016, 0.0006, 0.007)" in text
+    assert "double3 xformOp:translate = (0.04, 0.001, 0.0085)" in text
+    assert "double3 xformOp:translate = (0.04, -0.001, 0.0085)" in text
+
+
+def test_the_fin_keeps_its_real_six_mm_width_and_the_grips_are_unchanged():
+    """The fin is one 14 x 6 x 24 mm rubber-covered box: the real 6.0 mm across the pads; the fin squeeze (8 mm) and the
+    caplet squeeze (1 mm) are the same as before."""
+    text = (HERE / "assets" / "pill_cutter.usda").read_text()
+    assert "float3 xformOp:scale = (0.014, 0.006, 0.024)" in text  # one 6.0 mm fin
+    assert T.FIN_W == 0.006 and T.SQUEEZE == 0.008 and T.TAB_SQUEEZE == 0.001

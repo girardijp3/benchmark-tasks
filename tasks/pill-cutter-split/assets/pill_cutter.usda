@@ -77,14 +77,23 @@ def Xform "PillCutter" (
             }
         }
 
-        def Material "m143961"
+        def Material "Phys_rubber" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
         {
-            token outputs:surface.connect = </PillCutter/Looks/m143961/PreviewSurface.outputs:surface>
+            float physics:dynamicFriction = 2
+            float physics:restitution = 0
+            float physics:staticFriction = 2.5
+        }
+
+        def Material "m070707"
+        {
+            token outputs:surface.connect = </PillCutter/Looks/m070707/PreviewSurface.outputs:surface>
 
             def Shader "PreviewSurface"
             {
                 uniform token info:id = "UsdPreviewSurface"
-                color3f inputs:diffuseColor = (0.15, 0.4, 0.62)
+                color3f inputs:diffuseColor = (0.08, 0.08, 0.08)
                 float inputs:metallic = 0
                 float inputs:roughness = 0.6
                 token outputs:surface
@@ -99,6 +108,20 @@ def Xform "PillCutter" (
             {
                 uniform token info:id = "UsdPreviewSurface"
                 color3f inputs:diffuseColor = (0.72, 0.74, 0.78)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m547489"
+        {
+            token outputs:surface.connect = </PillCutter/Looks/m547489/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.55, 0.75, 0.9)
                 float inputs:metallic = 0
                 float inputs:roughness = 0.6
                 token outputs:surface
@@ -302,8 +325,8 @@ def Xform "PillCutter" (
             prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
         )
         {
-            rel material:binding = </PillCutter/Looks/m143961>
-            rel material:binding:physics = </PillCutter/Looks/Phys_abs> (
+            rel material:binding = </PillCutter/Looks/m070707>
+            rel material:binding:physics = </PillCutter/Looks/Phys_rubber> (
                 bindMaterialAs = "weakerThanDescendants"
             )
             custom float physxCollision:contactOffset = 0.001
@@ -320,8 +343,8 @@ def Xform "PillCutter" (
         {
             rel material:binding = </PillCutter/Looks/m717377>
             double size = 1
-            float3 xformOp:scale = (0.016, 0.0008, 0.018)
-            double3 xformOp:translate = (0.04, 0, 0.003)
+            float3 xformOp:scale = (0.016, 0.0008, 0.019)
+            double3 xformOp:translate = (0.04, 0, 0.0025)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
         }
 
@@ -340,6 +363,86 @@ def Xform "PillCutter" (
             double3 xformOp:translate = (0.04, 0, 0.0085)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
         }
+
+        def Cube "ShroudL16" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </PillCutter/Looks/m547489>
+            rel material:binding:physics = </PillCutter/Looks/Phys_abs> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.016, 0.0006, 0.007)
+            double3 xformOp:translate = (0.04, 0.001, 0.0085)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "ShroudR17" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </PillCutter/Looks/m547489>
+            rel material:binding:physics = </PillCutter/Looks/Phys_abs> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.016, 0.0006, 0.007)
+            double3 xformOp:translate = (0.04, -0.001, 0.0085)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "ShroudTop18" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </PillCutter/Looks/m547489>
+            rel material:binding:physics = </PillCutter/Looks/Phys_abs> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.016, 0.0026, 0.0006)
+            double3 xformOp:translate = (0.04, 0, 0.0123)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "ShroudEndA19" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </PillCutter/Looks/m547489>
+            rel material:binding:physics = </PillCutter/Looks/Phys_abs> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.0006, 0.0026, 0.007)
+            double3 xformOp:translate = (0.032299999999999995, 0, 0.0085)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "ShroudEndB20" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </PillCutter/Looks/m547489>
+            rel material:binding:physics = </PillCutter/Looks/Phys_abs> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.0006, 0.0026, 0.007)
+            double3 xformOp:translate = (0.047700000000000006, 0, 0.0085)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
     }
 
     def PhysicsRevoluteJoint "Hinge" (
@@ -348,7 +451,7 @@ def Xform "PillCutter" (
     )
     {
         float drive:angular:physics:damping = 0.010471975
-        float drive:angular:physics:stiffness = 0
+        float drive:angular:physics:stiffness = 0.34906584
         float drive:angular:physics:targetPosition = 0
         uniform token drive:angular:physics:type = "force"
         uniform token physics:axis = "Y"

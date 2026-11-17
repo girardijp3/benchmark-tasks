@@ -1,24 +1,26 @@
 # Split a scored tablet in a pill cutter and put one half in each of two medicine cups
 
-A one-arm task on a care-home med pass and in a pharmacy's unit-dose packing. Pharmacy technicians (SOC 29-2052, about 0.46M)
-split scored tablets when packing unit-dose cards; nursing assistants (SOC 31-1131, about 1.4M) split them at the med cart. The
-scored tablet goes in the V cradle of a pill cutter, the lid is shut so the blade splits it along the score line, the lid is opened
-again and the halves are set out for two doses. Here a 20 x 9 x 7.5 mm caplet (1.8 g) lies in a pill dish; an 80 x 40 mm pill
-splitter with its lid open (95 degrees, past upright, so it stays open) stands beside it; a dosing tray with two 30 mL medicine cups
-(orange and blue) stands beyond.
+Household medication preparation: an older adult or a family carer lays a scored tablet in the V of a cheap plastic
+pill cutter, presses the lid down so the blade cuts it on the score line, and puts the two halves into separate cups.
+Splitting a scored tablet to take half a prescribed dose is a familiar kitchen-table task for people managing their
+own or a relative's prescriptions; the cut is the hard part, because the blade meets the tablet at **12-48 N** and a
+light touch stalls on it instead of cutting. (The task is **Societal relatability**, not a jobs population count.)
 
-- The caplet goes into the cradle with its score line at the blade.
-- The lid is shut by its pull fin, which cuts the caplet, and opened again by the fin.
-- One half goes in each cup and the hand moves clear.
+- The tablet goes into the cradle with its score line at the blade.
+- The lid is pulled shut by its fin, which cuts the tablet only after the blade's real resistance is overcome; the lid
+  is opened again by the fin.
+- One half goes in each cup, and the halves must be balanced (each 40-60% of the tablet).
 
 | File | What it is |
 |---|---|
-| `pill_cutter_split.py` | The `yam_arena` task file: scene, the cut event, step scoring (`success`, `score`, `steps_done`) and the scripted `demo()` |
-| `assets/pill_cutter.usda` | Splitter: fixed base with the V cradle, lid on a revolute hinge (one articulation) |
-| `assets/tablet.usda`, `assets/half_tablet.usda` | The whole caplet and one half (rigid bodies) |
+| `pill_cutter_split.py` | The `yam_arena` task file: scene, force-gated blade cut, step scoring (`success`, `score`, `steps_done`) and the scripted `demo()` |
+| `assets/pill_cutter.usda` | Splitter: fixed base with the V cradle, lid on a revolute hinge (one articulation), blade shroud and rubber fin grip |
+| `assets/tablet.usda`, `assets/half_tablet_7p5.usda` ... `half_tablet_12p5.usda` | The whole tablet and the five half lengths the cut can leave |
 | `assets/pill_dish.usda`, `assets/cup_tray.usda` | The dish with a centring pocket and the tray with two cups (fixtures) |
 | `build_assets.py` | Writes the USD files with pxr (boxes, prisms, cylinders) |
-| `test_pill_cutter_split.py` | Offline checks: the file loads, every scoring outcome, the 1 s timing, the cradle test, reach (no GPU, no network) |
+| `test_pill_cutter_split.py` | Offline checks: load, every scoring outcome, the force gate, the blade-edge cut, the 2.5 mm unequal-halves case, the shroud, the 1 s timing, reach (no GPU, no network) |
+| `REAL_TRIAL.md` | The inert 20 mm scored tablet/surrogate, batch force check, half weighing, pad shield and residue rule |
+| `pad_shield.scad` | The 0.6 mm PETG U-clip for the shared gripper pads |
 | `task.json` | The task's details for the board |
 
 ## Assets
@@ -26,31 +28,43 @@ splitter with its lid open (95 degrees, past upright, so it stays open) stands b
 Created for this task by its authors, licensed [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/). Units are metres and
 kilograms, Z up.
 
-- **Pill cutter** (`pill_cutter.usda`): a typical plastic splitter. Base 80 x 40 x 11 mm with a V cradle along y (20 mm wide at the
-  rim, 5.5 mm deep) built from two convex prisms. Lid 80 x 40 mm with a 12 mm clearance under its top plate, side rails that rest on
-  the base, a blade over the cradle's middle and a 24 x 14 x 6 mm pull fin standing near its free edge. Hinge on the
-  robot's side at the rim height: revolute about y, 0 shut, 95 degrees open (stop; past upright, so gravity holds it there),
-  0.6 N m s/rad of friction (a damped drive), lid 12 g, base 22 g, 30 g in all (typical of a plastic splitter). The base is the
-  articulation's fixed root. The blade's visual is 16 x 0.8 x 18 mm; a **pass-through collider** covers its upper 7 mm (lid-frame
-  z 5 to 12 mm, table z 16 to 23 mm with the lid shut), above the caplet's 15.5 mm top in the cradle, so the arm cannot pass
-  through the blade and the collider cannot push the caplet or the halves at the cut. The lower 11 mm is the cutting edge that
-  enters the caplet at the cut; it is left to the declared cut (the caplet is replaced, not crushed).
-- **Caplet** (`tablet.usda`): 20 x 9 x 7.5 mm, 1.8 g, a score line across the middle. **Half** (`half_tablet.usda`): 10 x 9 x 7.5
-  mm, 0.9 g. A 1000 mg caplet is typically 19-22 mm long.
-- **Dish** (`pill_dish.usda`): a 40 x 26 x 3 mm plate with an oblong pocket (11 x 21.5 mm, 2 mm deep, 2 mm chamfer) so the caplet
-  rests centred, like a pill tray's cell. **Tray** (`cup_tray.usda`): a 56 x 120 x 4 mm tray holding two 30 mL medicine cups (38 mm
-  inside, 30 mm tall, 14 wall segments each), 60 mm apart.
-- **The cut** is declared task code: every control step, if the lid is within 3 degrees of shut and the whole caplet lies in the
-  cradle (middle within 2.5 mm of the blade and the cradle's line, at its seat height, length along the cradle within 8
-  degrees, level within 8 degrees), the caplet is replaced by its two halves, 5 mm apart on the cradle's walls (the blade
-  wedges them apart), and the whole caplet is moved out of the way. The two halves wait out of the way until then.
-  **Blade cut force, sim vs real.** The blade is not simulated and the sim scores no cut force. Real, measured on a standard
-  hand-held pill cutter [UW-Madison BME design report, RERC FINAL, Table 1](https://bmedesign.engr.wisc.edu/projects/f07/pill_cap/file/view/7d95bd6b-2a10-43ae-a018-34a0a2f14d2b/RERC_FINAL.pdf): **1.25-5 lbf (5.6-22.2 N) applied at the
-  handle, giving 2.71-10.8 lbf (12-48 N) at the pill**; the average was 7.37 lbf (32.8 N) at the pill. The demo's fin grip
-  is about 14-15 N (3.1-3.4 lbf) a finger, inside that measured applied range; through this splitter's 1.7:1 lever (fin
-  68 mm, blade 40 mm) that is about 24-26 N at the pill, inside the measured 12-48 N. The sim's cut is gated on the lid
-  angle and the caplet seated, not on the blade force; the cut force is stated here and is not reduced. A separate 9.1 mm
-  scored tablet hardness of 47 N (nebivolol 5 mg, 3.13 mm thick, [PMC8720793](https://pmc.ncbi.nlm.nih.gov/articles/PMC8720793/)) is consistent with the top of that range.
+- **Pill cutter** (`pill_cutter.usda`): a typical plastic splitter. Base 80 x 40 x 11 mm with a V cradle along y (20 mm wide at
+  the rim, 5.5 mm deep). Lid 80 x 40 mm with a 12 mm clearance under its top plate, side rails, a blade over the cradle's
+  middle and a **24 mm tall, 6 mm thick rubber-covered pull fin** standing near its free edge. The fin is one 14 x 6 x
+  24 mm box with static/dynamic friction 2.5/2.0 (a tacky silicone overmold): the demo's 8 mm squeeze and 14-15 N a
+  finger are unchanged, and the pinch carries the blade's 8.24 N at the fin.
+  Hinge on the robot's side at the rim: revolute about y, 0 shut, 95 degrees open (stop), 0.6 N m s/rad damping and a
+  **20 N m/rad drive** used for the blade brake. Base 22 g, lid 12 g, 30 g in all. The base is the articulation's fixed root.
+- **Blade and shroud:** the blade's visual is 16 x 0.8 x 19 mm; its cutting edge is **7 mm below the lid plane** (table
+  z 4 mm with the lid shut, 4 mm below a seated tablet's underside). A **0.6 mm PETG shroud** encloses the blade's upper
+  7 mm (lid-frame z 5-12 mm, table z 16-23 mm with the lid shut): two side plates at y +/-0.7...1.3 mm (0.3 mm off the
+  blade faces), a top plate and two end plates. Its lower edge is 0.5 mm above a seated tablet's 15.5 mm top. The lower
+  12 mm (the cutting edge) is exposed only inside the V cradle, below the 11 mm rim, where the pads never go. A pad
+  meets the shroud, not the blade. The pass-through `BladeCollider` covers the same upper 7 mm; the lower edge is left to
+  the declared cut.
+- **Tablet** (`tablet.usda`): 20 x 9 x 7.5 mm, 1.8 g, a visual score line across the middle. **Halves:** 7.5, 8.75, 10,
+  10 (a second body), 11.25 and 12.5 mm long, masses proportional to length (0.675, 0.7875, 0.9, 0.9, 1.0125 and
+  1.125 g). A 2.5 mm placement offset therefore leaves real 7.5/12.5 mm bodies, not two 10 mm stand-ins.
+- **Dish** (`pill_dish.usda`): a 40 x 26 x 3 mm plate with an oblong pocket (11 x 21.5 mm, 2 mm deep, 2 mm chamfer).
+  **Tray** (`cup_tray.usda`): a 56 x 120 x 4 mm tray holding two 30 mL medicine cups (38 mm inside, 30 mm tall) 60 mm
+  apart.
+- **The cut is force-gated and geometric.** While the blade is in the tablet (lid **16.5 to 5.5 degrees**) the hinge
+  drive is a brake: the target is set `blade_resistance_n(lid)/20 rad` open of the current angle, so the drive reacts
+  with a peak **0.56 N m = 8.24 N at the fin = 14.0 N at the blade** (the real 40 mm blade / 68 mm fin 1.7:1 lever),
+  falling to **30% (2.47 N at the fin / 4.2 N at the blade)** as the score cracks. A closing force below the peak
+  stalls the lid on the tablet and cuts nothing; the scripted demo's applied force at the fin is logged every second
+  and reaches about **9.0 N** at engagement, above the 8.24 N peak. The cut is declared only when the **blade's actual
+  cutting edge**, computed from the lid pose, has passed the tablet's **underside**; the blade plane (splitter y = 0)
+  and the tablet's pose give the real split: a tablet 2.5 mm along the cradle leaves 7.5 and 12.5 mm halves
+  (0.675/1.125 g), and the cut is scored at 2.5 mm off the score line, so step 4 fails. The half bodies are placed at
+  the actual cut, 5 mm apart.
+  **Measured basis.** UW-Madison BME design report, RERC FINAL, Table 1
+  (https://bmedesign.engr.wisc.edu/projects/f07/pill_cap/file/view/7d95bd6b-2a10-43ae-a018-34a0a2f14d2b/RERC_FINAL.pdf):
+  **1.25-5 lbf (5.6-22.2 N) at the handle, 2.71-10.8 lbf (12-48 N) at the pill**; average 7.37 lbf (32.8 N) at the pill. The
+  task models **14.0 N at the blade / 8.24 N at the fin**, the low end of that range (the surrogate's batch acceptance
+  is 14.0 +/- 1.5 N at the blade, inside 12-48 N). The force is not lowered below the measured 12 N; a 40 N tablet
+  model is not cut by the same demo (MuJoCo: lid stalls, 0.2). A separate 47 N tablet hardness (nebivolol 5 mg,
+  3.13 mm, [PMC8720793](https://pmc.ncbi.nlm.nih.gov/articles/PMC8720793/)) is the top of the range.
 
 ## Run it
 
@@ -64,23 +78,24 @@ inspect-robots run --embodiment yam_arena --policy dream \
   -E task=pill_cutter_split.py -E object_jitter=0 -E control_hz=20 -E cam_width=320 -E cam_height=176 \
   --instruction "$INSTRUCTION" --scorer task_score --max-steps 2400 --store-frames --log-dir ~/yam-eval/pill-dream
 
-# Scripted demo (left arm), 1,900 steps
+# Scripted demo (left arm), 2,200 steps
 inspect-robots run --embodiment yam_arena --policy yam_scripted \
   -E task=pill_cutter_split.py -E object_jitter=0 -E control_hz=20 -E cam_width=320 -E cam_height=176 \
-  --instruction "$INSTRUCTION" --scorer task_score --max-steps 1900 --store-frames --log-dir ~/yam-eval/pill-demo
+  --instruction "$INSTRUCTION" --scorer task_score --max-steps 2200 --store-frames --log-dir ~/yam-eval/pill-demo
 ```
 
-The job log prints `[pill_cutter_split] t=...  steps done: ...` when a step is done or undone, a line when the lid shuts on the
-caplet (`cut into two halves`), and a trace every second: the lid's angle, the caplet's place against the cradle, the cup each half is in.
+The job log prints `[pill_cutter_split] t=...  steps done: ...` when a step is done or undone, a line when the blade
+engages and when the edge passes the tablet underside (`blade edge passed ... peak F_fin 8.24 N ... cut into ...`), and
+a trace every second: the lid's angle, the blade force at the fin and edge height, the tablet's place against the cradle,
+the cup each half is in.
 
-**The demo** (times on the Isaac station: seat 10.8 s, cut 37.9 s, lid open 64.4 s, both cups 93.4 s, 1.0 at 94.95 s).
-Left arm, open loop: opens the pads to 29 mm, pinches the caplet across its width in the dish pocket with a gentle 2.5 N a
-finger (a 20 N pinch ejected the 1.8 g caplet up the pocket chamfer on PhysX; the pad tips sit 4.1 mm above its underside, which
-leaves 0.55 mm to the finger carriage and 1.1 mm to the 11 mm cradle rim), lifts it and sets it in the cradle; goes up over the
-lid and pinches the lid's fin (fingers closing along y, about 14-15 N a finger) to carry the lid down from 95 to 50 degrees,
-lets go and takes the fin again with a different wrist angle to bring it shut; the caplet is cut. It pinches the fin again to
-swing the lid up to 50 degrees, again with a second grip to the 95 degree stop. It then lifts each half in turn, across its
-width with the same gentle pinch, over a medicine cup and lets go inside.
+**The demo** (Isaac times: seat 10.8 s, blade engaged 41.55 s, cut 45.60 s, lid open 72.10 s, both cups 101.75 s,
+1.0 at step 2,045; MuJoCo: cut 45.05 s, 1.0 at step 2,045 / 102.25 s; run limit 2,400). Left arm, open loop: opens the pads to 29 mm, pinches the tablet across
+its width in the dish pocket with a gentle 2.5 N a finger, sets it in the cradle; pulls the lid's fin from 95 to 50
+degrees with the 14-15 N a finger pinch, slows the last 50 degrees to 2 s per 8 degrees, takes the fin again for the
+last stretch and pushes through the 8.24 N peak (the applied force is logged); the cut is at lid 5.6 degrees, 0.0 mm
+off the score line, 0.896/0.904 g halves. It then pinches the fin again to open the lid to its 95 degree stop, lifts each
+half across its width and lets go inside its cup. The pause before the cut is the brake: the arm has to push.
 
 ## Instruction
 
@@ -92,46 +107,66 @@ Four steps, **0.2 each**; steps 1 and 2 once reached, steps 3 and 4 as things st
 
 | Step | Done when |
 |---|---|
-| 1. Caplet in the cradle at the blade | its middle within 2.5 mm of the blade and the cradle's line, length along the cradle within 8 degrees, level within 8 degrees |
-| 2. Lid shut on it: caplet cut | the lid reached shut (within 3 degrees) with the whole caplet in that place (the cut event) |
+| 1. Tablet in the cradle at the blade | its middle within 2.5 mm of the blade and the cradle's line, length along the cradle within 8 degrees, level within 8 degrees |
+| 2. Lid shut on it: tablet cut | the lid reached shut (within 3 degrees) and the blade's actual edge passed the tablet's underside |
 | 3. Lid opened again | after the cut, the lid is past 80 degrees |
-| 4. One half in each cup, grippers clear | one half in the orange cup and the other in the blue one (inside the wall, below the rim), no pad within 3 cm of either half or of the lid's fin |
+| 4. One half in each cup, balanced, grippers clear | one half in the orange cup and the other in the blue one; the cut plane within **1 mm** of the score line; each half's actual mass **40-60%** of 1.8 g (0.720-1.080 g); no pad within 3 cm of either half or the fin |
 
-- **1.0 (success):** every full-success condition held together, without a break, for 1 s: all four steps, no violation, and each
-  half within 2 mm and 2 degrees of where it was when that second began. The second is timed inside `success()` and any lapse
-  restarts it. The step points stop at 0.8, also while the second is being timed. The tests check no 1.0 at
-  0.8 s, 1.0 at 1 s, a lapse restarting it, and no 1.0 while a step is missing or a hand is near. The arms' return is not scored.
-- **0** if the caplet or a half falls off the table, or the state is not finite.
-- **Guards:** nothing is cut unless the caplet really lies in the cradle at the blade when the lid shuts, so closing the lid on an
-  empty or badly seated cradle scores nothing for the cut; both halves in one cup does not count; a lid left shut after the cut
-  does not get step 3; a hand left at a half or the fin does not get step 4.
-- **Real station:** the halves would be checked in each cup (a weighing, or a look into the cups), and the cut by the line
-  across the score.
+- **1.0 (success):** every full-success condition held together, without a break, for 1 s: all four steps, no violation,
+  and each half within 2 mm and 2 degrees of where it was when that second began. The second is timed inside
+  `success()` and any lapse restarts it. The step points stop at 0.8, also while the second is being timed.
+- **0.6** for a 2.5 mm placement offset: the cut still happens (the blade plane is at the splitter's centre) but leaves
+  7.5 and 12.5 mm, 0.675/1.125 g halves and is 2.5 mm off the score line, so step 4 is false; steps 1-3 are 0.6. A
+  tablet at 1.1 mm off the score line also fails step 4 (the 1 mm cut-line check).
+- **0** if the tablet or a half falls off the table, or the state is not finite.
+- **Guards:** nothing is cut unless the blade edge passes the tablet's underside with the whole tablet in the cradle;
+  closing the lid on an empty or badly seated cradle scores nothing for the cut; both halves in one cup does not count; a
+  lid left shut after the cut does not get step 3; a hand left at a half or the fin does not get step 4. The 40-60%
+  mass check and the 1 mm score-line check match the real-trial check in `REAL_TRIAL.md`.
+
+## Real trial
+
+`REAL_TRIAL.md` gives the inert 20 x 9 x 7.5 mm scored tablet or the plaster surrogate (USG No. 1, 100:35 water, PETG
+mould with a 0.8 mm score ridge, 45 min in the mould + 24 h dry, 1.80 +/- 0.10 g), the **0-50 N push-pull gauge** batch
+acceptance (**8.2 +/- 0.9 N at the fin / 14.0 +/- 1.5 N at the blade**, Shore D 55-75 cross-check), the **0.01 g half
+weighing** (each 40-60% of the pre-cut mass) with the **10x +/-1 mm score-line check**, the **0.6 mm PETG pad U-clips**
+(`pad_shield.scad`, Prusament PETG + 3M VHB 5952) that leave the inner grip face and both scored squeezes unchanged,
+and the **91% IPA wipe and 10x inspection** after every trial.
 
 ## Reset
 
-Open the lid to its 95 degree stop, lay the caplet in the dish pocket with its length left-right, stand the tray on its spot.
-The caplet has about 1 mm of play each way in the dish pocket; the demo's pick is centred on the pocket and its 29 mm opening
-and gentle pinch still take it 3 mm / 3 degrees off nominal (four such starts pass in MuJoCo).
+Open the lid to its 95 degree stop, lay the tablet in the dish pocket with its length left-right, stand the tray on its
+spot. The tablet has about 1 mm of play each way in the dish pocket; the demo's pick is centred on the pocket and its
+29 mm opening and gentle pinch take it within 0.3 mm of the cradle centre (the MuJoCo cut is 0.0 mm off the score
+line). After a real trial, wipe the pads, blade shroud and cradle with 91% IPA and inspect (REAL_TRIAL.md).
 
 ## Pass-through check
 
-Checked frames: top camera at 0, 10, 25, 45, 60, 80, 95 and 100% of `demo.mp4` (0, 9.5, 23.6, 42.5, 56.7,
-75.6, 89.8 and 94.5 s), and the left wrist camera at 5, 10, 35, 37, 64, 93 and 94 s (the dish pinch, cradle set-down, fin
-pull and both cup drops). No gripper, finger, forearm or held part intersects a visible solid.
-The splitter's blade is visible inside the lid and its upper 7 mm has a collider above the caplet; the lower cutting edge is
-the declared cut. The blade-slot line and the caplet's score line are flush markings, not solids; the rubber feet are visual
+Checked frames: top camera at 0, 10, 25, 45, 60, 80, 95 and 100% of `demo.mp4`, and the left wrist camera at the dish
+pinch, cradle set-down, fin pull and both cup drops. No gripper, finger, forearm or held part intersects a visible solid.
+The splitter's blade is visible inside the lid; its upper 7 mm is inside the 0.6 mm PETG shroud (side plates 0.3 mm off
+the blade, top and end plates), so a pad meets the shroud; the lower 12 mm cutting edge is inside the V cradle below the
+11 mm rim. The blade-slot line and the tablet's score line are flush markings, not solids; the rubber feet are visual
 pads under the base, outside the arm path. Cutaways: none.
 
 ## Status
 
-- MuJoCo: 1.0 at step 1,889 (94.45 s; 1,900-step scripted runner, 2,400 run limit).
-- Isaac: 1.0 at step 1,889 (94.45 s simulated, 94.95 s in the task log; 1,900-step scripted runner, 2,400 run limit).
-- pytest: 37 passed (idle, no pinch, caplet in the dish, caplet in the cradle un-pinched, shut lid with no cut, lid left shut,
-  both halves in one cup, near gripper, off-table, the 1 s timing and lapse, the gentle pinch, the blade collider, the pad
-  penetration latch).
-- Nudges (MuJoCo): 4 starts with the caplet 3 mm / 3 degrees off nominal (x +/-, y +/-), 1.0 each; 4 more at the 1 mm
-  pocket-play edges with 3 degrees of yaw, 1.0 each.
-- Dream-1 score: 0.0 (2,400 steps, hit the step limit; the Dream service returned `pool_full` for the whole run and sent no actions).
-- Media: `benchmark-media-pill-cutter-split/` - `demo.mp4` (top camera, 3 s held final frame with SCORE 1.0, the PR media), `demo_top.gif`, `setup.png`;
-  `demo_review.mp4` is the four-view internal composite (top, left wrist, top crop on the cradle and a scoring panel).
+- MuJoCo: **1.0 at step 2,045** (102.25 s; 2,200-step scripted runner, 2,400 run limit). Cut at lid 5.6 degrees,
+  blade edge 7.9 mm, halves 0.896/0.904 g, 0.0 mm off the score line.
+- Isaac: **1.0 at step 2,045** (101.75 s; cut at 45.60 s, lid open 72.10 s, both cups 101.75 s; 2,200-step
+  scripted runner, 2,400 run limit). The log's cut line: `blade edge passed ... at lid 5.6 deg; peak F_fin 8.24 N ...
+  cut into 10.0/10.0 mm halves, 0.902/0.898 g, cut 0.0 mm off the score line`.
+- Dream-1: **0.0 at 2,400 steps** (completed, hit the step limit; **2,401 action rows** in
+  `actions/20261117_033314_ad02b01d/scene-0-e0.jsonl`, model `dreamlabs/dream-1-beta`, log `adhoc_44b767ed.json`; the
+  top-camera `dream.mp4` is rendered from the same run). The model made real actions (the arms moved) but never took
+  the tablet; a `pool_full` or no-action run is not counted, and this run is not one.
+- pytest: **45 passed** (the previous outcomes plus the force gate, the profile, the blade-edge cut, the 2.5 mm
+  unequal-halves case, the balanced-halves step, the shroud, the fin width and the two squeezes).
+- Starts (MuJoCo): nominal **1.0**, cut 0.0 mm off the score line; tablet start **+3 mm in x** **1.0** (cut 0.1 mm
+  off); **+3 mm in y** **0.6** (cut 1.6 mm off, 8.8/11.2 mm, 0.752/1.048 g) — the open-loop demo cannot correct a
+  large start offset, and the 1 mm cut-line check says so rather than hiding it.
+- **Weak/strong gate checks (MuJoCo):** the same demo with a 40 N tablet model (23.5 N at the fin, above the arm's
+  pinch) stalls the lid at its 14-16 degree engagement and cuts nothing: score 0.2. The task's 14.0 N model cuts.
+- Media: `benchmark-media-pill-cutter-split/` - `demo.mp4` (top camera, 3 s held final frame with SCORE 1.0, the PR
+  media), `demo_top.gif`, `setup.png`; `demo_review.mp4` is the four-view internal composite. Not uploaded; the task's
+  `media` is `TBD` until the coordinator uploads at resubmit.
