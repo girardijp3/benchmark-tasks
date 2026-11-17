@@ -1,0 +1,29 @@
+{
+  "title": "Aim a real H4 headlamp's two screws until the low-beam cutoff sits on the 3 m screen line",
+  "category": "Impact on jobs",
+  "keywords": [
+    "headlamp aim",
+    "Hella 1058",
+    "1L6 002 395-131",
+    "H4 headlamp",
+    "aim screw",
+    "beam cutoff",
+    "ECE low beam",
+    "headlight adjustment",
+    "automotive service",
+    "3 m beam screen",
+    "0.69 degree",
+    "8 mm hex key",
+    "beam pattern",
+    "inspection"
+  ],
+  "instruction": "Steady the lamp with one hand, turn its two aim screws with the other until the low-beam cutoff sits on the screen line, then let go.",
+  "context": "Automotive technicians aim a headlamp after a bulb, a repair or an inspection. A true-size Hella 1058 / 1L6 002 395-131 178 mm H4 headlamp (88 mm deep, 0.55 kg, H4 12 V 60/55 W) is held in a bench gimbal with its lens 3.00 m from a white beam screen. The ECE low-beam cut-off must sit 36 mm (0.69 deg) below the lamp centre, within +-15 mm vertically and +-26 mm horizontally (i-MiEV service manual; UN R112). Its two real 8 mm hex aim screws are 90 mm apart on the rear housing, each with a T-handle 8 mm hex key left in the socket. The lamp's two-axis pose is the aim; the cut-off is projected from the actual pose, not scripted. A real trial uses the lamp, the two keys, the 3 m screen and a 0.9 N m torque wrench; it is quick and under $200.",
+  "setup": "Positions are in metres from the midpoint between the two arm bases, x forward, y to the robot's left, table top 0.7475. The lamp's gimbal centre is (0.420, -0.130, 0.860); the lens is at x 0.620, exactly 3.00 m from the screen face at x 3.508. The 1.600 x 1.200 m screen's red target line is at z 0.824 (36 mm below the lamp centre); its green band is +-15 mm; its centreline is y -0.130; the horizontal limit is +-26 mm. The two 8 mm hex aim screws are at x 0.366, y -0.175 (V) and -0.085 (H), z 0.900; their T-handle keys' T-bars are at x 0.331, the same y/z, 40 mm tall. The left steady pad's outer face is (0.458, -0.0395, 0.860); the left gripper's TCP is (0.458, -0.0285, 0.860). The lamp starts at AimPitch +0.55 deg and AimYaw +0.72 deg (about 30 mm low, 39 mm left: 791.9 mm in MuJoCo, 794.3 mm on Isaac); the keys at 0. The 12 V supply is at (0.19, -0.33); the lamp is on; the two YAM arms start at READY.",
+  "scoring": "0.25 when the vertical key has turned at least 15 deg and the cut-off has moved toward the band; 0.5 when the vertical cut-off is within +-15 mm of 0.824 m and on the 3 m screen; 0.75 when the horizontal kink is also within +-26 mm of the centreline; 1.0 when both, no fault, both grippers at least 5 cm clear, the lamp still for 1 s on its stand and no strip. A wrong-direction turn, a stripped key/socket, a forced cut-off (a pushed housing), a screw turned with the left hand off the pad, or a beam off the screen caps the score at 0.25. The idle beam is about 30 mm low and 39 mm left, so doing nothing is 0. The real station reads the cut-off height and kink on the screen, the two key turns, the 0.9 N m torque and the 1 s still hold with both hands clear.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz)",
+  "reset_notes": "Set the lamp's AimPitch to +0.55 deg (low) and AimYaw to +0.72 deg (left); set both key/head/shaft joints to 0; set the left and right arms to READY with open grippers; set the screen, the beam patch and the 12 V supply in place; the lamp is on. The first key turn arms the mechanism. The screen's target line at 0.824 m and the band are fixed; the steady pad and keys are clean. The scripted demo braces the housing before it touches a key.",
+  "fidelity": "True-size Hella 1058 / 1L6 002 395-131: 178 x 88 mm, 0.55 kg, H4 12 V 60/55 W, ECE E4 53; two 8 mm hex aim screws 90 mm apart with T-handle 8 mm hex keys; ECE cut-off 36 mm at 3.00 m, +-15/+-26 mm (i-MiEV/UN R112). Bench: 1.6 x 1.2 m screen, two-axis gimbal, 0.9 N m torque fuse, 5.2 N m/deg aim drive (EST). The beam is a geometric projection of the actual lamp pose; no photometric render, no cutaway.",
+  "scores": "Dream-1: 0.0 (2,400 steps, 2,401 action rows); demo: 1.0 at step 433 on Isaac/MuJoCo. Final cut-off: MuJoCo -4.1/+1.2 mm, Isaac -0.3/+1.6 mm; V/H keys +156.5/-179.2 (MuJoCo), +163.34/-177.62 (Isaac); no fault. Initial MuJoCo -32.1/+38.8 mm; Isaac -29.7/+38.8 mm.",
+  "media": "M-XTE9G5"
+}

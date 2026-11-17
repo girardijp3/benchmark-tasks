@@ -1,0 +1,2112 @@
+#usda 1.0
+(
+    defaultPrim = "HeadlampRig"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "HeadlampRig" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysicsArticulationRootAPI"]
+    doc = "A Hella 1058 / 1L6 002 395-131 178 mm H4 headlamp (88 mm deep, 0.55 kg) in a bench gimbal on a cast stand at 0.950 m. The fixed stand is the articulation root; the lamp has a vertical yaw joint and a horizontal pitch joint on the gimbal (AimYaw, AimPitch). Two 8 mm hex-socket aim screws stand on the stand at 90 mm centres; each has a visible head (ScrewHeadV/H) and a coaxial shaft (ScrewV/H) coupled through a 0.9 N m torque fuse. Turning a head drives its shaft and the lamp's aim drive. Origin: world; table top 0.7475 m."
+)
+{
+    point3f physics:centerOfMass = (0.5, 0, 0.89)
+    float3 physics:diagonalInertia = (0.05, 0.05, 0.03)
+    float physics:mass = 2.4
+
+    def Scope "Looks"
+    {
+        def Material "Phys_rubber" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.8
+            float physics:restitution = 0
+            float physics:staticFriction = 0.9
+        }
+
+        def Material "rubber_1e1e21_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/rubber_1e1e21_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.12, 0.12, 0.13)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_stand" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.6
+            float physics:restitution = 0
+            float physics:staticFriction = 0.7
+        }
+
+        def Material "stand_666b75_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/stand_666b75_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.4, 0.42, 0.46)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "steel_8c8e93_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/steel_8c8e93_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.55, 0.56, 0.58)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_bfd1b2_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/c_bfd1b2_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.75, 0.82, 0.7)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_e5e5db_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/c_e5e5db_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.9, 0.9, 0.86)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_262626_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/c_262626_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.15, 0.15, 0.15)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_191c21_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/c_191c21_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.13)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_198c33_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/c_198c33_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.55, 0.2)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_0e0e0f_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/c_0e0e0f_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.055, 0.058, 0.062)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "stand_1e1e21_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/stand_1e1e21_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.12, 0.12, 0.13)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_lamp" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.4
+            float physics:restitution = 0
+            float physics:staticFriction = 0.5
+        }
+
+        def Material "lamp_c6c9cc_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/lamp_c6c9cc_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.78, 0.79, 0.8)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "glass_b7d1db_12_055"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/glass_b7d1db_12_055/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.72, 0.82, 0.86)
+                float inputs:metallic = 0
+                float inputs:opacity = 0.55
+                float inputs:roughness = 0.12
+                token outputs:surface
+            }
+        }
+
+        def Material "chrome_c6c9cc_35_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/chrome_c6c9cc_35_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.78, 0.79, 0.8)
+                float inputs:metallic = 0.9
+                float inputs:opacity = 1
+                float inputs:roughness = 0.35
+                token outputs:surface
+            }
+        }
+
+        def Material "lamp_0e0e0f_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/lamp_0e0e0f_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.055, 0.058, 0.062)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "chrome_c6c9cc_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/chrome_c6c9cc_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.78, 0.79, 0.8)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "rubber_4c4f54_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/rubber_4c4f54_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.3, 0.31, 0.33)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_2851b7_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/c_2851b7_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.16, 0.32, 0.72)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_f2c619_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/c_f2c619_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.78, 0.1)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_steel" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.5
+            float physics:restitution = 0
+            float physics:staticFriction = 0.6
+        }
+
+        def Material "steel_b2b5b2_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/steel_b2b5b2_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.71, 0.7)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_19191c_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/c_19191c_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.1, 0.11)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_1e1e21_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/c_1e1e21_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.12, 0.12, 0.13)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "brass_aa8c47_40_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/brass_aa8c47_40_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.67, 0.55, 0.28)
+                float inputs:metallic = 0.7
+                float inputs:opacity = 1
+                float inputs:roughness = 0.4
+                token outputs:surface
+            }
+        }
+
+        def Material "brass_aa8c47_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/brass_aa8c47_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.67, 0.55, 0.28)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "steel_999ea8_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/steel_999ea8_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.6, 0.62, 0.66)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_grip" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.8
+            float physics:restitution = 0
+            float physics:staticFriction = 0.9
+        }
+
+        def Material "grip_9ea0a8_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/grip_9ea0a8_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.62, 0.63, 0.66)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "grip_282b30_55_100"
+        {
+            token outputs:surface.connect = </HeadlampRig/Looks/grip_282b30_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.16, 0.17, 0.19)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "BasePlate1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </HeadlampRig/Looks/rubber_1e1e21_55_100>
+        rel material:binding:physics = </HeadlampRig/Looks/Phys_rubber> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.1, 0.08, 0.008)
+        double3 xformOp:translate = (0.36, -0.09, 0.7515000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Post2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </HeadlampRig/Looks/stand_666b75_55_100>
+        rel material:binding:physics = </HeadlampRig/Looks/Phys_stand> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.032, 0.032, 0.1)
+        double3 xformOp:translate = (0.37, -0.09, 0.8015000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "PostFoot3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.04, 0.006)
+        double3 xformOp:translate = (0.37, -0.09, 0.7545000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Neck4" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </HeadlampRig/Looks/stand_666b75_55_100>
+        rel material:binding:physics = </HeadlampRig/Looks/Phys_stand> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.06, 0.028, 0.02)
+        double3 xformOp:translate = (0.4, -0.09, 0.838)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "ClevisEar5" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </HeadlampRig/Looks/stand_666b75_55_100>
+        rel material:binding:physics = </HeadlampRig/Looks/Phys_stand> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.014, 0.008, 0.056)
+        double3 xformOp:translate = (0.407, -0.126, 0.86)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "ClevisEar6" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </HeadlampRig/Looks/stand_666b75_55_100>
+        rel material:binding:physics = </HeadlampRig/Looks/Phys_stand> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.014, 0.008, 0.056)
+        double3 xformOp:translate = (0.407, -0.054, 0.86)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "GimbalPin7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.094
+        rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+        double radius = 0.009
+        double3 xformOp:translate = (0.42, -0.09, 0.86)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "ClevisFoot8" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </HeadlampRig/Looks/stand_666b75_55_100>
+        rel material:binding:physics = </HeadlampRig/Looks/Phys_stand> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.03, 0.03, 0.018)
+        double3 xformOp:translate = (0.4, -0.09, 0.79)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "LevelVial9" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.004
+        rel material:binding = </HeadlampRig/Looks/c_bfd1b2_55_100>
+        double radius = 0.01
+        double3 xformOp:translate = (0.3, -0.049999999999999996, 0.7585000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "LabelPlate10" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </HeadlampRig/Looks/c_e5e5db_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.06, 0.02)
+        double3 xformOp:translate = (0.435, -0.09, 0.7595000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "LabelLine11" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </HeadlampRig/Looks/c_262626_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.0008, 0.008, 0.002)
+        double3 xformOp:translate = (0.4355, -0.11399999999999999, 0.7595000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "LabelLine12" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </HeadlampRig/Looks/c_262626_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.0008, 0.008, 0.002)
+        double3 xformOp:translate = (0.4355, -0.09999999999999999, 0.7595000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "LabelLine13" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </HeadlampRig/Looks/c_262626_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.0008, 0.008, 0.002)
+        double3 xformOp:translate = (0.4355, -0.086, 0.7595000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "LabelLine14" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </HeadlampRig/Looks/c_262626_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.0008, 0.008, 0.002)
+        double3 xformOp:translate = (0.4355, -0.07199999999999998, 0.7595000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "SupplyBox15" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </HeadlampRig/Looks/c_191c21_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.12, 0.08, 0.06)
+        double3 xformOp:translate = (0.19, -0.33, 0.7775000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "SupplyLabel16" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </HeadlampRig/Looks/c_e5e5db_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.07, 0.002, 0.03)
+        double3 xformOp:translate = (0.19, -0.29900000000000004, 0.7875000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "SupplySwitch17" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </HeadlampRig/Looks/c_262626_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.024, 0.006, 0.012)
+        double3 xformOp:translate = (0.225, -0.29900000000000004, 0.7975000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "SupplyLED18" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </HeadlampRig/Looks/c_198c33_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.005, 0.004, 0.005)
+        double3 xformOp:translate = (0.155, -0.29900000000000004, 0.7975000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Lead019" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.07176350047203661
+        rel material:binding = </HeadlampRig/Looks/c_0e0e0f_55_100>
+        double radius = 0.004
+        float xformOp:rotateX = 81.98996
+        float xformOp:rotateZ = 39.289406
+        double3 xformOp:translate = (0.2225, -0.27749999999999997, 0.795)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:rotateZ"]
+    }
+
+    def Cylinder "Lead120" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.07141428428542851
+        rel material:binding = </HeadlampRig/Looks/c_0e0e0f_55_100>
+        double radius = 0.004
+        float xformOp:rotateX = 81.95053
+        float xformOp:rotateZ = 45
+        double3 xformOp:translate = (0.275, -0.22999999999999998, 0.805)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:rotateZ"]
+    }
+
+    def Cylinder "Lead221" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.06892024376045107
+        rel material:binding = </HeadlampRig/Looks/c_0e0e0f_55_100>
+        double radius = 0.004
+        float xformOp:rotateX = 77.429375
+        float xformOp:rotateZ = 41.987213
+        double3 xformOp:translate = (0.32499999999999996, -0.1825, 0.8175)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:rotateZ"]
+    }
+
+    def Cylinder "Lead322" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.04983974317750848
+        rel material:binding = </HeadlampRig/Looks/c_0e0e0f_55_100>
+        double radius = 0.004
+        float xformOp:rotateX = 66.34139
+        float xformOp:rotateZ = 28.810793
+        double3 xformOp:translate = (0.37, -0.14900000000000002, 0.835)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:rotateZ"]
+    }
+
+    def Cylinder "RearBoot23" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.018
+        rel material:binding = </HeadlampRig/Looks/c_0e0e0f_55_100>
+        double radius = 0.012
+        double3 xformOp:translate = (0.394, -0.132, 0.86)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Xform "AimYaw" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float3 physics:diagonalInertia = (0.00002, 0.00002, 0.00002)
+        float physics:mass = 0.06
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cylinder "YawHub1" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.024
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            double radius = 0.012
+            double3 xformOp:translate = (0, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cube "YawYoke2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/stand_1e1e21_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_stand> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.014, 0.03, 0.026)
+            double3 xformOp:translate = (0.006, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+
+    def Xform "AimPitch" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0.044, 0, 0)
+        float3 physics:diagonalInertia = (0.006, 0.0045, 0.0045)
+        float physics:mass = 0.58
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cylinder "Housing1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.088
+            rel material:binding = </HeadlampRig/Looks/lamp_c6c9cc_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_lamp> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double radius = 0.089
+            double3 xformOp:translate = (0.044, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Lens2" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.004
+            rel material:binding = </HeadlampRig/Looks/glass_b7d1db_12_055>
+            double radius = 0.086
+            double3 xformOp:translate = (0.0885, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "LensRim3" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.004
+            rel material:binding = </HeadlampRig/Looks/chrome_c6c9cc_35_100>
+            double radius = 0.089
+            double3 xformOp:translate = (0.0895, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "RearCup4" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.04
+            rel material:binding = </HeadlampRig/Looks/lamp_0e0e0f_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_lamp> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double radius = 0.03
+            double3 xformOp:translate = (-0.02, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Socket5" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.016
+            rel material:binding = </HeadlampRig/Looks/lamp_0e0e0f_55_100>
+            double radius = 0.012
+            double3 xformOp:translate = (-0.04, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Reflector6" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.03
+            rel material:binding = </HeadlampRig/Looks/chrome_c6c9cc_55_100>
+            double radius = 0.07
+            double3 xformOp:translate = (0.05, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "GearboxV7" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.022
+            rel material:binding = </HeadlampRig/Looks/lamp_0e0e0f_55_100>
+            double radius = 0.014
+            double3 xformOp:translate = (-0.043, -0.175, 0.04)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "GearboxH8" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.022
+            rel material:binding = </HeadlampRig/Looks/lamp_0e0e0f_55_100>
+            double radius = 0.014
+            double3 xformOp:translate = (-0.043, -0.085, 0.04)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cube "SteadyPad9" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/rubber_4c4f54_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_rubber> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.03, 0.004, 0.03)
+            double3 xformOp:translate = (0.038, 0.0885, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "SteadyPadPlate10" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            double size = 1
+            float3 xformOp:scale = (0.034, 0.002, 0.034)
+            double3 xformOp:translate = (0.038, 0.086, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cylinder "MarkV11" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.001
+            rel material:binding = </HeadlampRig/Looks/c_2851b7_55_100>
+            double radius = 0.016
+            double3 xformOp:translate = (0.354, -0.175, 0.9)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "MarkH12" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.001
+            rel material:binding = </HeadlampRig/Looks/c_f2c619_55_100>
+            double radius = 0.016
+            double3 xformOp:translate = (0.354, -0.085, 0.9)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+    }
+
+    def Xform "ScrewHeadV" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float3 physics:diagonalInertia = (0.000002, 0.000002, 0.000001)
+        float physics:mass = 0.02
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "HeadOuter01" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_b2b5b2_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 30
+            float3 xformOp:scale = (0.008, 0.002, 0.0048)
+            double3 xformOp:translate = (0, 0.005196152422706633, 0.0029999999999999996)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "SocketWall02" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 30
+            float3 xformOp:scale = (0.008, 0.0012, 0.0048)
+            double3 xformOp:translate = (-0.001, 0.004070319397786862, 0.0023499999999999997)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "HeadOuter13" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_b2b5b2_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 90
+            float3 xformOp:scale = (0.008, 0.002, 0.0048)
+            double3 xformOp:translate = (0, 3.6739403974420597e-19, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "SocketWall14" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 90
+            float3 xformOp:scale = (0.008, 0.0012, 0.0048)
+            double3 xformOp:translate = (-0.001, 2.87791997799628e-19, 0.0047)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "HeadOuter25" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_b2b5b2_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 150
+            float3 xformOp:scale = (0.008, 0.002, 0.0048)
+            double3 xformOp:translate = (0, -0.005196152422706631, 0.0030000000000000022)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "SocketWall26" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 150
+            float3 xformOp:scale = (0.008, 0.0012, 0.0048)
+            double3 xformOp:translate = (-0.001, -0.004070319397786861, 0.002350000000000002)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "HeadOuter37" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_b2b5b2_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 210
+            float3 xformOp:scale = (0.008, 0.002, 0.0048)
+            double3 xformOp:translate = (0, -0.005196152422706633, -0.0029999999999999983)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "SocketWall38" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 210
+            float3 xformOp:scale = (0.008, 0.0012, 0.0048)
+            double3 xformOp:translate = (-0.001, -0.004070319397786863, -0.002349999999999999)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "HeadOuter49" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_b2b5b2_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 270
+            float3 xformOp:scale = (0.008, 0.002, 0.0048)
+            double3 xformOp:translate = (0, -1.1021821192326178e-18, -0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "SocketWall410" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 270
+            float3 xformOp:scale = (0.008, 0.0012, 0.0048)
+            double3 xformOp:translate = (-0.001, -8.63375993398884e-19, -0.0047)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "HeadOuter511" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_b2b5b2_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 330
+            float3 xformOp:scale = (0.008, 0.002, 0.0048)
+            double3 xformOp:translate = (0, 0.005196152422706633, -0.002999999999999998)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "SocketWall512" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 330
+            float3 xformOp:scale = (0.008, 0.0012, 0.0048)
+            double3 xformOp:translate = (-0.001, 0.004070319397786863, -0.0023499999999999984)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cylinder "HeadFlange13" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.002
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            double radius = 0.0105
+            double3 xformOp:translate = (0.006, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "SocketFloor14" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.001
+            rel material:binding = </HeadlampRig/Looks/c_19191c_55_100>
+            double radius = 0.0048
+            double3 xformOp:translate = (0.0035, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Coupling15" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.008
+            rel material:binding = </HeadlampRig/Looks/c_1e1e21_55_100>
+            double radius = 0.0065
+            double3 xformOp:translate = (0.01, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+    }
+
+    def Xform "ScrewShaftV" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0.03, 0, 0)
+        float3 physics:diagonalInertia = (0.000002, 0.000002, 0.000001)
+        float physics:mass = 0.028
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cylinder "Shaft1" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.06
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            double radius = 0.003
+            double3 xformOp:translate = (0.035, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "WormGear2" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.008
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_40_100>
+            double radius = 0.0125
+            double3 xformOp:translate = (0.058, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cube "WormTooth3" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, 0.0115, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "WormTooth4" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float xformOp:rotateX = 36
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, 0.009303695435311895, 0.006759530401363441)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "WormTooth5" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float xformOp:rotateX = 72
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, 0.0035536954353118954, 0.010937149937394265)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "WormTooth6" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float xformOp:rotateX = 108
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, -0.0035536954353118945, 0.010937149937394267)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "WormTooth7" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float xformOp:rotateX = 144
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, -0.009303695435311895, 0.006759530401363442)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "WormTooth8" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float xformOp:rotateX = 180
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, -0.0115, 1.4083438190194562e-18)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "WormTooth9" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float xformOp:rotateX = 216
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, -0.009303695435311897, -0.00675953040136344)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "WormTooth10" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float xformOp:rotateX = 252
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, -0.0035536954353118967, -0.010937149937394265)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "WormTooth11" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float xformOp:rotateX = 288
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, 0.0035536954353118932, -0.010937149937394267)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "WormTooth12" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float xformOp:rotateX = 324
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, 0.009303695435311895, -0.006759530401363444)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cylinder "ShaftTop13" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.008
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            double radius = 0.0038
+            double3 xformOp:translate = (0.005, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+    }
+
+    def Xform "KeyV" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float3 physics:diagonalInertia = (0.00002, 0.00001, 0.00001)
+        float physics:mass = 0.03
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Mesh "KeyBit1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.009006664, -0.0078, -0.005), (0.009006664, 0.0078, 0.003)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 6, 7, 8, 0, 3, 2, 6, 8, 9, 0, 4, 3, 6, 9, 10, 0, 5, 4, 6, 10, 11, 0, 1, 7, 0, 7, 6, 1, 2, 8, 1, 8, 7, 2, 3, 9, 2, 9, 8, 3, 4, 10, 3, 10, 9, 4, 5, 11, 4, 11, 10, 5, 0, 6, 5, 6, 11]
+            rel material:binding = </HeadlampRig/Looks/steel_999ea8_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            token physics:approximation = "convexHull"
+            point3f[] points = [(0.009006664, 0, -0.005), (0.004503332, 0.0078, -0.005), (-0.004503332, 0.0078, -0.005), (-0.009006664, 1.1029982e-18, -0.005), (-0.004503332, -0.0078, -0.005), (0.004503332, -0.0078, -0.005), (0.009006664, 0, 0.003), (0.004503332, 0.0078, 0.003), (-0.004503332, 0.0078, 0.003), (-0.009006664, 1.1029982e-18, 0.003), (-0.004503332, -0.0078, 0.003), (0.004503332, -0.0078, 0.003)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Cylinder "KeyShaft2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.03
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double radius = 0.0032
+            double3 xformOp:translate = (-0.02, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "TBar3" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Z"
+            double height = 0.04
+            rel material:binding = </HeadlampRig/Looks/grip_9ea0a8_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_grip> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double radius = 0.003
+            double3 xformOp:translate = (-0.035, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "TBarCap4" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Z"
+            double height = 0.004
+            rel material:binding = </HeadlampRig/Looks/grip_282b30_55_100>
+            double radius = 0.0035
+            double3 xformOp:translate = (-0.035, 0, -0.021)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "TBarCap5" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Z"
+            double height = 0.004
+            rel material:binding = </HeadlampRig/Looks/grip_282b30_55_100>
+            double radius = 0.0035
+            double3 xformOp:translate = (-0.035, 0, 0.021)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+    }
+
+    def Xform "ScrewHeadH" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float3 physics:diagonalInertia = (0.000002, 0.000002, 0.000001)
+        float physics:mass = 0.02
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "HeadOuter01" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_b2b5b2_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 30
+            float3 xformOp:scale = (0.008, 0.002, 0.0048)
+            double3 xformOp:translate = (0, 0.005196152422706633, 0.0029999999999999996)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "SocketWall02" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 30
+            float3 xformOp:scale = (0.008, 0.0012, 0.0048)
+            double3 xformOp:translate = (-0.001, 0.004070319397786862, 0.0023499999999999997)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "HeadOuter13" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_b2b5b2_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 90
+            float3 xformOp:scale = (0.008, 0.002, 0.0048)
+            double3 xformOp:translate = (0, 3.6739403974420597e-19, 0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "SocketWall14" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 90
+            float3 xformOp:scale = (0.008, 0.0012, 0.0048)
+            double3 xformOp:translate = (-0.001, 2.87791997799628e-19, 0.0047)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "HeadOuter25" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_b2b5b2_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 150
+            float3 xformOp:scale = (0.008, 0.002, 0.0048)
+            double3 xformOp:translate = (0, -0.005196152422706631, 0.0030000000000000022)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "SocketWall26" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 150
+            float3 xformOp:scale = (0.008, 0.0012, 0.0048)
+            double3 xformOp:translate = (-0.001, -0.004070319397786861, 0.002350000000000002)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "HeadOuter37" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_b2b5b2_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 210
+            float3 xformOp:scale = (0.008, 0.002, 0.0048)
+            double3 xformOp:translate = (0, -0.005196152422706633, -0.0029999999999999983)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "SocketWall38" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 210
+            float3 xformOp:scale = (0.008, 0.0012, 0.0048)
+            double3 xformOp:translate = (-0.001, -0.004070319397786863, -0.002349999999999999)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "HeadOuter49" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_b2b5b2_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 270
+            float3 xformOp:scale = (0.008, 0.002, 0.0048)
+            double3 xformOp:translate = (0, -1.1021821192326178e-18, -0.006)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "SocketWall410" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 270
+            float3 xformOp:scale = (0.008, 0.0012, 0.0048)
+            double3 xformOp:translate = (-0.001, -8.63375993398884e-19, -0.0047)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "HeadOuter511" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_b2b5b2_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 330
+            float3 xformOp:scale = (0.008, 0.002, 0.0048)
+            double3 xformOp:translate = (0, 0.005196152422706633, -0.002999999999999998)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "SocketWall512" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float xformOp:rotateX = 330
+            float3 xformOp:scale = (0.008, 0.0012, 0.0048)
+            double3 xformOp:translate = (-0.001, 0.004070319397786863, -0.0023499999999999984)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cylinder "HeadFlange13" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.002
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            double radius = 0.0105
+            double3 xformOp:translate = (0.006, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "SocketFloor14" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.001
+            rel material:binding = </HeadlampRig/Looks/c_19191c_55_100>
+            double radius = 0.0048
+            double3 xformOp:translate = (0.0035, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Coupling15" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.008
+            rel material:binding = </HeadlampRig/Looks/c_1e1e21_55_100>
+            double radius = 0.0065
+            double3 xformOp:translate = (0.01, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+    }
+
+    def Xform "ScrewShaftH" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0.03, 0, 0)
+        float3 physics:diagonalInertia = (0.000002, 0.000002, 0.000001)
+        float physics:mass = 0.028
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cylinder "Shaft1" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.06
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            double radius = 0.003
+            double3 xformOp:translate = (0.035, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "WormGear2" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.008
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_40_100>
+            double radius = 0.0125
+            double3 xformOp:translate = (0.058, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cube "WormTooth3" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, 0.0115, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "WormTooth4" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float xformOp:rotateX = 36
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, 0.009303695435311895, 0.006759530401363441)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "WormTooth5" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float xformOp:rotateX = 72
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, 0.0035536954353118954, 0.010937149937394265)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "WormTooth6" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float xformOp:rotateX = 108
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, -0.0035536954353118945, 0.010937149937394267)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "WormTooth7" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float xformOp:rotateX = 144
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, -0.009303695435311895, 0.006759530401363442)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "WormTooth8" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float xformOp:rotateX = 180
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, -0.0115, 1.4083438190194562e-18)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "WormTooth9" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float xformOp:rotateX = 216
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, -0.009303695435311897, -0.00675953040136344)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "WormTooth10" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float xformOp:rotateX = 252
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, -0.0035536954353118967, -0.010937149937394265)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "WormTooth11" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float xformOp:rotateX = 288
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, 0.0035536954353118932, -0.010937149937394267)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cube "WormTooth12" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </HeadlampRig/Looks/brass_aa8c47_55_100>
+            double size = 1
+            float xformOp:rotateX = 324
+            float3 xformOp:scale = (0.012, 0.002, 0.002)
+            double3 xformOp:translate = (0.054, 0.009303695435311895, -0.006759530401363444)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+        }
+
+        def Cylinder "ShaftTop13" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.008
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            double radius = 0.0038
+            double3 xformOp:translate = (0.005, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+    }
+
+    def Xform "KeyH" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float3 physics:diagonalInertia = (0.00002, 0.00001, 0.00001)
+        float physics:mass = 0.03
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Mesh "KeyBit1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            float3[] extent = [(-0.009006664, -0.0078, -0.005), (0.009006664, 0.0078, 0.003)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 6, 7, 8, 0, 3, 2, 6, 8, 9, 0, 4, 3, 6, 9, 10, 0, 5, 4, 6, 10, 11, 0, 1, 7, 0, 7, 6, 1, 2, 8, 1, 8, 7, 2, 3, 9, 2, 9, 8, 3, 4, 10, 3, 10, 9, 4, 5, 11, 4, 11, 10, 5, 0, 6, 5, 6, 11]
+            rel material:binding = </HeadlampRig/Looks/steel_999ea8_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            token physics:approximation = "convexHull"
+            point3f[] points = [(0.009006664, 0, -0.005), (0.004503332, 0.0078, -0.005), (-0.004503332, 0.0078, -0.005), (-0.009006664, 1.1029982e-18, -0.005), (-0.004503332, -0.0078, -0.005), (0.004503332, -0.0078, -0.005), (0.009006664, 0, 0.003), (0.004503332, 0.0078, 0.003), (-0.004503332, 0.0078, 0.003), (-0.009006664, 1.1029982e-18, 0.003), (-0.004503332, -0.0078, 0.003), (0.004503332, -0.0078, 0.003)]
+            uniform token subdivisionScheme = "none"
+        }
+
+        def Cylinder "KeyShaft2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.03
+            rel material:binding = </HeadlampRig/Looks/steel_8c8e93_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double radius = 0.0032
+            double3 xformOp:translate = (-0.02, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "TBar3" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Z"
+            double height = 0.04
+            rel material:binding = </HeadlampRig/Looks/grip_9ea0a8_55_100>
+            rel material:binding:physics = </HeadlampRig/Looks/Phys_grip> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double radius = 0.003
+            double3 xformOp:translate = (-0.035, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "TBarCap4" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Z"
+            double height = 0.004
+            rel material:binding = </HeadlampRig/Looks/grip_282b30_55_100>
+            double radius = 0.0035
+            double3 xformOp:translate = (-0.035, 0, -0.021)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "TBarCap5" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Z"
+            double height = 0.004
+            rel material:binding = </HeadlampRig/Looks/grip_282b30_55_100>
+            double radius = 0.0035
+            double3 xformOp:translate = (-0.035, 0, 0.021)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+    }
+
+    def Scope "Joints"
+    {
+        def PhysicsRevoluteJoint "AimYaw" (
+            prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysxJointAPI"]
+        )
+        {
+            float drive:angular:physics:damping = 0.1
+            float drive:angular:physics:maxForce = 20
+            float drive:angular:physics:stiffness = 5.2
+            float drive:angular:physics:targetPosition = 0
+            uniform token drive:angular:physics:type = "force"
+            uniform token physics:axis = "Z"
+            rel physics:body0 = </HeadlampRig>
+            rel physics:body1 = </HeadlampRig/AimYaw>
+            point3f physics:localPos0 = (0.42, -0.13, 0.86)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = -6
+            float physics:upperLimit = 6
+            custom float physxJoint:armature = 0.0002
+        }
+
+        def PhysicsRevoluteJoint "AimPitch" (
+            prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysxJointAPI"]
+        )
+        {
+            float drive:angular:physics:damping = 0.1
+            float drive:angular:physics:maxForce = 20
+            float drive:angular:physics:stiffness = 5.2
+            float drive:angular:physics:targetPosition = 0
+            uniform token drive:angular:physics:type = "force"
+            uniform token physics:axis = "Y"
+            rel physics:body0 = </HeadlampRig/AimYaw>
+            rel physics:body1 = </HeadlampRig/AimPitch>
+            point3f physics:localPos0 = (0, 0, 0)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = -6
+            float physics:upperLimit = 6
+            custom float physxJoint:armature = 0.0002
+        }
+
+        def PhysicsFixedJoint "KeyFixV"
+        {
+            rel physics:body0 = </HeadlampRig/ScrewHeadV>
+            rel physics:body1 = </HeadlampRig/KeyV>
+            point3f physics:localPos0 = (0, 0, 0)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+        }
+
+        def PhysicsRevoluteJoint "ScrewHeadV" (
+            prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysxJointAPI"]
+        )
+        {
+            float drive:angular:physics:damping = 0.001
+            float drive:angular:physics:stiffness = 0
+            float drive:angular:physics:targetPosition = 0
+            uniform token drive:angular:physics:type = "force"
+            uniform token physics:axis = "X"
+            rel physics:body0 = </HeadlampRig>
+            rel physics:body1 = </HeadlampRig/ScrewHeadV>
+            point3f physics:localPos0 = (0.366, -0.175, 0.9)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = -720
+            float physics:upperLimit = 720
+            custom float physxJoint:armature = 2e-7
+        }
+
+        def PhysicsRevoluteJoint "ScrewV" (
+            prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysxJointAPI"]
+        )
+        {
+            float drive:angular:physics:damping = 0.02
+            float drive:angular:physics:maxForce = 0.9
+            float drive:angular:physics:stiffness = 0.5
+            float drive:angular:physics:targetPosition = 0
+            uniform token drive:angular:physics:type = "force"
+            uniform token physics:axis = "X"
+            rel physics:body0 = </HeadlampRig>
+            rel physics:body1 = </HeadlampRig/ScrewShaftV>
+            point3f physics:localPos0 = (0.366, -0.175, 0.9)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = -540
+            float physics:upperLimit = 540
+            custom float physxJoint:armature = 2e-7
+        }
+
+        def PhysicsFixedJoint "KeyFixH"
+        {
+            rel physics:body0 = </HeadlampRig/ScrewHeadH>
+            rel physics:body1 = </HeadlampRig/KeyH>
+            point3f physics:localPos0 = (0, 0, 0)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+        }
+
+        def PhysicsRevoluteJoint "ScrewHeadH" (
+            prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysxJointAPI"]
+        )
+        {
+            float drive:angular:physics:damping = 0.001
+            float drive:angular:physics:stiffness = 0
+            float drive:angular:physics:targetPosition = 0
+            uniform token drive:angular:physics:type = "force"
+            uniform token physics:axis = "X"
+            rel physics:body0 = </HeadlampRig>
+            rel physics:body1 = </HeadlampRig/ScrewHeadH>
+            point3f physics:localPos0 = (0.366, -0.085, 0.9)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = -720
+            float physics:upperLimit = 720
+            custom float physxJoint:armature = 2e-7
+        }
+
+        def PhysicsRevoluteJoint "ScrewH" (
+            prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysxJointAPI"]
+        )
+        {
+            float drive:angular:physics:damping = 0.02
+            float drive:angular:physics:maxForce = 0.9
+            float drive:angular:physics:stiffness = 0.5
+            float drive:angular:physics:targetPosition = 0
+            uniform token drive:angular:physics:type = "force"
+            uniform token physics:axis = "X"
+            rel physics:body0 = </HeadlampRig>
+            rel physics:body1 = </HeadlampRig/ScrewShaftH>
+            point3f physics:localPos0 = (0.366, -0.085, 0.9)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = -540
+            float physics:upperLimit = 540
+            custom float physxJoint:armature = 2e-7
+        }
+    }
+}
+

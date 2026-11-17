@@ -1,0 +1,541 @@
+#usda 1.0
+(
+    defaultPrim = "BeamScreen"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "BeamScreen" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A 1.600 x 1.200 m matte white beam-aiming screen on two legs, its face 3.000 m from the H4 lamp lens. The red horizontal line is the ECE 1.2 % target 36 mm below the lamp centre (0.914 m); the two green lines are the +-15 mm vertical limit; the blue vertical line is the lamp centreline. The screen is fixed to the floor; its face is the x=0 plane of local coordinates (the task spawns it at x=3.620)."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.6, 0.6, 1)
+    float physics:mass = 8
+
+    def Scope "Looks"
+    {
+        def Material "Phys_screen" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.5
+            float physics:restitution = 0
+            float physics:staticFriction = 0.6
+        }
+
+        def Material "screen_dbddd6_55_100"
+        {
+            token outputs:surface.connect = </BeamScreen/Looks/screen_dbddd6_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.86, 0.87, 0.84)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_0f0f10_55_100"
+        {
+            token outputs:surface.connect = </BeamScreen/Looks/c_0f0f10_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.06, 0.06, 0.065)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_stand" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.6
+            float physics:restitution = 0
+            float physics:staticFriction = 0.7
+        }
+
+        def Material "stand_0f0f10_55_100"
+        {
+            token outputs:surface.connect = </BeamScreen/Looks/stand_0f0f10_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.06, 0.06, 0.065)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_rubber" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.8
+            float physics:restitution = 0
+            float physics:staticFriction = 0.9
+        }
+
+        def Material "rubber_1e1e21_55_100"
+        {
+            token outputs:surface.connect = </BeamScreen/Looks/rubber_1e1e21_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.12, 0.12, 0.13)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_b71914_55_100"
+        {
+            token outputs:surface.connect = </BeamScreen/Looks/c_b71914_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.72, 0.1, 0.08)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_198c33_55_100"
+        {
+            token outputs:surface.connect = </BeamScreen/Looks/c_198c33_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.55, 0.2)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_2851b7_55_100"
+        {
+            token outputs:surface.connect = </BeamScreen/Looks/c_2851b7_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.16, 0.32, 0.72)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Board1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/screen_dbddd6_55_100>
+        rel material:binding:physics = </BeamScreen/Looks/Phys_screen> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.02, 1.6, 1.2)
+        double3 xformOp:translate = (0.01, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "SideFrame2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.024, 0.036, 1.236)
+        double3 xformOp:translate = (0.012, -0.8180000000000001, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Foot3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.024, 0.04, 0.06)
+        double3 xformOp:translate = (0.03, -0.58, -0.63)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Leg4" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/stand_0f0f10_55_100>
+        rel material:binding:physics = </BeamScreen/Looks/Phys_stand> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.04, 0.6)
+        double3 xformOp:translate = (0.03, -0.58, -0.8999999999999999)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "FootPad5" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/rubber_1e1e21_55_100>
+        rel material:binding:physics = </BeamScreen/Looks/Phys_rubber> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.08, 0.08, 0.02)
+        double3 xformOp:translate = (0.03, -0.58, -0.89)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "SideFrame6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.024, 0.036, 1.236)
+        double3 xformOp:translate = (0.012, 0.8180000000000001, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Foot7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.024, 0.04, 0.06)
+        double3 xformOp:translate = (0.03, 0.58, -0.63)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Leg8" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/stand_0f0f10_55_100>
+        rel material:binding:physics = </BeamScreen/Looks/Phys_stand> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.04, 0.6)
+        double3 xformOp:translate = (0.03, 0.58, -0.8999999999999999)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "FootPad9" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/rubber_1e1e21_55_100>
+        rel material:binding:physics = </BeamScreen/Looks/Phys_rubber> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.08, 0.08, 0.02)
+        double3 xformOp:translate = (0.03, 0.58, -0.89)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TopFrame10" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.024, 1.672, 0.036)
+        double3 xformOp:translate = (0.012, 0, 0.618)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "BottomFrame11" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.024, 1.672, 0.036)
+        double3 xformOp:translate = (0.012, 0, -0.618)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TargetLine12" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_b71914_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 1.24, 0.012)
+        double3 xformOp:translate = (-0.001, 0, -0.03600000000000003)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "BandLine13" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_198c33_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 1.24, 0.008)
+        double3 xformOp:translate = (-0.0012, 0, -0.05100000000000003)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "BandLine14" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_198c33_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 1.24, 0.008)
+        double3 xformOp:translate = (-0.0012, 0, -0.021000000000000033)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CentreLine15" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_2851b7_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.01, 1)
+        double3 xformOp:translate = (-0.0012, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Tick16" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.024, 0.006)
+        double3 xformOp:translate = (-0.0012, 0, -0.5)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Tick17" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.024, 0.006)
+        double3 xformOp:translate = (-0.0012, 0, -0.4)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Tick18" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.024, 0.006)
+        double3 xformOp:translate = (-0.0012, 0, -0.30000000000000004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Tick19" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.024, 0.006)
+        double3 xformOp:translate = (-0.0012, 0, -0.2)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Tick20" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.024, 0.006)
+        double3 xformOp:translate = (-0.0012, 0, -0.1)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Tick21" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.024, 0.006)
+        double3 xformOp:translate = (-0.0012, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Tick22" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.024, 0.006)
+        double3 xformOp:translate = (-0.0012, 0, 0.1)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Tick23" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.024, 0.006)
+        double3 xformOp:translate = (-0.0012, 0, 0.2)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Tick24" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.024, 0.006)
+        double3 xformOp:translate = (-0.0012, 0, 0.30000000000000004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Tick25" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.024, 0.006)
+        double3 xformOp:translate = (-0.0012, 0, 0.4)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Tick26" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.024, 0.006)
+        double3 xformOp:translate = (-0.0012, 0, 0.5)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "ScaleTick27" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.02, 0.008)
+        double3 xformOp:translate = (-0.0012, 0.66, -0.48)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "ScaleTick28" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.02, 0.008)
+        double3 xformOp:translate = (-0.0012, 0.7000000000000001, -0.48)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "ScaleTick29" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.02, 0.008)
+        double3 xformOp:translate = (-0.0012, 0.74, -0.48)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "ScaleTick30" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.02, 0.008)
+        double3 xformOp:translate = (-0.0012, 0.78, -0.48)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "ScaleTick31" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.02, 0.008)
+        double3 xformOp:translate = (-0.0012, 0.8200000000000001, -0.48)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "ScaleTick32" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.02, 0.008)
+        double3 xformOp:translate = (-0.0012, 0.8600000000000001, -0.48)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "ScaleRule33" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamScreen/Looks/c_0f0f10_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.002, 0.2)
+        double3 xformOp:translate = (-0.0012, 0.7, -0.48)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

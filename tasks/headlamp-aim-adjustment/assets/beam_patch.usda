@@ -1,0 +1,113 @@
+#usda 1.0
+(
+    defaultPrim = "BeamPatch"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "BeamPatch" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A collision-free low-beam light patch on the aiming screen. Local frame: x=0 at the screen face, +y to the lamp's left (the horizontal cut-off runs to +y), +z up; the horizontal cut-off edge is at z=0.500 and the 15 deg kick-up rises to the right (-y). The task moves this visual body from the lamp's real pose; the score never reads it."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0.25)
+    float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+    float physics:mass = 0.002
+
+    def Scope "Looks"
+    {
+        def Material "beam_ffea9e_90_050"
+        {
+            token outputs:surface.connect = </BeamPatch/Looks/beam_ffea9e_90_050/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (1, 0.92, 0.62)
+                float inputs:metallic = 0
+                float inputs:opacity = 0.5
+                float inputs:roughness = 0.9
+                token outputs:surface
+            }
+        }
+
+        def Material "c_fff7d1_55_095"
+        {
+            token outputs:surface.connect = </BeamPatch/Looks/c_fff7d1_55_095/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (1, 0.97, 0.82)
+                float inputs:metallic = 0
+                float inputs:opacity = 0.95
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_ffedb2_90_065"
+        {
+            token outputs:surface.connect = </BeamPatch/Looks/c_ffedb2_90_065/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (1, 0.93, 0.7)
+                float inputs:metallic = 0
+                float inputs:opacity = 0.65
+                float inputs:roughness = 0.9
+                token outputs:surface
+            }
+        }
+    }
+
+    def Mesh "Beam1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        float3[] extent = [(0, -0.62, 0), (0, 0.62, 0.6661285)]
+        int[] faceVertexCounts = [3, 3, 3]
+        int[] faceVertexIndices = [0, 1, 2, 0, 2, 3, 0, 3, 4]
+        rel material:binding = </BeamPatch/Looks/beam_ffea9e_90_050>
+        point3f[] points = [(0, -0.62, 0), (0, 0.62, 0), (0, 0.62, 0.5), (0, 0, 0.5), (0, -0.62, 0.6661285)]
+        uniform token subdivisionScheme = "none"
+    }
+
+    def Cube "CutoffBar2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamPatch/Looks/c_fff7d1_55_095>
+        double size = 1
+        float3 xformOp:scale = (0.002, 0.62, 0.02)
+        double3 xformOp:translate = (0, 0.31, 0.503)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "KickBar3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BeamPatch/Looks/c_fff7d1_55_095>
+        double size = 1
+        float xformOp:rotateX = -15
+        float3 xformOp:scale = (0.002, 0.625, 0.02)
+        double3 xformOp:translate = (0, -0.31, 0.583064249653648)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX", "xformOp:scale"]
+    }
+
+    def Cylinder "HotSpot4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.003
+        rel material:binding = </BeamPatch/Looks/c_ffedb2_90_065>
+        double radius = 0.095
+        double3 xformOp:translate = (-0.0015, 0.05, 0.405)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+
