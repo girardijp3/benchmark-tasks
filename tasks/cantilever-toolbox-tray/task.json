@@ -1,0 +1,23 @@
+{
+  "title": "Open a cantilever toolbox's two latches and unfold its five trays",
+  "category": "Impact on jobs",
+  "keywords": [
+    "cantilever toolbox",
+    "metal draw latch",
+    "five trays",
+    "parallelogram arm",
+    "tray handle",
+    "maintenance technician",
+    "automotive technician",
+    "tool storage"
+  ],
+  "instruction": "Release both metal latches on the cantilever toolbox, then lift its lid handle until the trays are fully open, leaving the box steady and the tools in place.",
+  "context": "Mechanics and maintenance technicians open a steel cantilever toolbox on the bench several times a day: two metal draw latches hold the lid shut, and lifting the lid's tray handle fans the loaded trays out in one motion. The box is carried by its bail; on the bench it stands on four rubber feet. A latch that is forced, a tipped box or a tool left over a tray edge is a real failure: the trays are shallow and the tools slide out. Maintenance and repair workers (BLS OEWS May 2024, SOC 49-9071, about 1.5 million jobs) and automotive service technicians (SOC 49-3023) do this work. The real trial uses a Stanley 1-94-738 18 in. box (460 x 208 x 208 mm, 4.8 kg, five trays, two metal latches), a 150 mm adjustable wrench, a 120 mm screwdriver and a 300 mm claw hammer.",
+  "setup": "Positions are in metres from the midpoint between the arm bases, x forward, y to the robot's left, table top z 0. A Stanley 1-94-738 steel cantilever box stands at x 0.43, y 0, its 460 mm length along y and its 208 mm front face toward the robot, on four 30 x 40 mm rubber feet. Its black base is 105 mm tall; the closed yellow lid is 208 mm above the table. Five trays: the black base tray, two fixed nested trays inside it, and two moving trays, the left one lower and the right one 40 mm higher, each 160 x 150 x 30 mm. The lid has a wire tray handle, its 60 mm grip bar at x 0.370, y 0, z 0.9635. Two steel draw latches hang on the front corners at y +-0.160; each 35 mm plate ends in a 10 mm knob at x 0.308, z 0.9125, and its hook sits under a keeper on the lid. A 150 mm adjustable wrench (0.35 kg) lies in the left tray, a 120 mm screwdriver (0.15 kg) in the right, a 300 mm claw hammer (0.50 kg) in the upper fixed tray. The two YAM arms are at READY. The box is free on its feet; it is not clamped.",
+  "scoring": "The scored state is the box's own joints and poses. The ladder: 0.25 when both latches are released (each plate at least 18 degrees out); 0.5 when both latches are released and the lid is lifted at least 30 mm; 0.75 when the lid is at least 105 mm up and both arms have swung their trays fully out (left arm -120 degrees or past, right +130 or past) with every tool still in its tray; 1.0 when that full state also holds for 1 s with the box stable (tilt within 2 degrees, base within 10 mm), all four feet down, and both grippers clear (no grip, no pad within 50 mm of the box sides). Anything else, including doing nothing, scores 0. A latch forced open without a hand on its knob, a tool dropped out of its tray, or a gripper pad inside the closing tray/lid gap caps the score at 0.5 for the rest of the run. A box tilted over 5 degrees, moved over 30 mm or off the table scores 0. The real trial reads latch angles with a protractor, the lid height with a ruler, the tray angles from the arm links, and the latch force with a small gauge (4-7 N at the knob). A stopwatch on the video times only the 1 s full-score hold, after both hands are clear.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz)",
+  "reset_notes": "Close both latches (0 degrees), let the lid down (0 mm), both arms at 0 (trays folded and level), and put the wrench, screwdriver and hammer in their trays. Set the box at x 0.43, y 0, table top + 1 mm and let it settle onto its four feet; set both arms at READY. Wipe the feet and the bench before the trial.",
+  "fidelity": "Real (Stanley 1-94-738): 460 x 208 x 208 mm, 4.8 kg, five trays, two metal latches, two carry bails, 35 kg load. Sim: same size and a 4.74 kg box; 0.35/0.15/0.50 kg tools; 0.40 kg lid; two 35 mm draw latches with a 7 N spring detent (EST from the 4-7 N brief); the lid-to-arm coupling is declared; each tray's leveling hinge stands in for the second parallel arm; 160 x 150 x 30 mm trays (EST); latch, handle and tray positions EST from the product photos. No mass, size or force is reduced.",
+  "scores": "Dream-1: 0.0 (2,400 steps, 2,401 action rows); demo: 1.0 at step 359 on Isaac/MuJoCo. MuJoCo lift 114.2 mm; Isaac lift 115.0 mm, arms -130/+135 deg, latches -25/-25 deg, tools in place, no fault. Idle 0; one latch 0; both 0.25; lid 0.5; open 0.75; damage/pinch/forced 0.5; tipped 0; pytest 20.",
+  "media": "M-KB3KQQ"
+}

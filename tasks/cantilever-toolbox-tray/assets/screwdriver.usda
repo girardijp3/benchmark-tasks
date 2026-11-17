@@ -1,0 +1,126 @@
+#usda 1.0
+(
+    defaultPrim = "Screwdriver"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Screwdriver" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A 120 mm screwdriver: 60 mm acetate handle, 60 mm steel blade.  Rests in the right moving tray.  Origin: the centre of the handle."
+)
+{
+    point3f physics:centerOfMass = (0, 0.02, 0)
+    float3 physics:diagonalInertia = (0.0001872, 0.0000144, 0.0001872)
+    float physics:mass = 0.15
+
+    def Scope "Looks"
+    {
+        def Material "Phys_handle" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.45
+            float physics:restitution = 0
+            float physics:staticFriction = 0.55
+        }
+
+        def Material "m740904"
+        {
+            token outputs:surface.connect = </Screwdriver/Looks/m740904/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.75, 0.1, 0.05)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_steel" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.45
+            float physics:restitution = 0
+            float physics:staticFriction = 0.55
+        }
+
+        def Material "steel"
+        {
+            token outputs:surface.connect = </Screwdriver/Looks/steel/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.62, 0.64, 0.66)
+                float inputs:metallic = 0.8
+                float inputs:roughness = 0.3
+                token outputs:surface
+            }
+        }
+
+        def Material "m616365"
+        {
+            token outputs:surface.connect = </Screwdriver/Looks/m616365/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.62, 0.64, 0.66)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cylinder "Handle1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.06
+        rel material:binding = </Screwdriver/Looks/m740904>
+        rel material:binding:physics = </Screwdriver/Looks/Phys_handle> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.012
+        double3 xformOp:translate = (0, -0.03, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Blade2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.07
+        rel material:binding = </Screwdriver/Looks/steel>
+        rel material:binding:physics = </Screwdriver/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.003
+        double3 xformOp:translate = (0, 0.035, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "Tip3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Screwdriver/Looks/m616365>
+        double size = 1
+        float3 xformOp:scale = (0.006, 0.006, 0.004)
+        double3 xformOp:translate = (0, 0.072, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+
