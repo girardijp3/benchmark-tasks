@@ -1,0 +1,60 @@
+#usda 1.0
+(
+    defaultPrim = "DebrisChip"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "DebrisChip" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A light piece of real vacuum debris (dust grit / dry leaf fragment), a free rigid body."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (4.5666667e-8, 1.2566667e-7, 9.066667e-8)
+    float physics:mass = 0.004
+
+    def Scope "Looks"
+    {
+        def Material "Phys_debris" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.5
+            float physics:restitution = 0
+            float physics:staticFriction = 0.6
+        }
+
+        def Material "m615439"
+        {
+            token outputs:surface.connect = </DebrisChip/Looks/m615439/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.62, 0.55, 0.4)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Debris1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </DebrisChip/Looks/m615439>
+        rel material:binding:physics = </DebrisChip/Looks/Phys_debris> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.0008
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.016, 0.004, 0.011)
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

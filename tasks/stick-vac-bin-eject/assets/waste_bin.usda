@@ -1,0 +1,202 @@
+#usda 1.0
+(
+    defaultPrim = "WasteBin"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "WasteBin" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "An open-top 180 x 180 x 130 mm household waste bin (fixed on the bench): 6 mm walls, a 10 mm floor and a rolled rim. The stick-vac's dust bin is held over it and emptied into it."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0.07)
+    float3 physics:diagonalInertia = (0.002, 0.002, 0.002)
+    float physics:mass = 0.3
+
+    def Scope "Looks"
+    {
+        def Material "Phys_plastic" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.45
+            float physics:restitution = 0
+            float physics:staticFriction = 0.55
+        }
+
+        def Material "m192022"
+        {
+            token outputs:surface.connect = </WasteBin/Looks/m192022/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.2, 0.21, 0.23)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "m414345"
+        {
+            token outputs:surface.connect = </WasteBin/Looks/m414345/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.42, 0.44, 0.46)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Floor1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </WasteBin/Looks/m192022>
+        rel material:binding:physics = </WasteBin/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.0008
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.24, 0.24, 0.01)
+        double3 xformOp:translate = (0, 0, 0.005)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Wall2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </WasteBin/Looks/m192022>
+        rel material:binding:physics = </WasteBin/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.0008
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.24, 0.006, 0.035)
+        double3 xformOp:translate = (0, -0.11699999999999999, 0.0175)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Wall3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </WasteBin/Looks/m192022>
+        rel material:binding:physics = </WasteBin/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.0008
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.24, 0.006, 0.035)
+        double3 xformOp:translate = (0, 0.11699999999999999, 0.0175)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Wall4" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </WasteBin/Looks/m192022>
+        rel material:binding:physics = </WasteBin/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.0008
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.006, 0.228, 0.035)
+        double3 xformOp:translate = (-0.11699999999999999, 0, 0.0175)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Wall5" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </WasteBin/Looks/m192022>
+        rel material:binding:physics = </WasteBin/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.0008
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.006, 0.228, 0.035)
+        double3 xformOp:translate = (0.11699999999999999, 0, 0.0175)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Rim6" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </WasteBin/Looks/m414345>
+        rel material:binding:physics = </WasteBin/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.0008
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.256, 0.008, 0.008)
+        double3 xformOp:translate = (0, -0.124, 0.035)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Rim7" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </WasteBin/Looks/m414345>
+        rel material:binding:physics = </WasteBin/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.0008
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.256, 0.008, 0.008)
+        double3 xformOp:translate = (0, 0.124, 0.035)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Rim8" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </WasteBin/Looks/m414345>
+        rel material:binding:physics = </WasteBin/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.0008
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.008, 0.256, 0.008)
+        double3 xformOp:translate = (-0.124, 0, 0.035)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Rim9" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </WasteBin/Looks/m414345>
+        rel material:binding:physics = </WasteBin/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.0008
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.008, 0.256, 0.008)
+        double3 xformOp:translate = (0.124, 0, 0.035)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

@@ -1,0 +1,23 @@
+{
+  "title": "Release a stick vacuum's dust bin, empty it into the waste bin, then refit and latch it",
+  "category": "Impact on jobs",
+  "keywords": [
+    "stick vacuum",
+    "dyson v6",
+    "0.4 l dust bin",
+    "red release button",
+    "bin eject",
+    "bottom dump flap",
+    "waste bin",
+    "household cleaning"
+  ],
+  "instruction": "Press the stick vacuum's red bin-release button, pull the clear dust bin out, empty its dust into the waste bin, then refit and latch the bin.",
+  "context": "Household cleaners and janitors empty a cordless stick vacuum's clear dust bin several times a week. On the Dyson V6 Cord-free the 0.4 L clear bin seats on the front of the motor body; a red spring button releases it, the bin pulls forward off its cradle, its bottom dump flap opens to drop the dust into a waste bin, and the bin slides back until the button clicks. Forcing the bin out with the latch shut, spilling dust outside the waste bin, leaving the bin unlatched or tipping the 2.04 kg vac are real failures. Maids and housekeeping cleaners (BLS OEWS May 2024, SOC 37-2012, about 900,000 jobs) and janitors (SOC 37-2011, about 2.2 million) do this work. The trial uses a Dyson V6-class body (120 x 150 x 195 mm module, 2.04 kg, 0.4 L clear bin, red release button) and a 240 x 240 x 35 mm waste bin.",
+  "setup": "Positions are in metres from the midpoint between the arm bases, x forward, y to the robot's left, table top z 0. A Dyson V6-class motor/body module stands at x 0.36, y 0, footprint 120 x 150 mm, 195 mm tall, 2.04 kg, on four rubber feet; its wand and floor head are fixed visual props behind it. The clear 70 x 70 x 85 mm (0.42 L) dust bin is seated in the front cradle at x 0.29, y 0, its bottom face 16 mm above the table. The red release button on a bracket at x 0.292, y 0, z 0.215 is a 10 mm prismatic press with a 600 N/m spring (6 N at the stop, the brief's 4-7 N). A 240 x 240 x 35 mm open waste bin stands at x 0.30, y 0.22. Six light debris pieces (about 60 g total) rest inside the dust bin. The two YAM arms are at READY; the right arm does the sequence, the left stays home. The vac is free on its feet, not clamped.",
+  "scoring": "The scored state is the vac's and bin's own joints and poses. Ladder: 0.25 when the red button has been pressed past 5 mm by a hand (bin unlatched); 0.5 when the bin has also been pulled at least 50 mm from its seat; 0.75 when all six debris pieces are in the waste bin; 1.0 when the bin is refitted within 12 mm of its seat, the button has clicked shut, the vac is stable (tilt <= 2 degrees, base <= 10 mm), both grippers are clear and that state holds 1 s. Otherwise 0, including doing nothing. Caps: a bin dropped off the bench caps at 0.25; dust left in the bin or an unlatched refit caps at 0.75; pulling the bin out with the latch shut or seating it with the button still held caps at 0.5; a vac tilted over 8 degrees, moved over 25 mm or off the table scores 0. The real trial reads the button press with a 4-7 N gauge and a ruler, bin travel and dust landing from the video, and the 1 s hold with a stopwatch after both hands are clear.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz)",
+  "reset_notes": "Set the button to 0 mm (out), the dust bin at x 0.29, y 0, table top + 17 mm with its flap shut, and all six debris pieces inside it. Set the waste bin at x 0.30, y 0.22 and the vac at x 0.36, y 0, table top + 1 mm; let it settle on its four feet. Set both arms to READY and wipe the bench.",
+  "fidelity": "Real (Dyson V6 Cord-free): 2.04 kg, 0.4 L bin, red button (Dyson specs); whole vac 211 x 1180 x 208 mm. Sim: 120 x 150 x 195 mm body at 2.04 kg; clear bin 70 x 70 x 85 mm (0.42 L) 0.14 kg + 0.06 kg debris; button 10 mm prismatic, 600 N/m (6 N); waste bin 240 x 240 x 35 mm. No mass/size/force reduced. The flap's red-tab release is declared (opens over the waste bin); flap, hinge, free bin and debris are real bodies. Wand/head are visual.",
+  "scores": "Dream-1: 0.0 (2,400 steps, 2,401 action rows); demo: 1.0 at step 520 on Isaac/MuJoCo. Idle 0; button 0.25; bin out 0.5; dust emptied 0.75; refit+hold 1.0. 6 N button, side-wall grip and declared bottom-flap dump verified on Isaac; no drop, forced pull, missing dust or tip fault; pytest 19.",
+  "media": "M-YDWAFV"
+}

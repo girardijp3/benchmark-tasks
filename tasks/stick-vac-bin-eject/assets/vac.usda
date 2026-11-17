@@ -1,0 +1,504 @@
+#usda 1.0
+(
+    defaultPrim = "StickVac"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "StickVac" (
+    doc = "Dyson V6-class cordless stick-vacuum motor/body module on the bench: a 120 x 150 x 195 mm housing with a front cradle for the 0.4 L clear bin, a red spring bin-release button (600 N/m, 10 mm, 6 N) on the front top, and a fixed wand/floor-head prop. The body is a free articulation; the button is a prismatic link. Origin at the middle of the body footprint on the bench."
+)
+{
+    def Scope "Looks"
+    {
+        def Material "Phys_rubber" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 1
+            float physics:restitution = 0
+            float physics:staticFriction = 1.2
+        }
+
+        def Material "m090910"
+        {
+            token outputs:surface.connect = </StickVac/Looks/m090910/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.1, 0.11)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_plastic" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.35
+            float physics:restitution = 0
+            float physics:staticFriction = 0.45
+        }
+
+        def Material "m818284"
+        {
+            token outputs:surface.connect = </StickVac/Looks/m818284/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.82, 0.83, 0.85)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "m151618"
+        {
+            token outputs:surface.connect = </StickVac/Looks/m151618/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.16, 0.17, 0.19)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "m291547"
+        {
+            token outputs:surface.connect = </StickVac/Looks/m291547/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.3, 0.16, 0.48)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "m919189"
+        {
+            token outputs:surface.connect = </StickVac/Looks/m919189/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.92, 0.92, 0.9)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_steel" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.35
+            float physics:restitution = 0
+            float physics:staticFriction = 0.45
+        }
+
+        def Material "m616365"
+        {
+            token outputs:surface.connect = </StickVac/Looks/m616365/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.62, 0.64, 0.66)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "m840909"
+        {
+            token outputs:surface.connect = </StickVac/Looks/m840909/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.85, 0.1, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "m610505"
+        {
+            token outputs:surface.connect = </StickVac/Looks/m610505/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.62, 0.06, 0.06)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+    }
+
+    def Xform "Body" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysicsArticulationRootAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.105)
+        float3 physics:diagonalInertia = (0.009583125, 0.008300625, 0.0058425)
+        float physics:mass = 1.9
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "Foot1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </StickVac/Looks/m090910>
+            rel material:binding:physics = </StickVac/Looks/Phys_rubber> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.024, 0.024, 0.01)
+            double3 xformOp:translate = (-0.045, -0.058, 0.005)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Foot2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </StickVac/Looks/m090910>
+            rel material:binding:physics = </StickVac/Looks/Phys_rubber> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.024, 0.024, 0.01)
+            double3 xformOp:translate = (-0.045, 0.058, 0.005)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Foot3" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </StickVac/Looks/m090910>
+            rel material:binding:physics = </StickVac/Looks/Phys_rubber> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.024, 0.024, 0.01)
+            double3 xformOp:translate = (0.045, -0.058, 0.005)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Foot4" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </StickVac/Looks/m090910>
+            rel material:binding:physics = </StickVac/Looks/Phys_rubber> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.024, 0.024, 0.01)
+            double3 xformOp:translate = (0.045, 0.058, 0.005)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Shell5" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </StickVac/Looks/m818284>
+            rel material:binding:physics = </StickVac/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.09, 0.15, 0.185)
+            double3 xformOp:translate = (0.015, 0, 0.1025)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "CradleShelf6" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </StickVac/Looks/m151618>
+            rel material:binding:physics = </StickVac/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.09, 0.098, 0.006)
+            double3 xformOp:translate = (-0.045, 0, 0.013)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "CradleSide7" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </StickVac/Looks/m151618>
+            rel material:binding:physics = </StickVac/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.09, 0.006, 0.014)
+            double3 xformOp:translate = (-0.045, -0.055, 0.023)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "CradleSide8" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </StickVac/Looks/m151618>
+            rel material:binding:physics = </StickVac/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.09, 0.006, 0.014)
+            double3 xformOp:translate = (-0.045, 0.055, 0.023)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "CradleBack9" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </StickVac/Looks/m151618>
+            rel material:binding:physics = </StickVac/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.008, 0.116, 0.014)
+            double3 xformOp:translate = (0, 0, 0.023)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cylinder "Motor10" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Z"
+            double height = 0.08
+            rel material:binding = </StickVac/Looks/m151618>
+            rel material:binding:physics = </StickVac/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            double radius = 0.04
+            double3 xformOp:translate = (0.01, 0, 0.155)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "MotorCap11" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Z"
+            double height = 0.012
+            rel material:binding = </StickVac/Looks/m291547>
+            rel material:binding:physics = </StickVac/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            double radius = 0.036
+            double3 xformOp:translate = (0.01, 0, 0.2)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cube "Accent12" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </StickVac/Looks/m291547>
+            double size = 1
+            float3 xformOp:scale = (0.092, 0.152, 0.012)
+            double3 xformOp:translate = (0.015, 0, 0.185)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Label13" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </StickVac/Looks/m919189>
+            double size = 1
+            float3 xformOp:scale = (0.055, 0.002, 0.03)
+            double3 xformOp:translate = (-0.03, -0.0755, 0.12)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cylinder "Wand14" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.22
+            rel material:binding = </StickVac/Looks/m616365>
+            rel material:binding:physics = </StickVac/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            double radius = 0.012
+            double3 xformOp:translate = (0.125, 0, 0.14)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cube "FloorHead15" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </StickVac/Looks/m151618>
+            rel material:binding:physics = </StickVac/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.09, 0.15, 0.03)
+            double3 xformOp:translate = (0.245, 0, 0.04)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cylinder "HeadNeck16" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Z"
+            double height = 0.04
+            rel material:binding = </StickVac/Looks/m291547>
+            double radius = 0.014
+            double3 xformOp:translate = (0.245, 0, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cube "EjectBracket17" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </StickVac/Looks/m151618>
+            rel material:binding:physics = </StickVac/Looks/Phys_plastic> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.05, 0.008, 0.006)
+            double3 xformOp:translate = (-0.044, 0, 0.211)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+
+    def Xform "Eject" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (-0.01, 0, 0)
+        float3 physics:diagonalInertia = (0.00002, 0.00002, 0.00002)
+        float physics:mass = 0.01
+        double3 xformOp:translate = (-0.058, 0, 0.215)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cylinder "EjectStem18" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "X"
+            double height = 0.014
+            rel material:binding = </StickVac/Looks/m616365>
+            rel material:binding:physics = </StickVac/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            double radius = 0.005
+            double3 xformOp:translate = (-0.007, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "EjectKnob19" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.02
+            rel material:binding = </StickVac/Looks/m840909>
+            rel material:binding:physics = </StickVac/Looks/Phys_rubber> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.0008
+            custom float physxCollision:restOffset = 0
+            double radius = 0.007
+            double3 xformOp:translate = (-0.01, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "EjectSleeve20" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.016
+            rel material:binding = </StickVac/Looks/m610505>
+            double radius = 0.0088
+            double3 xformOp:translate = (-0.01, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+    }
+
+    def PhysicsPrismaticJoint "EjectPress" (
+        prepend apiSchemas = ["PhysicsDriveAPI:linear"]
+        doc = "Red bin-release button: 0 = out (latched), +10 mm = pressed (bin released). 600 N/m = 6 N at the stop; the spring returns it to 0 when let go (the click)."
+    )
+    {
+        float drive:linear:physics:damping = 1
+        float drive:linear:physics:stiffness = 600
+        float drive:linear:physics:targetPosition = 0
+        uniform token drive:linear:physics:type = "force"
+        uniform token physics:axis = "X"
+        rel physics:body0 = </StickVac/Body>
+        rel physics:body1 = </StickVac/Eject>
+        point3f physics:localPos0 = (-0.058, 0, 0.215)
+        point3f physics:localPos1 = (0, 0, 0)
+        quatf physics:localRot0 = (1, 0, 0, 0)
+        quatf physics:localRot1 = (1, 0, 0, 0)
+        float physics:lowerLimit = 0
+        float physics:upperLimit = 0.01
+    }
+}
+
