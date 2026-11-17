@@ -119,3 +119,5 @@ Fidelity: Match true size but 2 g (real ~0.12 g; 0.12 g tried on Isaac: the pads
 ## Status
 
 Dream-1 score: 0.0 (580 steps, hit the step limit). Demo: 1.0 at step 431 (21.55 s). Media M-VY4P4W.
+
+Revision after review: real-trial scoring is the ignition and flame seen on video (no force term on the hand-held box), and real trials use the pad heat shields above. The demo trajectory and score are unchanged, so the media is unchanged.
