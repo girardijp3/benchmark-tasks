@@ -1,0 +1,348 @@
+#usda 1.0
+(
+    defaultPrim = "Valve"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Valve" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI"]
+    doc = "20 mm brass spring check valve in a bench fixture (welded)"
+)
+{
+    bool physics:kinematicEnabled = 1
+
+    def Scope "Looks"
+    {
+        def Material "m596265_43"
+        {
+            token outputs:surface.connect = </Valve/Looks/m596265_43/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.6, 0.63, 0.66)
+                float inputs:metallic = 0.5
+                float inputs:roughness = 0.4
+                token outputs:surface
+            }
+        }
+
+        def Material "m091011_05"
+        {
+            token outputs:surface.connect = </Valve/Looks/m091011_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m715419_72"
+        {
+            token outputs:surface.connect = </Valve/Looks/m715419_72/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.72, 0.55, 0.2)
+                float inputs:metallic = 0.8
+                float inputs:roughness = 0.3
+                token outputs:surface
+            }
+        }
+
+        def Material "m020202_05"
+        {
+            token outputs:surface.connect = </Valve/Looks/m020202_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.03, 0.03, 0.03)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_55"
+        {
+            token outputs:surface.connect = </Valve/Looks/m697174_55/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.6
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m791311_05"
+        {
+            token outputs:surface.connect = </Valve/Looks/m791311_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.8, 0.14, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m092979_05"
+        {
+            token outputs:surface.connect = </Valve/Looks/m092979_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.3, 0.8)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m596265_35"
+        {
+            token outputs:surface.connect = </Valve/Looks/m596265_35/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.6, 0.63, 0.66)
+                float inputs:metallic = 0.4
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Fixture1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Valve/Looks/m596265_43>
+        double size = 1
+        float3 xformOp:scale = (0.09, 0.09, 0.05)
+        double3 xformOp:translate = (0, 0, 0.025)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TopPlate2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Valve/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.092, 0.092, 0.003)
+        double3 xformOp:translate = (0, 0, 0.0505)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Body3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.04
+        rel material:binding = </Valve/Looks/m715419_72>
+        double radius = 0.014
+        double3 xformOp:translate = (0, 0, 0.07)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Inlet4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.008
+        rel material:binding = </Valve/Looks/m715419_72>
+        double radius = 0.01
+        double3 xformOp:translate = (0, 0, 0.047)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Outlet5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.006
+        rel material:binding = </Valve/Looks/m715419_72>
+        double radius = 0.01
+        double3 xformOp:translate = (0, 0, 0.092)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Bore6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.038
+        rel material:binding = </Valve/Looks/m020202_05>
+        double radius = 0.0062
+        double3 xformOp:translate = (0, 0, 0.07)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Seat7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.002
+        rel material:binding = </Valve/Looks/m697174_55>
+        double radius = 0.009
+        double3 xformOp:translate = (0, 0, 0.062)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "InletButton8" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.004
+        rel material:binding = </Valve/Looks/m791311_05>
+        double radius = 0.005
+        double3 xformOp:translate = (-0.032, -0.025, 0.0305)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "OutletButton9" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.004
+        rel material:binding = </Valve/Looks/m092979_05>
+        double radius = 0.005
+        double3 xformOp:translate = (-0.032, 0.025, 0.0305)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "PoppetPocketBase10" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Valve/Looks/m596265_35>
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.032, 0.008)
+        double3 xformOp:translate = (0, 0.045, 0.004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "PoppetPocketWallA11" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Valve/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.003, 0.014)
+        double3 xformOp:translate = (0, 0.028999999999999998, 0.01)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "PoppetPocketWallB12" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Valve/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.003, 0.014)
+        double3 xformOp:translate = (0, 0.061, 0.01)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "SpringPocketBase13" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Valve/Looks/m596265_35>
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.032, 0.008)
+        double3 xformOp:translate = (0, 0.07, 0.004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "SpringPocketWallA14" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Valve/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.003, 0.014)
+        double3 xformOp:translate = (0, 0.054000000000000006, 0.01)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "SpringPocketWallB15" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Valve/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.003, 0.014)
+        double3 xformOp:translate = (0, 0.08600000000000001, 0.01)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CapPegBase16" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Valve/Looks/m596265_35>
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.032, 0.008)
+        double3 xformOp:translate = (0, -0.045, 0.004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CapPegWallA17" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Valve/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.003, 0.014)
+        double3 xformOp:translate = (0, -0.061, 0.01)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CapPegWallB18" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Valve/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.003, 0.014)
+        double3 xformOp:translate = (0, -0.028999999999999998, 0.01)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "CapPegPin19" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.012
+        rel material:binding = </Valve/Looks/m091011_05>
+        double radius = 0.004
+        double3 xformOp:translate = (0, -0.045, 0.014)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+

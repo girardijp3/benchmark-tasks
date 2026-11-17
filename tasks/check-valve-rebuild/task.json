@@ -1,0 +1,23 @@
+{
+  "title": "Rebuild a 20 mm brass spring check valve: seat the poppet and spring, thread the cap and verify one-way flow",
+  "category": "Impact on jobs",
+  "keywords": [
+    "check valve",
+    "poppet and seat",
+    "compression spring",
+    "threaded cap",
+    "one-way flow",
+    "brass",
+    "plumbing",
+    "maintenance"
+  ],
+  "instruction": "Open the brass check valve's body, seat the new poppet seal-face-down on the seat, fit the spring, thread the cap back on, then verify one-way flow and let go.",
+  "context": "Plumbers and maintenance technicians rebuild small brass spring check valves on pumps, compressors and domestic water lines: the threaded cap comes off, a worn poppet/disc and spring are replaced in the right order and orientation, the cap is threaded back down, and the valve is tested so flow passes one way but not the other. A poppet fitted backwards, a missing spring, a cross-threaded cap or a dropped part leaves the valve leaking or stuck, which is a real callback. The skill is a sequence of small-part handling, orientation and a press/twist against a 4-7 N spring and a 0.3-0.6 N m cap. Plumbers, pipefitters and maintenance workers (BLS OEWS SOC 47-2152 and 49-9071) do this work. The real trial uses a 20 mm brass spring check valve (poppet, spring, threaded cap), a seat and two test ports.",
+  "setup": "Positions are in metres from the midpoint between the arm bases, x forward, y to the robot's left, table top z 0 (world z 0.7475). A 20 mm brass spring check valve sits in a 90 x 90 x 50 mm aluminium bench fixture at x 0.25, y 0, its axis vertical: the brass body runs from z 0.050 to 0.090 with its seat ledge at z 0.062. The new 16 mm poppet (rubber seal face down, guide stem up) waits in a pocket at x 0.25, y 0.045; the 14 mm compression spring at x 0.25, y 0.070; the 26 mm threaded cap starts seated on the body and is parked on a peg at x 0.25, y -0.045. Two test buttons on the fixture front (x 0.218, y +-0.025) press 6 mm to apply forward or reverse flow. The valve fixture is fixed; both YAM arms start at READY.",
+  "scoring": "Four steps, 0.25 each, as things stand. (1) The body has been opened (cap lifted clear and set aside). (2) With that, the poppet is seated seal-face-down on the seat and the spring is seated on it. (3) With that, the cap is threaded back down (at least 60 degrees of twist) and forward flow is verified: pressing the inlet button lifts the poppet off its seat. (4) With that, backflow is blocked: pressing the outlet button leaves the poppet seated and sealed. Full score 1.0 only when all four steps hold for 1 s, the valve is intact, and both grippers are clear and home; any lapse restarts the second, and the step points stop at 0.75. A reversed poppet, a missing spring, a cross-threaded cap, a part dropped off the bench, or a leak/backflow caps the score at 0.5 for the rest of the run. Idle scores 0. The real trial reads cap twist with a protractor, poppet lift with a feeler gauge, cap torque with a small gauge (0.3-0.6 N m) and spring force (4-7 N); a stopwatch times only the 1 s hold.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz)",
+  "reset_notes": "Thread the cap back onto the body (twist 0, cap seated at z 0.097), leave the seat bare, and put the new poppet in its pocket at x 0.25, y 0.045 and the spring at x 0.25, y 0.070. Set both arms at READY and wipe the bench.",
+  "fidelity": "Real 20 mm brass spring check valve class: cap 26 mm across flats, poppet disc 16 mm with a rubber seal face, 14 mm OD x 24 mm compression spring, 12 mm seat bore, 4-7 N spring force, 0.3-0.6 N m cap torque. Rigid bodies, 240 Hz physics, 20 Hz control. A closed gripper carries the part (declared carry, like the family's detents); the reach, grip, orientation, seat, thread and both flow tests are real. Buttons stand in for a pressure source; no fluid. Masses: cap 30 g, poppet 8 g, spring 4 g.",
+  "scores": "Dream-1: 0.0 (2,400 steps, 2,401 action rows); demo: 1.0 at step 1092 on Isaac/MuJoCo. Idle 0; body open 0.25; parts seated 0.5; cap+forward 0.75; reversed/missing/spring/cross-thread/drop/leak caps 0.5; pytest 19 passed. Cap twist 70 deg, poppet upright, both flow tests passed.",
+  "media": "M-74SEKC"
+}
