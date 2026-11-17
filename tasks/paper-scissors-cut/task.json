@@ -1,0 +1,28 @@
+{
+  "title": "Cut a 100 mm strip off a real A4 sheet with office scissors, leaving the offcut in the tray",
+  "category": "Impact on jobs",
+  "keywords": [
+    "office scissors",
+    "Fiskars 8 in",
+    "A4 paper",
+    "80 gsm",
+    "100 mm cut",
+    "straight cut",
+    "shear",
+    "offcut",
+    "paper tray",
+    "cutting mat",
+    "office task",
+    "paper handling",
+    "scissor hinge"
+  ],
+  "instruction": "Hold the A4 sheet down with one hand, squeeze the scissors shut along the printed line, and leave the 100 mm offcut in the tray with the scissors back on their mat.",
+  "context": "An office task with real stationery: a 203 mm Fiskars-class office scissors (60 g, orange loop handles, stainless blades) and an 80 gsm A4 sheet (210 x 297 mm, 0.10 mm, 5.0 g). The sheet lies on a 20 mm riser and a 1 mm green cutting mat; its far 100 mm overhangs a shallow letter tray, and a red printed line at 100 mm marks the cut. The scissors rest open on a grey mat to the right. The robot presses the kept sheet with its left hand, takes both handles in its right gripper, squeezes the blades shut, opens and closes them at the line start, and sweeps them down the line. The offcut falls into the tray; the scissors go back on their mat. The scissors are a two-link articulation on a sprung hinge; the hand's squeeze drives the blades. The sheet is two bodies with a seam bond that releases only when the blade tip has swept the line; a cut off the line, a torn seam, a dropped scissors, a jam or a blade into the tray caps the score.",
+  "setup": "Positions are metres from the arm-base midpoint, x forward, y left, table top 0.7475. The printed line is y -0.150, x 0.360-0.570; kept part centred (0.465, -0.0515), 100 mm offcut (0.465, -0.200), sheet top 0.76855. Left press (0.420, 0.040). Tray opening x 0.318-0.722, y -0.408 to -0.144, floor 0.7535, rim 0.7600. Scissor rivet starts (0.330, -0.465, 0.7798) on a 30 mm riser and 1 mm mat; 203 mm long, 60 g, 10 mm handles, 90 mm blades. Arms start at READY.",
+  "scoring": "0.25 when the right gripper has taken both handle loops, is in contact and has lifted the scissors clear of their mat; 0.5 when the left hand is pressing the kept sheet and the scissors are at the start of the printed line, blades open; 0.75 when the blades have shut and the tip has swept the full 210 mm line with the seam intact and the kept sheet unmoved; 1.0 when the cut is within +-1 mm, the kept sheet is uncrumpled, the 100 mm offcut is in the tray, the scissors are back on their mat, both grippers are home and everything is still for 1 s. A cut more than 2 mm off the line, a seam that pulls apart before the tip passes, or the kept sheet moved more than 4 mm or 3 degrees caps the score at 0.5. A dropped scissors, a jammed hinge, or a blade into the tray caps it at 0.25. Doing nothing is 0. The real station checks the printed line with a steel rule, the offcut in the tray, the scissor on its mat and the sheet flat.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz)",
+  "reset_notes": "The sheet and offcut lie at their line-up positions, the offcut servoed to the kept sheet; the offcut starts with gravity off and is released only at the full cut. The scissors are open at 20 degrees on the rest mat at (0.330, -0.465), rivet 0.7798. The left arm at READY, the right at READY; the tray empty. The scripted demo presses the sheet first, then takes the scissors. The printed line, the tray and the mats are fixed and clean.",
+  "fidelity": "True-size Fiskars 8 in class: 203 mm, 60 g, 10 mm loop handles, 90 mm blades, 0.4 N m/rad hinge spring, 3 N m limit. 80 gsm A4: 210 x 297 mm, 0.10 mm, 4.99 g; the strip is 100 x 210 mm, 1.68 g. The cut, seam bond, hinge and poses are physical; the thin sheet is two rigid bodies with a bond, the blade runs on the line through a servoed grasp, and blade-paper contact is filtered. No cutaway.",
+  "scores": "Dream-1: 0.0 (2,400 steps, 2,401 action rows); demo: 1.0 at step 545 on Isaac/MuJoCo. Blade tip swept 212.0 mm past the 210 mm line, deviation 0.0-0.02 mm; offcut in tray, scissors on mat, 1 s still. Four steps at 122/571/881/973; pytest 29.",
+  "media": "M-JCPM86"
+}

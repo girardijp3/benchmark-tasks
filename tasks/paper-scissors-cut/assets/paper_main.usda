@@ -1,0 +1,183 @@
+#usda 1.0
+(
+    defaultPrim = "PaperMain"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "PaperMain" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "The kept part of an 80 gsm A4 sheet: 210 x 197 mm, 0.10 mm, 3.31 g.  The cut edge is the sheet's -Y edge (local y=-0.0985); the red half of the printed cut line lies along it, and two black 100 mm ticks mark the cut length.  The sheet's top face is z=+0.00005."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.0000011, 0.0000016, 0.0000027)
+    float physics:mass = 3.3096
+
+    def Scope "Looks"
+    {
+        def Material "Phys_c" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.38
+            float physics:restitution = 0
+            float physics:staticFriction = 0.42
+        }
+
+        def Material "c_f2f2ea_90_100"
+        {
+            token outputs:surface.connect = </PaperMain/Looks/c_f2f2ea_90_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.95, 0.92)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.9
+                token outputs:surface
+            }
+        }
+
+        def Material "c_b70f0c_55_100"
+        {
+            token outputs:surface.connect = </PaperMain/Looks/c_b70f0c_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.72, 0.06, 0.05)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_0c0c0c_55_100"
+        {
+            token outputs:surface.connect = </PaperMain/Looks/c_0c0c0c_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.05, 0.05, 0.05)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_d1d1c6_55_100"
+        {
+            token outputs:surface.connect = </PaperMain/Looks/c_d1d1c6_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.82, 0.82, 0.78)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Sheet1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </PaperMain/Looks/c_f2f2ea_90_100>
+        rel material:binding:physics = </PaperMain/Looks/Phys_c> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.21, 0.197, 0.0001)
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CutLine2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </PaperMain/Looks/c_b70f0c_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.206, 0.0015, 0.00002)
+        double3 xformOp:translate = (0, -0.09774999999999999, 0.00006)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Tick3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </PaperMain/Looks/c_0c0c0c_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.0012, 0.006, 0.00002)
+        double3 xformOp:translate = (-0.052, -0.09499999999999999, 0.00006)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Tick4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </PaperMain/Looks/c_0c0c0c_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.0012, 0.006, 0.00002)
+        double3 xformOp:translate = (0.052, -0.09499999999999999, 0.00006)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Corner5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </PaperMain/Looks/c_d1d1c6_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.005, 0.005, 0.00001)
+        double3 xformOp:translate = (-0.10099999999999999, -0.09449999999999999, 0.000055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Corner6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </PaperMain/Looks/c_d1d1c6_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.005, 0.005, 0.00001)
+        double3 xformOp:translate = (0.10099999999999999, -0.09449999999999999, 0.000055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Corner7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </PaperMain/Looks/c_d1d1c6_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.005, 0.005, 0.00001)
+        double3 xformOp:translate = (-0.10099999999999999, 0.09449999999999999, 0.000055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Corner8" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </PaperMain/Looks/c_d1d1c6_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.005, 0.005, 0.00001)
+        double3 xformOp:translate = (0.10099999999999999, 0.09449999999999999, 0.000055)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

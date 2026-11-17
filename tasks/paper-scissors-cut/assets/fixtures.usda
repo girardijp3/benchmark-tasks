@@ -1,0 +1,433 @@
+#usda 1.0
+(
+    defaultPrim = "Fixtures"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Fixtures" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "The paper station: a 20 mm wooden riser with a 1 mm green cutting mat (top 0.7685), a shallow grey letter tray beside it (rim 0.7600, floor 0.7495) that catches the 100 mm offcut, and a 1 mm grey rest mat for the scissors (top 0.7485).  All fixed to the table; origin at the world origin."
+)
+{
+    point3f physics:centerOfMass = (0.45, -0.1, 0.77)
+    float3 physics:diagonalInertia = (0.05, 0.05, 0.05)
+    float physics:mass = 4
+
+    def Scope "Looks"
+    {
+        def Material "Phys_wood" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.6
+            float physics:restitution = 0
+            float physics:staticFriction = 0.7
+        }
+
+        def Material "wood_845b33_55_100"
+        {
+            token outputs:surface.connect = </Fixtures/Looks/wood_845b33_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.52, 0.36, 0.2)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_mat" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.7
+            float physics:restitution = 0
+            float physics:staticFriction = 0.8
+        }
+
+        def Material "mat_194c33_55_100"
+        {
+            token outputs:surface.connect = </Fixtures/Looks/mat_194c33_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.3, 0.2)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_0f3321_55_100"
+        {
+            token outputs:surface.connect = </Fixtures/Looks/c_0f3321_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.06, 0.2, 0.13)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_plastic" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.5
+            float physics:restitution = 0
+            float physics:staticFriction = 0.6
+        }
+
+        def Material "plastic_2d3338_55_100"
+        {
+            token outputs:surface.connect = </Fixtures/Looks/plastic_2d3338_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.18, 0.2, 0.22)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "plastic_4c545b_55_100"
+        {
+            token outputs:surface.connect = </Fixtures/Looks/plastic_4c545b_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.3, 0.33, 0.36)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_2d3338_55_100"
+        {
+            token outputs:surface.connect = </Fixtures/Looks/c_2d3338_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.18, 0.2, 0.22)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "mat_383d42_55_100"
+        {
+            token outputs:surface.connect = </Fixtures/Looks/mat_383d42_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.22, 0.24, 0.26)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "c_d8d8cc_55_100"
+        {
+            token outputs:surface.connect = </Fixtures/Looks/c_d8d8cc_55_100/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.85, 0.85, 0.8)
+                float inputs:metallic = 0
+                float inputs:opacity = 1
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Riser1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/wood_845b33_55_100>
+        rel material:binding:physics = </Fixtures/Looks/Phys_wood> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.25, 0.235, 0.02)
+        double3 xformOp:translate = (0.465, 0.0175, 0.7575000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CutMat2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/mat_194c33_55_100>
+        rel material:binding:physics = </Fixtures/Looks/Phys_mat> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.244, 0.232, 0.001)
+        double3 xformOp:translate = (0.465, 0.016, 0.768)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "MatEdge3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/c_0f3321_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.244, 0.001, 0.0002)
+        double3 xformOp:translate = (0.465, -0.1, 0.768)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "PaperEdgeL4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/c_0f3321_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.0008, 0.204, 0.0002)
+        double3 xformOp:translate = (0.358, -0.0515, 0.7685200000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "PaperEdgeR5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/c_0f3321_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.0008, 0.204, 0.0002)
+        double3 xformOp:translate = (0.572, -0.0515, 0.7685200000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "PaperEdgeFar6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/c_0f3321_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.214, 0.0008, 0.0002)
+        double3 xformOp:translate = (0.465, 0.049, 0.7685200000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TrayFloor7" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/plastic_2d3338_55_100>
+        rel material:binding:physics = </Fixtures/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.41, 0.274, 0.006)
+        double3 xformOp:translate = (0.52, -0.275, 0.7505000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TrayNear8" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/plastic_4c545b_55_100>
+        rel material:binding:physics = </Fixtures/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.41, 0.004, 0.0125)
+        double3 xformOp:translate = (0.52, -0.142, 0.75375)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TrayFar9" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/plastic_4c545b_55_100>
+        rel material:binding:physics = </Fixtures/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.41, 0.004, 0.0125)
+        double3 xformOp:translate = (0.52, -0.41, 0.75375)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TrayLeft10" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/plastic_4c545b_55_100>
+        rel material:binding:physics = </Fixtures/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.276, 0.0125)
+        double3 xformOp:translate = (0.316, -0.275, 0.75375)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TrayRight11" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/plastic_4c545b_55_100>
+        rel material:binding:physics = </Fixtures/Looks/Phys_plastic> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.276, 0.0125)
+        double3 xformOp:translate = (0.724, -0.275, 0.75375)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TrayRim12" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/c_2d3338_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.01, 0.01, 0.001)
+        double3 xformOp:translate = (0.318, -0.40900000000000003, 0.76)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TrayRim13" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/c_2d3338_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.01, 0.01, 0.001)
+        double3 xformOp:translate = (0.318, -0.14100000000000001, 0.76)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TrayRim14" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/c_2d3338_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.01, 0.01, 0.001)
+        double3 xformOp:translate = (0.722, -0.40900000000000003, 0.76)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TrayRim15" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/c_2d3338_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.01, 0.01, 0.001)
+        double3 xformOp:translate = (0.722, -0.14100000000000001, 0.76)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "RestRiser16" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/wood_845b33_55_100>
+        rel material:binding:physics = </Fixtures/Looks/Phys_wood> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.24, 0.12, 0.03)
+        double3 xformOp:translate = (0.33, -0.465, 0.7625000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "RestMat17" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/mat_383d42_55_100>
+        rel material:binding:physics = </Fixtures/Looks/Phys_mat> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.244, 0.124, 0.001)
+        double3 xformOp:translate = (0.33, -0.48, 0.778)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "RestEdge18" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/c_d8d8cc_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.002, 0.072, 0.0002)
+        double3 xformOp:translate = (0.2325, -0.516, 0.7785200000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "RestEdge19" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/c_d8d8cc_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.002, 0.072, 0.0002)
+        double3 xformOp:translate = (0.4275, -0.516, 0.7785200000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "RestCentre20" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixtures/Looks/c_d8d8cc_55_100>
+        double size = 1
+        float3 xformOp:scale = (0.195, 0.0015, 0.0002)
+        double3 xformOp:translate = (0.33, -0.48, 0.7785200000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+
