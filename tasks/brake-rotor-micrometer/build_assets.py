@@ -551,7 +551,7 @@ def rotor(fname):
     pts, tris = lathe_y(prof)
     a.vmesh("PlateIn", pts, tris, IRON_FACE)
     # the reference paint dot on the outboard face at 135 mm from the hub axis, 10 deg above the 9 o'clock line: the scored spot
-    pts, tris = disc(1.5 * MM, 0.0, 0.00005, 96, "Y")
+    pts, tris = disc(3.0 * MM, 0.0, 0.00005, 96, "Y")
     a.vmesh("RefDot", pts, tris, (0.04, 0.04, 0.04), center=(-0.133, h, 0.0235))
     hat = [(BORE_R, -h - HAT_D), (HUB_R, -h - HAT_D), (HUB_R, -h + PLATE_T), (BORE_R, -h + PLATE_T)]
     pts, tris = lathe_y(hat)

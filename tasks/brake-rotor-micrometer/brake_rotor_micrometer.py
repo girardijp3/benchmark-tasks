@@ -1,5 +1,5 @@
 """On the bench: a new Brembo 09.7012.11 280 x 22 mm vented brake rotor (37 mm overall height, 5.86 kg) stands on a hub stand with its
-axis horizontal, a 2 mm paint dot marking the scored spot on its outboard face at 135 mm from the hub axis, 10 deg above the 9 o'clock
+axis horizontal, a 6 mm paint dot marking the scored spot on its outboard face at 135 mm from the hub axis, 10 deg above the 9 o'clock
 line. To its left, lying across a bench rest, is a 0-25 mm outside micrometer (Mitutoyo 103-137 class: 175 g, ratchet stop, lock lever)
 with its spindle run out to the full 25 mm.
 
