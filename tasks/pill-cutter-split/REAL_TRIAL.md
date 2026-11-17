@@ -1,42 +1,47 @@
 # Real trial: tablet, force check, half check, pad shield and residue
 
-This file is part of the task's reproducibility. It gives a readily prepared inert scored tablet (or a source for a
-custom placebo), a batch acceptance that measures the 14.0 N cutting force, the observable half check, and the physical
-pad shield and residue rule.
+This file is part of the task's reproducibility. It gives a small-pack, readymade 20 mm scored tablet and a **few-minute**
+fast-set-stone surrogate, with a batch acceptance that measures the 14.0 N cutting force, the observable half check, and
+the physical pad shield and residue rule. Neither option needs a 1,000-tablet order or a 24-hour cure.
 
 ## 1. The 20 mm scored tablet
 
-**Preferred: an inert custom scored placebo.** A placebo manufacturer can press a 20.0 x 9.0 x 7.5 mm oblong,
-functionally scored, white tablet from microcrystalline cellulose/lactose (e.g. Nutricraft Labs, "Custom Placebo
-Tablets", 5-22 mm, oval/oblong, scoring lines; minimum 1,000, 2-4 weeks; or Zeebo Research custom supply). Ask for
-**20.0 x 9.0 x 7.5 mm, one 0.8 mm deep score across the 9 mm width at mid-length, 1.80 g, no active ingredient**.
-A commercial 20 mm scored tablet is not standard, so the surrogate below is the day-to-day option; both are inert.
+**Readymade small-pack tablet (nearest real product).** **Windmill High Potency Calcium 600 mg**, 60 tablets, UPC
+**035046000646**, **$5.19** at myotcstore.com (also sold at Walmart/eBay as a 60-count bottle). DailyMed label
+NHRIC **73057-369-07** (Ulai Health/Pharbest) describes the tablet as **20 mm, scoring 2 (scored), film coated**.
+Weigh one: the 600 mg elemental-calcium tablet is **1.7-2.0 g** (1.8 g nominal); the 20 mm oval is about
+**20.0 x 9.5 x 7.0 mm** (calipers; the exact width/thickness varies a little by lot). It is a calcium supplement,
+not a prescription drug. **Its cut force is not published:** cut one with the 0-50 N gauge (below) and use it only if
+the peak is **12-17 N at the pill / 7.1-10.0 N at the fin**; if it is harder, use the fast-set surrogate, which is
+matched to the task's 14.0 N. Do not force the film-coated tablet through the 14 N model.
 
-**Repeatable surrogate (12-48 N, matches the sim's 20 x 9 x 7.5 mm, 1.8 g, 14.0 N).**
+**Few-minute surrogate (12-48 N; matches the sim's 20 x 9 x 7.5 mm, 1.8 g, 14.0 N).**
 
-- **Material:** USG No. 1 Pottery Plaster (calcium sulfate hemihydrate), 100 g powder to 35 g deionised water
-  (35:100 by mass). A weaker batch (outside the window below) is made with 38 g water; a stronger one with 32 g.
-  Do not use resin or polymer clay: their cut force is outside the cited tablet range.
-- **Mould:** two-part 3D-printed PETG mould (0.12 mm layers, 4 perimeters, 30% infill, 0.2 mm clearance between the
-  halves). Cavity **20.0 x 9.0 x 7.5 mm**, 0.5 mm corner radii; a **0.8 mm deep x 1.2 mm wide score ridge** across
-  the 9 mm width at the middle of the 20 mm length. Release with PTFE mould spray.
-- **Cure:** mix 60 s, pour, tap the mould 20 times on the bench to raise bubbles, cure **45 min** in the mould at
-  23 +/- 2 C, demould, air-dry **24 h** at 23 +/- 2 C and 50 +/- 10% RH. Sand the two 9 x 7.5 mm ends flat with 400
-  grit; brush the score groove clean. The dry tablet is 1.80 +/- 0.10 g (density about 1.33 g/cm3).
-- **Batch acceptance (5 tablets):** calipers 20.0 +/- 0.2 x 9.0 +/- 0.2 x 7.5 +/- 0.2 mm; mass 1.80 +/- 0.10 g on a
+- **Material:** **DAP Plaster of Paris**, 4 lb (1.81 kg) box, DAP 10302, Home Depot/Lowe's, about **$6**;
+  a calcium-sulfate hemihydrate that **sets in 20-30 minutes** and needs **no 24-hour drying**. Mix **2 parts powder
+  to 1 part water by volume** (about 100 g powder to 45 mL water); a weaker batch is 50 mL water, a stronger one
+  40 mL. Do not use epoxy putty or polymer clay: their cut force is above the 12-48 N tablet window and they cure
+  harder/longer.
+- **Mould:** one **8-cavity** 3D-printed PETG plate (0.12 mm layers, 4 perimeters, 30% infill). Each cavity is
+  **20.0 x 9.0 x 7.5 mm**, 0.5 mm corner radii, with a **0.8 mm deep x 1.2 mm wide score ridge** across the 9 mm
+  width at mid-length. Release with PTFE mould spray. Eight cavities make a batch in one pour.
+- **Batch:** mix 60 s, pour the 8 cavities, tap the plate 20 times, **demould after 25-30 min** at 23 +/- 2 C. There is
+  no drying step: the demoulded tablets are used the same session. **One batch of 8 takes about 25-30 min, i.e.
+  3-4 min per tablet**; a trial itself (weigh, cut, weigh, 10x check) is about 3 min. Sand the two 9 x 7.5 mm ends
+  flat with 400 grit and brush the score groove clean.
+- **Batch acceptance (8 tablets):** calipers 20.0 +/- 0.2 x 9.0 +/- 0.2 x 7.5 +/- 0.2 mm; mass 1.80 +/- 0.10 g on a
   0.01 g scale. Cut one tablet in the same pill cutter with a **0-50 N push-pull gauge** (e.g. Imada Z2-50) on the
   fin, or a 0-50 N load cell under the cutter: record the **peak at the fin** and require **8.2 +/- 0.9 N**, which is
   **14.0 +/- 1.5 N at the blade** through the 1.7:1 lever, inside the cited **12-48 N at the pill / 5.6-22.2 N at the
   handle** (UW-Madison BME design report, RERC FINAL, Table 1; average 32.8 N at the pill). Hardness cross-check:
   **Shore D 55-75** on the flat face (Checkline DD-224 or equivalent) or a 10 mm cube crush at 14 +/- 3 N. Reject the
-  batch and adjust the water by 3 g if the peak is outside 7.3-9.1 N at the fin. Store the tablets dry; they are
-  friable and single-use.
+  batch and adjust the water by 5 mL if the peak is outside 7.3-9.1 N at the fin.
 - **Sim's declared tablet:** 20 x 9 x 7.5 mm box, 1.8 g, homogeneous, score line visual only; the cut is a declared
   blade-plane split, not a fracture model. The hinge brake's peak is 0.56 N m = **8.24 N at the fin / 14.0 N at the
   blade**, falling to 30% as the score cracks, so the simulated cut needs the same peak as the surrogate.
 
-**Safety:** the tablet is inert plaster/placebo, not medication. Wear nitrile gloves and eye protection when cutting;
-the blade is sharp.
+**Safety:** the tablet is inert plaster or a calcium supplement, not a prescription medication. Wear nitrile gloves
+and eye protection when cutting; the blade is sharp.
 
 ## 2. Real half check (numeric and observable)
 

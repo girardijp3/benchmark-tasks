@@ -126,12 +126,16 @@ Four steps, **0.2 each**; steps 1 and 2 once reached, steps 3 and 4 as things st
 
 ## Real trial
 
-`REAL_TRIAL.md` gives the inert 20 x 9 x 7.5 mm scored tablet or the plaster surrogate (USG No. 1, 100:35 water, PETG
-mould with a 0.8 mm score ridge, 45 min in the mould + 24 h dry, 1.80 +/- 0.10 g), the **0-50 N push-pull gauge** batch
-acceptance (**8.2 +/- 0.9 N at the fin / 14.0 +/- 1.5 N at the blade**, Shore D 55-75 cross-check), the **0.01 g half
-weighing** (each 40-60% of the pre-cut mass) with the **10x +/-1 mm score-line check**, the **0.6 mm PETG pad U-clips**
-(`pad_shield.scad`, Prusament PETG + 3M VHB 5952) that leave the inner grip face and both scored squeezes unchanged,
-and the **91% IPA wipe and 10x inspection** after every trial.
+`REAL_TRIAL.md` gives a **small-pack, readymade 20 mm scored tablet** — **Windmill High Potency Calcium 600 mg**,
+60 tablets, UPC 035046000646, **$5.19**, 20 mm, scored, 1.7-2.0 g; measure its cut force and use it only if 12-17 N —
+and a **few-minute fast-set-stone surrogate**: **DAP Plaster of Paris**, 4 lb, about **$6**, sets **20-30 min with no
+24 h drying**; an 8-cavity PETG mould with a 0.8 mm score ridge makes a batch of eight in one 25-30 min pour
+(**3-4 min per tablet**), 20 x 9 x 7.5 mm, 1.80 +/- 0.10 g. Both avoid a 1,000-tablet order and the old 45 min + 24 h
+cure. The sheet also has the **0-50 N push-pull gauge** batch acceptance (**8.2 +/- 0.9 N at the fin / 14.0 +/- 1.5 N
+at the blade**, Shore D 55-75 cross-check), the **0.01 g half weighing** (each 40-60% of the pre-cut mass) with the
+**10x +/-1 mm score-line check**, the **0.6 mm PETG pad U-clips** (`pad_shield.scad`, Prusament PETG + 3M VHB 5952)
+that leave the inner grip face and both scored squeezes unchanged, and the **91% IPA wipe and 10x inspection** after
+every trial.
 
 ## Reset
 
@@ -165,7 +169,12 @@ pads under the base, outside the arm path. Cutaways: none.
 - Starts (MuJoCo): nominal **1.0**, cut 0.0 mm off the score line; tablet start **+3 mm in x** **1.0** (cut 0.1 mm
   off); **+3 mm in y** **0.6** (cut 1.6 mm off, 8.8/11.2 mm, 0.752/1.048 g) — the open-loop demo cannot correct a
   large start offset, and the 1 mm cut-line check says so rather than hiding it.
+- Tablet source (practicality revision): **Windmill High Potency Calcium 600 mg**, 60 tablets, UPC
+  035046000646, **$5.19** (20 mm, scored; use only if its measured cut force is 12-17 N), or the **DAP Plaster of
+  Paris** surrogate (4 lb, about **$6**, sets 20-30 min, **no 24 h**; an 8-cavity batch in 25-30 min = **3-4 min per
+  tablet**; 20 x 9 x 7.5 mm, 1.80 +/- 0.10 g, 14.0 N batch check). The sim tablet is unchanged (20 x 9 x 7.5 mm,
+  1.8 g, 14.0 N), so **no new media** is needed.
 - **Weak/strong gate checks (MuJoCo):** the same demo with a 40 N tablet model (23.5 N at the fin, above the arm's
   pinch) stalls the lid at its 14-16 degree engagement and cuts nothing: score 0.2. The task's 14.0 N model cuts.
 - Media: `benchmark-media-pill-cutter-split/` - `demo.mp4` (top camera, 3 s held final frame with SCORE 1.0, the PR
-  media), `demo_top.gif`, `setup.png`; `demo_review.mp4` is the four-view internal composite. Uploaded as **M-T4GAZH** (setup screenshot, Dream-1 run and scripted demo on the task board under this ID).
+  media), `demo_top.gif`, `setup.png`; `demo_review.mp4` is the four-view internal composite. Uploaded as **M-T4GAZH** (setup screenshot, Dream-1 run and scripted demo on the task board under this ID). The sim tablet is unchanged, so this practicality revision adds no media.
