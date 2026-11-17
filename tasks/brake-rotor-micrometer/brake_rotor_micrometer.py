@@ -787,7 +787,7 @@ def right_plan(start_t: float):
     return wps, out_t
 
 
-ROCK_DEG = 2.5  # the frame is rocked this far each way about the rotor's radial axis (x) and across it (z), pivoting on the faces
+ROCK_DEG = 0.5  # demo rock amplitude; the 22.00 mm rotor leaves only 0.45 mm frame clearance (2.5 deg jammed it)
 ROCK_PERIODS = (4.0, 5.3)  # s: the two rocking motions have different periods, so the frame sweeps through every attitude in a few seconds
 ROCK_STROKE = 22  # rocking begins in this stroke of the right hand's turning (the spindle is then within about 1 mm of the rotor)
 ROCK_STEP = 0.25  # s a waypoint
