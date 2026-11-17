@@ -21,5 +21,5 @@
   "reset_notes": "Lay the micrometer across the rest's ribs with the spindle fully open (25.0 mm), the lock lever unlocked and the ratchet at rest. Nothing is held; the rotor, dot and rest stay fixed.",
   "fidelity": "Declared: the thread (0.5 mm a turn), the ratchet (0.006 N m slip, 18-degree clicks: estimates), the measuring force (6 N from a 0.03 mm lag; drive capped at 10 N). After the faces close the drive follows the spindle closing, never opening, so rocking settles the minimum. The +-0.02 mm band applies (sim and real with a 0.001 mm reference; +-0.05 mm with 0.01 mm); the sim's reference is 22.00 mm, a real trial's is measured at the dot (median of five). Frame sizes and lever are estimates.",
   "scores": "Dream-1: 0.0 (3,200 steps, limit). Demo: 1.0 at step 2,815 on Isaac twice and the film (22.020 mm, +0.020 within +-0.02); MuJoCo 1.0 at 2,792 (22.015). The new rotor's demo rocks 0.5 deg (the 22.00 mm rotor leaves 0.45 mm frame clearance; 2.5 deg jammed it, 22.453). pytest 38.",
-  "media": "TBD"
+  "media": "M-94YWSV"
 }

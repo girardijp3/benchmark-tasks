@@ -86,4 +86,4 @@ Lay the micrometer across the rest's ribs with the spindle fully open (25.0 mm),
 
 MuJoCo 1.0 at step 2792 (kept reading 22.015 mm, +0.015 mm, inside the +-0.02 mm band), idle 0, left alone or right alone 0; offline checks 38 passed. Isaac demo 1.0 at step 2815 (kept reading 22.020 mm, +0.020 mm) twice and 1.0 at step 2815 in the film run; Dream-1 0.0 (3,200 steps, hit the step limit).
 
-Dream-1 score: 0.0 (3,200 steps, step limit). Demo: 1.0 at step 2815 on Isaac (twice, plus the film run) and 1.0 at step 2792 on MuJoCo, new rotor; kept reading 22.020 mm on Isaac. Media TBD (the new rotor's top-view demo, GIF, setup and Dream video; the old M-8A9YE2 showed the previous rotor).
+Dream-1 score: 0.0 (3,200 steps, step limit). Demo: 1.0 at step 2815 on Isaac (twice, plus the film run) and 1.0 at step 2792 on MuJoCo, new rotor; kept reading 22.020 mm on Isaac. Media M-94YWSV (the new rotor's top-view demo, GIF, setup and Dream-1 video; the old M-8A9YE2 showed the previous rotor) is on the task board.
