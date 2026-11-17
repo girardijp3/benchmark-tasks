@@ -399,7 +399,7 @@ def test_the_demo_rocks_the_frame_within_its_limits_and_ends_square():
     assert len(rock) > 100
     squared = T.LEFT_ROT
     tilt = [math.degrees(math.acos(min(1.0, (np.trace(w.rot @ squared.T) - 1.0) / 2.0))) for w in rock]
-    assert max(tilt) <= 1.5 * T.ROCK_DEG * 1.45 and max(tilt) > 1.5  # a few degrees about the faces, never more
+    assert max(tilt) <= 1.5 * T.ROCK_DEG * 1.45 and max(tilt) > 0.5 * T.ROCK_DEG  # the demo rock (0.5 deg: the 22.00 mm rotor leaves 0.45 mm frame clearance; the real technique is 2.5 deg)
     assert tilt[-1] < 0.05  # the rocking dies away to the squared attitude before the frame is eased off
     first = left.index(rock[0])
     assert all(w.label != "rock the frame across the rotor" for w in left[:first]) and left[first - 1].label == "hold it square"
