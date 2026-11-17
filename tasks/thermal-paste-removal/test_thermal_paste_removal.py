@@ -18,7 +18,18 @@ import pytest
 from yam_arena.task_file import ObjectState, load
 
 HERE = pathlib.Path(__file__).resolve().parent
-ROOT = HERE.parents[2]
+
+
+def _find_repo_root():
+    """Find the checkout root that holds local_sim (the source tree or a PR worktree)."""
+    for p in [HERE, *HERE.parents]:
+        if (p / "local_sim" / ".venv" / "bin" / "python").is_file():
+            return p
+    return None
+
+
+ROOT = _find_repo_root()
+SIM_PY = (ROOT / "local_sim" / ".venv" / "bin" / "python") if ROOT else None
 TASK = load(HERE / "thermal_paste_removal.py")
 T = TASK.module
 IDENT = np.array([0.0, 0.0, 0.0, 1.0])
@@ -232,7 +243,7 @@ def _demo(stdout_env):
     env = os.environ.copy()
     env.update(stdout_env)
     env["MJ_CONTACTS_AT"] = ""  # no debug
-    cmd = [str(ROOT / "local_sim" / ".venv" / "bin" / "python"), "-m", "mjkit.run",
+    cmd = [str(SIM_PY), "-m", "mjkit.run",
            str(HERE / "thermal_paste_removal.py"), "--steps", "900", "--no-video"]
     p = subprocess.run(cmd, cwd=str(ROOT / "local_sim"), env=env, capture_output=True, text=True, timeout=240)
     return p
