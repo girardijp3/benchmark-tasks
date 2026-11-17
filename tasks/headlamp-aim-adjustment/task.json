@@ -4,18 +4,12 @@
   "keywords": [
     "headlamp aim",
     "Hella 1058",
-    "1L6 002 395-131",
     "H4 headlamp",
-    "aim screw",
     "beam cutoff",
     "ECE low beam",
-    "headlight adjustment",
-    "automotive service",
-    "3 m beam screen",
-    "0.69 degree",
     "8 mm hex key",
-    "beam pattern",
-    "inspection"
+    "automotive service",
+    "3 m beam screen"
   ],
   "instruction": "Steady the lamp with one hand, turn its two aim screws with the other until the low-beam cutoff sits on the screen line, then let go.",
   "context": "Automotive technicians aim a headlamp after a bulb, a repair or an inspection. A true-size Hella 1058 / 1L6 002 395-131 178 mm H4 headlamp (88 mm deep, 0.55 kg, H4 12 V 60/55 W) is held in a bench gimbal with its lens 3.00 m from a white beam screen. The ECE low-beam cut-off must sit 36 mm (0.69 deg) below the lamp centre, within +-15 mm vertically and +-26 mm horizontally (i-MiEV service manual; UN R112). Its two real 8 mm hex aim screws are 90 mm apart on the rear housing, each with a T-handle 8 mm hex key left in the socket. The lamp's two-axis pose is the aim; the cut-off is projected from the actual pose, not scripted. A real trial uses the lamp, the two keys, the 3 m screen and a 0.9 N m torque wrench; it is quick and under $200.",

@@ -50,7 +50,7 @@ headlamp/headlight/aim/beam/lamp. The nearest board tasks are:
 | `assets/beam_patch.usda` | The collision-free low-beam light patch (horizontal cut-off, 15 deg kick-up, hot spot) that the task moves from the lamp's real pose |
 | `build_assets.py` | Writes the three USDA assets with pxr (boxes, cylinders, hex prisms, lathes, a flat mesh; primitives and convex hulls as colliders) |
 | `test_headlamp_aim_adjustment.py` | The offline pytest suite (22 checks): the ladder and caps, the 1 s hold, the band edges, the clear check, the beam geometry, the real values, the assets, the two keys, the demo plan and both arms' static reach |
-| `make_media.py` | Internal MuJoCo renderer: top view plus a 3.00 m beam-screen inset, `setup.png`, `demo.mp4`, `demo_top.gif`; the inset is not used in the PR video |
+| `benchmark-media-headlamp-aim-adjustment/make_media.py` | Internal MuJoCo renderer kept with the media package (not in the task folder): top view plus a 3.00 m beam-screen inset, `setup.png`, `demo.mp4`, `demo_top.gif`; the inset is not used in the PR video |
 | `task.json` | The board metadata |
 | `REFERENCE.md` | Sources, measured/estimated values, the beam/gear/fuse model, the calibration, the pass-through audit and the limitations |
 | `PASS_THROUGH_QA.md` | The contact audit: the only arm/rig contacts are the two keys and the steady pad |
