@@ -49,6 +49,8 @@ inspect-robots run --embodiment yam_arena --policy yam_scripted \
 
 The log prints `[reamer] t=...  steps done: ...` on every change and a trace each second.
 
+Offline checks (no GPU, no network): `python -m pytest -q test_copper_tube_deburr_reamer.py` (33 tests).
+
 **The demo.** Open loop: fixed waypoints, no simulator reads. The left arm side-grips the tube 84 mm up from its lower end (about 15 N a finger) and lifts it out of the rack. The right arm takes the reamer by its handle (pad tips 30 mm above the cone's tip), lifts it out of its rest, carries it over the tube and lowers the cone into the bore until it sits on the bore's edge (9.489 mm in, a 0.400 mm bite, 13.2 N per blade). It then turns clockwise in four strokes of 120 degrees (4 s each); between strokes it lets go, turns its wrist back (1.6 s) and grips again. It lifts the reamer out, stands it in its rest, lets go and goes home; then the left arm lowers the tube back into the rack, lets go and goes home. The previous Isaac run reached 1.0 at step 1027 (51.4 s); after the revision the same plan reaches 1.0 at step 1017 (50.9 s) in MuJoCo. `LOWER_AIM` is now (2.3, 1.5) mm: it keeps the held tube inside the rack's 7 mm lead-in in both simulators (MuJoCo's stand-in does not apply the cutting torque).
 
 ## Scoring
