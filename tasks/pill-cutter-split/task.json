@@ -20,5 +20,5 @@
   "reset_notes": "Open the lid to its 95 degree stop, lay the tablet in the dish pocket with its length left-right, stand the tray on its spot. Between real trials wipe the pad faces, the blade shroud and the V cradle with a 91% IPA wipe and inspect them at 10x for tablet residue (REAL_TRIAL.md); replace the wipe every trial.",
   "fidelity": "240/20 Hz. Sizes: splitter 80x40 mm (95 deg), tablet 20x9x7.5 mm 1.8 g, fin 24x6 mm. Blade 16x0.8x19 mm, edge 7 mm below the lid; the cut is declared when the edge passes the underside; the blade plane leaves 7.5-12.5 mm bodies. A 0.6 mm PETG shroud covers the upper 7 mm; the lower 12 mm is the edge in the V. Hinge brake peaks at 0.56 N m (8.24 N fin, 14.0 N blade), then 30%; logged force is the hinge reaction, not the pinch. Real pad clips are not bodies; the shroud protects the pads.",
   "scores": "Dream-1 run: 0.0 (2,400 steps, completed; 2,401 action rows, model dreamlabs/dream-1-beta, log adhoc_44b767ed.json, top-camera video); demo: 1.0 at step 2045 (Isaac 101.75 s; MuJoCo 102.25 s).",
-  "media": "TBD"
+  "media": "M-T4GAZH"
 }

@@ -168,5 +168,4 @@ pads under the base, outside the arm path. Cutaways: none.
 - **Weak/strong gate checks (MuJoCo):** the same demo with a 40 N tablet model (23.5 N at the fin, above the arm's
   pinch) stalls the lid at its 14-16 degree engagement and cuts nothing: score 0.2. The task's 14.0 N model cuts.
 - Media: `benchmark-media-pill-cutter-split/` - `demo.mp4` (top camera, 3 s held final frame with SCORE 1.0, the PR
-  media), `demo_top.gif`, `setup.png`; `demo_review.mp4` is the four-view internal composite. Not uploaded; the task's
-  `media` is `TBD` until the coordinator uploads at resubmit.
+  media), `demo_top.gif`, `setup.png`; `demo_review.mp4` is the four-view internal composite. Uploaded as **M-T4GAZH** (setup screenshot, Dream-1 run and scripted demo on the task board under this ID).
