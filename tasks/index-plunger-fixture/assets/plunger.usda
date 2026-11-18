@@ -1,0 +1,130 @@
+#usda 1.0
+(
+    defaultPrim = "Plunger"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Plunger" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "16 mm class spring index plunger: 16 mm knob and 7 mm pin"
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.000001, 0.000001, 0.000001)
+    float physics:mass = 0.12
+    custom bool physxRigidBody:disableGravity = 1
+
+    def Scope "Looks"
+    {
+        def Material "m080809_07"
+        {
+            token outputs:surface.connect = </Plunger/Looks/m080809_07/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.09, 0.09, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.85
+                token outputs:surface
+            }
+        }
+
+        def Material "m091011_05"
+        {
+            token outputs:surface.connect = </Plunger/Looks/m091011_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_72"
+        {
+            token outputs:surface.connect = </Plunger/Looks/m697174_72/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.8
+                float inputs:roughness = 0.3
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_75"
+        {
+            token outputs:surface.connect = </Plunger/Looks/m697174_75/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.8
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cylinder "Knob1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.016
+        rel material:binding = </Plunger/Looks/m080809_07>
+        custom float physxCollision:contactOffset = 0.0005
+        custom float physxCollision:restOffset = 0
+        double radius = 0.008
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "KnobCollar2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.002
+        rel material:binding = </Plunger/Looks/m091011_05>
+        double radius = 0.007
+        double3 xformOp:translate = (0, 0.0085, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Pin3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.072
+        rel material:binding = </Plunger/Looks/m697174_72>
+        custom float physxCollision:contactOffset = 0.0005
+        custom float physxCollision:restOffset = 0
+        double radius = 0.0035
+        double3 xformOp:translate = (0, -0.046, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "PinTip4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.003
+        rel material:binding = </Plunger/Looks/m697174_75>
+        double radius = 0.003
+        double3 xformOp:translate = (0, -0.083, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+

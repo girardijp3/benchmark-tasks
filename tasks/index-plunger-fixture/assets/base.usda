@@ -1,0 +1,157 @@
+#usda 1.0
+(
+    defaultPrim = "Base"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Base" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI"]
+    doc = "rotary fixture base / pedestal, bearing ring and plunger bracket"
+)
+{
+    bool physics:kinematicEnabled = 1
+
+    def Scope "Looks"
+    {
+        def Material "m596265_43"
+        {
+            token outputs:surface.connect = </Base/Looks/m596265_43/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.6, 0.63, 0.66)
+                float inputs:metallic = 0.5
+                float inputs:roughness = 0.4
+                token outputs:surface
+            }
+        }
+
+        def Material "m091011_05"
+        {
+            token outputs:surface.connect = </Base/Looks/m091011_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_63"
+        {
+            token outputs:surface.connect = </Base/Looks/m697174_63/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.7
+                float inputs:roughness = 0.35
+                token outputs:surface
+            }
+        }
+
+        def Material "m596265_45"
+        {
+            token outputs:surface.connect = </Base/Looks/m596265_45/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.6, 0.63, 0.66)
+                float inputs:metallic = 0.5
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m791311_05"
+        {
+            token outputs:surface.connect = </Base/Looks/m791311_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.8, 0.14, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Pedestal1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Base/Looks/m596265_43>
+        double size = 1
+        float3 xformOp:scale = (0.15, 0.15, 0.09)
+        double3 xformOp:translate = (0, 0, 0.045)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TopDeck2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Base/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.154, 0.154, 0.003)
+        double3 xformOp:translate = (0, 0, 0.0915)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "BearingRing3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.018
+        rel material:binding = </Base/Looks/m697174_63>
+        double radius = 0.055
+        double3 xformOp:translate = (0, 0, 0.1)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "PlungerBracket4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Base/Looks/m596265_45>
+        double size = 1
+        float3 xformOp:scale = (0.03, 0.03, 0.03)
+        double3 xformOp:translate = (0, 0.14, 0.11)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "PlungerBore5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.03
+        rel material:binding = </Base/Looks/m091011_05>
+        double radius = 0.0105
+        double3 xformOp:translate = (0, 0.14, 0.11)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "HomeMark6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Base/Looks/m791311_05>
+        double size = 1
+        float3 xformOp:scale = (0.006, 0.01, 0.002)
+        double3 xformOp:translate = (0, 0.08, 0.092)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

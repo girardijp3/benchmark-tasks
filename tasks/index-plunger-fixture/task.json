@@ -1,0 +1,23 @@
+{
+  "title": "Index a 16 mm spring index plunger fixture: pull the knob, turn the plate one stop, release the pin into the hole",
+  "category": "Impact on jobs",
+  "keywords": [
+    "index plunger",
+    "fixture plate",
+    "pull knob",
+    "rotate to stop",
+    "spring pin",
+    "8-hole index ring",
+    "machinist",
+    "fixture builder"
+  ],
+  "instruction": "Pull the plunger knob out to retract its pin, rotate the plate to the next stop while holding it out, then release the knob so the pin seats in the next hole, leaving it indexed.",
+  "context": "Machinists and fixture builders use spring index plungers to rotate a fixture plate to the next station: one hand pulls the knob against a 4-7 N spring, the other turns the plate to the next hole, and releasing the knob lets the pin lock the new stop. It is a routine, repeated setup/indexing motion, not an occasional one. US BLS OEWS May 2024 counts 298,790 machinists (51-4041), 421,940 industrial machinery mechanics (49-9041) and 56,930 tool and die makers (51-4111): about 778,000 workers in occupations where fixture indexing is routine (a proxy; no source counts this exact sub-action). A skipped pull, an over-turned plate or a pin released between holes leaves the fixture mis-indexed. The real trial uses a 16 mm class hand index plunger on a fixture plate with an 8-hole ring.",
+  "setup": "Positions are in metres from the midpoint between the arm bases, x forward, y to the robot's left, table top z 0 (world z 0.7475). A 150 mm aluminium index plate sits on a fixed pedestal at x 0.25, y 0, its top at local z 0.110; eight 7 mm index holes are spaced 45 degrees in its rim and a 24 mm hub knob is on its axis at z 0.130. A 16 mm spring index plunger is bracketed on the +y side with its 7 mm pin in the hole at the home stop; its knob centre is at x 0.25, y 0.150, z 0.110 and pulls 16 mm along +y. The left arm holds the knob; the right arm grips the hub. Both arms start at READY and the fixture is fixed to the bench.",
+  "scoring": "Four steps, 0.25 each, as things stand. (1) The knob has been pulled out past 12 mm, retracting the pin. (2) With that, the plate has been turned 45 degrees, one hole pitch, to the next stop. (3) With that, the knob has been released so the pin is back in the hole at that stop. (4) With that, the plate is left indexed at the next stop with both grippers clear and home. Full score 1.0 only when all four steps hold for 1 s; any lapse restarts the hold and the step points stop at 0.75. A plate turned past the next stop (overshoot), a pin released between holes (missed hole), or a plate turned while the pin was still engaged (forced pull) caps the score at 0.5 for the rest of the run. Idle scores 0. The real trial reads knob pull with a ruler, plate angle with a protractor and pull force with a spring gauge (4-7 N); a stopwatch times only the 1 s hold.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz)",
+  "reset_notes": "Seat the plunger pin in the home hole (knob centre x 0.25, y 0.150, z local 0.110, pull 0) and put the plate at 0 degrees with its first hole at the plunger. Set both arms at READY and wipe the bench.",
+  "fidelity": "Real 16 mm class hand index plunger: 16 mm knob, 7 mm pin, 4-7 N spring force; 150 mm fixture plate with eight 7 mm rim holes at 45 degrees, 24 mm central hub. Rigid bodies, 240 Hz physics, 20 Hz control. A closed gripper carries the knob and the plate yaw follows the hub grip (declared carry/rotation); the pull, the 45 degree turn, the hole alignment and the release are real geometry. No fluid or torque integration. Masses: plate 600 g, plunger 120 g.",
+  "scores": "Dream-1: 0.0 (2,400 steps, 2,401 action rows); demo: 1.0 at step 356 on Isaac/MuJoCo. Plunger pulled 14.5 mm clear, plate rotated to +44.0 deg (hole error -1.0 deg), pin released into the hole, 1 s still; no overshoot, miss-hole or forced fault; pytest 18.",
+  "media": "M-L36Y28"
+}

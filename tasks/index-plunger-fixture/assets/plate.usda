@@ -1,0 +1,392 @@
+#usda 1.0
+(
+    defaultPrim = "Plate"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Plate" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "rotary 8-stop index plate with central hub and rim holes"
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.000001, 0.000001, 0.000001)
+    float physics:mass = 0.6
+    custom bool physxRigidBody:disableGravity = 1
+
+    def Scope "Looks"
+    {
+        def Material "m596265_43"
+        {
+            token outputs:surface.connect = </Plate/Looks/m596265_43/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.6, 0.63, 0.66)
+                float inputs:metallic = 0.5
+                float inputs:roughness = 0.4
+                token outputs:surface
+            }
+        }
+
+        def Material "m091011_35"
+        {
+            token outputs:surface.connect = </Plate/Looks/m091011_35/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.12)
+                float inputs:metallic = 0.4
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_65"
+        {
+            token outputs:surface.connect = </Plate/Looks/m697174_65/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.7
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_63"
+        {
+            token outputs:surface.connect = </Plate/Looks/m697174_63/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.7
+                float inputs:roughness = 0.35
+                token outputs:surface
+            }
+        }
+
+        def Material "m091011_55"
+        {
+            token outputs:surface.connect = </Plate/Looks/m091011_55/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.12)
+                float inputs:metallic = 0.6
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m020202_05"
+        {
+            token outputs:surface.connect = </Plate/Looks/m020202_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.03, 0.03, 0.03)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_55"
+        {
+            token outputs:surface.connect = </Plate/Looks/m697174_55/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.6
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cylinder "Disc1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.02
+        rel material:binding = </Plate/Looks/m596265_43>
+        custom float physxCollision:contactOffset = 0.0005
+        custom float physxCollision:restOffset = 0
+        double radius = 0.075
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Recess2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.021
+        rel material:binding = </Plate/Looks/m091011_35>
+        double radius = 0.055
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "HubCollar3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.002
+        rel material:binding = </Plate/Looks/m697174_65>
+        double radius = 0.012
+        double3 xformOp:translate = (0, 0, 0.011)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Hub4" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.02
+        rel material:binding = </Plate/Looks/m697174_63>
+        custom float physxCollision:contactOffset = 0.0005
+        custom float physxCollision:restOffset = 0
+        double radius = 0.012
+        double3 xformOp:translate = (0, 0, 0.02)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "HubRim5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.002
+        rel material:binding = </Plate/Looks/m091011_55>
+        double radius = 0.013
+        double3 xformOp:translate = (0, 0, 0.031)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "IndexHole06" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.014
+        rel material:binding = </Plate/Looks/m020202_05>
+        double radius = 0.0035
+        quatf xformOp:orient = (0.70710677, -0.70710677, 0, 0)
+        double3 xformOp:translate = (0, 0.072, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+    }
+
+    def Cylinder "HoleLip07" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.002
+        rel material:binding = </Plate/Looks/m697174_55>
+        double radius = 0.005
+        quatf xformOp:orient = (0.70710677, -0.70710677, 0, 0)
+        double3 xformOp:translate = (0, 0.072, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+    }
+
+    def Cylinder "IndexHole18" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.014
+        rel material:binding = </Plate/Looks/m020202_05>
+        double radius = 0.0035
+        quatf xformOp:orient = (0.70710677, -0.5, 0.5, 0)
+        double3 xformOp:translate = (0.050911688245431415, 0.05091168824543142, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+    }
+
+    def Cylinder "HoleLip19" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.002
+        rel material:binding = </Plate/Looks/m697174_55>
+        double radius = 0.005
+        quatf xformOp:orient = (0.70710677, -0.5, 0.5, 0)
+        double3 xformOp:translate = (0.050911688245431415, 0.05091168824543142, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+    }
+
+    def Cylinder "IndexHole210" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.014
+        rel material:binding = </Plate/Looks/m020202_05>
+        double radius = 0.0035
+        quatf xformOp:orient = (0.70710677, -4.3297803e-17, 0.70710677, 0)
+        double3 xformOp:translate = (0.072, 4.408728476930471e-18, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+    }
+
+    def Cylinder "HoleLip211" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.002
+        rel material:binding = </Plate/Looks/m697174_55>
+        double radius = 0.005
+        quatf xformOp:orient = (0.70710677, -4.3297803e-17, 0.70710677, 0)
+        double3 xformOp:translate = (0.072, 4.408728476930471e-18, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+    }
+
+    def Cylinder "IndexHole312" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.014
+        rel material:binding = </Plate/Looks/m020202_05>
+        double radius = 0.0035
+        quatf xformOp:orient = (0.70710677, 0.5, 0.5, -0)
+        double3 xformOp:translate = (0.05091168824543142, -0.050911688245431415, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+    }
+
+    def Cylinder "HoleLip313" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.002
+        rel material:binding = </Plate/Looks/m697174_55>
+        double radius = 0.005
+        quatf xformOp:orient = (0.70710677, 0.5, 0.5, -0)
+        double3 xformOp:translate = (0.05091168824543142, -0.050911688245431415, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+    }
+
+    def Cylinder "IndexHole414" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.014
+        rel material:binding = </Plate/Looks/m020202_05>
+        double radius = 0.0035
+        quatf xformOp:orient = (0.70710677, 0.70710677, 8.6595606e-17, -0)
+        double3 xformOp:translate = (8.817456953860942e-18, -0.072, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+    }
+
+    def Cylinder "HoleLip415" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.002
+        rel material:binding = </Plate/Looks/m697174_55>
+        double radius = 0.005
+        quatf xformOp:orient = (0.70710677, 0.70710677, 8.6595606e-17, -0)
+        double3 xformOp:translate = (8.817456953860942e-18, -0.072, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+    }
+
+    def Cylinder "IndexHole516" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.014
+        rel material:binding = </Plate/Looks/m020202_05>
+        double radius = 0.0035
+        quatf xformOp:orient = (0.70710677, 0.5, -0.5, 0)
+        double3 xformOp:translate = (-0.050911688245431415, -0.05091168824543143, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+    }
+
+    def Cylinder "HoleLip517" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.002
+        rel material:binding = </Plate/Looks/m697174_55>
+        double radius = 0.005
+        quatf xformOp:orient = (0.70710677, 0.5, -0.5, 0)
+        double3 xformOp:translate = (-0.050911688245431415, -0.05091168824543143, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+    }
+
+    def Cylinder "IndexHole618" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.014
+        rel material:binding = </Plate/Looks/m020202_05>
+        double radius = 0.0035
+        quatf xformOp:orient = (0.70710677, 1.298934e-16, -0.70710677, 0)
+        double3 xformOp:translate = (-0.072, -1.3226185430791413e-17, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+    }
+
+    def Cylinder "HoleLip619" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.002
+        rel material:binding = </Plate/Looks/m697174_55>
+        double radius = 0.005
+        quatf xformOp:orient = (0.70710677, 1.298934e-16, -0.70710677, 0)
+        double3 xformOp:translate = (-0.072, -1.3226185430791413e-17, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+    }
+
+    def Cylinder "IndexHole720" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.014
+        rel material:binding = </Plate/Looks/m020202_05>
+        double radius = 0.0035
+        quatf xformOp:orient = (0.70710677, -0.5, -0.5, 0)
+        double3 xformOp:translate = (-0.05091168824543143, 0.05091168824543141, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+    }
+
+    def Cylinder "HoleLip721" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.002
+        rel material:binding = </Plate/Looks/m697174_55>
+        double radius = 0.005
+        quatf xformOp:orient = (0.70710677, -0.5, -0.5, 0)
+        double3 xformOp:translate = (-0.05091168824543143, 0.05091168824543141, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+    }
+}
+
