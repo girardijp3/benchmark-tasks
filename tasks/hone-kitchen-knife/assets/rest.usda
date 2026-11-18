@@ -1,0 +1,116 @@
+#usda 1.0
+(
+    defaultPrim = "Rest"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Rest" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI"]
+    doc = "A two-cradle wooden knife rest on the bench; the knife parks flat with its blade along +X."
+)
+{
+    bool physics:kinematicEnabled = 1
+
+    def Scope "Looks"
+    {
+        def Material "m100502_06"
+        {
+            token outputs:surface.connect = </Rest/Looks/m100502_06/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.11, 0.06, 0.03)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.7
+                token outputs:surface
+            }
+        }
+
+        def Material "m191005_05"
+        {
+            token outputs:surface.connect = </Rest/Looks/m191005_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.2, 0.11, 0.055)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m092715_07"
+        {
+            token outputs:surface.connect = </Rest/Looks/m092715_07/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.28, 0.16)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.8
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "BasePlate1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Rest/Looks/m100502_06>
+        double size = 1
+        float3 xformOp:scale = (0.25, 0.07, 0.012)
+        double3 xformOp:translate = (0, 0, 0.006)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Cradle2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Rest/Looks/m191005_05>
+        double size = 1
+        float3 xformOp:scale = (0.022, 0.07, 0.016)
+        double3 xformOp:translate = (-0.05, 0, 0.02)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CradlePad3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Rest/Looks/m092715_07>
+        double size = 1
+        float3 xformOp:scale = (0.024, 0.05, 0.003)
+        double3 xformOp:translate = (-0.05, 0, 0.0285)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Cradle4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Rest/Looks/m191005_05>
+        double size = 1
+        float3 xformOp:scale = (0.022, 0.07, 0.016)
+        double3 xformOp:translate = (0.06, 0, 0.02)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CradlePad5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Rest/Looks/m092715_07>
+        double size = 1
+        float3 xformOp:scale = (0.024, 0.05, 0.003)
+        double3 xformOp:translate = (0.06, 0, 0.0285)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

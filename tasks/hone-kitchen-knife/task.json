@@ -1,0 +1,25 @@
+{
+  "title": "Hone a 200 mm chef's knife on a 300 mm honing steel at 20 degrees, both sides, then park it",
+  "category": "Impact on jobs",
+  "keywords": [
+    "chef knife",
+    "honing steel",
+    "20 degree angle",
+    "heel-to-tip",
+    "light pressure",
+    "alternate sides",
+    "knife rest",
+    "food service",
+    "edge alignment",
+    "kitchen"
+  ],
+  "instruction": "Take the chef's knife by its handle, set the blade at about 20 degrees on the steel heel, sweep heel-to-tip with light pressure, alternate to the other side, then park the knife and hold still.",
+  "context": "Chefs and food-service staff hone a knife before prep, often many times a shift. A honing steel is a smooth or finely grooved steel rod, not a sharpening stone: honing realigns the edge without grinding metal away. The robot works with a real 200 mm chef's knife (205 g) against a 300 mm honing steel clamped horizontally in a bench holder. It sets the blade at roughly 20 degrees at the steel heel, sweeps heel-to-tip with about 1.5 mm of light contact, alternates to the other side and sweeps again, then parks the knife on its wooden rest and holds. A wrong angle, a heavy press or a dropped knife spoils the edge. Cooks, chefs and food-prep workers (BLS OEWS SOC 35-2011/2012/2014) number well over 500,000 in the US alone.",
+  "setup": "Positions are metres from the arm-base midpoint, x forward, y to the robot's left, table top z 0.7475. The 300 mm honing steel is clamped horizontally: its rod heel (guard) is at x 0.250, y -0.150, axis along +X, rod centre z 0.7755 and rod radius 8 mm (top surface z 0.7835); the exposed rod runs to x 0.450, the 100 mm handle behind the heel sits in the clamp. The 200 mm chef's knife starts on a wooden rest at x 0.330, y -0.410, origin at the blade heel, blade along +X, edge z -0.028 local. The right arm uses the knife; the left stays at READY. A correct touch has the blade yawed 20 degrees to the rod with the edge overlapping the rod top by 1.5 mm.",
+  "scoring": "Four steps, 0.25 each, as things stand. (1) The knife is grasped and its blade set at about 20 degrees on the steel heel with a light touch. (2) From that, the edge sweeps from heel to tip along the steel (>=170 of 180 mm) with light pressure and the angle held. (3) With that, the same sweep is completed on the other side (a clean edge). (4) With that, the knife is parked flat on its rest, both grippers are home, and everything is still for 1 s; any lapse restarts the hold and the step points stop at 0.75. A blade more than 10 degrees off 20 while on the rod, an edge pressed more than 5 mm into the rod, or a knife dropped off the bench caps the score at 0.5 for the run. Idle scores 0. The real trial checks the angle with a protractor, the touch by feel and the parked knife on its rest; a stopwatch times only the 1 s hold.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz)",
+  "reset_notes": "The 200 mm chef's knife lies flat on its wooden rest at x 0.330, y -0.410, blade along +X and edge down; the 300 mm honing steel is clamped horizontally with its rod heel at x 0.250, y -0.150. Both arms start at READY. The steel and holder are fixed and clean; the rest is empty apart from the knife.",
+  "fidelity": "True-size 200 mm chef's knife (205 g, 55 mm heel blade, 22 mm three-rivet handle) and 300 mm honing steel (16 mm rod, 100 mm handle). 240 Hz physics, 20 Hz control. Knife is a gravity-free rigid body with declared carry; steel and clamp are a welded collider-free fixture. The 20 degree angle, edge-to-rod depth, heel-to-tip travel and park pose are real geometric measures; light force is declared (0-3 mm overlap), not a contact force. No scaling, no cutaway.",
+  "scores": "Dream-1: 0.0 (2,400 steps, 2,401 action rows); demo: 1.0 at step 585 on Isaac/MuJoCo. 20 deg hone angle within 5 deg, 170 mm heel-to-tip sweeps both sides, light 1.5 mm touch, knife parked, 1 s still; no wrong angle, heavy press, missed sweep or drop fault; pytest 18.",
+  "media": "M-UUWHN3"
+}
