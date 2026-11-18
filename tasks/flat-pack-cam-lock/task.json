@@ -1,0 +1,25 @@
+{
+  "title": "Tighten a 15 mm flat-pack cam lock: seat the cam, insert the bolt, turn 180 deg with screwdriver until panels are flush",
+  "category": "Impact on jobs",
+  "keywords": [
+    "cam lock",
+    "flat-pack furniture",
+    "eccentric cam",
+    "15 mm cam",
+    "connecting bolt",
+    "M6 bolt",
+    "screwdriver",
+    "180 deg turn",
+    "0.3-0.6 N m",
+    "panel joint"
+  ],
+  "instruction": "Drop the 15 mm cam into its bore, insert the mating bolt square into the other panel, then use the screwdriver to turn the cam 180 deg until the panels pull tight and flush.",
+  "context": "Furniture movers and assemblers lock flat-pack joints all day: a cam in one panel's 15 mm bore, a bolt in the mating panel and a half turn with a hand screwdriver that pulls the panels flush. This is routine work of large occupations, not a one-off: BLS reports 1,799,500 assemblers and fabricators (2025), 889,700 carpenters who install cabinets and fixtures, and 2,940,300 hand laborers and material movers (furniture movers included), each far above 500,000; 15 mm eccentric cams dominate ready-to-assemble furniture. A cam left out of its pocket, a bolt driven crooked or panels forced shut before the joint is captured ruins the carcass. The real joint uses a 15 mm cam, an M6 bolt in an 8 mm hole, a 24 mm drilling distance and a 0.3-0.6 N m hand turn.",
+  "setup": "Positions in metres from the midpoint between the arm bases, x forward, y to the robot's left, table top z 0 (world z 0.7475). A 16 mm face panel lies flat at x 0.250, y 0.030 with an empty 15 mm blind cam bore 24 mm in from its joining edge (y -0.016); a 16 mm mating panel lies beside it, its 8 mm bolt hole 3 mm short of that edge. The 15 mm cam waits upright in a pocket at (0.250, 0.065), the M6 bolt (axis along +y) on a pad at (0.210, 0.135) and the PZ2 screwdriver in a holder at (0.325, 0.135), all above the table. The correct states are the cam centred in its bore, the bolt square in the hole with its 7 mm head reaching the cam, and the panels touching. Both arms start at READY; one arm does the task.",
+  "scoring": "Idle 0; cam seated 0.25; bolt engaged 0.5; cam turned ~180 deg 0.75; panels flush with the declared torque held 1 s, caps clear and grippers home 1.0. Caps: cam not seated, bolt cross-threaded, panels forced flush - each holds the score at 0.5. MuJoCo demo 1.0 at step 865 of 900; Dream-1 not run.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz)",
+  "reset_notes": "Leave the 15 mm cam upright in its pocket at (0.250, 0.065), the M6 bolt on its pad at (0.210, 0.135) and the screwdriver in its holder at (0.325, 0.135). Both cam bore and bolt hole bare; the two panels 3 mm apart. Set both arms at READY and wipe the bench.",
+  "fidelity": "Real 15 mm die-cast zinc eccentric cam (7.5 mm radius, 12 mm tall), M6 bolt with 7 mm head and 8 mm hole, 24 mm drilling distance, 16 mm panels and a 3 mm start gap. The 0.3-0.6 N m hand torque and eccentric draw are declared, not integrated; cam, bolt and screwdriver are gravity-free rigid bodies with a closed-gripper declared carry; the panels, bore and hole are visual-only. Rigid bodies, 240 Hz physics, 20 Hz control. No size scaled down; damage is scored by geometric flags, not contact.",
+  "scores": "Dream-1: 0.0 (2,400 steps, 2,401 action rows); demo: 1.0 at step 865 on Isaac/MuJoCo. 15 mm cam seated within 0.6 mm, M6 bolt squared and turned +177.6 deg, panels closed to 0.1 mm, declared torque gate passed, 1 s hold; no mis-seat, cross-thread, forced-panel or drop fault; pytest 22.",
+  "media": "M-7CEH62"
+}

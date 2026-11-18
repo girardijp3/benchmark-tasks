@@ -1,0 +1,170 @@
+#usda 1.0
+(
+    defaultPrim = "Screwdriver"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Screwdriver" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "hand screwdriver: PZ2/Phillips cross tip at local -z, handle and grasp at local +z"
+)
+{
+    float3 physics:diagonalInertia = (0.000001, 0.000001, 0.000001)
+    float physics:mass = 0.06
+    custom bool physxRigidBody:disableGravity = 1
+
+    def Scope "Looks"
+    {
+        def Material "m151721_06"
+        {
+            token outputs:surface.connect = </Screwdriver/Looks/m151721_06/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.16, 0.18, 0.22)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.7
+                token outputs:surface
+            }
+        }
+
+        def Material "m841311_05"
+        {
+            token outputs:surface.connect = </Screwdriver/Looks/m841311_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.85, 0.14, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_72"
+        {
+            token outputs:surface.connect = </Screwdriver/Looks/m697174_72/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.85
+                float inputs:roughness = 0.25
+                token outputs:surface
+            }
+        }
+
+        def Material "m818386_72"
+        {
+            token outputs:surface.connect = </Screwdriver/Looks/m818386_72/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.82, 0.84, 0.87)
+                float inputs:metallic = 0.85
+                float inputs:roughness = 0.25
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cylinder "Handle1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.045
+        rel material:binding = </Screwdriver/Looks/m151721_06>
+        double radius = 0.012
+        double3 xformOp:translate = (0, 0, 0.02)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "HandleFlute2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Screwdriver/Looks/m841311_05>
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.004, 0.04)
+        double3 xformOp:translate = (0.009, 0, 0.02)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "HandleFlute3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Screwdriver/Looks/m841311_05>
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.004, 0.04)
+        double3 xformOp:translate = (5.510910596163089e-19, 0.009, 0.02)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "HandleFlute4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Screwdriver/Looks/m841311_05>
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.004, 0.04)
+        double3 xformOp:translate = (-0.009, 1.1021821192326178e-18, 0.02)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "HandleFlute5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Screwdriver/Looks/m841311_05>
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.004, 0.04)
+        double3 xformOp:translate = (-1.6532731788489266e-18, -0.009, 0.02)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Shaft6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.044
+        rel material:binding = </Screwdriver/Looks/m697174_72>
+        double radius = 0.0032
+        double3 xformOp:translate = (0, 0, -0.017)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Tip7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.008
+        rel material:binding = </Screwdriver/Looks/m818386_72>
+        double radius = 0.0034
+        double3 xformOp:translate = (0, 0, -0.043)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "ScrewCollider8" (
+        prepend apiSchemas = ["PhysicsCollisionAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.07
+        custom float physxCollision:contactOffset = 0.0005
+        custom float physxCollision:restOffset = 0
+        double radius = 0.011
+        double3 xformOp:translate = (0, 0, -0.003)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+

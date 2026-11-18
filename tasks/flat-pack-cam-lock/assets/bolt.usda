@@ -1,0 +1,135 @@
+#usda 1.0
+(
+    defaultPrim = "Bolt"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Bolt" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "M6 connecting bolt: 27 mm thread, stop collar, 25 mm projection and a 7 mm eccentric head (B=24)"
+)
+{
+    float3 physics:diagonalInertia = (0.000001, 0.000001, 0.000001)
+    float physics:mass = 0.01
+    custom bool physxRigidBody:disableGravity = 1
+
+    def Scope "Looks"
+    {
+        def Material "m697174_73"
+        {
+            token outputs:surface.connect = </Bolt/Looks/m697174_73/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.8
+                float inputs:roughness = 0.35
+                token outputs:surface
+            }
+        }
+
+        def Material "m818386_72"
+        {
+            token outputs:surface.connect = </Bolt/Looks/m818386_72/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.82, 0.84, 0.87)
+                float inputs:metallic = 0.8
+                float inputs:roughness = 0.3
+                token outputs:surface
+            }
+        }
+
+        def Material "m091011_05"
+        {
+            token outputs:surface.connect = </Bolt/Looks/m091011_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cylinder "Thread1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.027
+        rel material:binding = </Bolt/Looks/m697174_73>
+        double radius = 0.003
+        double3 xformOp:translate = (0, 0, -0.0265)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "StopCollar2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.002
+        rel material:binding = </Bolt/Looks/m697174_73>
+        double radius = 0.0045
+        double3 xformOp:translate = (0, 0, -0.013)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Projection3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.022
+        rel material:binding = </Bolt/Looks/m697174_73>
+        double radius = 0.0028
+        double3 xformOp:translate = (0, 0, -0.001)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "BoltHead4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.004
+        rel material:binding = </Bolt/Looks/m818386_72>
+        double radius = 0.0035
+        double3 xformOp:translate = (0, 0, 0.011)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "HeadDrive5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Bolt/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.0016, 0.006, 0.004)
+        double3 xformOp:translate = (0.0018, 0, 0.011)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "BoltCollider6" (
+        prepend apiSchemas = ["PhysicsCollisionAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.053
+        custom float physxCollision:contactOffset = 0.0005
+        custom float physxCollision:restOffset = 0
+        double radius = 0.0036
+        double3 xformOp:translate = (0, 0, -0.0135)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+

@@ -1,0 +1,133 @@
+#usda 1.0
+(
+    defaultPrim = "Cam"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Cam" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "15 mm die-cast eccentric furniture cam: cross/PZ drive recess, eccentric bolt-head slot, index dot"
+)
+{
+    float3 physics:diagonalInertia = (0.000001, 0.000001, 0.000001)
+    float physics:mass = 0.015
+    custom bool physxRigidBody:disableGravity = 1
+
+    def Scope "Looks"
+    {
+        def Material "m818386_62"
+        {
+            token outputs:surface.connect = </Cam/Looks/m818386_62/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.82, 0.84, 0.87)
+                float inputs:metallic = 0.75
+                float inputs:roughness = 0.3
+                token outputs:surface
+            }
+        }
+
+        def Material "m091011_05"
+        {
+            token outputs:surface.connect = </Cam/Looks/m091011_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m841311_05"
+        {
+            token outputs:surface.connect = </Cam/Looks/m841311_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.85, 0.14, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cylinder "CamDrum1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.012
+        rel material:binding = </Cam/Looks/m818386_62>
+        double radius = 0.0075
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "CamCollider2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.011519999999999999
+        custom float physxCollision:contactOffset = 0.0005
+        custom float physxCollision:restOffset = 0
+        double radius = 0.0070999999999999995
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "CrossRecessA3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Cam/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.009, 0.0018, 0.0006)
+        double3 xformOp:translate = (0, 0, 0.0061)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CrossRecessB4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Cam/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.0018, 0.009, 0.0006)
+        double3 xformOp:translate = (0, 0, 0.0062)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "EccentricSlot5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Cam/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.006, 0.003, 0.0065)
+        double3 xformOp:translate = (0, -0.0069, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "IndexDot6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0008
+        rel material:binding = </Cam/Looks/m841311_05>
+        double radius = 0.0011
+        double3 xformOp:translate = (0, -0.0076, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+
