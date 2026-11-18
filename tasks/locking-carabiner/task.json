@@ -1,0 +1,27 @@
+{
+  "title": "Snap a locking carabiner onto an anchor eye and screw the gate shut",
+  "category": "Societal relatability",
+  "keywords": [
+    "climbing",
+    "rigging",
+    "arborist",
+    "carabiner",
+    "screw-lock",
+    "locking sleeve",
+    "anchor eye",
+    "pull-test",
+    "fall protection",
+    "safety-critical",
+    "outdoors",
+    "PPE"
+  ],
+  "instruction": "Open the carabiner's gate, hook it over the anchor eye, close the gate, screw the locking sleeve fully shut, then pull-test that the connection holds.",
+  "context": "Riggers, arborists and climbers clip a locking carabiner to an anchor many times a shift: open the gate, hook it over the eye, let the gate close, screw the locking sleeve fully shut and pull-test the link. A sleeve left loose or a gate left open can unclip and kill; a quick visual and pull check is standard practice. BLS/O*NET put riggers (SOC 49-9096) at 22,530 jobs and tree trimmers and pruners, also called arborists (SOC 37-3013), at 55,160 wage jobs in May 2025 (70,600 including self-employed in the 2025 projections); construction trades that use carabiners for fall arrest add over a million more workers. With millions of recreational climbers this is routine, safety-critical work for well over 500,000 workers.",
+  "setup": "Positions are in metres from the midpoint between the arm bases, x forward, y to the robot's left, table top z 0 (world z TOP). A fixed anchor eye: a 240 x 200 x 8 mm base at x 0.31, y 0 with a 6 mm upright post at x 0.345, y 0, its ring axis 40 mm above the table. A 60 mm aluminium screw-lock carabiner (6 mm wire, 50 g, 34 mm gate on a spring hinge, knurled screw sleeve) lies flat on the base with its spine at x 0.255, y 0 and its loop and gate pointing +x toward the post. Both arms start at READY; the work points are inside 0.38 m forward reach and within 0.02-0.05 m above the table.",
+  "scoring": "Four 0.25 rungs: gate opened, eye through the loop, gate closed behind the eye, sleeve locked and pull-test (eye slid to the gate end of the loop) held 1 s = 1.0. Idle 0. Releasing a threaded carabiner with the gate open or starting the pull-test before the sleeve is locked caps at 0.5; a carabiner off the table scores 0 for the run. The 1 s hold is timed inside the task's success(), lapses restart it, and full score needs all rungs held together. The thread is declared from the gripper's twist; a real protractor and a pull-test check the outcome.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz)",
+  "reset_notes": "Lay the carabiner flat on the base with its spine at x 0.255, y 0, its loop and gate toward the post and its gate closed; leave the anchor empty. Set both arms at READY.",
+  "fidelity": "Real ~60 mm compact locking carabiner (6 mm wire, 50 g, 34 mm spring-hinged gate, knurled screw sleeve) and a 6 mm eye-bolt anchor, all true size. Rigid body with a spring gate; 240 Hz physics, 20 Hz control. The gate opens on real contact with the post and closes on its spring. The sleeve thread is declared: a quarter turn of the wrist while gripping the sleeve sets the lock; the knurl is visual. Seat, twist and pull-test are real pose tests the scorer reads.",
+  "scores": "Dream-1: 0.0 (2,400 steps, 2,401 action rows); demo: 1.0 at step 640 on Isaac/MuJoCo. Gate opened around the anchor eye and closed, screw sleeve flipped over-centre, pull-test held, grippers clear, 1 s hold; no gate-not-closed, sleeve-not-locked or dropped fault; pytest 23.",
+  "media": "M-MB6RQF"
+}

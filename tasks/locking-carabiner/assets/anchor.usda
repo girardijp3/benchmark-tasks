@@ -1,0 +1,331 @@
+#usda 1.0
+(
+    defaultPrim = "Anchor"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Anchor" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "A fixed anchor eye: a 200 x 200 x 8 mm base plate with one upright 8 mm eye-bolt post, 40 mm above the table, topped by a 24 mm-OD ring (the eye). Origin: table level, the base's middle."
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0.004)
+    float3 physics:diagonalInertia = (0.01, 0.01, 0.01)
+    float physics:mass = 2
+
+    def Scope "Looks"
+    {
+        def Material "Phys_wood" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.4
+            float physics:restitution = 0
+            float physics:staticFriction = 0.45
+        }
+
+        def Material "m544429"
+        {
+            token outputs:surface.connect = </Anchor/Looks/m544429/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.55, 0.45, 0.3)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_steel" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.25
+            float physics:restitution = 0
+            float physics:staticFriction = 0.3
+        }
+
+        def Material "m545659"
+        {
+            token outputs:surface.connect = </Anchor/Looks/m545659/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.55, 0.57, 0.6)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Base1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Anchor/Looks/m544429>
+        rel material:binding:physics = </Anchor/Looks/Phys_wood> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.24, 0.2, 0.008)
+        double3 xformOp:translate = (0, 0, 0.004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Post2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.032
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.003
+        double3 xformOp:translate = (0.035, 0, 0.024)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Capsule "Ring3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0018116570824604963
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.0022
+        float xformOp:rotateZ = 105
+        double3 xformOp:translate = (0.04619615242270664, 0.0029999999999999996, 0.04)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ"]
+    }
+
+    def Capsule "Ring4" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0018116570824604954
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.0022
+        float xformOp:rotateZ = 135
+        double3 xformOp:translate = (0.043196152422706635, 0.008196152422706632, 0.04)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ"]
+    }
+
+    def Capsule "Ring5" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0018116570824605032
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.0022
+        float xformOp:rotateZ = 165
+        double3 xformOp:translate = (0.038000000000000006, 0.011196152422706631, 0.04)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ"]
+    }
+
+    def Capsule "Ring6" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0018116570824604963
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.0022
+        float xformOp:rotateZ = -165
+        double3 xformOp:translate = (0.032, 0.011196152422706633, 0.04)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ"]
+    }
+
+    def Capsule "Ring7" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0018116570824605015
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.0022
+        float xformOp:rotateZ = -135
+        double3 xformOp:translate = (0.02680384757729337, 0.008196152422706632, 0.04)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ"]
+    }
+
+    def Capsule "Ring8" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0018116570824604954
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.0022
+        float xformOp:rotateZ = -105
+        double3 xformOp:translate = (0.02380384757729337, 0.0030000000000000005, 0.04)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ"]
+    }
+
+    def Capsule "Ring9" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0018116570824604963
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.0022
+        float xformOp:rotateZ = -75
+        double3 xformOp:translate = (0.02380384757729337, -0.0029999999999999975, 0.04)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ"]
+    }
+
+    def Capsule "Ring10" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0018116570824604954
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.0022
+        float xformOp:rotateZ = -45
+        double3 xformOp:translate = (0.026803847577293368, -0.008196152422706628, 0.04)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ"]
+    }
+
+    def Capsule "Ring11" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.001811657082460504
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.0022
+        float xformOp:rotateZ = -15
+        double3 xformOp:translate = (0.032, -0.011196152422706631, 0.04)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ"]
+    }
+
+    def Capsule "Ring12" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0018116570824605032
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.0022
+        float xformOp:rotateZ = 15
+        double3 xformOp:translate = (0.038000000000000006, -0.011196152422706631, 0.04)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ"]
+    }
+
+    def Capsule "Ring13" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0018116570824604867
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.0022
+        float xformOp:rotateZ = 45
+        double3 xformOp:translate = (0.043196152422706635, -0.008196152422706635, 0.04)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ"]
+    }
+
+    def Capsule "Ring14" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.0018116570824605015
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.0022
+        float xformOp:rotateZ = 75
+        double3 xformOp:translate = (0.04619615242270663, -0.003000000000000004, 0.04)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ"]
+    }
+
+    def Sphere "PostCap15" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Anchor/Looks/m545659>
+        rel material:binding:physics = </Anchor/Looks/Phys_steel> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.004
+        double3 xformOp:translate = (0.035, 0, 0.04)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+

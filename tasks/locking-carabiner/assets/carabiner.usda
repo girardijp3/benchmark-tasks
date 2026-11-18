@@ -1,0 +1,417 @@
+#usda 1.0
+(
+    defaultPrim = "Carabiner"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Carabiner" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysicsArticulationRootAPI"]
+    doc = "A ~60 mm aluminium SCREW-LOCK locking carabiner: 6 mm wire, 54 x 54 mm centre-line (~60 mm outline), 50 g. Body: a spine along y on top (z = 0) and a loop below it; gate: a 34 mm bar hinged at its lower right end (y +17) that swings inward (up) 60 degrees, spring-closed (0.05 N m/rad) against the nose at y -17. A knurled screw-locking sleeve surrounds the gate near the hinge. Origin: spine middle; the loop's plane is y-z."
+)
+{
+    point3f physics:centerOfMass = (0, 0, -0.026)
+    float3 physics:diagonalInertia = (0.000022695, 0.000003, 0.000003)
+    float physics:mass = 0.045
+
+    def Scope "Looks"
+    {
+        def Material "Phys_alu" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.35
+        }
+
+        def Material "m771719"
+        {
+            token outputs:surface.connect = </Carabiner/Looks/m771719/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.78, 0.18, 0.2)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_steel" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.35
+        }
+
+        def Material "m848487"
+        {
+            token outputs:surface.connect = </Carabiner/Looks/m848487/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.85, 0.85, 0.88)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "Phys_sleeve" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.3
+            float physics:restitution = 0
+            float physics:staticFriction = 0.35
+        }
+
+        def Material "m897115"
+        {
+            token outputs:surface.connect = </Carabiner/Looks/m897115/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.9, 0.72, 0.16)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m544107"
+        {
+            token outputs:surface.connect = </Carabiner/Looks/m544107/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.55, 0.42, 0.08)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Capsule "Wire1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.028000000000000004
+        rel material:binding = </Carabiner/Looks/m771719>
+        rel material:binding:physics = </Carabiner/Looks/Phys_alu> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.003
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Capsule "Wire2" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.00814213562373095
+        rel material:binding = </Carabiner/Looks/m771719>
+        rel material:binding:physics = </Carabiner/Looks/Phys_alu> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.003
+        float xformOp:rotateX = -45
+        double3 xformOp:translate = (0, 0.022, -0.005)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX"]
+    }
+
+    def Capsule "Wire3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.028000000000000004
+        rel material:binding = </Carabiner/Looks/m771719>
+        rel material:binding:physics = </Carabiner/Looks/Phys_alu> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.003
+        float xformOp:rotateX = -90
+        double3 xformOp:translate = (0, 0.027, -0.027)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX"]
+    }
+
+    def Capsule "Wire4" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.00814213562373095
+        rel material:binding = </Carabiner/Looks/m771719>
+        rel material:binding:physics = </Carabiner/Looks/Phys_alu> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.003
+        float xformOp:rotateX = -135
+        double3 xformOp:translate = (0, 0.022, -0.049)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX"]
+    }
+
+    def Capsule "Wire5" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.00814213562373095
+        rel material:binding = </Carabiner/Looks/m771719>
+        rel material:binding:physics = </Carabiner/Looks/Phys_alu> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.003
+        float xformOp:rotateX = -45
+        double3 xformOp:translate = (0, -0.022, -0.049)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX"]
+    }
+
+    def Capsule "Wire6" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.028000000000000004
+        rel material:binding = </Carabiner/Looks/m771719>
+        rel material:binding:physics = </Carabiner/Looks/Phys_alu> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.003
+        float xformOp:rotateX = -90
+        double3 xformOp:translate = (0, -0.027, -0.027)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX"]
+    }
+
+    def Capsule "Wire7" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.00814213562373095
+        rel material:binding = </Carabiner/Looks/m771719>
+        rel material:binding:physics = </Carabiner/Looks/Phys_alu> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        custom float physxCollision:contactOffset = 0.001
+        custom float physxCollision:restOffset = 0
+        double radius = 0.003
+        float xformOp:rotateX = -135
+        double3 xformOp:translate = (0, -0.022, -0.005)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateX"]
+    }
+
+    def Xform "Gate" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, -0.017, 0)
+        float3 physics:diagonalInertia = (4.816667e-7, 2e-8, 4.816667e-7)
+        float physics:mass = 0.005
+        double3 xformOp:translate = (0, 0.017, -0.054)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Capsule "GateBar8" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.028000000000000004
+            rel material:binding = </Carabiner/Looks/m848487>
+            rel material:binding:physics = </Carabiner/Looks/Phys_steel> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double radius = 0.003
+            double3 xformOp:translate = (0, -0.017, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "Sleeve9" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.014
+            rel material:binding = </Carabiner/Looks/m897115>
+            rel material:binding:physics = </Carabiner/Looks/Phys_sleeve> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            custom float physxCollision:contactOffset = 0.001
+            custom float physxCollision:restOffset = 0
+            double radius = 0.0075
+            double3 xformOp:translate = (0, -0.015000000000000001, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Capsule "Knurl10" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.01
+            rel material:binding = </Carabiner/Looks/m544107>
+            double radius = 0.0009
+            double3 xformOp:translate = (0, -0.010000000000000002, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Capsule "Knurl11" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.01
+            rel material:binding = </Carabiner/Looks/m544107>
+            double radius = 0.0009
+            double3 xformOp:translate = (0, -0.010954915028125265, 0.004408389392193548)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Capsule "Knurl12" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.01
+            rel material:binding = </Carabiner/Looks/m544107>
+            double radius = 0.0009
+            double3 xformOp:translate = (0, -0.013454915028125264, 0.007132923872213651)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Capsule "Knurl13" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.01
+            rel material:binding = </Carabiner/Looks/m544107>
+            double radius = 0.0009
+            double3 xformOp:translate = (0, -0.01654508497187474, 0.007132923872213652)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Capsule "Knurl14" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.01
+            rel material:binding = </Carabiner/Looks/m544107>
+            double radius = 0.0009
+            double3 xformOp:translate = (0, -0.019045084971874737, 0.004408389392193549)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Capsule "Knurl15" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.01
+            rel material:binding = </Carabiner/Looks/m544107>
+            double radius = 0.0009
+            double3 xformOp:translate = (0, -0.02, 9.184850993605148e-19)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Capsule "Knurl16" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.01
+            rel material:binding = </Carabiner/Looks/m544107>
+            double radius = 0.0009
+            double3 xformOp:translate = (0, -0.019045084971874737, -0.004408389392193547)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Capsule "Knurl17" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.01
+            rel material:binding = </Carabiner/Looks/m544107>
+            double radius = 0.0009
+            double3 xformOp:translate = (0, -0.01654508497187474, -0.007132923872213651)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Capsule "Knurl18" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.01
+            rel material:binding = </Carabiner/Looks/m544107>
+            double radius = 0.0009
+            double3 xformOp:translate = (0, -0.013454915028125266, -0.007132923872213652)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Capsule "Knurl19" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.01
+            rel material:binding = </Carabiner/Looks/m544107>
+            double radius = 0.0009
+            double3 xformOp:translate = (0, -0.010954915028125265, -0.00440838939219355)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+    }
+
+    def Scope "Joints"
+    {
+        def PhysicsRevoluteJoint "Gate" (
+            prepend apiSchemas = ["PhysicsDriveAPI:angular", "PhysxJointAPI"]
+        )
+        {
+            float drive:angular:physics:damping = 0.000008726646
+            float drive:angular:physics:stiffness = 0.0008726646
+            float drive:angular:physics:targetPosition = 0
+            uniform token drive:angular:physics:type = "force"
+            uniform token physics:axis = "X"
+            rel physics:body0 = </Carabiner>
+            rel physics:body1 = </Carabiner/Gate>
+            point3f physics:localPos0 = (0, 0.017, -0.054)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = -60
+            float physics:upperLimit = 0
+            custom float physxJoint:armature = 0.000001
+        }
+    }
+}
+
