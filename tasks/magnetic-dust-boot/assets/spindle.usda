@@ -1,0 +1,209 @@
+#usda 1.0
+(
+    defaultPrim = "Spindle"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Spindle" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI"]
+    doc = "machine-tool spindle nose: 65 mm nose on a shoulder, with a magnetic-boot staging pocket (welded)"
+)
+{
+    bool physics:kinematicEnabled = 1
+
+    def Scope "Looks"
+    {
+        def Material "m151618_06"
+        {
+            token outputs:surface.connect = </Spindle/Looks/m151618_06/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.16, 0.17, 0.19)
+                float inputs:metallic = 0.1
+                float inputs:roughness = 0.7
+                token outputs:surface
+            }
+        }
+
+        def Material "m333538_54"
+        {
+            token outputs:surface.connect = </Spindle/Looks/m333538_54/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.34, 0.36, 0.39)
+                float inputs:metallic = 0.6
+                float inputs:roughness = 0.5
+                token outputs:surface
+            }
+        }
+
+        def Material "m677073_63"
+        {
+            token outputs:surface.connect = </Spindle/Looks/m677073_63/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.68, 0.71, 0.74)
+                float inputs:metallic = 0.7
+                float inputs:roughness = 0.35
+                token outputs:surface
+            }
+        }
+
+        def Material "m677073_72"
+        {
+            token outputs:surface.connect = </Spindle/Looks/m677073_72/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.68, 0.71, 0.74)
+                float inputs:metallic = 0.8
+                float inputs:roughness = 0.3
+                token outputs:surface
+            }
+        }
+
+        def Material "m333538_65"
+        {
+            token outputs:surface.connect = </Spindle/Looks/m333538_65/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.34, 0.36, 0.39)
+                float inputs:metallic = 0.7
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m596265_35"
+        {
+            token outputs:surface.connect = </Spindle/Looks/m596265_35/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.6, 0.63, 0.66)
+                float inputs:metallic = 0.4
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m091011_05"
+        {
+            token outputs:surface.connect = </Spindle/Looks/m091011_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Base1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Spindle/Looks/m151618_06>
+        double size = 1
+        float3 xformOp:scale = (0.16, 0.16, 0.024)
+        double3 xformOp:translate = (0, 0, 0.012)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "ShoulderBoss2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.036
+        rel material:binding = </Spindle/Looks/m333538_54>
+        double radius = 0.05
+        double3 xformOp:translate = (0, 0, 0.032)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "ShoulderFace3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.001
+        rel material:binding = </Spindle/Looks/m677073_63>
+        double radius = 0.05
+        double3 xformOp:translate = (0, 0, 0.05)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Nose654" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.045
+        rel material:binding = </Spindle/Looks/m677073_72>
+        double radius = 0.0325
+        double3 xformOp:translate = (0, 0, 0.0725)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "NoseFace5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.001
+        rel material:binding = </Spindle/Looks/m333538_65>
+        double radius = 0.02
+        double3 xformOp:translate = (0, 0, 0.095)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "StageBase6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Spindle/Looks/m596265_35>
+        double size = 1
+        float3 xformOp:scale = (0.095, 0.095, 0.008)
+        double3 xformOp:translate = (-0.05, -0.06, 0.004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "StageWallA7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Spindle/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.095, 0.003, 0.014)
+        double3 xformOp:translate = (-0.05, -0.108, 0.011)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "StageWallB8" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Spindle/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.095, 0.003, 0.014)
+        double3 xformOp:translate = (-0.05, -0.012, 0.011)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

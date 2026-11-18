@@ -1,0 +1,23 @@
+{
+  "title": "Centre an 80 mm magnetic dust boot on a 65 mm spindle nose and press it against the shoulder",
+  "category": "Impact on jobs",
+  "keywords": [
+    "magnetic dust boot",
+    "spindle nose",
+    "concentric alignment",
+    "magnet ring",
+    "shoulder seat",
+    "machine maintenance",
+    "4-7 N press",
+    "elastomer"
+  ],
+  "instruction": "Pick up the magnetic dust boot, centre its bore concentrically over the spindle nose, press it down against the shoulder with a 4-7 N press, release it and let go.",
+  "context": "Machine-shop operators, machinists and maintenance technicians fit magnetic spindle-nose dust boots to keep chips and coolant out of a lathe or mill taper. The boot is an 80 mm oil-resistant NBR elastomer cap with a moulded-in magnet ring; it must be brought concentrically onto the 65 mm nose and pressed against the shoulder with a 4-7 N hand force. A magnet that grabs an off-centre bite of the rim, a boot left proud of the shoulder, or a press that jams it past the seat leaves a seal that leaks or binds the spindle. This is routine, not occasional: BLS OEWS lists about 287,000 machinists (51-4041) and 422,000 industrial machinery mechanics (49-9041), roughly 709,000 workers who fit or renew such seals at chuck changes, setups and scheduled spindle service. The real trial uses an 80 mm boot on a 65 mm spindle nose.",
+  "setup": "Positions are in metres from the midpoint between the arm bases, x forward, y to the robot's left, table top z 0 (world z 0.7475). A steel spindle fixture sits at x 0.30, y 0: its shoulder face is at z 0.050 and its 65 mm nose runs from z 0.050 to z 0.095. The 80 mm magnetic dust boot (65 mm bore, 40 mm tall) waits in a staging pocket at x 0.25, y -0.06 with its centre at z 0.020; when seated its centre is at z 0.070 and its bottom face on the shoulder. The boot is a real gravity-free body; the spindle fixture is one welded visual-only body. Both YAM arms start at READY.",
+  "scoring": "Four steps, 0.25 each, as things stand. (1) The boot's bore is centred on the spindle nose. (2) With that, a full 4-7 N press stroke (>=90%) is applied. (3) With that, the boot bottom is seated on the shoulder. (4) With that, the gripper releases and the boot stays seated; full score 1.0 only when this holds for 1 s with the boot seated and centred and both grippers clear and home; any lapse restarts the hold and step points stop at 0.75. Magnets grabbing off-centre, a boot left unseated, or a press forced past the shoulder caps the score at 0.5. Idle scores 0.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz)",
+  "reset_notes": "Put the boot in its staging pocket at x 0.25, y -0.06 with its centre at z 0.020 and its alignment tick facing -y. Leave the spindle nose bare. Set both arms at READY and wipe the bench.",
+  "fidelity": "Real 80 mm magnetic dust boot class: 80 mm OD x 40 mm oil-resistant NBR elastomer body, 65 mm bore with a moulded-in magnet ring, 4-7 N press, on a 65 mm steel spindle nose with a shoulder. Rigid bodies, 240 Hz physics, 20 Hz control. A closed gripper carries the boot (declared carry). Concentric alignment, press stroke, seat and all three caps are real geometry. Boot 90 g. Press force stated, not integrated.",
+  "scores": "Dream-1: 0.0 (2,400 steps, 2,401 action rows); demo: 1.0 at step 354 on Isaac/MuJoCo. Centred bore within 6 mm, full 35 mm press stroke with bottom 0.3 mm from the shoulder, grippers clear, 1 s hold; no forced press, missing magnet or drop fault; pytest 18.",
+  "media": "M-44C4FX"
+}

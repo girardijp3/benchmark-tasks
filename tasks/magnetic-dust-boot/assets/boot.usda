@@ -1,0 +1,163 @@
+#usda 1.0
+(
+    defaultPrim = "Boot"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Boot" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "80 mm oil-resistant elastomer magnetic dust boot (free body)"
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.000001, 0.000001, 0.000001)
+    float physics:mass = 0.09
+    custom bool physxRigidBody:disableGravity = 1
+
+    def Scope "Looks"
+    {
+        def Material "m091011_07"
+        {
+            token outputs:surface.connect = </Boot/Looks/m091011_07/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.85
+                token outputs:surface
+            }
+        }
+
+        def Material "m091011_08"
+        {
+            token outputs:surface.connect = </Boot/Looks/m091011_08/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.9
+                token outputs:surface
+            }
+        }
+
+        def Material "m293135_44"
+        {
+            token outputs:surface.connect = </Boot/Looks/m293135_44/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.3, 0.32, 0.36)
+                float inputs:metallic = 0.5
+                float inputs:roughness = 0.5
+                token outputs:surface
+            }
+        }
+
+        def Material "m845409_05"
+        {
+            token outputs:surface.connect = </Boot/Looks/m845409_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.85, 0.55, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cylinder "ElastomerBody1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.04
+        rel material:binding = </Boot/Looks/m091011_07>
+        double radius = 0.04
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Bore652" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0405
+        rel material:binding = </Boot/Looks/m091011_08>
+        double radius = 0.0325
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "MagnetRing3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.006
+        rel material:binding = </Boot/Looks/m293135_44>
+        double radius = 0.0365
+        double3 xformOp:translate = (0, 0, -0.014)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "MagnetRingBore4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0062
+        rel material:binding = </Boot/Looks/m091011_08>
+        double radius = 0.0325
+        double3 xformOp:translate = (0, 0, -0.014)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "TopFlange5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.004
+        rel material:binding = </Boot/Looks/m091011_07>
+        double radius = 0.04
+        double3 xformOp:translate = (0, 0, 0.018)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "AlignTick6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Boot/Looks/m845409_05>
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.01, 0.001)
+        double3 xformOp:translate = (0, -0.036, 0.0205)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "GraspBoss7" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.012
+        rel material:binding = </Boot/Looks/m091011_07>
+        custom float physxCollision:contactOffset = 0.0005
+        custom float physxCollision:restOffset = 0
+        double radius = 0.01
+        double3 xformOp:translate = (0, 0, 0.026)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+
