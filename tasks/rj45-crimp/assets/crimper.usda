@@ -1,0 +1,322 @@
+#usda 1.0
+(
+    defaultPrim = "Crimper"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Crimper" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI"]
+    doc = "ratcheting RJ45 crimper: base, plug seat, eight contact teeth, strain-relief jaw, ratchet stops"
+)
+{
+    bool physics:kinematicEnabled = 1
+
+    def Scope "Looks"
+    {
+        def Material "m171923_24"
+        {
+            token outputs:surface.connect = </Crimper/Looks/m171923_24/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.18, 0.2, 0.24)
+                float inputs:metallic = 0.25
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "m080911_05"
+        {
+            token outputs:surface.connect = </Crimper/Looks/m080911_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.09, 0.1, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m616468_65"
+        {
+            token outputs:surface.connect = </Crimper/Looks/m616468_65/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.62, 0.65, 0.69)
+                float inputs:metallic = 0.7
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m856717_72"
+        {
+            token outputs:surface.connect = </Crimper/Looks/m856717_72/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.86, 0.68, 0.18)
+                float inputs:metallic = 0.85
+                float inputs:roughness = 0.28
+                token outputs:surface
+            }
+        }
+
+        def Material "m616468_55"
+        {
+            token outputs:surface.connect = </Crimper/Looks/m616468_55/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.62, 0.65, 0.69)
+                float inputs:metallic = 0.6
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m111317_05"
+        {
+            token outputs:surface.connect = </Crimper/Looks/m111317_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.12, 0.14, 0.18)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "CrimperBase1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Crimper/Looks/m171923_24>
+        double size = 1
+        float3 xformOp:scale = (0.11, 0.14, 0.008)
+        double3 xformOp:translate = (0, -0.02, 0.004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CrimperTop2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Crimper/Looks/m080911_05>
+        double size = 1
+        float3 xformOp:scale = (0.112, 0.142, 0.001)
+        double3 xformOp:translate = (0, -0.02, 0.0085)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CrimperHead3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Crimper/Looks/m171923_24>
+        double size = 1
+        float3 xformOp:scale = (0.038, 0.03, 0.008)
+        double3 xformOp:translate = (0.02, 0, 0.012)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "SeatFloor4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Crimper/Looks/m080911_05>
+        double size = 1
+        float3 xformOp:scale = (0.026, 0.0118, 0.002)
+        double3 xformOp:translate = (0.02, 0, 0.0125)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "SeatRail5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Crimper/Looks/m616468_65>
+        double size = 1
+        float3 xformOp:scale = (0.026, 0.0012, 0.007)
+        double3 xformOp:translate = (0.02, -0.0064399999999999995, 0.016)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "SeatRail6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Crimper/Looks/m616468_65>
+        double size = 1
+        float3 xformOp:scale = (0.026, 0.0012, 0.007)
+        double3 xformOp:translate = (0.02, 0.0064399999999999995, 0.016)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "SeatBackStop7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Crimper/Looks/m616468_65>
+        double size = 1
+        float3 xformOp:scale = (0.001, 0.01368, 0.008)
+        double3 xformOp:translate = (0.033, 0, 0.016)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "ContactTooth18" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0055
+        rel material:binding = </Crimper/Looks/m856717_72>
+        double radius = 0.00042
+        double3 xformOp:translate = (0.014, 0.0035700000000000003, 0.023)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "ContactTooth29" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0055
+        rel material:binding = </Crimper/Looks/m856717_72>
+        double radius = 0.00042
+        double3 xformOp:translate = (0.014, 0.00255, 0.023)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "ContactTooth310" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0055
+        rel material:binding = </Crimper/Looks/m856717_72>
+        double radius = 0.00042
+        double3 xformOp:translate = (0.014, 0.0015300000000000001, 0.023)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "ContactTooth411" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0055
+        rel material:binding = </Crimper/Looks/m856717_72>
+        double radius = 0.00042
+        double3 xformOp:translate = (0.014, 0.00051, 0.023)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "ContactTooth512" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0055
+        rel material:binding = </Crimper/Looks/m856717_72>
+        double radius = 0.00042
+        double3 xformOp:translate = (0.014, -0.00051, 0.023)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "ContactTooth613" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0055
+        rel material:binding = </Crimper/Looks/m856717_72>
+        double radius = 0.00042
+        double3 xformOp:translate = (0.014, -0.0015300000000000001, 0.023)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "ContactTooth714" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0055
+        rel material:binding = </Crimper/Looks/m856717_72>
+        double radius = 0.00042
+        double3 xformOp:translate = (0.014, -0.00255, 0.023)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "ContactTooth815" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0055
+        rel material:binding = </Crimper/Looks/m856717_72>
+        double radius = 0.00042
+        double3 xformOp:translate = (0.014, -0.0035700000000000003, 0.023)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "StrainReliefJaw16" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Crimper/Looks/m616468_55>
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.012, 0.006)
+        double3 xformOp:translate = (0.004, 0, 0.016)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "StrainReliefPad17" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Crimper/Looks/m111317_05>
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.012, 0.0015)
+        double3 xformOp:translate = (0.004, 0, 0.0195)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "RatchetWheel18" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.01
+        rel material:binding = </Crimper/Looks/m616468_65>
+        double radius = 0.006
+        double3 xformOp:translate = (-0.04, -0.07, 0.02)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "RatchetAxle19" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.012
+        rel material:binding = </Crimper/Looks/m080911_05>
+        double radius = 0.0024
+        double3 xformOp:translate = (-0.04, -0.07, 0.02)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+

@@ -1,0 +1,143 @@
+#usda 1.0
+(
+    defaultPrim = "Handles"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Handles" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "ratcheting crimper handles: two grips and a pawl; root at the hinge pivot, posed by the task"
+)
+{
+    float3 physics:diagonalInertia = (0.000001, 0.000001, 0.000001)
+    float physics:mass = 0.12
+
+    def Scope "Looks"
+    {
+        def Material "m111317_24"
+        {
+            token outputs:surface.connect = </Handles/Looks/m111317_24/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.12, 0.14, 0.18)
+                float inputs:metallic = 0.25
+                float inputs:roughness = 0.55
+                token outputs:surface
+            }
+        }
+
+        def Material "m153351_07"
+        {
+            token outputs:surface.connect = </Handles/Looks/m153351_07/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.16, 0.34, 0.52)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.85
+                token outputs:surface
+            }
+        }
+
+        def Material "m856717_75"
+        {
+            token outputs:surface.connect = </Handles/Looks/m856717_75/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.86, 0.68, 0.18)
+                float inputs:metallic = 0.8
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m616468_65"
+        {
+            token outputs:surface.connect = </Handles/Looks/m616468_65/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.62, 0.65, 0.69)
+                float inputs:metallic = 0.7
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "HandleBarLower1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Handles/Looks/m111317_24>
+        double size = 1
+        float3 xformOp:scale = (0.032, 0.046, 0.006)
+        double3 xformOp:translate = (-0.016, -0.022, 0.006999999999999999)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GripLower2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Handles/Looks/m153351_07>
+        double size = 1
+        float3 xformOp:scale = (0.014, 0.03, 0.01)
+        double3 xformOp:translate = (-0.03, -0.04, 0.016)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "HandleBarUpper3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Handles/Looks/m111317_24>
+        double size = 1
+        float3 xformOp:scale = (0.032, 0.046, 0.006)
+        double3 xformOp:translate = (-0.016, -0.022, 0.015)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "GripUpper4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Handles/Looks/m153351_07>
+        double size = 1
+        float3 xformOp:scale = (0.014, 0.03, 0.01)
+        double3 xformOp:translate = (-0.03, -0.04, 0.024)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "RatchetPawl5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Handles/Looks/m856717_75>
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.012, 0.004)
+        double3 xformOp:translate = (0, -0.01, 0.01)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Hinge6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.014
+        rel material:binding = </Handles/Looks/m616468_65>
+        double radius = 0.003
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+

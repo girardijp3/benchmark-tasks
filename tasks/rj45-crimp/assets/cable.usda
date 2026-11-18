@@ -1,0 +1,307 @@
+#usda 1.0
+(
+    defaultPrim = "Cable"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Cable" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "stripped CAT6 UTP: 6.2 mm jacket, eight 23 AWG conductors on 1.02 mm pitch, red index on wire 1"
+)
+{
+    float3 physics:diagonalInertia = (0.000001, 0.000001, 0.000001)
+    float physics:mass = 0.01
+    custom bool physxRigidBody:disableGravity = 1
+
+    def Scope "Looks"
+    {
+        def Material "m151618_07"
+        {
+            token outputs:surface.connect = </Cable/Looks/m151618_07/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.16, 0.17, 0.19)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.8
+                token outputs:surface
+            }
+        }
+
+        def Material "m080911_05"
+        {
+            token outputs:surface.connect = </Cable/Looks/m080911_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.09, 0.1, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m945409_05"
+        {
+            token outputs:surface.connect = </Cable/Looks/m945409_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.55, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m944407_05"
+        {
+            token outputs:surface.connect = </Cable/Looks/m944407_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.45, 0.08)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m196924_05"
+        {
+            token outputs:surface.connect = </Cable/Looks/m196924_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.2, 0.7, 0.25)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m242979_05"
+        {
+            token outputs:surface.connect = </Cable/Looks/m242979_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.25, 0.3, 0.8)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m446494_05"
+        {
+            token outputs:surface.connect = </Cable/Looks/m446494_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.45, 0.65, 0.95)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m115417_05"
+        {
+            token outputs:surface.connect = </Cable/Looks/m115417_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.12, 0.55, 0.18)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m543715_05"
+        {
+            token outputs:surface.connect = </Cable/Looks/m543715_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.55, 0.38, 0.16)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m392309_05"
+        {
+            token outputs:surface.connect = </Cable/Looks/m392309_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.4, 0.24, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m841109_05"
+        {
+            token outputs:surface.connect = </Cable/Looks/m841109_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.85, 0.12, 0.1)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cylinder "Jacket1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.03
+        rel material:binding = </Cable/Looks/m151618_07>
+        double radius = 0.0031
+        double3 xformOp:translate = (-0.015, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "JacketCut2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.0016
+        rel material:binding = </Cable/Looks/m080911_05>
+        double radius = 0.0033
+        double3 xformOp:translate = (-0.0005, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Wire13" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.01
+        rel material:binding = </Cable/Looks/m945409_05>
+        double radius = 0.000525
+        double3 xformOp:translate = (0.005, 0.0035700000000000003, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Wire24" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.01
+        rel material:binding = </Cable/Looks/m944407_05>
+        double radius = 0.000525
+        double3 xformOp:translate = (0.005, 0.00255, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Wire35" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.01
+        rel material:binding = </Cable/Looks/m196924_05>
+        double radius = 0.000525
+        double3 xformOp:translate = (0.005, 0.0015300000000000001, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Wire46" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.01
+        rel material:binding = </Cable/Looks/m242979_05>
+        double radius = 0.000525
+        double3 xformOp:translate = (0.005, 0.00051, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Wire57" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.01
+        rel material:binding = </Cable/Looks/m446494_05>
+        double radius = 0.000525
+        double3 xformOp:translate = (0.005, -0.00051, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Wire68" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.01
+        rel material:binding = </Cable/Looks/m115417_05>
+        double radius = 0.000525
+        double3 xformOp:translate = (0.005, -0.0015300000000000001, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Wire79" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.01
+        rel material:binding = </Cable/Looks/m543715_05>
+        double radius = 0.000525
+        double3 xformOp:translate = (0.005, -0.00255, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Wire810" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.01
+        rel material:binding = </Cable/Looks/m392309_05>
+        double radius = 0.000525
+        double3 xformOp:translate = (0.005, -0.0035700000000000003, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "IndexBand11" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.0016
+        rel material:binding = </Cable/Looks/m841109_05>
+        double radius = 0.000775
+        double3 xformOp:translate = (0.0082, 0.0035700000000000003, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+

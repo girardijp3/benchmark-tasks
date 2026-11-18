@@ -1,0 +1,24 @@
+{
+  "title": "Crimp an RJ45 plug onto a CAT6 cable: insert eight wires in order, seat it in the ratchet crimper, squeeze and pull-test",
+  "category": "Impact on jobs",
+  "keywords": [
+    "RJ45 crimp",
+    "CAT6 plug",
+    "8P8C",
+    "T568B order",
+    "ratchet crimper",
+    "contact pierce",
+    "strain relief",
+    "pull-test",
+    "net tech"
+  ],
+  "instruction": "Insert the eight stripped CAT6 wires into the RJ45 plug in T568B order, seat the plug in the ratcheting crimper, squeeze until contacts pierce and strain relief grips, then pull-test the cable for 1 s.",
+  "context": "Network and computer systems technicians terminate CAT6 cables by the thousand: strip the jacket, order the eight conductors, push them into an 8P8C plug, seat the plug in a ratcheting crimper and squeeze until the contacts bite and the strain-relief jaw grips the jacket, then pull-test. US BLS counts about 906,000 network and computer systems technicians plus computer support specialists in 2025, so this is recurring core work of a large occupation, not an occasional chore. A plug wired in the wrong order fails continuity, one not fully seated crushes unevenly, and a weak squeeze leaves the contacts un-pierced so the pull-test slips. The real trial uses a true-size CAT6 plug and ratcheting crimper and a 4-7 N squeeze and pull (the brief's forces); the skill is ordering, seating, squeezing hard enough and verifying with a pull-test.",
+  "setup": "Positions are in metres from the midpoint between the arm bases, x forward, y to the robot's left, table top z 0 (world z 0.7475). A real ratcheting crimper is fixed at x 0.250, y -0.030; its plug-seat rail centre is x 0.270, y -0.030, plug centre z 0.018, with eight contact teeth on 1.02 mm pitch above the seat, a strain-relief jaw behind it and a hinged handle whose grip zone is centred at x 0.190, y -0.130, z 0.050. A real 11.6 x 11.7 x 6.6 mm 8P8C plug waits in a pocket at x 0.220, y 0.060. A stripped CAT6 cable (6.2 mm jacket, eight colour-coded wires straightened on 1.02 mm pitch, red index band on wire 1 orange/white) waits at x 0.150, y 0.060, wire tips pointing +x and wire 1 at +y. Both arms start at READY.",
+  "scoring": "Four steps, 0.25 each, as things stand. (1) All eight wires pushed fully into the plug with wire 1 on pin 1 (T568B). (2) The wired plug seated fully in the crimper seat rail, square. (3) The handle squeezed with a declared 4-7 N so the contacts pierce all eight wires and the strain relief grips the jacket (0.35 s dwell). (4) The cable drawn back axially with a declared 4-7 N pull; full score 1.0 only when all four hold for 1 s with no cap latched. A cable inserted with wire 1 off pin 1 (wrong order), a squeeze attempted with the plug not fully seated, or a squeeze held below 4 N (weak crimp) each cap the score at 0.5 for the rest of the run and block 1.0. Idle scores 0. The declared force is read from finger closure ((0.0939 m - gap) * 86 N/m): 0.024 m gap is 6.0 N, 0.028 m is 5.7 N; 4 N is the weak-crimp line. The real trial reads wire order by eye/continuity tester, seat by eye, force with a small gauge and the 1 s hold with a stopwatch.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz)",
+  "reset_notes": "Put the stripped CAT6 cable in its pocket at x 0.150, y 0.060, wire tips +x and the red wire-1 index band at +y, centre z 0.004. Put the 8P8C plug upright-axis in its pocket at x 0.220, y 0.060, centre z 0.005, tip +x and pin-1 index at +y. Leave the crimper seat and contact teeth bare and the handle fully open. Set both arms at READY and wipe the bench.",
+  "fidelity": "Real 8P8C CAT6 plug (11.6 x 11.7 x 6.6 mm, 8 contacts on 1.02 mm pitch) and stripped CAT6 cable (6.2 mm jacket, eight 23 AWG wires, red index on T568B wire 1); real ratcheting-crimper geometry (seat rail, contact teeth, strain-relief jaw, hinged handle). Rigid bodies, 240 Hz physics, 20 Hz control. Declared carry; the seated assembly locks so squeeze and pull cannot drag it out. Force declared from finger closure (4-7 N), not integrated; crimper and handle visual-only; caps are state flags.",
+  "scores": "Dream-1: 0.0 (2,400 steps, 2,401 action rows); demo: 1.0 at step 401 on Isaac/MuJoCo. Eight wires in T568B order, plug seated, declared 6.0 N squeeze for 0.35 s to ratchet lock, cable pull-test held 1 s; no wrong order, mis-seat, weak squeeze or dropped plug; pytest 24.",
+  "media": "M-ZVZGFG"
+}
