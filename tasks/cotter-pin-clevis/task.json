@@ -1,0 +1,23 @@
+{
+  "title": "Secure a clevis joint with a 3 mm cotter pin: align, push through, spread both legs, pull-test",
+  "category": "Impact on jobs",
+  "keywords": [
+    "cotter pin",
+    "split pin",
+    "clevis joint",
+    "safety retaining",
+    "pull test",
+    "maintenance",
+    "heavy equipment",
+    "3 mm"
+  ],
+  "instruction": "Pick up the 3 mm cotter pin, align it with the clevis cross-hole, push it through, spread its two legs apart, then pull the joint and let go.",
+  "context": "Maintenance and repair workers (US BLS, about 1.5 million jobs) and industrial machinery mechanics, millwrights and heavy-equipment, farm and aircraft mechanics (547,300 US jobs in 2025, about 51,900 openings a year) routinely secure clevis linkages with cotter pins. A straight split pin vibrates out and the clevis pin then walks out of the joint, a safety-critical failure on brakes, controls and linkages, so the legs must be spread to opposite sides and the joint pull-tested. This is recurring preventive and corrective maintenance of a large occupation, not an occasional chore. The real trial uses an ISO 1234 3 mm split pin (2.8 mm wire), a 10 mm clevis pin with a 3.2 mm cross-hole and a 4-7 N push.",
+  "setup": "Positions are in metres from the midpoint between the arm bases, x forward, y to the robot's left, table top z 0 (world z 0.7475). A welded clevis joint fixture is fixed at x 0.250, y -0.055: a steel stand, a fork with two horizontal prongs, a yellow rod end between them, an upright 10 mm clevis pin (axis at x 0.250, y -0.055) with a 3.2 mm cross-hole through it along +x at z 0.055 above the table, and a red pull tab at x 0.308. A real ISO 1234 3 mm split pin (2.8 mm wire, 12 mm shank, 36 mm and 28 mm legs, about 1.6 g, long leg on the +y side) lies straight in a white holder at x 0.250, y 0.045, centre z 0.010; its green and blue leg tips face +x. The correct inserted pose is centre x 0.2445, y -0.055, z 0.8025 world, wire axis along +x, eye band seated against the pin's near face. Both YAM arms start at READY.",
+  "scoring": "Four steps, 0.25 each, as things stand. (1) Held over the hole, the cotter's wire axis within 10 deg of the +x cross-hole axis. (2) With that, the cotter pushed fully through: centre within 6 mm of the hole in x/y/z, axis within 10 deg. (3) With that, both legs bent at least 55 deg to opposite sides of the shank. (4) With that, a closed gripper drags the red pull tab outward 8 mm and the joint holds: full score 1.0 only when all four hold for 1 s, the cotter is still seated and spread, no cap is latched and both grippers are clear and home; any lapse restarts the hold and step points stop at 0.75. Caps hold the score at 0.5: pulling with the pin not through, pulling with the legs not spread, or dropping the cotter off the bench. Idle scores 0. The real trial reads alignment and bend angles by eye with a protractor, the cross-hole and wire with callipers, the push and pull with a small gauge (4-7 N); a stopwatch times only the 1 s hold.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz)",
+  "reset_notes": "Discard the used cotter. Lay a new, straight ISO 1234 3 mm split pin in the white holder at x 0.250, y 0.045, wire along +x, green long leg on the +y side, eye toward the robot. Leave the clevis cross-hole and pull tab bare. Set both arms at READY and wipe the bench.",
+  "fidelity": "Real ISO 1234 3 mm low-carbon steel split pin (2.8 mm wire, 12 mm shank, 36/28 mm legs, 1.6 g) and a 10 mm clevis pin with a 3.2 mm cross-hole. Rigid bodies, 240 Hz physics, 20 Hz control. A closed gripper carries the cotter (declared carry); legs bend about their roots as a closed finger sweeps them out (declared geometry, latched like bent soft steel). The 4-7 N push/pull is declared, not integrated; the fixture is visual-only with no colliders. Cap flags are geometric.",
+  "scores": "Dream-1: 0.0 (2,400 steps, 2,401 action rows); demo: 1.0 at step 688 on Isaac/MuJoCo. Cotter aligned to 0.2 deg, pushed through the 3.2 mm cross-hole, both legs bent past 55 deg to opposite sides, 8 mm pull-test held, 1 s still; no not-through, not-spread or dropped fault; pytest 21.",
+  "media": "M-TSNNAY"
+}

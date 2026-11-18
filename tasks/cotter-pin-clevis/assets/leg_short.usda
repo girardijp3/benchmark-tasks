@@ -1,0 +1,74 @@
+#usda 1.0
+(
+    defaultPrim = "LegShort"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "LegShort" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "split-pin leg, 28 mm past the shank, 2.8 mm wire"
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.000001, 0.000001, 0.000001)
+    float physics:mass = 0.0004
+    custom bool physxRigidBody:disableGravity = 1
+
+    def Scope "Looks"
+    {
+        def Material "m818279_73"
+        {
+            token outputs:surface.connect = </LegShort/Looks/m818279_73/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.82, 0.83, 0.8)
+                float inputs:metallic = 0.8
+                float inputs:roughness = 0.35
+                token outputs:surface
+            }
+        }
+
+        def Material "m113584_05"
+        {
+            token outputs:surface.connect = </LegShort/Looks/m113584_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.12, 0.36, 0.85)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cylinder "Wire1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.028
+        rel material:binding = </LegShort/Looks/m818279_73>
+        double radius = 0.0014
+        double3 xformOp:translate = (0.014, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "TipCap2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.002
+        rel material:binding = </LegShort/Looks/m113584_05>
+        double radius = 0.0022
+        double3 xformOp:translate = (0.027, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+

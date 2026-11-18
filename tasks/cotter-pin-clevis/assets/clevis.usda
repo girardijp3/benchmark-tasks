@@ -1,0 +1,303 @@
+#usda 1.0
+(
+    defaultPrim = "Clevis"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Clevis" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI"]
+    doc = "clevis joint fixture: fork, 10 mm clevis pin with 3.2 mm cross-hole, rod end, pull tab, cotter holder"
+)
+{
+    bool physics:kinematicEnabled = 1
+
+    def Scope "Looks"
+    {
+        def Material "m596265_43"
+        {
+            token outputs:surface.connect = </Clevis/Looks/m596265_43/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.6, 0.63, 0.66)
+                float inputs:metallic = 0.5
+                float inputs:roughness = 0.4
+                token outputs:surface
+            }
+        }
+
+        def Material "m091011_05"
+        {
+            token outputs:surface.connect = </Clevis/Looks/m091011_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_65"
+        {
+            token outputs:surface.connect = </Clevis/Looks/m697174_65/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.7
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m876709_15"
+        {
+            token outputs:surface.connect = </Clevis/Looks/m876709_15/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.88, 0.68, 0.1)
+                float inputs:metallic = 0.2
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_72"
+        {
+            token outputs:surface.connect = </Clevis/Looks/m697174_72/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.85
+                float inputs:roughness = 0.3
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_75"
+        {
+            token outputs:surface.connect = </Clevis/Looks/m697174_75/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.85
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m841311_05"
+        {
+            token outputs:surface.connect = </Clevis/Looks/m841311_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.85, 0.14, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_05"
+        {
+            token outputs:surface.connect = </Clevis/Looks/m697174_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m919189_05"
+        {
+            token outputs:surface.connect = </Clevis/Looks/m919189_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.92, 0.92, 0.9)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "BenchPlate1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Clevis/Looks/m596265_43>
+        double size = 1
+        float3 xformOp:scale = (0.11, 0.07, 0.008)
+        double3 xformOp:translate = (0, 0, 0.004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Stand2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Clevis/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.04, 0.046, 0.028)
+        double3 xformOp:translate = (-0.028, 0, 0.022)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "UpperProng3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Clevis/Looks/m697174_65>
+        double size = 1
+        float3 xformOp:scale = (0.026, 0.034, 0.005)
+        double3 xformOp:translate = (-0.019, 0, 0.047)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "LowerProng4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Clevis/Looks/m697174_65>
+        double size = 1
+        float3 xformOp:scale = (0.026, 0.034, 0.005)
+        double3 xformOp:translate = (-0.019, 0, 0.028)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "YokeWeb5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Clevis/Looks/m697174_65>
+        double size = 1
+        float3 xformOp:scale = (0.006, 0.034, 0.025)
+        double3 xformOp:translate = (-0.031, 0, 0.0375)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "RodEnd6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Clevis/Looks/m876709_15>
+        double size = 1
+        float3 xformOp:scale = (0.07, 0.02, 0.01)
+        double3 xformOp:translate = (0.024, 0, 0.0375)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "ClevisPin7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.041
+        rel material:binding = </Clevis/Looks/m697174_72>
+        double radius = 0.005
+        double3 xformOp:translate = (0, 0, 0.0455)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "PinHead8" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0025
+        rel material:binding = </Clevis/Looks/m697174_75>
+        double radius = 0.007
+        double3 xformOp:translate = (0, 0, 0.026)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "CrossHole9" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.012
+        rel material:binding = </Clevis/Looks/m091011_05>
+        double radius = 0.0016
+        double3 xformOp:translate = (0, 0, 0.055)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "PullTabRing10" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.002
+        rel material:binding = </Clevis/Looks/m841311_05>
+        double radius = 0.006
+        double3 xformOp:translate = (0.058, 0, 0.055)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "TabStem11" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Clevis/Looks/m697174_05>
+        double size = 1
+        float3 xformOp:scale = (0.03, 0.008, 0.006)
+        double3 xformOp:translate = (0.044, 0, 0.0375)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "CotterHolder12" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Clevis/Looks/m919189_05>
+        double size = 1
+        float3 xformOp:scale = (0.075, 0.03, 0.006)
+        double3 xformOp:translate = (0, 0.1, 0.003)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "HolderLipA13" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Clevis/Looks/m919189_05>
+        double size = 1
+        float3 xformOp:scale = (0.075, 0.002, 0.004)
+        double3 xformOp:translate = (0, 0.09, 0.0075)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "HolderLipB14" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Clevis/Looks/m919189_05>
+        double size = 1
+        float3 xformOp:scale = (0.075, 0.002, 0.004)
+        double3 xformOp:translate = (0, 0.11, 0.0075)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+
