@@ -1,0 +1,25 @@
+{
+  "title": "Clamp a 100 mm steel gusset square on its fixture: seat it on the locators and flip two toggle clamps over-centre",
+  "category": "Impact on jobs",
+  "keywords": [
+    "gusset",
+    "angle bracket",
+    "toggle clamp",
+    "over-centre",
+    "locator nest",
+    "bench fixture",
+    "fabrication",
+    "welding",
+    "sheet metal",
+    "hold-down"
+  ],
+  "instruction": "Seat the 100 mm steel gusset square on the fixture's locators, then flip both toggle clamps over-centre with 4-7 N each so their jaws hold it square, and let go.",
+  "context": "Fabricators, welders and sheet-metal workers constantly set a bracket or gusset on a fixture's locators and lock it with hold-down toggle clamps before tacking or drilling it: the part must sit square on the nest, and each clamp lever must be pushed 4-7 N past its toggle point so the jaw locks and cannot spring back. A gusset left off its pins, a lever short of over-centre, or a dropped part means a crooked weldment or a lost part. This is routine production work, not an occasional one-off: US BLS OOH counts 437,700 welders/cutters/solderers/brazers (51-4121) plus 131,100 sheet-metal workers (47-2211) in 2025, 568,800 combined. The real trial uses a 100 mm steel angle-bracket gusset and two 90 mm hold-down toggle clamps on a bench fixture.",
+  "setup": "Positions are in metres from the midpoint between the arm bases, x forward, y to the robot's left, table top z 0 (world z 0.7475). A welded bench fixture sits at x 0.28, y 0: its locator nest is a back wall, an end stop and two pins around the gusset's inner corner at z 0.045; two open toggle-clamp levers pivot at x 0.245 and 0.315, y -0.037, z 0.080. The 100 mm gusset waits upright in a staging tray at x 0.28, y 0.10, z 0.045. Both levers start open (handle yaw 0). The fixture is fixed; both YAM arms start at READY. Every grasp point lies 0.045-0.14 m above the table and within 0.42 m of an arm base.",
+  "scoring": "Four steps, 0.25 each, as things stand. (1) The gusset is seated square on the locators (foot on the pins, upright on the back wall). (2) With that, clamp A is flipped over-centre (lever yaw 70 deg) at its pivot. (3) With that, clamp B is likewise over-centre. (4) The assembly stays clamped square for 1 s with both grippers clear and home. Full score 1.0 only when all four hold; any lapse restarts the second. A gusset shifted off its locators, a clamp released short of over-centre, or a dropped part caps the score at 0.5 for the rest of the run. Idle scores 0. The real trial reads gusset squareness with a try square, clamp hand force (4-7 N each) and over-centre snap; a stopwatch times only the 1 s hold.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz)",
+  "reset_notes": "Return the 100 mm gusset upright in its staging tray at x 0.28, y 0.10, z 0.045, stand both toggle-clamp levers open (yaw 0) at x 0.245 and 0.315, y -0.037, z 0.080, leave the locator nest bare, and set both arms at READY.",
+  "fidelity": "Real 100 mm steel angle-bracket gusset class: 100 x 30 x 4 mm foot, 100 x 4 x 100 mm upright, 210 g; two 90 mm hold-down toggle clamps, 90 g each, 4-7 N hand force over-centre; fixture with two locator pins, back wall and end stop. Rigid bodies, 240 Hz physics, 20 Hz control. A closed gripper carries a part (declared carry, like the family's detents); the reach, seat, squareness and the two 70 deg over-centre flips are real geometry. The 4-7 N press is stated, not integrated as contact force.",
+  "scores": "Dream-1: 0.0 (2,400 steps, 2,401 action rows); demo: 1.0 at step 614 on Isaac/MuJoCo. Gusset seated square, both sprung toggle levers flipped 70 deg over-centre, clamped square and held 1 s; no off-square gusset, early-release clamp or dropped part; pytest 19.",
+  "media": "M-JLB9C2"
+}

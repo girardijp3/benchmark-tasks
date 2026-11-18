@@ -1,0 +1,156 @@
+#usda 1.0
+(
+    defaultPrim = "Clamp"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Clamp" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "hold-down toggle clamp lever: red handle, link arm and rubber jaw pad"
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.000001, 0.000001, 0.000001)
+    float physics:mass = 0.09
+    custom bool physxRigidBody:disableGravity = 1
+
+    def Scope "Looks"
+    {
+        def Material "m811210_06"
+        {
+            token outputs:surface.connect = </Clamp/Looks/m811210_06/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.82, 0.13, 0.11)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.7
+                token outputs:surface
+            }
+        }
+
+        def Material "m091011_05"
+        {
+            token outputs:surface.connect = </Clamp/Looks/m091011_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m616467_55"
+        {
+            token outputs:surface.connect = </Clamp/Looks/m616467_55/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.62, 0.65, 0.68)
+                float inputs:metallic = 0.6
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m576165_55"
+        {
+            token outputs:surface.connect = </Clamp/Looks/m576165_55/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.58, 0.62, 0.66)
+                float inputs:metallic = 0.6
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m060607_08"
+        {
+            token outputs:surface.connect = </Clamp/Looks/m060607_08/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.07, 0.07, 0.075)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.95
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cylinder "Handle1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.03
+        rel material:binding = </Clamp/Looks/m811210_06>
+        custom float physxCollision:contactOffset = 0.0005
+        custom float physxCollision:restOffset = 0
+        double radius = 0.007
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "HandleCap2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "X"
+        double height = 0.004
+        rel material:binding = </Clamp/Looks/m091011_05>
+        double radius = 0.005
+        double3 xformOp:translate = (0.014, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "LinkArm3" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Clamp/Looks/m616467_55>
+        custom float physxCollision:contactOffset = 0.0005
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.045, 0.008, 0.008)
+        double3 xformOp:translate = (0.024, 0, -0.004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "JawPivot4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.01
+        rel material:binding = </Clamp/Looks/m576165_55>
+        double radius = 0.006
+        double3 xformOp:translate = (0.045, 0, -0.004)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "JawPad5" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Clamp/Looks/m060607_08>
+        custom float physxCollision:contactOffset = 0.0005
+        custom float physxCollision:restOffset = 0
+        double size = 1
+        float3 xformOp:scale = (0.016, 0.014, 0.006)
+        double3 xformOp:translate = (0.045, 0, -0.012)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

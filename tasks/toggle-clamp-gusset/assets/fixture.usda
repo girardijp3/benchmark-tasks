@@ -1,0 +1,250 @@
+#usda 1.0
+(
+    defaultPrim = "Fixture"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Fixture" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI"]
+    doc = "welded gusset fixture, locator nest, two toggle-clamp bases (no colliders)"
+)
+{
+    bool physics:kinematicEnabled = 1
+
+    def Scope "Looks"
+    {
+        def Material "m576165_43"
+        {
+            token outputs:surface.connect = </Fixture/Looks/m576165_43/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.58, 0.62, 0.66)
+                float inputs:metallic = 0.5
+                float inputs:roughness = 0.4
+                token outputs:surface
+            }
+        }
+
+        def Material "m091011_05"
+        {
+            token outputs:surface.connect = </Fixture/Looks/m091011_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m576165_45"
+        {
+            token outputs:surface.connect = </Fixture/Looks/m576165_45/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.58, 0.62, 0.66)
+                float inputs:metallic = 0.5
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m947111_25"
+        {
+            token outputs:surface.connect = </Fixture/Looks/m947111_25/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.72, 0.12)
+                float inputs:metallic = 0.3
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m576165_55"
+        {
+            token outputs:surface.connect = </Fixture/Looks/m576165_55/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.58, 0.62, 0.66)
+                float inputs:metallic = 0.6
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m576165_35"
+        {
+            token outputs:surface.connect = </Fixture/Looks/m576165_35/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.58, 0.62, 0.66)
+                float inputs:metallic = 0.4
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "FixturePlate1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixture/Looks/m576165_43>
+        double size = 1
+        float3 xformOp:scale = (0.16, 0.24, 0.045)
+        double3 xformOp:translate = (0, 0.02, 0.0225)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TopPlate2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixture/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.162, 0.242, 0.002)
+        double3 xformOp:translate = (0, 0.02, 0.0455)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "LocatorBackWall3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixture/Looks/m576165_45>
+        double size = 1
+        float3 xformOp:scale = (0.112, 0.006, 0.055)
+        double3 xformOp:translate = (0, -0.007, 0.07)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "LocatorEndStop4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixture/Looks/m576165_45>
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.03, 0.014)
+        double3 xformOp:translate = (0.054, 0.014, 0.052)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "LocatorPin5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.008
+        rel material:binding = </Fixture/Looks/m947111_25>
+        double radius = 0.003
+        double3 xformOp:translate = (-0.02, 0.012, 0.049)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "LocatorPin6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.008
+        rel material:binding = </Fixture/Looks/m947111_25>
+        double radius = 0.003
+        double3 xformOp:translate = (0.02, 0.012, 0.049)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "ClampBase7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixture/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.03, 0.03, 0.006)
+        double3 xformOp:translate = (-0.035, -0.037, 0.048)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "ClampPivotPost8" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.03
+        rel material:binding = </Fixture/Looks/m576165_55>
+        double radius = 0.005
+        double3 xformOp:translate = (-0.035, -0.037, 0.062)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "ClampBase9" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixture/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.03, 0.03, 0.006)
+        double3 xformOp:translate = (0.035, -0.037, 0.048)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "ClampPivotPost10" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.03
+        rel material:binding = </Fixture/Looks/m576165_55>
+        double radius = 0.005
+        double3 xformOp:translate = (0.035, -0.037, 0.062)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "StageTray11" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixture/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.13, 0.055, 0.004)
+        double3 xformOp:translate = (0, 0.1, 0.002)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "StageRail12" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixture/Looks/m576165_35>
+        double size = 1
+        float3 xformOp:scale = (0.13, 0.003, 0.016)
+        double3 xformOp:translate = (0, 0.074, 0.01)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "StageRail13" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Fixture/Looks/m576165_35>
+        double size = 1
+        float3 xformOp:scale = (0.13, 0.003, 0.016)
+        double3 xformOp:translate = (0, 0.126, 0.01)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+
