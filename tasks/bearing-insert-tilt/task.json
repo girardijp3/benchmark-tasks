@@ -1,0 +1,25 @@
+{
+  "title": "Fit a 20 mm spherical-OD bearing: tilt its axis to the inclined housing seat, register the grease hole, press it flush",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bearing insert",
+    "spherical OD",
+    "self-aligning",
+    "pillow block",
+    "spherical seat",
+    "tilt and rotate",
+    "grease port",
+    "press fit",
+    "maintenance",
+    "4-7 N"
+  ],
+  "instruction": "Pick up the 20 mm spherical-OD bearing, tilt its axis to the housing seat, rotate its grease hole to the port, press it flush with 4-7 N, then let go.",
+  "context": "Industrial machinery mechanics, machinery maintenance workers and millwrights (US BLS 547,300 jobs in 2025; ~51,900 openings a year) and robot-maintenance techs routinely replace spherical-OD insert bearings in pillow-block housings on conveyors and automation: a failed bearing is scheduled preventive or corrective work, not an occasional chore. An inclined housing seat (a sloped frame) needs the bearing axis tilted 8 deg to enter cleanly; its grease hole must be rotated to the housing port so the unit stays relubricatable. A bearing jammed in steep, pressed with the hole unregistered, or driven below flush jams or scores the housing. The real trial uses a 20 mm spherical-OD bearing, a matched spherical seat and a 4-7 N press; the skill is orienting a small part and pressing it home without damage.",
+  "setup": "Positions are in metres from the midpoint between the arm bases, x forward, y to the robot's left, table top z 0 (world z 0.7475). A pressed pillow-block-style housing is fixed at x 0.25, y 0. Its concave spherical seat (radius 10.3 mm) has an axis inclined 8 deg from vertical in the +x direction; its single green grease port sits at a fixed azimuth, 60 deg about the seat axis from the bearing's default index direction. The 20 mm spherical-OD bearing (sphere radius 10 mm, 7 mm wide, 8 mm bore, 30 g) waits upright in a pocket at x 0.25, y 0.062, its centre at z 0.010. The correct seated centre is x 0.25, y 0, z 0.024, axis on the inclined seat and grease hole on the port. Both YAM arms start at READY.",
+  "scoring": "Four steps, 0.25 each, as things stand. (1) The bearing is lifted clear of its pocket. (2) With that, its axis is tilted to the inclined seat axis within 4 deg while hovering over the seat. (3) With that, its grease hole is rotated to the housing port within 15 deg (the two holes 180 deg apart make half-turn phases equivalent). (4) With that, the bearing is seated flush at the seat centre with a light 4-7 N press held 0.35 s and released; full score 1.0 only when all four hold for 1 s, the bearing stays flush, no cap is latched and both grippers are clear and home; any lapse restarts the hold and step points stop at 0.75. A steep entry (over 6 deg tilt) jams the rim, pressing with the hole unregistered scores the bore, and driving the bearing more than 4 mm below flush is a forced press; each cap holds the score at 0.5 for the rest of the run. Idle scores 0. The real trial reads the 20 mm OD and 8 mm bore with callipers, the 8 deg seat inclination with a protractor, the 4-7 N press with a small gauge and the hole registration by eye; a stopwatch times only the 1 s hold.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz)",
+  "reset_notes": "Put the 20 mm bearing upright in its pocket at x 0.25, y 0.062, centre z 0.010, index dot at 0 deg. Leave the spherical seat and grease port bare and clear. Set both arms at READY and wipe the bench.",
+  "fidelity": "Real 20 mm spherical-OD radial insert bearing (sphere radius 10 mm, 7 mm wide, 8 mm bore, 30 g) with two grease holes 180 deg apart; pressed housing with an 8 deg inclined concave spherical seat (radius 10.3 mm) and one grease port; 4-7 N declared press. Rigid bodies, 240 Hz physics, 20 Hz control. A closed gripper carries the bearing (declared carry); tilt, index registration, seat, press and all three caps are real geometry. Force stated, not integrated; housing visual-only (no colliders).",
+  "scores": "Dream-1: 0.25 (2,400 steps, 2,401 action rows); demo: 1.0 at step 352 on Isaac/MuJoCo. 20 mm spherical OD bearing tilted within 0.2 deg of the 8 deg seat, grease port registered 0.0 deg, pressed flush within 0.5 mm, 1 s still; no jammed, forced, wrong-port or drop fault; pytest 21.",
+  "media": "M-K4G9S4"
+}
