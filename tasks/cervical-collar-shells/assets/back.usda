@@ -1,0 +1,178 @@
+#usda 1.0
+(
+    defaultPrim = "BackShell"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "BackShell" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "rigid cervical collar BACK shell (occipital support), 0.16 kg"
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.000001, 0.000001, 0.000001)
+    float physics:mass = 0.16
+    custom bool physxRigidBody:disableGravity = 1
+
+    def Scope "Looks"
+    {
+        def Material "m793119_04"
+        {
+            token outputs:surface.connect = </BackShell/Looks/m793119_04/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.8, 0.32, 0.2)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.5
+                token outputs:surface
+            }
+        }
+
+        def Material "m918983_08"
+        {
+            token outputs:surface.connect = </BackShell/Looks/m918983_08/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.92, 0.9, 0.84)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.95
+                token outputs:surface
+            }
+        }
+
+        def Material "m192125_05"
+        {
+            token outputs:surface.connect = </BackShell/Looks/m192125_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.2, 0.22, 0.26)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m793119_05"
+        {
+            token outputs:surface.connect = </BackShell/Looks/m793119_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.8, 0.32, 0.2)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "PlateLow1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BackShell/Looks/m793119_04>
+        double size = 1
+        float3 xformOp:scale = (0.007, 0.105, 0.04)
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "PlateHigh2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BackShell/Looks/m793119_04>
+        double size = 1
+        float3 xformOp:scale = (0.01, 0.11, 0.038)
+        double3 xformOp:translate = (0, 0, 0.028)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Spine3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BackShell/Looks/m793119_04>
+        double size = 1
+        float3 xformOp:scale = (0.006, 0.1, 0.05)
+        double3 xformOp:translate = (0.004, 0, 0.014)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Liner4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BackShell/Looks/m918983_08>
+        double size = 1
+        float3 xformOp:scale = (0.003, 0.09, 0.044)
+        double3 xformOp:translate = (-0.008, 0, 0.014)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "OccipitalRim5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.006
+        rel material:binding = </BackShell/Looks/m793119_04>
+        double radius = 0.034
+        double3 xformOp:translate = (-0.01, 0, 0.038)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "TabL6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BackShell/Looks/m192125_05>
+        double size = 1
+        float3 xformOp:scale = (0.03, 0.03, 0.008)
+        double3 xformOp:translate = (0, 0.05, 0.012)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TabRootL7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BackShell/Looks/m793119_05>
+        double size = 1
+        float3 xformOp:scale = (0.01, 0.03, 0.014)
+        double3 xformOp:translate = (0, 0.04, 0.012)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TabR8" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BackShell/Looks/m192125_05>
+        double size = 1
+        float3 xformOp:scale = (0.03, 0.03, 0.008)
+        double3 xformOp:translate = (0, -0.05, 0.012)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TabRootR9" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </BackShell/Looks/m793119_05>
+        double size = 1
+        float3 xformOp:scale = (0.01, 0.03, 0.014)
+        double3 xformOp:translate = (0, -0.04, 0.012)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

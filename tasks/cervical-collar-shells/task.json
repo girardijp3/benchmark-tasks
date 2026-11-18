@@ -1,0 +1,23 @@
+{
+  "title": "Fit a rigid cervical collar on a manikin: front shell under the chin, back shell behind the neck, press both side tabs",
+  "category": "Impact on jobs",
+  "keywords": [
+    "cervical collar",
+    "two-piece shell",
+    "chin support",
+    "occipital support",
+    "side tabs",
+    "4-7 N press",
+    "manikin",
+    "first aid"
+  ],
+  "instruction": "Fit the rigid collar on the manikin: seat the front shell under the chin, seat the back shell behind the neck, then press both 30 mm side tabs with a 4-7 N press until seated.",
+  "context": "EMTs, paramedics, nurses and first-aid responders fit rigid cervical collars to limit neck movement after a suspected spinal injury: a front chin-support shell is slid under the chin, a back occipital shell is brought around behind the neck, and the two are locked by pressing their side tabs with a firm 4-7 N hand press until each seats with a click. A tab that misses, a shell jammed at an angle against the neck, or a collar forced past its stop leaves it loose, rotated or pressing on the neck and must be refitted. The skill is a two-hand, mid-line fit at low work height with a measured tab press. The real trial uses a two-piece rigid collar, about 300 mm across the tabs and 0.3 kg, on a care-training manikin; force is read with a small gauge (4-7 N) and a stopwatch times only the 1 s hold.",
+  "setup": "Positions are in metres from the midpoint between the arm bases, x forward, y to the robot's left, table top z 0 (world z 0.7475). A fixed care-training manikin lies supine, neck axis at x 0.250, y 0; the neck runs from local z 0.040 to 0.160 and the chin is at local z 0.160. The front shell starts on the bench at x 0.205, y 0.095 and seats under the chin at x 0.285, y 0, z 0.120; the back shell starts at x 0.205, y -0.095 and seats behind the neck at x 0.215, y 0, z 0.120. Each shell has two 30 mm side tabs; the left tab press point is x 0.250, y 0.050 and the right is x 0.250, y -0.050, both at local z 0.132. A tab seats when a gripper presses it down 5.7 mm (4 N) to 10 mm (7 N) with K_TAB 700 N/m; more than 10 mm is a forced fit. All grasps are at local z 0.012-0.150, below the 0.30 m work-height limit, and within 0.55 m of an arm base. Both YAM arms start at READY and work one at a time (they collide if both reach the neck together).",
+  "scoring": "Four steps, 0.25 each, as things stand. (1) Front shell seated under the chin. (2) With that, back shell seated behind the neck. (3) With that, left tab engaged at 4-7 N. (4) With that, right tab engaged at 4-7 N. Full 1.0 only when all four hold for 1 s, the collar is intact, and both grippers are clear and home; any lapse restarts the hold and step points stop at 0.75. A neck displacement (shell knocked off the bench or jammed over 20 degrees), a tab miss (press never caught the tab), or a forced fit (over 7 N) caps the score at 0.5 for the rest of the run. Idle 0. The real trial reads tab force with a 4-7 N gauge and times the 1 s hold with a stopwatch.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz)",
+  "reset_notes": "Lay the manikin supine, neck bare. Put the front shell at x 0.205, y 0.095 and the back shell at x 0.205, y -0.095, both flat, tabs unseated. Set both arms at READY and clear the bench.",
+  "fidelity": "Two-piece rigid cervical collar: front 0.14 kg, back 0.16 kg (0.3 kg total), ~300 mm across 30 mm tabs, 4-7 N press. Rigid bodies, 240 Hz physics, 20 Hz control. A closed gripper carries a shell (declared carry); reach, grip, orientation, seat and tab presses are real geometry. Tab force is a declared 700 N/m travel from the gripper TCP (4 N = 5.7 mm seats, 7 N = 10 mm limit), not contact dynamics. Shells and manikin are visual-only (no colliders), like the family fixtures. No scaling.",
+  "scores": "Dream-1: 0.0 (2,400 steps, 2,401 action rows); demo: 1.0 at step 830 on Isaac/MuJoCo. Both shells seated square, both 30 mm tabs pressed to 5.6 N (8 mm) in the 4-7 N band, no neck movement, tab miss or forced fit, 1 s still; pytest 17.",
+  "media": "M-MJNL2S"
+}

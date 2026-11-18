@@ -1,0 +1,128 @@
+#usda 1.0
+(
+    defaultPrim = "Manikin"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Manikin" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI"]
+    doc = "care-training manikin torso / neck / head, welded kinematic visual-only"
+)
+{
+    bool physics:kinematicEnabled = 1
+
+    def Scope "Looks"
+    {
+        def Material "m151721_05"
+        {
+            token outputs:surface.connect = </Manikin/Looks/m151721_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.16, 0.18, 0.22)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m735746_05"
+        {
+            token outputs:surface.connect = </Manikin/Looks/m735746_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.74, 0.58, 0.47)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m857159_05"
+        {
+            token outputs:surface.connect = </Manikin/Looks/m857159_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.86, 0.72, 0.6)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "BasePlate1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Manikin/Looks/m151721_05>
+        double size = 1
+        float3 xformOp:scale = (0.26, 0.3, 0.012)
+        double3 xformOp:translate = (0, 0, 0.006)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Shoulders2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Manikin/Looks/m735746_05>
+        double size = 1
+        float3 xformOp:scale = (0.22, 0.26, 0.048)
+        double3 xformOp:translate = (0, 0, 0.028)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Neck3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.12
+        rel material:binding = </Manikin/Looks/m857159_05>
+        double radius = 0.042
+        double3 xformOp:translate = (0, 0, 0.1)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Sphere "Head4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Manikin/Looks/m857159_05>
+        double radius = 0.055
+        double3 xformOp:translate = (0, 0, 0.215)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "Chin5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Manikin/Looks/m735746_05>
+        double size = 1
+        float3 xformOp:scale = (0.034, 0.068, 0.02)
+        double3 xformOp:translate = (0.05, 0, 0.16)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "JawLine6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.008
+        rel material:binding = </Manikin/Looks/m735746_05>
+        double radius = 0.048
+        double3 xformOp:translate = (0, 0, 0.161)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+
