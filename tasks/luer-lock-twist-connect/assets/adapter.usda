@@ -1,0 +1,308 @@
+#usda 1.0
+(
+    defaultPrim = "Adapter"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Adapter" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI"]
+    doc = "20 mm vial adapter with female luer-lock port, in a bench fixture (welded)"
+)
+{
+    bool physics:kinematicEnabled = 1
+
+    def Scope "Looks"
+    {
+        def Material "m596265_43"
+        {
+            token outputs:surface.connect = </Adapter/Looks/m596265_43/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.6, 0.63, 0.66)
+                float inputs:metallic = 0.5
+                float inputs:roughness = 0.4
+                token outputs:surface
+            }
+        }
+
+        def Material "m091011_05"
+        {
+            token outputs:surface.connect = </Adapter/Looks/m091011_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m717983_02"
+        {
+            token outputs:surface.connect = </Adapter/Looks/m717983_02/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.72, 0.8, 0.84)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.25
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_65"
+        {
+            token outputs:surface.connect = </Adapter/Looks/m697174_65/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.7
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m060708_08"
+        {
+            token outputs:surface.connect = </Adapter/Looks/m060708_08/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.07, 0.08, 0.09)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.9
+                token outputs:surface
+            }
+        }
+
+        def Material "m778589_05"
+        {
+            token outputs:surface.connect = </Adapter/Looks/m778589_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.78, 0.86, 0.9)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_45"
+        {
+            token outputs:surface.connect = </Adapter/Looks/m697174_45/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.5
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m112777_05"
+        {
+            token outputs:surface.connect = </Adapter/Looks/m112777_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.12, 0.28, 0.78)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "Fixture1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Adapter/Looks/m596265_43>
+        double size = 1
+        float3 xformOp:scale = (0.09, 0.09, 0.012)
+        double3 xformOp:translate = (0, 0, 0.006)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TopPlate2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Adapter/Looks/m091011_05>
+        double size = 1
+        float3 xformOp:scale = (0.092, 0.092, 0.002)
+        double3 xformOp:translate = (0, 0, 0.0125)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "VialBody3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.048
+        rel material:binding = </Adapter/Looks/m717983_02>
+        double radius = 0.01
+        double3 xformOp:translate = (0, 0, 0.036)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "VialCrimp4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.004
+        rel material:binding = </Adapter/Looks/m697174_65>
+        double radius = 0.0102
+        double3 xformOp:translate = (0, 0, 0.0605)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "VialStopper5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.004
+        rel material:binding = </Adapter/Looks/m060708_08>
+        double radius = 0.007
+        double3 xformOp:translate = (0, 0, 0.064)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "AdapterSkirt6" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.012
+        rel material:binding = </Adapter/Looks/m778589_05>
+        double radius = 0.01
+        double3 xformOp:translate = (0, 0, 0.07)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "AdapterShoulder7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.004
+        rel material:binding = </Adapter/Looks/m778589_05>
+        double radius = 0.0075
+        double3 xformOp:translate = (0, 0, 0.078)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "FemalePort8" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.022
+        rel material:binding = </Adapter/Looks/m778589_05>
+        double radius = 0.0055
+        double3 xformOp:translate = (0, 0, 0.089)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "PortBore9" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.024
+        rel material:binding = </Adapter/Looks/m091011_05>
+        double radius = 0.0028
+        double3 xformOp:translate = (0, 0, 0.089)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "PortThread010" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0009
+        rel material:binding = </Adapter/Looks/m697174_45>
+        double radius = 0.004
+        double3 xformOp:translate = (0, 0, 0.081)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "PortThread111" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0009
+        rel material:binding = </Adapter/Looks/m697174_45>
+        double radius = 0.004
+        double3 xformOp:translate = (0, 0, 0.08600000000000001)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "PortThread212" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0009
+        rel material:binding = </Adapter/Looks/m697174_45>
+        double radius = 0.004
+        double3 xformOp:translate = (0, 0, 0.091)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "PortThread313" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0009
+        rel material:binding = </Adapter/Looks/m697174_45>
+        double radius = 0.004
+        double3 xformOp:translate = (0, 0, 0.096)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "PortLip14" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0015
+        rel material:binding = </Adapter/Looks/m778589_05>
+        double radius = 0.0068
+        double3 xformOp:translate = (0, 0, 0.1)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "AdapterMark15" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Adapter/Looks/m112777_05>
+        double size = 1
+        float3 xformOp:scale = (0.003, 0.002, 0.01)
+        double3 xformOp:translate = (0, 0.0092, 0.0765)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

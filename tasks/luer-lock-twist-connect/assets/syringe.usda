@@ -1,0 +1,335 @@
+#usda 1.0
+(
+    defaultPrim = "Syringe"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Syringe" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "10 mL luer-lock syringe: 20 mm barrel, threaded collar, 6% male luer tip"
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.000001, 0.000001, 0.000001)
+    float physics:mass = 0.012
+    custom bool physxRigidBody:disableGravity = 1
+
+    def Scope "Looks"
+    {
+        def Material "m778589_03"
+        {
+            token outputs:surface.connect = </Syringe/Looks/m778589_03/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.78, 0.86, 0.9)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.35
+                token outputs:surface
+            }
+        }
+
+        def Material "m091011_05"
+        {
+            token outputs:surface.connect = </Syringe/Looks/m091011_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m778589_05"
+        {
+            token outputs:surface.connect = </Syringe/Looks/m778589_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.78, 0.86, 0.9)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_25"
+        {
+            token outputs:surface.connect = </Syringe/Looks/m697174_25/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.3
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m060708_08"
+        {
+            token outputs:surface.connect = </Syringe/Looks/m060708_08/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.07, 0.08, 0.09)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.95
+                token outputs:surface
+            }
+        }
+
+        def Material "m697174_45"
+        {
+            token outputs:surface.connect = </Syringe/Looks/m697174_45/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.72, 0.75)
+                float inputs:metallic = 0.5
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m841210_05"
+        {
+            token outputs:surface.connect = </Syringe/Looks/m841210_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.85, 0.13, 0.11)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cylinder "Barrel1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI", "MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.046
+        rel material:binding = </Syringe/Looks/m778589_03>
+        custom float physxCollision:contactOffset = 0.0005
+        custom float physxCollision:restOffset = 0
+        double radius = 0.01
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Grad02" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0006
+        rel material:binding = </Syringe/Looks/m091011_05>
+        double radius = 0.0101
+        double3 xformOp:translate = (0, 0, -0.016)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Grad13" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0006
+        rel material:binding = </Syringe/Looks/m091011_05>
+        double radius = 0.0101
+        double3 xformOp:translate = (0, 0, -0.008)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Grad24" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0006
+        rel material:binding = </Syringe/Looks/m091011_05>
+        double radius = 0.0101
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Grad35" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0006
+        rel material:binding = </Syringe/Looks/m091011_05>
+        double radius = 0.0101
+        double3 xformOp:translate = (0, 0, 0.008)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Grad46" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0006
+        rel material:binding = </Syringe/Looks/m091011_05>
+        double radius = 0.0101
+        double3 xformOp:translate = (0, 0, 0.016)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "FlangeA7" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Syringe/Looks/m778589_05>
+        double size = 1
+        float3 xformOp:scale = (0.01, 0.01, 0.003)
+        double3 xformOp:translate = (0, 0.013, 0.024)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "FlangeB8" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Syringe/Looks/m778589_05>
+        double size = 1
+        float3 xformOp:scale = (0.01, 0.01, 0.003)
+        double3 xformOp:translate = (0, -0.013, 0.024)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "PlungerRod9" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.03
+        rel material:binding = </Syringe/Looks/m697174_25>
+        double radius = 0.003
+        double3 xformOp:translate = (0, 0, 0.038)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "ThumbPad10" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.004
+        rel material:binding = </Syringe/Looks/m778589_05>
+        double radius = 0.01
+        double3 xformOp:translate = (0, 0, 0.054)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "ThumbRubber11" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.002
+        rel material:binding = </Syringe/Looks/m060708_08>
+        double radius = 0.008
+        double3 xformOp:translate = (0, 0, 0.0565)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "LockCollar12" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.01
+        rel material:binding = </Syringe/Looks/m778589_05>
+        double radius = 0.0055
+        double3 xformOp:translate = (0, 0, -0.028)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "CollarThread013" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0008
+        rel material:binding = </Syringe/Looks/m697174_45>
+        double radius = 0.0058
+        double3 xformOp:translate = (0, 0, -0.032)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "CollarThread114" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0008
+        rel material:binding = </Syringe/Looks/m697174_45>
+        double radius = 0.0058
+        double3 xformOp:translate = (0, 0, -0.028)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "MaleTip15" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.008
+        rel material:binding = </Syringe/Looks/m778589_05>
+        double radius = 0.0028
+        double3 xformOp:translate = (0, 0, -0.037)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "TipEnd16" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0012
+        rel material:binding = </Syringe/Looks/m778589_05>
+        double radius = 0.002
+        double3 xformOp:translate = (0, 0, -0.0408)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "TipBore17" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.006
+        rel material:binding = </Syringe/Looks/m091011_05>
+        double radius = 0.0016
+        double3 xformOp:translate = (0, 0, -0.0375)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "IndexMark18" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Syringe/Looks/m841210_05>
+        double size = 1
+        float3 xformOp:scale = (0.006, 0.003, 0.0012)
+        double3 xformOp:translate = (0.0055, 0, 0.0578)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+}
+

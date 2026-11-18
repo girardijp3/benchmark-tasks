@@ -1,0 +1,23 @@
+{
+  "title": "Connect a 6 mm luer-lock syringe tip to a 20 mm vial adapter: seat the tip, twist ~1.5 turns until locked",
+  "category": "Impact on jobs",
+  "keywords": [
+    "luer lock",
+    "syringe tip",
+    "vial adapter",
+    "twist to lock",
+    "cross-thread",
+    "0.3-0.6 N m",
+    "nursing",
+    "pharmacy"
+  ],
+  "instruction": "Pick up the luer-lock syringe by its barrel, seat the male tip in the adapter's female port, twist about one and a half turns until locked, then let go and go home.",
+  "context": "Registered nurses and pharmacy technicians connect luer-lock syringes to vial adapters throughout a shift - reconstituting drugs, drawing up vaccines, preparing IV admixtures - as routine repeated handling, not an occasional trick. BLS/O*NET lists 3,465,400 registered nurses (SOC 29-1141) and 471,200 pharmacy technicians (SOC 29-2052) in 2025, about 3.9 million US workers; administering medicines and preparing injectable/IV medication are core duties. A tip twisted before it is seated cross-threads and ruins a sterile connection; a collar released before the lock is made leaves a loose joint that can disconnect and spill a drug. The real bench uses a 6 mm male luer-lock tip (ISO 80369-7, 6% taper) and a 20 mm-neck vial adapter with a female luer port, locked at 0.3-0.6 N m.",
+  "setup": "Positions are in metres from the midpoint between the arm bases, x forward, y to the robot's left, table top z 0 (world z 0.7475). A 20 mm-neck vial in a 90 x 90 x 12 mm aluminium bench fixture sits at x 0.28, y 0 with its adapter's female luer port lip at z 0.100. A 10 mL luer-lock syringe with a 20 mm barrel stands upright in a holder at x 0.28, y 0.070, its tip bottom at z 0.015; its centre is at z 0.056. Seating the male tip puts the barrel centre at z 0.141. The fixture is fixed; both YAM arms start at READY. Every grasp point lies within 0.30 m forward reach and 0.10-0.16 m above the table.",
+  "scoring": "Four 0.25 steps: syringe picked up, tip seated, thread engaged (0.5 turn), luer locked (1.5 turns) held 1 s with grippers clear and home. Idle 0. Cross-thread, a loose connection or a drop caps at 0.5. Real trial: protractor twist and a 0.3-0.6 N m gauge; a stopwatch times only the hold.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz)",
+  "reset_notes": "Stand the syringe upright in its holder at x 0.28, y 0.070, barrel centre z 0.056 and tip just above the holder; leave the adapter port empty. Set both arms at READY and wipe the bench.",
+  "fidelity": "Real 6 mm male luer-lock tip (ISO 80369-7, 6% taper), 20 mm barrel, threaded collar and a 20 mm-neck vial adapter with a female luer port; lock 0.3-0.6 N m. Work height 0.10 m, reach to 0.30 m. 240 Hz physics, 20 Hz control. The syringe is a gravity-free body carried by a declared grip; seating, the cumulative 1.5-turn twist and the lock are real geometry the scorer reads. Torque is declared, not integrated; vial and fluid are visual-only. Mass 12 g.",
+  "scores": "Dream-1: 0.0 (2,400 steps, 2,401 action rows); demo: 1.0 at step 704 on Isaac/MuJoCo. Tip seated, three 180 deg regrips to 538 deg inside the 500-580 deg lock window, syringe released on the port, 1 s still; no cross-thread, loose-connection or drop fault; pytest 19.",
+  "media": "M-U6YEEW"
+}
