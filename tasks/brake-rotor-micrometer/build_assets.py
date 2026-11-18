@@ -1,6 +1,10 @@
 """Writes this task's USD assets with pxr (boxes, cylinders, closed 96-sided round meshes; nothing from outside).
 Run:  python build_assets.py        (writes ./assets/*.usda)
-Frames: every asset's origin is on the table (z = 0 at its underside) unless its doc says otherwise; metres, kg, Z up."""
+Frames: every asset's origin is on the table (z = 0 at its underside) unless its doc says otherwise; metres, kg, Z up.
+
+The brake rotor is shown in service: a worn Brembo 09.7012.11 (280 mm dia, 22.0 mm new, 19 mm discard) bolted to a
+front hub and steering knuckle inside the wheel well, with the caliper unbolted and its bracket still on the knuckle.
+The hub/knuckle and caliper bracket are fixed context; the micrometer only ever touches the rotor's friction faces."""
 import math
 import numpy as np
 from pathlib import Path
@@ -416,13 +420,22 @@ def lathe_y(profile, n=96):
 #                     joint along y (drive-limited to the 10 N measuring force), the thimble and the ratchet knob on revolute joints
 #                     about y, the lock lever on a revolute joint about x. Origin: the anvil face's centre; the measuring axis is y
 #                     (the anvil at +y, the thimble end toward -y), the frame's throat opens toward +x, z up.
-#   rotor.usda      : a new Brembo 09.7012.11 280 x 22 mm front brake rotor (37 mm overall height, 5.86 kg) on a bench hub
-#                     stand, axis along y (fixed). Origin: the middle of the rotor's thickness, on its axis.
+#   rotor.usda      : a worn Brembo 09.7012.11 280 mm dia front brake rotor (22.0 mm new, 21.50 mm at the inspection
+#                     band in the sim, 19 mm discard; 5.74 kg estimated worn mass) installed on its hub, axis along y
+#                     (fixed). Origin: the middle of the rotor's thickness, on its axis. Eight scribe marks at radius
+#                     135 mm show the inspection points; the 6 mm dot marks the thinnest one.
+#   hub_knuckle.usda: the front wheel hub, bearing boss, steering knuckle and five wheel studs (fixed context).
+#                     Origin: the rotor's hub centre, same as rotor.usda.
+#   caliper_bracket.usda: the caliper carrier still bolted to the knuckle at the bottom of the rotor (fixed context);
+#                     the caliper and pads are removed for the thickness check. Same origin.
 #   rest.usda       : the micrometer's bench rest (fixed): a 6061-T6 base and two 46 x 6 x 146 mm uprights the frame lies
 #                     across, with a 36 mm clear gap for the lower finger pad. Origin: on the table under the anvil face's centre.
 # ======================================================================================================================
 G_OPEN = 25.0 * MM  # spindle face to anvil face with the spindle fully open (0-25 mm range)
-THICK = 22.0 * MM  # the new rotor's nominal thickness (Brembo 09.7012.11: 22 mm, minimum 19 mm)
+NEW_MM = 22.0  # the part's new thickness (Brembo 09.7012.11), for reference only
+DISCARD_MM = 19.0  # the thickness stamped as the discard limit on this rotor
+THICK = 21.50 * MM  # the worn in-service rotor's measured thickness at the inspection band in the simulator
+INSPECTION_R = 0.135  # radius of the eight circumferential inspection points (m; 5 mm inboard of the friction rim)
 ROT_R = 0.140
 HUB_R = 0.0625  # hat outer radius (125 mm, a visual approximation of the real hat)
 BORE_R = 0.0325  # 65 mm centre bore
@@ -451,11 +464,15 @@ CARBIDE = (0.32, 0.33, 0.36)
 LEVER_RED = (0.82, 0.18, 0.10)
 IRON = (0.30, 0.30, 0.32)
 IRON_FACE = (0.62, 0.62, 0.66)
+IRON_WEAR = (0.50, 0.50, 0.53)  # the worn friction track: duller than the as-cast face
 IRON_HAT = (0.12, 0.12, 0.13)  # the hat is black-coated
-STAND = (0.10, 0.30, 0.55)  # blue anodised bench stand
+KNUCKLE = (0.38, 0.39, 0.41)  # cast-iron steering knuckle and hub flange
+BRACKET = (0.26, 0.28, 0.31)  # painted-steel caliper carrier
+STEEL = (0.66, 0.67, 0.70)  # the wheel studs
+STAND = (0.10, 0.30, 0.55)  # blue anodised bench rest
 HEAT = (0.05, 0.05, 0.06)  # the frame's heat-insulating plates
 BRASS = (0.78, 0.60, 0.25)
-METALLIC.update({CHROME, IRON_FACE, CARBIDE, ENAMEL_M, BRASS})
+METALLIC.update({CHROME, IRON_FACE, IRON_WEAR, CARBIDE, ENAMEL_M, BRASS, STEEL})
 
 
 def _rounded_arm(x0, x1, y0, y1, nseg=16):
@@ -535,10 +552,16 @@ def micrometer(fname):
 
 
 def rotor(fname):
-    a = Asset(fname, "Rotor", "A new Brembo 09.7012.11 280 x 22 mm internally vented front brake rotor (37 mm overall height, 65 mm centre bore, "
-              "5 x 100 mm stud holes, 5.86 kg grey cast iron, minimum thickness 19 mm) on a 6061-T6 aluminium bench hub stand. Axis along y "
-              "(the hat toward -y); fixed. Origin: the middle of the rotor's thickness, on its axis. The hat outer diameter and the 36 visual "
-              "vanes are approximations; the 280 x 22 mm friction ring, the 37 mm height and the mass are the real part's.", 5.86, com=(0, 0, 0), inertia=(0.029, 0.029, 0.057))
+    """A worn in-service Brembo 09.7012.11: 280 mm dia, 21.50 mm at the inspection band in the simulator (22.0 mm new,
+    19 mm discard), 65 mm centre bore, 5 x 100 mm stud holes. Installed on the hub in hub_knuckle.usda. The hat, the
+    36 visual vanes and the worn mass (5.74 kg, estimated from 0.25 mm of wear per face) are approximations; the 280 mm
+    diameter, the 22.0 mm new thickness and the 19 mm discard limit are the real part's. Fixed, axis along y."""
+    a = Asset(fname, "Rotor", "A worn in-service Brembo 09.7012.11 280 mm dia internally vented front brake rotor (22.0 mm new, "
+              "21.50 mm at the eight inspection points in the sim, 19 mm discard, 65 mm centre bore, 5 x 100 mm stud holes, "
+              "5.74 kg estimated grey cast iron), installed on a wheel hub and steering knuckle. Axis along y (the hat toward -y); "
+              "fixed. Origin: the middle of the rotor's thickness, on its axis. Eight 2 mm scribe marks and one 6 mm paint dot at "
+              "radius 135 mm show the inspection points; the dot marks the thinnest one. The hat outer diameter and 36 vanes are "
+              "visual approximations.", 5.74, com=(0, 0, 0), inertia=(0.028, 0.028, 0.055))
     f = (0.40, 0.30)
     h = THICK / 2
     # the outboard plate (+y): an annulus 95 .. 140 mm with 1 mm chamfers, flat friction face at y = +h
@@ -550,9 +573,18 @@ def rotor(fname):
             (ROT_R, -h + PLATE_T - CHAM), (ROT_R - CHAM, -h + PLATE_T), (HUB_R, -h + PLATE_T)]
     pts, tris = lathe_y(prof)
     a.vmesh("PlateIn", pts, tris, IRON_FACE)
-    # the reference paint dot on the outboard face at 135 mm from the hub axis, 10 deg above the 9 o'clock line: the scored spot
-    pts, tris = disc(3.0 * MM, 0.0, 0.00005, 96, "Y")
-    a.vmesh("RefDot", pts, tris, (0.04, 0.04, 0.04), center=(-0.133, h, 0.0235))
+    # the worn friction tracks (visual): a duller annulus 100 .. 140 mm on both faces, 0.05 mm proud
+    for sgn in (1.0, -1.0):
+        yf = sgn * (h + 0.000025)
+        pts, tris = lathe_y([(0.100, yf - 0.000025), (0.140, yf - 0.000025), (0.140, yf + 0.000025), (0.100, yf + 0.000025)])
+        a.vmesh("WearTrack", pts, tris, IRON_WEAR)
+    # eight circumferential inspection points at radius 135 mm: the thinnest (10 deg above the 9 o'clock line) is the 6 mm paint dot
+    for k in range(8):
+        ph = math.radians(170.0 - 45.0 * k)  # 170 deg = 10 deg above 9 o'clock
+        c = (INSPECTION_R * math.cos(ph), h + 0.00006, INSPECTION_R * math.sin(ph))
+        rr = 3.0 * MM if k == 0 else 1.0 * MM
+        pts, tris = disc(rr, 0.0, 0.00005, 96, "Y")
+        a.vmesh("RefDot" if k == 0 else "InspectMark", pts, tris, (0.05, 0.05, 0.05) if k == 0 else (0.18, 0.18, 0.18), center=c)
     hat = [(BORE_R, -h - HAT_D), (HUB_R, -h - HAT_D), (HUB_R, -h + PLATE_T), (BORE_R, -h + PLATE_T)]
     pts, tris = lathe_y(hat)
     a.vmesh("Hat", pts, tris, IRON_HAT)
@@ -569,18 +601,69 @@ def rotor(fname):
         rc = 0.5 * (0.097 + 0.1385)
         c = (rc * math.cos(math.radians(ph)), 0.0, rc * math.sin(math.radians(ph)))
         a.box(c, (0.0415, THICK - 2 * PLATE_T + 0.0004, 0.004), IRON, None, name="Vane", rot=(0, -ph, 0))
-    # colliders: one solid cylinder 280 x 22.0 mm and the hat (the vented core is not modelled: the micrometer only touches the faces)
+    # colliders: one solid cylinder 280 x 21.50 mm and the hat (the vented core is not modelled: the micrometer only touches the faces)
     a.cyl((0, 0, 0), ROT_R, THICK, "Y", None, f, key="iron", name="RotorCol")
     a.cyl((0, -h - HAT_D / 2, 0), HUB_R, HAT_D, "Y", None, f, key="iron", name="HatCol")
-    # the hub stand (6061-T6 aluminium, blue anodised): a 90 mm dia x 12 mm flange the hat sits on, a 70 x 16 x 140 mm column and a
-    # 200 x 200 x 12 mm base plate (visual + collider)
-    y_f0 = -h - HAT_D - 0.012
-    pts, tris = disc(0.045, y_f0, -h - HAT_D, 96, "Y")
-    a.vmesh("Flange", pts, tris, STAND)
-    a.cyl((0, (y_f0 + -h - HAT_D) / 2, 0), 0.045, 0.012, "Y", None, f, key="iron", name="FlangeCol")
-    y_c0, y_c1 = y_f0 - 0.016, y_f0
-    a.box((0, (y_c0 + y_c1) / 2, -Z_AX / 2 + 0.006), (0.070, y_c1 - y_c0, Z_AX - 0.012), STAND, f, key="iron", name="Column")
-    a.box((0, y_c0 + 0.080 - 0.04, -Z_AX + 0.006), (0.200, 0.200, 0.012), STAND, f, key="iron", name="Base")
+    a.save()
+
+
+def hub_knuckle(fname):
+    """The fixed wheel hub and steering knuckle the worn rotor is bolted to, as seen in an installed wheel well. Origin:
+    the rotor's hub centre, same as rotor.usda. The hub flange is inboard (-y) of the rotor's hat; five wheel studs pass
+    through the hat holes. The bearing boss, upright, lower ball-joint boss, strut clamp and steering arm give the real
+    installed context; the caliper is unbolted and its bracket (caliper_bracket.usda) stays on the knuckle."""
+    a = Asset(fname, "HubKnuckle", "Fixed front wheel hub, bearing housing and cast-iron steering knuckle in an installed wheel "
+              "well. Origin: the rotor's hub centre (same as rotor.usda). The hub flange and five M12 wheel studs hold the "
+              "rotor's hat; the upright carries a lower ball-joint boss, an upper strut clamp and a steering arm. The "
+              "caliper bracket mounts to the upright. Sizes are representative of a 2001-05 VW Golf IV front knuckle "
+              "(estimates, not catalogue dimensions); visual and collider shapes are fixed.", 12.0,
+              com=(0.0, -0.05, -0.04), inertia=(0.4, 0.2, 0.5))
+    f = (0.50, 0.55)
+    h = THICK / 2
+    yhat = -h - HAT_D  # the hat's mounting face: the hub flange sits just inboard of it
+    # hub flange: 110 mm dia x 12 mm, face at yhat, behind the rotor's hat
+    y0, y1 = yhat - 0.012, yhat
+    a.cyl((0, (y0 + y1) / 2, 0), 0.055, y1 - y0, "Y", KNUCKLE, f, key="iron", name="HubFlange")
+    # five M12 wheel studs (radius 6 mm, 48 mm long), on the 100 mm bolt circle, through the hat toward the outboard side
+    for k in range(5):
+        ph = 2 * math.pi * k / 5
+        c = (0.050 * math.cos(ph), yhat + 0.024, 0.050 * math.sin(ph))
+        a.cyl(c, 0.006, 0.048, "Y", STEEL, None, key="iron", name="WheelStud")
+        a.cyl((c[0], yhat + 0.047, c[2]), 0.007, 0.004, "Y", STEEL, None, key="iron", name="StudNut")
+    # wheel-bearing housing: 90 mm dia boss, 40 mm deep, behind the flange (inboard, -y)
+    a.cyl((0, y0 - 0.020, 0), 0.045, 0.040, "Y", KNUCKLE, f, key="iron", name="BearingBoss")
+    # the upright: a cast web from the hub down to the lower ball joint and up to the strut clamp
+    a.box((0, y0 - 0.020, -0.070), (0.052, 0.040, 0.180), KNUCKLE, f, key="iron", name="Upright")
+    a.cyl((0, y0 - 0.020, -0.170), 0.020, 0.040, "Y", KNUCKLE, f, key="iron", name="BallJointBoss")
+    a.box((0, y0 - 0.020, 0.085), (0.060, 0.042, 0.050), KNUCKLE, f, key="iron", name="StrutClamp")
+    # the steering arm: a web to +x with a tie-rod-end boss
+    a.box((0.070, y0 - 0.020, -0.055), (0.120, 0.030, 0.028), KNUCKLE, f, key="iron", name="SteeringArm")
+    a.cyl((0.125, y0 - 0.020, -0.055), 0.014, 0.030, "Y", KNUCKLE, f, key="iron", name="TieRodBoss")
+    a.save()
+
+
+def caliper_bracket(fname):
+    """The caliper carrier left bolted to the knuckle at the bottom of the installed rotor (origin: rotor hub centre).
+    The caliper body and pads are removed for the thickness check, so the friction band is open; the carrier's bridge
+    and abutment rails sit at the bottom of the disc, clear of the 9 o'clock inspection point. Representative sizes."""
+    a = Asset(fname, "CaliperBracket", "Fixed painted-steel caliper carrier (bracket) still bolted to the steering knuckle at "
+              "the bottom of the installed rotor; the caliper and pads are removed for the inspection so both friction faces "
+              "are open. Origin: the rotor's hub centre (same as rotor.usda). The bridge straddles the disc rim at 6 o'clock; "
+              "the two abutment rails and mounting ears are representative of a 2001-05 VW Golf IV front caliper (estimates).",
+              2.4, com=(0.0, -0.01, -0.14), inertia=(0.02, 0.02, 0.01))
+    f = (0.45, 0.50)
+    yhat = -THICK / 2 - HAT_D
+    y_ear = yhat - 0.020  # the ears bolt to the upright, inboard of the hat
+    # a bridge over the rim at 6 o'clock: spans y across the disc, sits 4 mm clear of the 140 mm outer radius
+    a.box((0, 0, -0.152), (0.110, THICK + 0.030, 0.016), BRACKET, f, key="iron", name="Bridge")
+    # two mounting ears reaching inboard to the knuckle, with 12 mm bolt holes
+    for x in (-0.050, 0.050):
+        a.box((x, (y_ear + 0.016) / 2, -0.150), (0.024, 0.016 - y_ear, 0.030), BRACKET, f, key="iron", name="MountEar")
+        a.cyl((x, y_ear - 0.001, -0.150), 0.006, 0.024, "Y", None, f, key="iron", name="BracketBoltHole")
+    # pad abutment rails on both faces, just above the bridge, open toward the rim
+    for sgn in (-1, 1):
+        y = sgn * (THICK / 2 + 0.005)
+        a.box((0, y, -0.131), (0.090, 0.008, 0.022), BRACKET, f, key="iron", name="AbutmentRail")
     a.save()
 
 
@@ -603,4 +686,6 @@ if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
     micrometer("micrometer.usda")
     rotor("rotor.usda")
+    hub_knuckle("hub_knuckle.usda")
+    caliper_bracket("caliper_bracket.usda")
     rest("rest.usda")

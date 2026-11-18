@@ -1,6 +1,6 @@
-"""Offline checks (no GPU, no network): the task file loads, the new 22.00 mm rotor and its marked reference spot, the on-rotor test
-(faces square on the friction band at the dot), the declared thread, ratchet, the step ladder, the 1 s full-success timing, the drop
-latch and the demo's reach.
+"""Offline checks (no GPU, no network): the task file loads, the worn in-service rotor installed on its hub/knuckle with the caliper
+bracket, its eight inspection points and marked thinnest spot, the on-rotor test (faces square on the band at the dot), the declared
+thread, ratchet, the step ladder, the 1 s full-success timing, the drop latch and the demo's reach.
 Run in the yam_arena environment:  python -m pytest -q test_brake_rotor_micrometer.py"""
 
 import json
@@ -307,16 +307,38 @@ def test_the_band_is_two_hundredths_of_a_millimetre():
     assert T.REFERENCE_TOL_MM == pytest.approx(0.02)
 
 
-def test_the_rotor_is_the_new_22_mm_part():
-    assert T.REFERENCE_MM == pytest.approx(22.00)
-    assert T.THICK == pytest.approx(0.022)
-    assert T.ROTOR.mass == pytest.approx(5.86)
+def test_the_rotor_is_a_worn_in_service_part():
+    assert T.NEW_MM == pytest.approx(22.00)  # the real part's new thickness
+    assert T.DISCARD_MM == pytest.approx(19.00)  # the stamp on the part
+    assert T.REFERENCE_MM == pytest.approx(21.50)  # the worn example in the simulator
+    assert T.THICK == pytest.approx(0.0215)
+    assert T.NEW_MM > T.REFERENCE_MM > T.DISCARD_MM  # worn but still serviceable
+    assert T.ROTOR.mass == pytest.approx(5.74)  # estimated worn mass, not the 5.86 kg new part's
     assert T.REFERENCE_REPEAT_MM == pytest.approx(0.005)
 
 
-def test_the_old_worn_reading_is_out_of_band():
-    worn = T.G_OPEN - 21.78 * T.MM
-    assert not (T.READ_LO <= worn - T.THICK <= T.READ_HI)
+def test_the_rotor_is_installed_in_a_wheel_well():
+    names = [o.name for o in T.OBJECTS]
+    assert {"rotor", "hub_knuckle", "caliper_bracket", "rest", "mic"} <= set(names)
+    hub = next(o for o in T.OBJECTS if o.name == "hub_knuckle")
+    bracket = next(o for o in T.OBJECTS if o.name == "caliper_bracket")
+    assert hub.kinematic and bracket.kinematic and T.ROTOR.kinematic  # fixed installed hardware
+    assert "hub_knuckle.usda" in hub.usd_path and "caliper_bracket.usda" in bracket.usd_path
+    assert np.allclose(hub.pos, T.ROTOR.pos) and np.allclose(bracket.pos, T.ROTOR.pos)  # same hub-centre origin
+    assert bracket.pos[2] == T.TOP + T.ZA > T.TOP + 0.10  # the wheel-well assembly is off the bench top
+
+
+def test_eight_inspection_points_at_the_stated_radius():
+    assert T.INSPECTION_N == 8
+    assert T.INSPECTION_R == pytest.approx(0.135)  # 5 mm inboard of the 140 mm friction rim
+    radius = math.hypot(T.DOT_X - T.XC, T.DOT_Z - (T.TOP + T.ZA))
+    assert radius == pytest.approx(T.INSPECTION_R)  # the marked thinnest point is one of the eight
+    assert T.BAND_LO <= T.INSPECTION_R <= T.BAND_HI
+
+
+def test_a_new_rotor_reading_is_out_of_band():
+    new = T.G_OPEN - 22.00 * T.MM
+    assert not (T.READ_LO <= new - T.THICK <= T.READ_HI)
 
 
 def test_the_dot_is_inside_the_scored_band():
@@ -333,15 +355,16 @@ def test_micrometer_off_the_marked_spot_is_not_gauged():
     assert e.done()[0] is False
 
 
-def test_the_reference_procedure_and_fixture_materials_are_documented():
+def test_the_worn_reference_and_installed_setting_are_documented():
     readme = (HERE / "README.md").read_text()
     task = json.loads((HERE / "task.json").read_text())
-    text = readme + "\n" + task["setup"] + "\n" + task["scoring"] + "\n" + task["fidelity"]
-    assert "Brembo 09.7012.11" in text and "280" in text and "22.0" in text
-    assert "5.86" in text and "6061-T6" in text and "EPDM" in text
-    assert "22.00 mm" in text
-    for word in ("median", "five", "0.005"):
-        assert word in readme.lower(), word
+    text = readme + "\n" + " ".join(str(v) for v in task.values())
+    assert "Brembo 09.7012.11" in text and "280" in text and "22.0" in text and "19" in text
+    assert "6061-T6" in text and "EPDM" in text  # the rest's materials
+    assert "21.50 mm" in text
+    for word in ("knuckle", "caliper bracket", "wheel well", "eight", "median", "five", "0.005"):
+        assert word.lower() in text.lower(), word
+    assert "TBD" not in readme and "TBD" not in task["scores"]
 
 
 def test_off_the_rotor_the_thimble_holds_its_reading():
@@ -399,7 +422,7 @@ def test_the_demo_rocks_the_frame_within_its_limits_and_ends_square():
     assert len(rock) > 100
     squared = T.LEFT_ROT
     tilt = [math.degrees(math.acos(min(1.0, (np.trace(w.rot @ squared.T) - 1.0) / 2.0))) for w in rock]
-    assert max(tilt) <= 1.5 * T.ROCK_DEG * 1.45 and max(tilt) > 0.5 * T.ROCK_DEG  # the demo rock (0.5 deg: the 22.00 mm rotor leaves 0.45 mm frame clearance; the real technique is 2.5 deg)
+    assert max(tilt) <= 1.5 * T.ROCK_DEG * 1.45 and max(tilt) > 0.5 * T.ROCK_DEG  # the demo rock (1.5 deg: the worn 21.50 mm rotor leaves 1.25 mm frame clearance; the real technique is ~2.5 deg)
     assert tilt[-1] < 0.05  # the rocking dies away to the squared attitude before the frame is eased off
     first = left.index(rock[0])
     assert all(w.label != "rock the frame across the rotor" for w in left[:first]) and left[first - 1].label == "hold it square"

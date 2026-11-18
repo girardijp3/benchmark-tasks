@@ -1,7 +1,9 @@
-"""On the bench: a new Brembo 09.7012.11 280 x 22 mm vented brake rotor (37 mm overall height, 5.86 kg) stands on a hub stand with its
-axis horizontal, a 6 mm paint dot marking the scored spot on its outboard face at 135 mm from the hub axis, 10 deg above the 9 o'clock
-line. To its left, lying across a bench rest, is a 0-25 mm outside micrometer (Mitutoyo 103-137 class: 175 g, ratchet stop, lock lever)
-with its spindle run out to the full 25 mm.
+"""In an installed front wheel well: a worn, in-service Brembo 09.7012.11 280 mm vented brake rotor (22.0 mm new, 21.50 mm measured
+at the inspection band here, 19 mm discard, ~5.74 kg worn) is bolted to its wheel hub and steering knuckle, with the caliper
+unbolted and its carrier bracket still on the knuckle. Eight scribe marks at radius 135 mm on the outboard friction face show the
+inspection points, a 6 mm paint dot marking the thinnest one (135 mm from the hub axis, 10 deg above the 9 o'clock line, facing the
+robot). To its left, lying across a bench rest, is a 0-25 mm outside micrometer (Mitutoyo 103-137 class: 175 g, ratchet stop, lock
+lever) with its spindle run out to the full 25 mm.
 
 The robot has to measure the rotor the way a mechanic does: one hand holds the micrometer by its frame and slips it over the rotor's
 outer edge so the two measuring faces sit square on the friction band and rocks the frame slightly across the face, the other hand turns
@@ -9,9 +11,10 @@ the ratchet knob until it clicks (the ratchet slips at the measuring force: 5-10
 10 N), then the micrometer is taken off with the reading kept on the thimble and put back on its rest. The lock lever works but is not
 scored and the instruction does not ask for it.
 
-The rotor is a new, readily available part, not a worn one: its nominal thickness is 22.00 mm, and a real trial scores the robot's
-reading against the rotor's actual thickness measured at the marked spot with a calibrated micrometer (README: five readings, median,
-repeatability <= 0.005 mm, +-0.02 mm band). The simulator's reference is the same 22.00 mm.
+The rotor is an in-service part being inspected for wear: the simulator's worn thickness at the marked spot is 21.50 mm (the part
+was 22.0 mm new and is discarded at 19 mm). A real trial first scans the eight inspection points to find the thinnest, marks it,
+and scores the robot's reading against that spot's thickness measured with a calibrated micrometer (README: eight points, then five
+readings at the thinnest, median, repeatability <= 0.005 mm, +-0.02 mm band).
 
 The micrometer is a real articulation: the frame is a free root; the spindle slides along the measuring axis on a prismatic joint whose
 drive is limited to 10 N (the top of the real 5-10 N measuring force); the thimble and the ratchet knob turn about that axis on revolute joints; the lock lever turns
@@ -220,26 +223,35 @@ elif not any(isinstance(f, _AfterSceneImport) for f in sys.meta_path):
 # -- layout (m; x forward, y to the robot's left, from the midpoint between the arm bases) ----------------------------
 XM, YA, ZA = 0.375, 0.1325, 0.152  # the measuring pose: anvil face centre (the micrometer's origin); axis along y, z above the table
 XS, YS = 0.330, 0.165  # on the rest: the anvil face centre; the frame lies across the ribs
-REFERENCE_MM = 22.00  # the new Brembo 09.7012.11 rotor's nominal thickness; a real trial measures the actual value at the dot
+NEW_MM = 22.00  # the Brembo 09.7012.11's new thickness (catalogue); DISCARD_MM is the stamp on the part
+DISCARD_MM = 19.00  # the minimum thickness stamped on the rotor: below this it is scrapped
+REFERENCE_MM = 21.50  # the worn in-service rotor's measured thickness at the marked spot in this simulator
 REFERENCE_TOL_MM = 0.02  # the simulator's reading band; a real trial uses it when its reference is measured to 0.001 mm (README)
 REFERENCE_REPEAT_MM = 0.005  # the real reference's five-reading spread must stay within this
+INSPECTION_R = 0.135  # radius of the eight real-trial inspection points (m; 5 mm inboard of the 140 mm friction rim)
+INSPECTION_N = 8  # eight equally spaced circumferential points (every 45 deg) on each friction face
+DOT_ANG = math.radians(10.0)  # the marked thinnest inspection point: 10 deg above the 9 o'clock line
 THICK = REFERENCE_MM * MM  # the simulator's reference thickness (the real rotor's is measured per trial; README)
 G_OPEN = 25.0 * MM
 PITCH = 0.5 * MM
 ROT_R = 0.140
-XC, YR = XM + 0.133, YA - 1.5 * MM - THICK / 2  # rotor centre (hub axis along y at height ZA): the micrometer's faces sit 7 mm inside the rim
+XC, YR = XM + INSPECTION_R * math.cos(DOT_ANG), YA - 1.5 * MM - THICK / 2  # hub centre (axis along y at ZA): the faces sit 5 mm inside the 140 mm rim
 BAND_LO, BAND_HI = 0.100, 0.136  # the faces' centre lies on the friction band between these radii (m from the hub axis)
-DOT_X, DOT_Z = XM, TOP + ZA + 0.0235  # the reference paint dot on the outboard face: 135 mm from the hub axis, 10 deg above 9 o'clock
+DOT_X, DOT_Z = XM, TOP + ZA + INSPECTION_R * math.sin(DOT_ANG)  # 135 mm from the hub axis, on the outboard face
 DOT_TOL = 0.005  # the anvil face centre must be this close to the dot (m), so the reference and the reading are the same spot
 READ_LO, READ_HI = -REFERENCE_TOL_MM * MM, REFERENCE_TOL_MM * MM  # a reading counts when it is within this of the measured thickness (MuJoCo's soft contact sinks the faces a few hundredths of a mm at 6 N; PhysX sinks almost nothing)
 MIC_START = np.array([XS, YS, TOP + ZA + 0.0003])
 MIC = UsdPart("mic", asset="micrometer", xy=(XS, YS), extent=0.06, mass=0.176, usd_path=str(ASSETS / "micrometer.usda"),
               pos=tuple(float(v) for v in MIC_START), articulation=True)
-ROTOR = UsdPart("rotor", asset="rotor", xy=(XC, YR), extent=0.15, mass=5.86, usd_path=str(ASSETS / "rotor.usda"),
-                pos=(XC, YR, TOP + ZA), kinematic=True)
+ROTOR = UsdPart("rotor", asset="rotor", xy=(XC, YR), extent=0.15, mass=5.74, usd_path=str(ASSETS / "rotor.usda"),
+                pos=(XC, YR, TOP + ZA), kinematic=True)  # worn disc; installed on the hub below
+HUB_KNUCKLE = UsdPart("hub_knuckle", asset="hub_knuckle", xy=(XC, YR), extent=0.22, mass=12.0,
+                      usd_path=str(ASSETS / "hub_knuckle.usda"), pos=(XC, YR, TOP + ZA), kinematic=True)
+CALIPER_BRACKET = UsdPart("caliper_bracket", asset="caliper_bracket", xy=(XC, YR - 0.05), extent=0.16, mass=2.4,
+                          usd_path=str(ASSETS / "caliper_bracket.usda"), pos=(XC, YR, TOP + ZA), kinematic=True)
 REST = UsdPart("rest", asset="rest", xy=(XS, YS), extent=0.05, mass=0.75, usd_path=str(ASSETS / "rest.usda"),
                pos=(XS, YS, TOP), kinematic=True)
-OBJECTS = [ROTOR, REST, MIC]
+OBJECTS = [ROTOR, HUB_KNUCKLE, CALIPER_BRACKET, REST, MIC]  # the wheel-well hardware is fixed installed context
 MOVERS = ("mic",)
 MIC_LO = np.array([-39.3 * MM, -35.0 * MM, -6.0 * MM])
 MIC_HI = np.array([9.5 * MM, 13.0 * MM, 6.0 * MM])  # the frame, in the micrometer's frame
@@ -787,7 +799,7 @@ def right_plan(start_t: float):
     return wps, out_t
 
 
-ROCK_DEG = 0.5  # demo rock amplitude; the 22.00 mm rotor leaves only 0.45 mm frame clearance (2.5 deg jammed it)
+ROCK_DEG = 1.5  # demo rock amplitude; the worn 21.50 mm rotor leaves 1.25 mm frame clearance, so 1.5 deg sweeps the frame through square without jamming (the real technique is ~2.5 deg)
 ROCK_PERIODS = (4.0, 5.3)  # s: the two rocking motions have different periods, so the frame sweeps through every attitude in a few seconds
 ROCK_STROKE = 22  # rocking begins in this stroke of the right hand's turning (the spindle is then within about 1 mm of the rotor)
 ROCK_STEP = 0.25  # s a waypoint
