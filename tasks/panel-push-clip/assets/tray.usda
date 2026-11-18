@@ -1,0 +1,103 @@
+#usda 1.0
+(
+    defaultPrim = "Tray"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Tray" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI"]
+    doc = "small staging tray with a socket for the clip, welded visual-only"
+)
+{
+    bool physics:kinematicEnabled = 1
+
+    def Scope "Looks"
+    {
+        def Material "m151720_05"
+        {
+            token outputs:surface.connect = </Tray/Looks/m151720_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.16, 0.18, 0.21)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+
+        def Material "m030404_05"
+        {
+            token outputs:surface.connect = </Tray/Looks/m030404_05/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.04, 0.045, 0.05)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.6
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cube "TrayYPos1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Tray/Looks/m151720_05>
+        double size = 1
+        float3 xformOp:scale = (0.032, 0.005, 0.008)
+        double3 xformOp:translate = (0, 0.011, 0.004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TrayYNeg2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Tray/Looks/m151720_05>
+        double size = 1
+        float3 xformOp:scale = (0.032, 0.005, 0.008)
+        double3 xformOp:translate = (0, -0.011, 0.004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TrayXPos3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Tray/Looks/m151720_05>
+        double size = 1
+        float3 xformOp:scale = (0.005, 0.017, 0.008)
+        double3 xformOp:translate = (0.011, 0, 0.004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "TrayXNeg4" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Tray/Looks/m151720_05>
+        double size = 1
+        float3 xformOp:scale = (0.005, 0.017, 0.008)
+        double3 xformOp:translate = (-0.011, 0, 0.004)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Socket5" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.001
+        rel material:binding = </Tray/Looks/m030404_05>
+        double radius = 0.0045
+        double3 xformOp:translate = (0, 0, 0.002)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+

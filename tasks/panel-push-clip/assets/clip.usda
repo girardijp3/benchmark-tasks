@@ -1,0 +1,142 @@
+#usda 1.0
+(
+    defaultPrim = "Clip"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Clip" (
+    prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    doc = "real 8 mm nylon panel push-clip: 20 mm cap, 8 mm stem, barbs, 2 g"
+)
+{
+    point3f physics:centerOfMass = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.000001, 0.000001, 0.000001)
+    float physics:mass = 0.002
+    custom bool physxRigidBody:disableGravity = 1
+
+    def Scope "Looks"
+    {
+        def Material "m091012_06"
+        {
+            token outputs:surface.connect = </Clip/Looks/m091012_06/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.11, 0.13)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.7
+                token outputs:surface
+            }
+        }
+
+        def Material "m040506_06"
+        {
+            token outputs:surface.connect = </Clip/Looks/m040506_06/Shader.outputs:surface>
+
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.05, 0.06, 0.07)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.7
+                token outputs:surface
+            }
+        }
+    }
+
+    def Cylinder "Cap1" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.003
+        rel material:binding = </Clip/Looks/m091012_06>
+        double radius = 0.01
+        double3 xformOp:translate = (0, 0, -0.0015)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "CapTop2" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0008
+        rel material:binding = </Clip/Looks/m040506_06>
+        double radius = 0.0095
+        double3 xformOp:translate = (0, 0, 0.0004)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Stem3" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.018
+        rel material:binding = </Clip/Looks/m091012_06>
+        double radius = 0.004
+        double3 xformOp:translate = (0, 0, -0.012)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cube "Barb04" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Clip/Looks/m040506_06>
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.0032, 0.005)
+        double3 xformOp:translate = (0.0053, 0, -0.0175)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Barb15" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Clip/Looks/m040506_06>
+        double size = 1
+        float3 xformOp:scale = (0.004, 0.0032, 0.005)
+        double3 xformOp:translate = (-0.0053, 0, -0.0175)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Barb26" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Clip/Looks/m040506_06>
+        double size = 1
+        float3 xformOp:scale = (0.0032, 0.004, 0.005)
+        double3 xformOp:translate = (0, 0.0053, -0.0175)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cube "Barb37" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Clip/Looks/m040506_06>
+        double size = 1
+        float3 xformOp:scale = (0.0032, 0.004, 0.005)
+        double3 xformOp:translate = (0, -0.0053, -0.0175)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Cylinder "Tip8" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Z"
+        double height = 0.0025
+        rel material:binding = </Clip/Looks/m091012_06>
+        double radius = 0.003
+        double3 xformOp:translate = (0, 0, -0.022)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+}
+

@@ -1,0 +1,23 @@
+{
+  "title": "Snap an 8 mm panel push-clip into a hole: align, press 4-7 N until barbs seat and cap is flush, then pull-test",
+  "category": "Societal relatability",
+  "keywords": [
+    "panel push-clip",
+    "8 mm mounting hole",
+    "nylon trim retainer",
+    "4-7 N press",
+    "barbs seated",
+    "flush cap",
+    "pull-test",
+    "auto appliance repair"
+  ],
+  "instruction": "Snap the nylon push-clip into the panel's mounting hole: align the stem, press it in with a 4-7 N press until the barbs seat and the cap is flush, then pull-test that it holds.",
+  "context": "Auto and appliance technicians fasten trim panels with push clips: a nylon retainer is lined up with an 8 mm hole, pushed in with a firm 4-7 N hand press until its barbs spring out behind the panel and the cap sits flush, then given a quick pull to check it holds. It is routine work with many clips per panel, done by well over 500,000 automotive service technicians, mechanics and appliance repairers. A clip put in crooked (cross-inserted), left standing proud (barbs not seated), dropped, or forced past its stop does not hold the panel and must be redone. The real part is an 8 mm push-in nylon trim retainer with a 20 mm cap and about 20 mm stem, mass about 2 g; force is read with a small 4-7 N gauge and a stopwatch times only the 1 s pull hold.",
+  "setup": "Positions are in metres from the midpoint between the arm bases, x forward, y to the robot's left, table top z 0 (world z 0.7475). A fixed trim panel lies at the mounting-hole centre x 0.280, y 0; its 8 mm hole is at local z 0 and the panel top is z 0.003. The clip starts upright in a small tray at x 0.200, y 0.090, cap top at local z 0.030; its 20 mm cap, 8 mm stem and barbs are true size. Hover above the hole at cap-top z 0.026, press at z 0.007 (4.55 N), seat at z 0.003 (5.95 N, cap flush). Insertion and pull forces are a declared 350 N/m travel from the gripper TCP (4 N = 11.43 mm, 7 N = 20 mm); the retention pull rises 16 mm = 5.6 N. Seat tolerance is 4 mm in x/y, 2.5 mm in z and 8 degrees of tilt; alignment is within 10 mm and 12 degrees. All grasps are at local z 0.013-0.054 (< 0.30 m) and within 0.55 m of the right arm base. Only the right arm moves; the left stays at READY.",
+  "scoring": "Four steps, 0.25 each, as things stand. (1) Clip aligned with the mounting hole (upright, centred, above the barbs). (2) With that, pressed with a 4-7 N insertion. (3) With that, barbs seated and cap flush. (4) With that, a 4-7 N retention pull held for 1 s. Full 1.0 also needs the clip still seated and intact, no cap, and both grippers clear and home. A cross-insert (press tilted past 12 degrees), a clip released in the hole with the barbs unseated, a drop off the bench, or a forced fit over 7 N caps the score at 0.5 for the rest of the run. Idle 0. The real trial reads the press and pull with a 4-7 N gauge and times the 1 s pull hold with a stopwatch.",
+  "run_limit": "2,400 steps (120 seconds at 20 Hz)",
+  "reset_notes": "Lay the panel flat with its hole clear, stand the clip upright in the tray with barbs up, and set both arms at READY with grippers open.",
+  "fidelity": "Real 8 mm nylon push-clip: 20 mm cap, 8 mm stem, ~18 mm stem length, barbs near the tip, 2 g; true sizes, no scaling. Gravity-free rigid clip with authored mass; panel and tray are welded, visual-only, no colliders, as in the family fixtures. Declared carry until the barbs seat; once seated the clip is locked so an upward pull is gripper travel against a fixed clip. Insertion and pull forces are a declared 350 N/m TCP travel (4-7 N band), not contact dynamics. Physics 240 Hz, control 20 Hz.",
+  "scores": "Dream-1: 0.0 (2,400 steps, 2,401 action rows); demo: 1.0 at step 423 on Isaac/MuJoCo. Clip aligned to the hole, pressed with declared 5.4 N until barbs seated flush, released only after seating, pull-tested at 5.0 N, 1 s hold; no cross-insert, not-seated, drop or forced-fit fault; pytest 24.",
+  "media": "M-PG3VN7"
+}
